@@ -381,6 +381,19 @@ JSON ONLY.
         )
         r1_content = response_r1.choices[0].message.content
 
+        # Extract Metadata JSON
+        metadata = {}
+        try:
+            json_match = re.search(r"```json\s*(\{.*?\})\s*```", r1_content, re.DOTALL)
+            if json_match:
+                json_str = json_match.group(1)
+                metadata = json.loads(json_str)
+                # Remove the JSON block from the content to keep the report clean
+                r1_content = r1_content.replace(json_match.group(0), "").strip()
+                paper['metadata'] = metadata
+        except Exception as e:
+            logger.error(f"Failed to extract metadata JSON: {e}")
+
         # --- Round 2: Logical Optimization & Relation Analysis ---
         logger.info(f"  [Round 2] Building knowledge graph and future research directions...")
         

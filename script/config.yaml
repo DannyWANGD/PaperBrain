@@ -40,6 +40,16 @@ analysis:
       **Output Language**: STRICTLY ENGLISH ONLY. No Chinese allowed.
       **Output Style**: Academic, rigorous, and concise. Avoid fragmented sentences. Each paragraph must be logically complete.
 
+      0. **Metadata Extraction** (CRITICAL: Output this as a JSON block at the very beginning)
+      ```json
+      {
+        "publication_date": "YYYY-MM-DD or 'Unknown'",
+        "institutions": ["Institution 1", "Institution 2"],
+        "github": "URL or 'None'",
+        "project_page": "URL or 'None'"
+      }
+      ```
+
       1. **Core Snapshot**
       - **Problem Statement**: What is the specific industry/research pain point (Gap) addressed?
       - **Core Contribution**: A single-sentence summary of the most significant technical breakthrough.

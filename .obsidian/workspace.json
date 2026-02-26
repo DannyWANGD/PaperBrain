@@ -14,7 +14,7 @@
               "type": "markdown",
               "state": {
                 "file": "Research_Notes/Solaris Building a Multiplayer Video World Model in Minecraft.md",
-                "mode": "preview",
+                "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
@@ -185,11 +185,13 @@
   },
   "active": "53eb1db8293fddab",
   "lastOpenFiles": [
-    "output/Solaris_Building_a_Multiplayer_Video_World_Model_in_Minecraft_DeepAnalysis_20260226.md",
+    "README.md",
+    "PDFs/Solaris Building a Multiplayer Video World Model in Minecraft.pdf",
+    "Research_Notes/Solaris Building a Multiplayer Video World Model in Minecraft.md",
     "Daily_Papers/2026-02-26-PaperDigest.md",
+    "output/Solaris_Building_a_Multiplayer_Video_World_Model_in_Minecraft_DeepAnalysis_20260226.md",
     "Assets/Solaris Building a Multiplayer Video World Model in Minecraft_arch.png",
     "2026-02-26.md",
-    "PDFs/Solaris Building a Multiplayer Video World Model in Minecraft.pdf",
     "script/README.md"
   ]
 }

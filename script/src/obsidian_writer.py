@@ -125,10 +125,21 @@ class ObsidianWriter:
         
         tags_yaml = "\n".join([f"  - {t}" for t in safe_tags])
         
-        # Aliases should be a list of strings
-        # Ensure title is properly quoted if needed, but simplest is just the string
-        # YAML list format: - "Title"
+        # Extract metadata from deep analysis
+        meta = paper.get('metadata', {})
+        # Default to "Unknown" if not found, but we want YYYY-MM-DD format if possible
+        pub_date = meta.get('publication_date', 'Unknown')
+        institutions = meta.get('institutions', [])
+        if isinstance(institutions, str):
+            institutions = [institutions]
         
+        github = meta.get('github', 'None')
+        project_page = meta.get('project_page', 'None')
+        
+        institutions_yaml = ""
+        if institutions:
+            institutions_yaml = "\ninstitutions:" + "".join([f"\n  - \"{i}\"" for i in institutions])
+
         content = f"""---
 tags:
 {tags_yaml}
@@ -138,6 +149,9 @@ aliases:
 url: {paper.get('url')}
 pdf_url: {paper.get('pdf_url')}
 local_pdf: "{pdf_link}"
+github: "{github}"
+project_page: "{project_page}"{institutions_yaml}
+publication_date: "{pub_date}"
 ---
 
 # {paper['title']}
