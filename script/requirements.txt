@@ -1,0 +1,10 @@
+openai>=1.0.0
+arxiv>=2.1.0
+requests>=2.31.0
+pyyaml>=6.0.1
+schedule>=1.2.1
+feedparser>=6.0.11
+tqdm>=4.66.1
+beautifulsoup4>=4.12.3
+pypdf>=4.0.0
+pymupdf>=1.23.0

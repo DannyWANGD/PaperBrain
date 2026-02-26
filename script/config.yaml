@@ -1,0 +1,99 @@
+doubao:
+  api_key: "41b256fd-6322-4da2-93cf-d39ec9316a67"
+  # You can use doubao-seed-2-0-lite-260215 for cheaper screening
+  model_flash: "ep-20260226105946-sgmhx"
+  # Use the powerful Pro model for detailed analysis
+  model_pro: "ep-20260226105946-sgmhx"
+  threshold_score: 5
+
+output:
+  base_dir: "../output"
+  naming_format: "{title}_{type}_{timestamp}.md"
+  
+analysis:
+  max_iterations: 3
+  depth_level: "Deep"
+  focus_areas:
+    - "Academic Quality Assessment"
+    - "Relevance & Contribution"
+    - "Methodology Rigor"
+  citation_style: "APA"
+  scoring_rubric:
+    venue_weight: 0.3
+    methodology_weight: 0.4
+    innovation_weight: 0.3
+  prompts:
+    system_role: "You are a Senior Research Scientist at a world-leading AI lab (e.g., DeepMind, OpenAI). You excel at extracting core value from complex system architectures, mathematical derivations, and engineering implementations. You use rigorous terminology (SOTA, Gap, Baseline, Ablation) and demand precision."
+    quality_assessment: |
+      Evaluate the academic quality based on:
+      1. **Venue/Author Credibility**: Is it from a top conference (CVPR, ICRA, RSS, NeurIPS) or reputable lab?
+      2. **Methodological Rigor**: Are claims supported by mathematical proofs or extensive ablation studies?
+      3. **Experimental Completeness**: Are baselines SOTA? Is there Sim2Real validation?
+      
+      **Scoring Criteria (1-10)**:
+      - **9-10**: Top-tier innovation, rigorous math, SOTA results, reputable source.
+      - **7-8**: Strong contribution, solid experiments, but minor gaps.
+      - **5-6**: Incremental improvement, valid but limited novelty.
+      - **<5**: Flawed methodology or lack of validation.
+    deep_analysis: |
+      Please perform a deep engineering-centric analysis of the provided paper and output a high-quality report following the structure below. 
+      **Output Language**: STRICTLY ENGLISH ONLY. No Chinese allowed.
+      **Output Style**: Academic, rigorous, and concise. Avoid fragmented sentences. Each paragraph must be logically complete.
+
+      1. **Core Snapshot**
+      - **Problem Statement**: What is the specific industry/research pain point (Gap) addressed?
+      - **Core Contribution**: A single-sentence summary of the most significant technical breakthrough.
+      - **Academic Rating**: Rate Innovation and Rigor (1-10) with a concise justification.
+
+      2. **Technical Decomposition**
+      - **Methodology**: Analyze core algorithm logic. Define key objectives mathematically (e.g., Loss $\mathcal{L}$, Probability $P_\theta$). Use standard LaTeX syntax.
+      - **Architecture**: Describe model topology or system pipeline.
+      - **Aha Moment**: What are the 1-2 most ingenious engineering or theoretical tricks?
+
+      3. **Evidence & Metrics**
+      - **Benchmark & Baselines**: Which mainstream models are compared? Is the experimental design fair?
+      - **Key Results**: Improvement magnitude in key performance metrics (e.g., % Improvement).
+      - **Ablation Study**: Which component is most critical to the success?
+
+      4. **Critical Assessment**
+      - **Hidden Limitations**: Potential failure points in inference latency, scalability, or edge cases.
+      - **Engineering Hurdles**: Major pitfalls developers might face during reproduction.
+
+      5. **Next Steps**
+      - Propose 2-3 follow-up research ideas with high publication potential, including specific improvement paths.
+
+
+obsidian:
+  vault_path: "../"  # Path to your Obsidian Vault root (Parent Directory)
+  daily_digest_folder: "Daily_Papers"
+  detailed_notes_folder: "Research_Notes"
+  pdf_storage_folder: "PDFs"  # New folder for storing PDFs
+  daily_digest_template: |
+    # 📅 {{date}} - Paper Digest
+    ## Summary
+    Total Papers: {{total_count}} | High Impact: {{high_impact_count}}
+    
+    ## 📝 Papers List
+    {{content}}
+
+search:
+  keywords:
+    - "World Model"
+    - "Diffusion model"
+    - "Embodied AI"
+    - "3D Gaussian Splatting"
+    - "4D Gaussian Splatting"
+    - "Sim2Real"
+    - "Reinforcement Learning"
+    - "Robot Manipulation"
+    - "VLA"
+    - "Foundation Models"
+  max_results: 50
+  arxiv_categories:
+    - "cs.RO"
+    - "cs.AI"
+    - "cs.LG"
+    - "cs.CV"
+
+schedule:
+  time: "12:00"  # 24-hour format
