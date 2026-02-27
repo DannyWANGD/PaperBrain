@@ -124,6 +124,7 @@ def job(target_date=None):
         p['limitations'] = result.get('limitations', '')
         p['reason'] = result.get('reason', '')
         p['tags'] = result.get('tags', [])
+        p['short_title'] = result.get('short_title', '')
         screened_papers.append(p)
     
     # Sort by score descending

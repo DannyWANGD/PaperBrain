@@ -83,14 +83,16 @@ class PaperAnalyser:
            - 1-3: Skip. Irrelevant or low quality.
         2. Analyze the **Innovation**: What is the key novelty? (1 sentence)
         3. Analyze the **Limitations/Weaknesses**: What is missing or could be improved? (1 sentence)
-        4. Identify **Tags**: Extract 3-5 specific technical tags (e.g., 'Diffusion Transformer', 'RLHF', 'Sim2Real', 'VLA', '3D Gaussian Splatting'). Do not use generic tags like 'AI' or 'Robotics'.
-        5. Return JSON format only: 
+        4. Identify **Tags**: Extract 3-5 specific technical tags (e.g., 'Diffusion_Transformer', 'RLHF', 'Sim2Real', 'VLA', '3D_Gaussian_Splatting'). Use underscores instead of spaces or hyphens. Do not use generic tags like 'AI' or 'Robotics'.
+        5. **Short Title**: If the paper title has a colon (e.g., "Solaris: Building a ..."), extract the part BEFORE the colon as the short title (e.g., "Solaris"). If no colon, use the full title but replace spaces with underscores.
+        6. Return JSON format only: 
         {{
             "score": int, 
             "innovation": "string", 
             "limitations": "string", 
             "reason": "string",
-            "tags": ["string", "string"]
+            "tags": ["string", "string"],
+            "short_title": "string"
         }}
         """
         
@@ -113,12 +115,14 @@ class PaperAnalyser:
         except Exception as e:
             logger.error(f"Error screening paper {paper['title']}: {e}")
             # Fallback parsing if JSON mode fails or returns text
+            short_title_fallback = paper['title'].split(':')[0].strip() if ':' in paper['title'] else paper['title']
             return {
                 "score": 0, 
                 "innovation": "Analysis failed", 
                 "limitations": "Analysis failed", 
                 "reason": str(e),
-                "tags": []
+                "tags": [],
+                "short_title": short_title_fallback
             }
 
     def extract_text_from_pdf(self, pdf_path):
@@ -403,7 +407,9 @@ JSON ONLY.
         Based on the analysis above, now perform a Connection & Refinement step.
         
         **Task 1: Knowledge Connections**
-        - Connect this paper's concepts to my existing knowledge base: {context_notes}.
+        - Identify 3-5 MOST relevant connections to my existing knowledge base: {context_notes}.
+        - Focus on meaningful relationships (e.g., similar methods, conflicting results, foundational theories).
+        - Do NOT force connections if there are no strong links. Quality over quantity.
         - Use [[Wiki-Link]] format.
         
         **Task 2: Mermaid Knowledge Graph**

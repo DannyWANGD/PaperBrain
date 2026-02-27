@@ -23,13 +23,29 @@ class ObsidianWriter:
 
     def sanitize_filename(self, filename):
         # Replace invalid characters and ensure it's not too long
-        safe_name = "".join([c for c in filename if c.isalpha() or c.isdigit() or c==' ']).strip()
+        safe_name = "".join([c for c in filename if c.isalpha() or c.isdigit() or c==' ' or c=='_']).strip()
+        # Collapse multiple spaces
+        safe_name = re.sub(r'\s+', ' ', safe_name)
         return safe_name[:100] # Limit length
+
+    def get_filename_from_paper(self, paper):
+        """Generates filename based on short_title or title."""
+        if paper.get('short_title'):
+            return self.sanitize_filename(paper['short_title'])
+        return self.sanitize_filename(paper['title'])
 
     def get_pdf_path(self, title):
         """Returns the destination path for a PDF in the Obsidian vault."""
+        # Note: This method was using title directly, but ideally should use short_title if available.
+        # However, at download time we might not have short_title if it's not analyzed yet?
+        # Actually we do have it after screening.
         filename = f"{self.sanitize_filename(title)}.pdf"
         return os.path.join(self.pdf_folder, filename)
+
+    def get_pdf_path_from_paper(self, paper):
+        """Returns the destination path for a PDF in the Obsidian vault using paper object."""
+        base_name = self.get_filename_from_paper(paper)
+        return os.path.join(self.pdf_folder, f"{base_name}.pdf")
 
     def scan_existing_notes(self):
         """Scans the vault for existing markdown files to use for context."""
@@ -61,7 +77,11 @@ class ObsidianWriter:
             innovation = p.get('innovation', p.get('summary', p.get('abstract', '')[:200] + "..."))
             limitations = p.get('limitations', "Not analyzed.")
             
-            link = f"[[{self.sanitize_filename(p['title'])}]]" if score >= self.config['doubao']['threshold_score'] else f"[Link]({p.get('url', '#')})"
+            link = f"[[{self.get_filename_from_paper(p)}]]" if score >= self.config['doubao']['threshold_score'] else f"[Link]({p.get('url', '#')})"
+            # Requirement 2: Only provide local link for high scoring papers, otherwise just web link
+            if score < self.config['doubao']['threshold_score']:
+                # Ensure it's just the web link
+                 link = f"[Web Link]({p.get('url', '#')})"
             
             content += f"### {icon} {p['title']} (Score: {score}/10)\n"
             content += f"- **💡 Innovation**: {innovation}\n"
@@ -72,7 +92,8 @@ class ObsidianWriter:
             # Add tags if available
             if p.get('tags'):
                 # Format tags as #Tag1 #Tag2 (replacing spaces with underscores)
-                tags_formatted = ' '.join([f"#{t.strip().replace(' ', '_')}" for t in p['tags']])
+                # Requirement 1: Use "_" instead of "-" for tags
+                tags_formatted = ' '.join([f"#{t.strip().replace(' ', '_').replace('-', '_')}" for t in p['tags']])
                 content += f"- **🏷️ Tags**: {tags_formatted}\n"
             elif p.get('source'):
                 content += f"- **🏷️ Source**: #{p['source']}\n"
@@ -93,7 +114,7 @@ class ObsidianWriter:
 
     def write_detailed_note(self, paper, analysis_content, local_pdf_path=None, image_caption=""):
         """Writes a detailed note for a high-value paper."""
-        safe_title = self.sanitize_filename(paper['title'])
+        safe_title = self.get_filename_from_paper(paper)
         filename = f"{safe_title}.md"
         filepath = os.path.join(self.notes_folder, filename)
         
@@ -124,9 +145,13 @@ class ObsidianWriter:
         else:
             tags = ['paper'] + tags
         
-        # Sanitize tags: Replace spaces with hyphens/underscores to avoid YAML errors
-        safe_tags = [t.strip().replace(' ', '-') for t in tags]
+        # Sanitize tags: Replace spaces/hyphens with underscores to avoid YAML errors and match requirement
+        safe_tags = [t.strip().replace(' ', '_').replace('-', '_') for t in tags]
         
+        # Add score tag
+        score = paper.get('score', 0)
+        safe_tags.append(f"Score_{score}")
+
         tags_yaml = "\n".join([f"  - {t}" for t in safe_tags])
         
         # Extract metadata from deep analysis

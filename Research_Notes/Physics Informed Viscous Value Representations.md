@@ -1,24 +1,24 @@
 ---
-tags:
-  - paper
-  - Offline-Reinforcement-Learning
-  - Goal-Conditional-Reinforcement-Learning
-  - Physics-Informed-RL
-  - Robot-Manipulation
-  - Optimal-Control
-  - 2026-02-27
 aliases:
-  - "Physics Informed Viscous Value Representations"
-url: http://arxiv.org/abs/2602.23280v1
-pdf_url: https://arxiv.org/pdf/2602.23280v1
-local_pdf: "[[Physics Informed Viscous Value Representations.pdf]]"
-github: "https://github.com/HrishikeshVish/phys-fk-value-GCRL"
-project_page: "None"
+- Physics Informed Viscous Value Representations
+github: https://github.com/HrishikeshVish/phys-fk-value-GCRL
 institutions:
-  - "Department of Computer Science, Purdue University, USA"
-  - "College of Engineering, Purdue University, USA"
-  - "DEVCOM Army Research Laboratory, USA"
-publication_date: "2026-02-26"
+- Department of Computer Science, Purdue University, USA
+- College of Engineering, Purdue University, USA
+- DEVCOM Army Research Laboratory, USA
+local_pdf: '[[Physics Informed Viscous Value Representations.pdf]]'
+pdf_url: https://arxiv.org/pdf/2602.23280v1
+project_page: None
+publication_date: '2026-02-26'
+tags:
+- paper
+- Offline_Reinforcement_Learning
+- Goal_Conditional_Reinforcement_Learning
+- Physics_Informed_RL
+- Robot_Manipulation
+- Optimal_Control
+- 2026-02-27
+url: http://arxiv.org/abs/2602.23280v1
 ---
 
 # Physics Informed Viscous Value Representations
@@ -102,7 +102,7 @@ The Feynman-Kac stochastic regularization component is the most critical to perf
 ### Task 1: Knowledge Connections
 1.  This paper's formal analysis, method decomposition, and experimental performance records are cataloged in [[2026-02-26-PaperDigest]], serving as a reference point for comparing physics-informed offline GCRL methods against other state-of-the-art goal-conditioned RL approaches.
 2.  Reproducible implementations of the viscous value regularizer, OGBench task wrappers, and hyperparameter configurations for all tested backbones are documented in the [[README]] of the paper's associated open-source GitHub repository, supporting extension to custom offline GCRL use cases and ablation testing of new regularization variants.
-3.  The proposed Feynman-Kac based physics-informed regularization module can be directly integrated into the goal-conditioned policy learning pipeline of [[Solaris Building a Multiplayer Video World Model in Minecraft]], resolving unstable value estimation and suboptimal pathing in procedurally generated, high-dimensional Minecraft embodied navigation and manipulation tasks by enforcing geometric consistency of the value function across out-of-distribution procedural terrain.
+3.  The proposed Feynman-Kac based physics-informed regularization module can be directly integrated into the goal-conditioned policy learning pipeline of [[Solaris]], resolving unstable value estimation and suboptimal pathing in procedurally generated, high-dimensional Minecraft embodied navigation and manipulation tasks by enforcing geometric consistency of the value function across out-of-distribution procedural terrain.
 ---
 ### Task 2: Mermaid Knowledge Graph
 ```mermaid

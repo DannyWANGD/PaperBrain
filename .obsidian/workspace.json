@@ -4,21 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "dd0153794f983887",
+        "id": "45e155093e193acc",
         "type": "tabs",
         "children": [
           {
-            "id": "ff2974949aa82297",
+            "id": "8c76f49738ad65a0",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Daily_Papers/2026-02-16-PaperDigest.md",
+                "file": "Daily_Papers/2026-02-26-PaperDigest.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "2026-02-16-PaperDigest"
+              "title": "2026-02-26-PaperDigest"
             }
           }
         ]
@@ -53,7 +53,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "tag:VLA",
+                "query": "tag:#3D_Gaussian_Splatting",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -78,7 +78,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 535.5
+    "width": 200
   },
   "right": {
     "id": "6f4f27bfa99de3fa",
@@ -94,7 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "output/Solaris_Building_a_Multiplayer_Video_World_Model_in_Minecraft_DeepAnalysis_20260226.md",
+                "file": "Daily_Papers/2026-02-16-PaperDigest.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -104,7 +104,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Solaris_Building_a_Multiplayer_Video_World_Model_in_Minecraft_DeepAnalysis_20260226 的反向链接列表"
+              "title": "2026-02-16-PaperDigest 的反向链接列表"
             }
           },
           {
@@ -113,12 +113,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "output/Solaris_Building_a_Multiplayer_Video_World_Model_in_Minecraft_DeepAnalysis_20260226.md",
+                "file": "Daily_Papers/2026-02-16-PaperDigest.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Solaris_Building_a_Multiplayer_Video_World_Model_in_Minecraft_DeepAnalysis_20260226 的出链列表"
+              "title": "2026-02-16-PaperDigest 的出链列表"
             }
           },
           {
@@ -165,7 +165,8 @@
               "title": "Solaris_Building_a_Multiplayer_Video_World_Model_in_Minecraft_DeepAnalysis_20260226 的大纲"
             }
           }
-        ]
+        ],
+        "currentTab": 2
       }
     ],
     "direction": "horizontal",
@@ -180,32 +181,48 @@
       "daily-notes:打开/创建今天的日记": false,
       "templates:插入模板": false,
       "command-palette:打开命令面板": false,
-      "bases:新建数据库": false
+      "bases:新建数据库": false,
+      "workspaces:管理工作区布局": false,
+      "audio-recorder:开始/结束录音": false,
+      "random-note:开始漫游笔记": false,
+      "markdown-importer:打开 Markdown 格式转换器": false
     }
   },
-  "active": "30d9cbfaf32d0dee",
+  "active": "8c76f49738ad65a0",
   "lastOpenFiles": [
-    "Research_Notes/XiaomiRobotics0 An OpenSourced VisionLanguageAction Model with RealTime Execution.md",
-    "Research_Notes/SPARR Simulationbased Policies with Asymmetric Realworld Residuals for Assembly.md",
-    "Research_Notes/Solaris Building a Multiplayer Video World Model in Minecraft.md",
-    "Research_Notes/Physics Informed Viscous Value Representations.md",
-    "Research_Notes/GeneralVLA Generalizable VisionLanguageAction Models with KnowledgeGuided Trajectory Planning.md",
-    "Research_Notes/Code2Worlds Empowering Coding LLMs for 4D World Generation.md",
-    "Daily_Papers/2026-02-16-PaperDigest.md",
     "Daily_Papers/2026-02-26-PaperDigest.md",
+    "Paperbase.base",
+    "Research_Notes/Xiaomi-Robotics-0.md",
+    "Daily_Papers/2026-02-16-PaperDigest.md",
+    "Daily_Papers/2026-02-23-PaperDigest.md",
+    "Research_Notes/QuantVLA.md",
+    "Research_Notes/GeneralVLA.md",
+    "Research_Notes/Generated_Reality.md",
+    "Research_Notes/Code2Worlds.md",
+    "Research_Notes/Physics Informed Viscous Value Representations.md",
+    "Assets/Generated Reality Humancentric World Simulation using Interactive Video Generation with Hand and Cam_arch.png",
+    "PDFs/Generated Reality Humancentric World Simulation using Interactive Video Generation with Hand and Cam.pdf",
+    "Assets/QuantVLA ScaleCalibrated PostTraining Quantization for VisionLanguageAction Models_arch.png",
+    "PDFs/QuantVLA ScaleCalibrated PostTraining Quantization for VisionLanguageAction Models.pdf",
+    "Research_Notes/SPARR.md",
+    "Research_Notes/Solaris.md",
+    "script/migrate_tags.py",
+    "OneVisionEncoder CodecAligned Sparsity as a Foundational Principle for Multimodal Intelligence.md",
+    "README.md",
+    "202602271541.md",
+    "优质文献清单.md",
+    "Research_Notes/未命名.md",
+    "PDFs/XiaomiRobotics0 An OpenSourced VisionLanguageAction Model with RealTime Execution.pdf",
     "Assets/GeneralVLA Generalizable VisionLanguageAction Models with KnowledgeGuided Trajectory Planning_arch.png",
     "PDFs/GeneralVLA Generalizable VisionLanguageAction Models with KnowledgeGuided Trajectory Planning.pdf",
     "Assets/Code2Worlds Empowering Coding LLMs for 4D World Generation_arch.png",
     "PDFs/Code2Worlds Empowering Coding LLMs for 4D World Generation.pdf",
     "Assets/XiaomiRobotics0 An OpenSourced VisionLanguageAction Model with RealTime Execution_arch.png",
-    "PDFs/XiaomiRobotics0 An OpenSourced VisionLanguageAction Model with RealTime Execution.pdf",
     "PDFs/Physics Informed Viscous Value Representations.pdf",
-    "README.md",
     "Assets/Physics Informed Viscous Value Representations_arch.jpeg",
     "PDFs/SPARR Simulationbased Policies with Asymmetric Realworld Residuals for Assembly.pdf",
     "PDFs/Solaris Building a Multiplayer Video World Model in Minecraft.pdf",
     "Solaris Building a Multiplayer Video World Model in Minecraft/README.md",
-    "Solaris Building a Multiplayer Video World Model in Minecraft",
     "Assets/Solaris Building a Multiplayer Video World Model in Minecraft_arch.png",
     "output/Solaris_Building_a_Multiplayer_Video_World_Model_in_Minecraft_DeepAnalysis_20260226.md",
     "2026-02-26.md",

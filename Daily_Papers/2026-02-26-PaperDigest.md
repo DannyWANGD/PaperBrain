@@ -6,9 +6,9 @@ Total Papers: 8 | High Impact: 2
 ### ✨ SPARR: Simulation-based Policies with Asymmetric Real-world Residuals for Assembly (Score: 6/10)
 - **💡 Innovation**: The key novelty is a hybrid simulation-to-real policy framework for robotic assembly that combines a simulation-trained state-based base policy with a real-world learned visual residual policy, eliminating the need for human supervision while achieving large performance gains over prior zero-shot sim-to-real methods.
 - **⚠️ Limitations**: The work does not evaluate generalization to multi-part or more complex assembly tasks, lacks ablation studies to isolate the contribution of each policy component, and does not leverage modern perception or foundation model techniques that could further improve performance and generalizability.
-- **🔗 Link**: [[SPARR Simulationbased Policies with Asymmetric Realworld Residuals for Assembly]]
+- **🔗 Link**: [[SPARR]]
 - **👥 Authors**: Yijie Guo, Iretiayo Akinola, Lars Johannsmeier, Hugo Hadfield, Abhishek Gupta, Yashraj Narang
-- **🏷️ Tags**: #Sim2Real #Reinforcement_Learning #Robot_Manipulation #Residual_Policy_Learning #Robotic_Assembly
+- **🏷️ Tags**: 
 
 ---
 
@@ -17,7 +17,7 @@ Total Papers: 8 | High Impact: 2
 - **⚠️ Limitations**: The work does not validate performance on real physical robot systems, does not explore integration with modern embodied AI tools like foundation models or 3D scene representations, and does not provide head-to-head comparisons to state-of-the-art non-physics-informed offline GCRL baselines.
 - **🔗 Link**: [[Physics Informed Viscous Value Representations]]
 - **👥 Authors**: Hrishikesh Viswanath, Juanwu Lu, S. Talha Bukhari, Damon Conover, Ziran Wang, Aniket Bera
-- **🏷️ Tags**: #Offline_Reinforcement_Learning #Goal-Conditional_Reinforcement_Learning #Physics-Informed_RL #Robot_Manipulation #Optimal_Control
+- **🏷️ Tags**: 
 
 ---
 
@@ -26,7 +26,7 @@ Total Papers: 8 | High Impact: 2
 - **⚠️ Limitations**: The work is only validated on a single tendon-driven fish robot platform, does not test generalization to other soft underwater robot morphologies, and does not leverage modern advanced modeling paradigms like foundation models or Gaussian splatting that could improve digital twin performance for more complex scenarios.
 - **🔗 Link**: [Link](http://arxiv.org/abs/2602.23283v1)
 - **👥 Authors**: Mike Y. Michelis, Nana Obayashi, Josie Hughes, Robert K. Katzschmann
-- **🏷️ Tags**: #Sim2Real #Reinforcement_Learning #Digital_Twin #Soft_Robotics #MuJoCo_Simulation
+- **🏷️ Tags**: 
 
 ---
 
@@ -35,7 +35,7 @@ Total Papers: 8 | High Impact: 2
 - **⚠️ Limitations**: The work is restricted to autonomous driving use cases, does not integrate or evaluate any of your prioritized state-of-the-art techniques such as diffusion models, 3D/4D Gaussian Splatting, or foundation models for world modeling, and lacks validation for sim2real transfer or applicability to embodied robot manipulation tasks.
 - **🔗 Link**: [Link](http://arxiv.org/abs/2602.23259v1)
 - **👥 Authors**: Jiangxin Sun, Feng Xue, Teng Long, Chang Liu, Jian-Fang Hu, Wei-Shi Zheng, Nicu Sebe
-- **🏷️ Tags**: #World_Model #Model_Predictive_Control #End-to-End_Autonomous_Driving #Risk-Aware_Control
+- **🏷️ Tags**: 
 
 ---
 
@@ -44,7 +44,7 @@ Total Papers: 8 | High Impact: 2
 - **⚠️ Limitations**: The work is only validated on standard 2D image classification and generative quality benchmarks, does not explore applicability to 3D data, embodied AI or robotics downstream tasks, and lacks analysis of how the framework performs when paired with large foundation models or VLA backbones.
 - **🔗 Link**: [Link](http://arxiv.org/abs/2602.23295v1)
 - **👥 Authors**: Ayush Roy, Wei-Yang Alex Lee, Rudrasis Chakraborty, Vishnu Suresh Lokhande
-- **🏷️ Tags**: #Diffusion_Model #Dataset_Distillation #Manifold_Learning #VAE_Latent_Clustering
+- **🏷️ Tags**: 
 
 ---
 
@@ -53,7 +53,7 @@ Total Papers: 8 | High Impact: 2
 - **⚠️ Limitations**: The work is restricted to medical domain reasoning tasks, does not explore any applications to the user's core robotics and 3D vision research interests, and lacks validation of real-world clinical deployment utility of its open-ended outputs.
 - **🔗 Link**: [Link](http://arxiv.org/abs/2602.23363v1)
 - **👥 Authors**: Sahal Shaji Mullappilly, Mohammed Irfan Kurpath, Omair Mohamed, Mohamed Zidan, Fahad Khan, Salman Khan, Rao Anwer, Hisham Cholakkal
-- **🏷️ Tags**: #Reinforcement_Learning #Multimodal_Large_Language_Model #LLM-as-judge #Vision-Language_Model
+- **🏷️ Tags**: 
 
 ---
 
@@ -62,7 +62,7 @@ Total Papers: 8 | High Impact: 2
 - **⚠️ Limitations**: This work is purely theoretical with no empirical validation, relies on a restrictive grain of truth condition, and provides no demonstrated applicability to practical applied RL use cases such as robot manipulation or embodied AI.
 - **🔗 Link**: [Link](http://arxiv.org/abs/2602.23242v1)
 - **👥 Authors**: Yegon Kim, Juho Lee
-- **🏷️ Tags**: #Reinforcement_Learning #Model-Free_RL #Theoretical_RL #Distributional_RL #Universal_Induction
+- **🏷️ Tags**: 
 
 ---
 
@@ -71,7 +71,7 @@ Total Papers: 8 | High Impact: 2
 - **⚠️ Limitations**: The paper provides no empirical validation for its proposed agency conditions, no actionable technical implementation details for its stated norm-responsive agent specification, and no analysis of how its conclusions apply to the embodied AI, robotics, 3D/4D perception, or robot manipulation systems that form your core research interests.
 - **🔗 Link**: [Link](http://arxiv.org/abs/2602.23239v1)
 - **👥 Authors**: Radha Sarma
-- **🏷️ Tags**: #RLHF #Reinforcement_Learning #Foundation_Models #Large_Language_Models
+- **🏷️ Tags**: 
 
 ---
 

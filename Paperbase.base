@@ -1,0 +1,26 @@
+views:
+  - type: cards
+    name: 表格
+    filters:
+      and:
+        - file.inFolder("Research_Notes")
+    groupBy:
+      property: file.folder
+      direction: ASC
+    order:
+      - file.name
+      - publication_date
+      - institutions
+      - tags
+      - project_page
+      - github
+      - local_pdf
+    sort:
+      - property: publication_date
+        direction: DESC
+    columnSize:
+      file.name: 347
+      note.publication_date: 113
+      note.tags: 182
+    cardSize: 310
+    imageAspectRatio: 0.65
