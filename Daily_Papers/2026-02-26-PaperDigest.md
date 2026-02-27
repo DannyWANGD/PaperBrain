@@ -1,77 +1,77 @@
 # 📅 2026-02-26 - Paper Digest
 ## Summary
-Total Papers: 8 | High Impact: 1
+Total Papers: 8 | High Impact: 2
 
 ## 📝 Papers List
-### ✨ Solaris: Building a Multiplayer Video World Model in Minecraft (Score: 6/10)
-- **💡 Innovation**: The key novelty is the first multiplayer video world model that generates consistent multi-view multi-agent observations, paired with a custom automated coordinated multi-agent data collection pipeline for Minecraft and a staged training framework including memory-efficient Checkpointed Self Forcing for longer-horizon modeling.
-- **⚠️ Limitations**: The work is only validated in the constrained Minecraft game environment, does not address or integrate with diffusion models, 3D/4D Gaussian Splatting, robot manipulation, Sim2Real transfer, or vision-language-action foundation models listed in your research interests, and lacks evaluation on real-world embodied AI tasks.
-- **🔗 Link**: [[Solaris Building a Multiplayer Video World Model in Minecraft]]
-- **👥 Authors**: Georgy Savva, Oscar Michel, Daohan Lu, Suppakit Waiwitlikhit, Timothy Meehan, Dhairya Mishra, Srivats Poddar, Jack Lu, Saining Xie
-- **🏷️ Tags**: #World_Model #Embodied_AI #Multi-Agent_Simulation #Action-Conditioned_Video_Generation
+### ✨ SPARR: Simulation-based Policies with Asymmetric Real-world Residuals for Assembly (Score: 6/10)
+- **💡 Innovation**: The key novelty is a hybrid simulation-to-real policy framework for robotic assembly that combines a simulation-trained state-based base policy with a real-world learned visual residual policy, eliminating the need for human supervision while achieving large performance gains over prior zero-shot sim-to-real methods.
+- **⚠️ Limitations**: The work does not evaluate generalization to multi-part or more complex assembly tasks, lacks ablation studies to isolate the contribution of each policy component, and does not leverage modern perception or foundation model techniques that could further improve performance and generalizability.
+- **🔗 Link**: [[SPARR Simulationbased Policies with Asymmetric Realworld Residuals for Assembly]]
+- **👥 Authors**: Yijie Guo, Iretiayo Akinola, Lars Johannsmeier, Hugo Hadfield, Abhishek Gupta, Yashraj Narang
+- **🏷️ Tags**: #Sim2Real #Reinforcement_Learning #Robot_Manipulation #Residual_Policy_Learning #Robotic_Assembly
 
 ---
 
-### 📄 Probing the Geometry of Diffusion Models with the String Method (Score: 4/10)
-- **💡 Innovation**: The key novelty is a retraining-free string method-based framework that computes distribution-aligned continuous paths between samples from pretrained diffusion models across three distinct dynamics regimes, enabling systematic probing of the geometry and modal structure of learned diffusion distributions.
-- **⚠️ Limitations**: The work is only validated on 2D image and protein structure diffusion models, with no exploration of applicability to 3D/4D generative modeling, embodied AI world models, or robotics pipelines, and does not evaluate the computational efficiency of the method for large-scale foundation or VLA diffusion models.
-- **🔗 Link**: [Link](http://arxiv.org/abs/2602.22122v1)
-- **👥 Authors**: Elio Moreau, Florentin Coeurdoux, Grégoire Ferre, Eric Vanden-Eijnden
-- **🏷️ Tags**: #Diffusion_Model #Score-based_Generative_Modeling #Minimum_Energy_Path_Calculation #Generative_Distribution_Probing
+### ✨ Physics Informed Viscous Value Representations (Score: 5/10)
+- **💡 Innovation**: The key novelty is a physics-informed regularization method derived from the viscosity solution of the Hamilton-Jacobi-Bellman (HJB) equation, paired with a Feynman-Kac theorem-based reformulation that enables tractable Monte Carlo objective estimation avoiding higher-order gradient instability for offline goal-conditioned RL value learning.
+- **⚠️ Limitations**: The work does not validate performance on real physical robot systems, does not explore integration with modern embodied AI tools like foundation models or 3D scene representations, and does not provide head-to-head comparisons to state-of-the-art non-physics-informed offline GCRL baselines.
+- **🔗 Link**: [[Physics Informed Viscous Value Representations]]
+- **👥 Authors**: Hrishikesh Viswanath, Juanwu Lu, S. Talha Bukhari, Damon Conover, Ziran Wang, Aniket Bera
+- **🏷️ Tags**: #Offline_Reinforcement_Learning #Goal-Conditional_Reinforcement_Learning #Physics-Informed_RL #Robot_Manipulation #Optimal_Control
 
 ---
 
-### 📄 System Design of the Ultra Mobility Vehicle: A Driving, Balancing, and Jumping Bicycle Robot (Score: 4/10)
-- **💡 Innovation**: The key novelty is the simulation-optimized design of the low-actuation Ultra Mobility Vehicle (UMV) bicycle robot paired with a constrained reinforcement learning framework that achieves zero-shot sim-to-real transfer of multiple dynamic high-mobility behaviors.
-- **⚠️ Limitations**: The work does not integrate any world model, diffusion model, 3D Gaussian Splatting, or foundation model techniques from your listed interests, is limited to a single custom robot morphology, and does not address robot manipulation or generalizable embodied AI tasks.
-- **🔗 Link**: [Link](http://arxiv.org/abs/2602.22118v1)
-- **👥 Authors**: Benjamin Bokser, Daniel Gonzalez, Surya Singh, Aaron Preston, Alex Bahner, Annika Wollschläger, Arianna Ilvonen, Asa Eckert-Erdheim, Ashwin Khadke, Bilal Hammoud, Dean Molinaro, Fabian Jenelten, Henry Mayne, Howie Choset, Igor Bogoslavskyi, Itic Tinman, James Tigue, Jan Preisig, Kaiyu Zheng, Kenny Sharma, Kim Ang, Laura Lee, Liana Margolese, Nicole Lin, Oscar Frias, Paul Drews, Ravi Boggavarapu, Rick Burnham, Samuel Zapolsky, Sangbae Kim, Scott Biddlestone, Sean Mayorga, Shamel Fahmi, Tyler McCollum, Velin Dimitrov, William Moyne, Yu-Ming Chen, Farbod Farshidian, Marco Hutter, David Perry, Al Rizzi, Gabe Nelson
-- **🏷️ Tags**: #Constrained_Reinforcement_Learning #Sim2Real #Zero-Shot_Policy_Transfer #Dynamic_Robot_Locomotion
+### 📄 Simple Models, Real Swimming: Digital Twins for Tendon-Driven Underwater Robots (Score: 4/10)
+- **💡 Innovation**: The key novelty is an efficient stateless hydrodynamics formulation implemented in MuJoCo that can be calibrated with only two real swimming trajectories to build a fast, accurate digital twin for tendon-driven underwater soft robots, supporting downstream reinforcement learning for swimming control tasks.
+- **⚠️ Limitations**: The work is only validated on a single tendon-driven fish robot platform, does not test generalization to other soft underwater robot morphologies, and does not leverage modern advanced modeling paradigms like foundation models or Gaussian splatting that could improve digital twin performance for more complex scenarios.
+- **🔗 Link**: [Link](http://arxiv.org/abs/2602.23283v1)
+- **👥 Authors**: Mike Y. Michelis, Nana Obayashi, Josie Hughes, Robert K. Katzschmann
+- **🏷️ Tags**: #Sim2Real #Reinforcement_Learning #Digital_Twin #Soft_Robotics #MuJoCo_Simulation
 
 ---
 
-### 📄 Mixed Magnification Aggregation for Generalizable Region-Level Representations in Computational Pathology (Score: 2/10)
-- **💡 Innovation**: The key novelty is a mixed-magnification region-level aggregation encoder that fuses multi-resolution whole slide image tile representations from foundation models using masked embedding modeling pretraining, reducing per-slide representation counts while improving cancer biomarker prediction performance.
-- **⚠️ Limitations**: The work only evaluates on cancer biomarker prediction tasks, lacks ablation studies for the masked embedding modeling design choices, and does not compare against state-of-the-art multi-resolution computational pathology aggregation baselines beyond standard single-magnification 20x foundation model approaches.
-- **🔗 Link**: [Link](http://arxiv.org/abs/2602.22176v1)
-- **👥 Authors**: Eric Zimmermann, Julian Viret, Michal Zelechowski, James Brian Hall, Neil Tenenholtz, Adam Casson, George Shaikovski, Eugene Vorontsov, Siqi Liu, Kristen A Severson
-- **🏷️ Tags**: #Computational_Pathology #Foundation_Models #Masked_Embedding_Modeling #Multi-Resolution_Representation_Learning #Biomarker_Prediction
+### 📄 Risk-Aware World Model Predictive Control for Generalizable End-to-End Autonomous Driving (Score: 4/10)
+- **💡 Innovation**: The key novelty is the demonstration-free RaWMPC framework for end-to-end autonomous driving that trains a world model on explicitly designed hazardous interaction scenarios to predict action risks and distills risk-avoidance capabilities into a generative action proposal network for low-risk test-time action selection without expert supervision.
+- **⚠️ Limitations**: The work is restricted to autonomous driving use cases, does not integrate or evaluate any of your prioritized state-of-the-art techniques such as diffusion models, 3D/4D Gaussian Splatting, or foundation models for world modeling, and lacks validation for sim2real transfer or applicability to embodied robot manipulation tasks.
+- **🔗 Link**: [Link](http://arxiv.org/abs/2602.23259v1)
+- **👥 Authors**: Jiangxin Sun, Feng Xue, Teng Long, Chang Liu, Jian-Fang Hu, Wei-Shi Zheng, Nicu Sebe
+- **🏷️ Tags**: #World_Model #Model_Predictive_Control #End-to-End_Autonomous_Driving #Risk-Aware_Control
 
 ---
 
-### 📄 Provable Last-Iterate Convergence for Multi-Objective Safe LLM Alignment via Optimistic Primal-Dual (Score: 2/10)
-- **💡 Innovation**: The key novelty is a unified universal primal-dual framework for safe RLHF paired with an optimistic primal-dual algorithm that provides provable last-iterate convergence guarantees for both distributional and parameterized policy optimization settings, closing a theoretical gap between constrained RL and practical RLHF.
-- **⚠️ Limitations**: This work lacks empirical validation on real-world LLM alignment benchmarks, and does not explore any applications to core research areas aligned with your interests such as embodied AI, robot manipulation, or 3D/4D perception.
-- **🔗 Link**: [Link](http://arxiv.org/abs/2602.22146v1)
-- **👥 Authors**: Yining Li, Peizhong Ju, Ness Shroff
-- **🏷️ Tags**: #RLHF #Primal-Dual_Optimization #LLM_Alignment #Constrained_Reinforcement_Learning
+### 📄 ManifoldGD: Training-Free Hierarchical Manifold Guidance for Diffusion-Based Dataset Distillation (Score: 3/10)
+- **💡 Innovation**: The key novelty is ManifoldGD, a training-free diffusion-based dataset distillation framework that leverages hierarchical divisive clustering-derived VAE latent instance prototype centroids to build per-denoising-step latent manifolds, and projects mode-alignment vectors onto the manifold's local tangent space during generation to improve the representativeness, diversity and fidelity of distilled datasets without any model retraining.
+- **⚠️ Limitations**: The work is only validated on standard 2D image classification and generative quality benchmarks, does not explore applicability to 3D data, embodied AI or robotics downstream tasks, and lacks analysis of how the framework performs when paired with large foundation models or VLA backbones.
+- **🔗 Link**: [Link](http://arxiv.org/abs/2602.23295v1)
+- **👥 Authors**: Ayush Roy, Wei-Yang Alex Lee, Rudrasis Chakraborty, Vishnu Suresh Lokhande
+- **🏷️ Tags**: #Diffusion_Model #Dataset_Distillation #Manifold_Learning #VAE_Latent_Clustering
 
 ---
 
-### 📄 SWE-Protégé: Learning to Selectively Collaborate With an Expert Unlocks Small Language Models as Software Engineering Agents (Score: 2/10)
-- **💡 Innovation**: The key novelty is the proposed SWE-Protégé post-training framework that reframes software repair as an expert-protégé collaboration problem, combining supervised fine-tuning on expert-augmented trajectories and agentic reinforcement learning to significantly boost small language model performance on long-horizon software engineering tasks while using sparse expert assistance.
-- **⚠️ Limitations**: The work is only validated on software engineering SWE-bench tasks, with no exploration of transferability to other domains, and it does not address any use cases relevant to robotics or embodied AI research.
-- **🔗 Link**: [Link](http://arxiv.org/abs/2602.22124v1)
-- **👥 Authors**: Patrick Tser Jern Kon, Archana Pradeep, Ang Chen, Alexander P. Ellis, Warren Hunt, Zijian Wang, John Yang, Samuel Thompson
-- **🏷️ Tags**: #Small_Language_Models #Supervised_Fine-Tuning #Agentic_Reinforcement_Learning #Software_Engineering_Agents
+### 📄 MediX-R1: Open Ended Medical Reinforcement Learning (Score: 2/10)
+- **💡 Innovation**: The key novelty is MediX-R1, an open-ended reinforcement learning framework for medical multimodal LLMs that leverages a composite multi-signal reward function and a unified reference-based LLM-as-judge evaluation pipeline to achieve strong open-ended medical reasoning performance with only ~51k training instruction examples.
+- **⚠️ Limitations**: The work is restricted to medical domain reasoning tasks, does not explore any applications to the user's core robotics and 3D vision research interests, and lacks validation of real-world clinical deployment utility of its open-ended outputs.
+- **🔗 Link**: [Link](http://arxiv.org/abs/2602.23363v1)
+- **👥 Authors**: Sahal Shaji Mullappilly, Mohammed Irfan Kurpath, Omair Mohamed, Mohamed Zidan, Fahad Khan, Salman Khan, Rao Anwer, Hisham Cholakkal
+- **🏷️ Tags**: #Reinforcement_Learning #Multimodal_Large_Language_Model #LLM-as-judge #Vision-Language_Model
 
 ---
 
-### 📄 DualWeaver: Synergistic Feature Weaving Surrogates for Multivariate Forecasting with Univariate Time Series Foundation Models (Score: 2/10)
-- **💡 Innovation**: The key novelty is the proposed DualWeaver framework that adapts pre-trained univariate time series foundation models to multivariate forecasting via a pair of structurally symmetric learnable surrogate series generated by a shared cross-variable feature fusion module, paired with a theoretically grounded regularization term to avoid adaptation collapse and enable parameter-free prediction reconstruction from surrogates.
-- **⚠️ Limitations**: The work is limited to standard time series forecasting benchmark evaluations, has no exploration of applications to robotics or embodied AI domains aligned with your stated interests, and does not integrate with relevant paradigms like world models, VLAs, or sim2real pipelines.
-- **🔗 Link**: [Link](http://arxiv.org/abs/2602.22066v1)
-- **👥 Authors**: Jinpeng Li, Zhongyi Pei, Huaze Xue, Bojian Zheng, Chen Wang, Jianmin Wang
-- **🏷️ Tags**: #Time_Series_Foundation_Model #Multivariate_Time_Series_Forecasting #Feature_Fusion #Surrogate_Series_Modeling #Regularization
+### 📄 A Model-Free Universal AI (Score: 2/10)
+- **💡 Innovation**: The key novelty is the introduction of AIQI, the first model-free general reinforcement learning agent proven to be asymptotically ε-optimal, which performs universal induction over distributional action-value functions instead of operating over policies or environment models like prior universal agent works.
+- **⚠️ Limitations**: This work is purely theoretical with no empirical validation, relies on a restrictive grain of truth condition, and provides no demonstrated applicability to practical applied RL use cases such as robot manipulation or embodied AI.
+- **🔗 Link**: [Link](http://arxiv.org/abs/2602.23242v1)
+- **👥 Authors**: Yegon Kim, Juho Lee
+- **🏷️ Tags**: #Reinforcement_Learning #Model-Free_RL #Theoretical_RL #Distributional_RL #Universal_Induction
 
 ---
 
-### 📄 Learning Quantum Data Distribution via Chaotic Quantum Diffusion Model (Score: 2/10)
-- **💡 Innovation**: The key novelty is the proposal of a chaotic quantum diffusion model framework that leverages chaotic Hamiltonian time evolution instead of circuit-based random unitary dynamics for quantum data distribution learning, reducing implementation overhead on analog quantum hardware while matching the accuracy of existing quantum denoising diffusion probabilistic models.
-- **⚠️ Limitations**: The work lacks empirical validation of its performance and robustness on real-world noisy analog quantum hardware, and does not explore any applications outside of narrow quantum data distribution learning tasks.
-- **🔗 Link**: [Link](http://arxiv.org/abs/2602.22061v1)
-- **👥 Authors**: Quoc Hoan Tran, Koki Chinzei, Yasuhiro Endo, Hirotaka Oshima
-- **🏷️ Tags**: #Quantum_Diffusion_Model #Quantum_Generative_Modeling #Chaotic_Hamiltonian_Dynamics #Analog_Quantum_Hardware
+### 📄 Agency and Architectural Limits: Why Optimization-Based Systems Cannot Be Norm-Responsive (Score: 2/10)
+- **💡 Innovation**: The key novelty is formally proving that RLHF-trained optimization-based systems including large language models are inherently incapable of normative responsiveness, defining two necessary and sufficient architectural conditions for genuine agency, and identifying the second-order Convergence Crisis risk of misaligned AI deployment that degrades human normative accountability.
+- **⚠️ Limitations**: The paper provides no empirical validation for its proposed agency conditions, no actionable technical implementation details for its stated norm-responsive agent specification, and no analysis of how its conclusions apply to the embodied AI, robotics, 3D/4D perception, or robot manipulation systems that form your core research interests.
+- **🔗 Link**: [Link](http://arxiv.org/abs/2602.23239v1)
+- **👥 Authors**: Radha Sarma
+- **🏷️ Tags**: #RLHF #Reinforcement_Learning #Foundation_Models #Large_Language_Models
 
 ---
 

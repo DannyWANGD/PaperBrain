@@ -4,7 +4,7 @@ doubao:
   model_flash: "ep-20260226105946-sgmhx"
   # Use the powerful Pro model for detailed analysis
   model_pro: "ep-20260226105946-sgmhx"
-  threshold_score: 5
+  threshold_score: 7
 
 output:
   base_dir: "../output"
@@ -98,6 +98,7 @@ search:
     - "Robot Manipulation"
     - "VLA"
     - "Foundation Models"
+    - "LLM"
   max_results: 50
   arxiv_categories:
     - "cs.RO"

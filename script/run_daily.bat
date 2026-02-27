@@ -1,6 +1,15 @@
 @echo off
+setlocal
 cd /d "%~dp0"
-:: Change this to your python path if not in system PATH, or activate conda env
-:: Example: call conda activate wd
+where conda >nul 2>&1
+if %errorlevel% neq 0 (
+  echo conda not found in PATH
+  pause
+  exit /b 1
+)
+call conda activate wd
+pip install -r requirements.txt
 python main.py --run-now
+set EC=%ERRORLEVEL%
 pause
+exit /b %EC%

@@ -40,9 +40,13 @@ class ObsidianWriter:
                     notes.append(file.replace(".md", ""))
         return notes
 
-    def write_daily_digest(self, papers):
+    def write_daily_digest(self, papers, target_date=None):
         """Writes the daily digest file with structured analysis."""
-        today_str = datetime.now().strftime("%Y-%m-%d")
+        if target_date:
+            today_str = target_date.strftime("%Y-%m-%d")
+        else:
+            today_str = datetime.now().strftime("%Y-%m-%d")
+            
         filename = f"{today_str}-PaperDigest.md"
         filepath = os.path.join(self.daily_folder, filename)
         

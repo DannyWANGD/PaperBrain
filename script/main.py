@@ -7,8 +7,9 @@ import logging
 from src.scraper import PaperScraper
 from src.analyser import PaperAnalyser
 from src.obsidian_writer import ObsidianWriter
-from datetime import datetime
+from datetime import datetime, timedelta
 from tqdm import tqdm # Import tqdm for progress bars
+import argparse
 
 # Setup logging
 logging.basicConfig(
@@ -87,18 +88,26 @@ def download_pdf(url, title, destination_folder=None, retries=3):
     logger.error(f"[ERR] All download attempts failed for {title}")
     return None
 
-def job():
+def job(target_date=None):
     logger.info("Starting Daily PaperBrain Job...")
+    
+    # Determine target date
+    if target_date is None:
+        # Default to yesterday
+        target_date = datetime.now().date() - timedelta(days=1)
+    
+    logger.info(f"[INFO] Target Date for search: {target_date}")
+    
     config = load_config()
     
     scraper = PaperScraper(config)
     analyser = PaperAnalyser(config)
     obsidian_writer = ObsidianWriter(config)
     
-    # 1. Scrape
-    papers = scraper.get_all_papers()
+    # 1. Scrape (pass target_date)
+    papers = scraper.get_all_papers(target_date=target_date)
     if not papers:
-        logger.info("No papers found today.")
+        logger.info(f"No papers found for date {target_date}.")
         return
 
     # 2. Screen with Flash
@@ -121,8 +130,8 @@ def job():
     screened_papers.sort(key=lambda x: x.get('score', 0), reverse=True)
     logger.info("[INFO] Screening complete. Generating Daily Digest...")
     
-    # 3. Write Daily Digest (Keep Obsidian Sync)
-    obsidian_writer.write_daily_digest(screened_papers)
+    # 3. Write Daily Digest (Keep Obsidian Sync) - pass target_date
+    obsidian_writer.write_daily_digest(screened_papers, target_date=target_date)
     
     # 4. Deep Analysis for High Value Papers
     threshold = config['doubao'].get('threshold_score', 8)
@@ -133,9 +142,9 @@ def job():
     candidates = [p for p in screened_papers if p.get('score', 0) >= threshold]
     
     if len(candidates) == 0:
-        # If no papers meet strict threshold, take the top 1 (if score >= 4 to avoid garbage)
+        # If no papers meet strict threshold, take the top 1 (if score >= 5 to avoid garbage)
         top_paper = screened_papers[0] if screened_papers else None
-        if top_paper and top_paper.get('score', 0) >= 4:
+        if top_paper and top_paper.get('score', 0) >= 5:
             logger.info(f"[INFO] No papers met threshold {threshold}. Relaxing to analyze top 1 paper (Score: {top_paper['score']}).")
             high_value_papers = [top_paper]
         else:
@@ -190,15 +199,38 @@ def job():
     logger.info("[SUCCESS] Job completed successfully.")
 
 if __name__ == "__main__":
-    # Run immediately for testing if argument provided, otherwise schedule
-    import sys
-    if len(sys.argv) > 1 and sys.argv[1] == "--run-now":
-        job()
+    parser = argparse.ArgumentParser(description="PaperBrain Daily Job")
+    parser.add_argument("--run-now", action="store_true", help="Run the job immediately")
+    parser.add_argument("--date", type=str, help="Target date in YYYY-MM-DD format (default: yesterday)")
+    
+    args = parser.parse_args()
+    
+    target_date = None
+    if args.date:
+        try:
+            target_date = datetime.strptime(args.date, "%Y-%m-%d").date()
+        except ValueError:
+            logger.error("Invalid date format. Please use YYYY-MM-DD.")
+            exit(1)
+    
+    if args.run_now:
+        job(target_date)
     else:
+        # If running as a daemon, target_date argument might not make sense unless we want to schedule it for a specific date in the future?
+        # Assuming the daemon always runs for "yesterday" relative to execution time.
+        # But if the user provides --date without --run-now, maybe they want to schedule a one-off for that date?
+        # The prompt implies standard behavior is daemon.
+        # Let's keep the daemon logic simple: it always processes yesterday relative to when it wakes up.
+        
         config = load_config()
         schedule_time = config['schedule'].get('time', "08:00")
         logger.info(f"Scheduler started. Job set for {schedule_time} daily.")
-        schedule.every().day.at(schedule_time).do(job)
+        
+        # Define a wrapper to always calculate yesterday dynamically
+        def scheduled_job():
+            job(target_date=None) # Will default to yesterday inside job()
+            
+        schedule.every().day.at(schedule_time).do(scheduled_job)
         
         while True:
             schedule.run_pending()
