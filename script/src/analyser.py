@@ -14,6 +14,8 @@ logger = logging.getLogger(__name__)
 
 import base64
 
+import yaml # Ensure yaml is imported
+
 class PaperAnalyser:
     def __init__(self, config):
         self.config = config
@@ -27,6 +29,16 @@ class PaperAnalyser:
         self.model_flash = config['doubao'].get('model_flash', 'doubao-seed-2-0-lite-260215')
         # Use Pro for deep analysis
         self.model_pro = config['doubao'].get('model_pro', 'doubao-seed-2-0-pro-260215')
+        
+        # Load Tag Taxonomy
+        self.tags_taxonomy = []
+        try:
+            tags_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "tags.yaml")
+            with open(tags_path, "r", encoding="utf-8") as f:
+                data = yaml.safe_load(f)
+                self.tags_taxonomy = data.get('taxonomy', [])
+        except Exception as e:
+            logger.warning(f"Could not load tags.yaml: {e}")
 
     def pdf_to_base64_images(self, pdf_path, max_pages=10):
         """Converts PDF pages to base64 encoded images for Vision API."""
@@ -68,6 +80,13 @@ class PaperAnalyser:
         Uses Doubao Lite (equivalent to Flash) to screen the paper based on abstract.
         Returns a dict with 'score' (1-10), 'reason', 'innovation', 'limitations', and 'tags'.
         """
+        # Prepare Taxonomy String for Prompt
+        taxonomy_str = ""
+        if self.tags_taxonomy:
+            taxonomy_str = "\n**Standard Tag Taxonomy (Choose from these if applicable):**\n"
+            for tag in self.tags_taxonomy:
+                taxonomy_str += f"- {tag['name']} (Aliases: {', '.join(tag['aliases'])})\n"
+
         prompt = f"""
         You are an expert researcher in Robotics and AI.
         Please evaluate the following paper based on these keywords: {', '.join(self.config['search']['keywords'])}.
@@ -75,6 +94,8 @@ class PaperAnalyser:
         Title: {paper['title']}
         Abstract: {paper['abstract']}
         
+        {taxonomy_str}
+
         Task:
         1. Rate the "Research Value" for my interests on a scale of 1-10.
            - 8-10: Must read immediately. SOTA results or major theoretical breakthrough.
@@ -83,7 +104,7 @@ class PaperAnalyser:
            - 1-3: Skip. Irrelevant or low quality.
         2. Analyze the **Innovation**: What is the key novelty? (1 sentence)
         3. Analyze the **Limitations/Weaknesses**: What is missing or could be improved? (1 sentence)
-        4. Identify **Tags**: Extract 3-5 specific technical tags (e.g., 'Diffusion_Transformer', 'RLHF', 'Sim2Real', 'VLA', '3D_Gaussian_Splatting'). Use underscores instead of spaces or hyphens. Do not use generic tags like 'AI' or 'Robotics'.
+86→        4. Identify **Tags**: Extract 3-5 specific technical tags. **CRITICAL**: Check the "Standard Tag Taxonomy" above. If a concept matches (or is an alias of) a standard tag, YOU MUST USE THE STANDARD TAG NAME (e.g., use 'LLM' instead of 'Large Language Model'). Use underscores. Do not use generic tags like 'AI' or 'Robotics'.
         5. **Short Title**: If the paper title has a colon (e.g., "Solaris: Building a ..."), extract the part BEFORE the colon as the short title (e.g., "Solaris"). If no colon, use the full title but replace spaces with underscores.
         6. Return JSON format only: 
         {{

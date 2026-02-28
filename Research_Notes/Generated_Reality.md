@@ -6,20 +6,21 @@ tags:
   - Video_Diffusion_Model
   - Embodied_AI
   - Interactive_Video_Generation
-  - Score_7
   - 2026-02-27
 aliases:
   - "Generated Reality: Human-centric World Simulation using Interactive Video Generation with Hand and Camera Control"
 url: https://huggingface.co/papers/2602.18422
 pdf_url: https://arxiv.org/pdf/2602.18422.pdf
 local_pdf: "[[Generated Reality Humancentric World Simulation using Interactive Video Generation with Hand and Cam.pdf]]"
-github: "None"
-project_page: "https://codeysun.github.io/generated-reality/"
+github: None
+project_page: https://codeysun.github.io/generated-reality/
 institutions:
-  - "Stanford University"
-  - "NYU Shanghai"
-  - "UNC Chapel Hill"
-publication_date: "2026-02-20"
+  - Stanford University
+  - NYU Shanghai
+  - UNC Chapel Hill
+publication_date: 2026-02-20
+score: 7
+Reading?:
 ---
 
 # Generated Reality: Human-centric World Simulation using Interactive Video Generation with Hand and Camera Control

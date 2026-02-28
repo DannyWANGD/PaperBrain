@@ -1,25 +1,24 @@
 ---
 aliases:
-- 'GeneralVLA: Generalizable Vision-Language-Action Models with Knowledge-Guided Trajectory
-  Planning'
+  - "GeneralVLA: Generalizable Vision-Language-Action Models with Knowledge-Guided Trajectory Planning"
 github: https://github.com/AIGeeksGroup/GeneralVLA
 institutions:
-- CASIA
-- Peking University
-local_pdf: '[[GeneralVLA Generalizable VisionLanguageAction Models with KnowledgeGuided
-  Trajectory Planning.pdf]]'
+  - CASIA
+  - Peking University
+local_pdf: "[[GeneralVLA Generalizable VisionLanguageAction Models with KnowledgeGuided Trajectory Planning.pdf]]"
 pdf_url: https://arxiv.org/pdf/2602.04315.pdf
 project_page: https://aigeeksgroup.github.io/GeneralVLA
 publication_date: 2026-02-04
 tags:
-- paper
-- VLA
-- Foundation_Models
-- Robot_Manipulation
-- Zero_Shot_Manipulation
-- Knowledge_Guided_Trajectory_Planning
-- 2026-02-27
+  - paper
+  - VLA
+  - Foundation_Models
+  - Robot_Manipulation
+  - Zero_Shot_Manipulation
+  - Knowledge_Guided_Trajectory_Planning
+  - 2026-02-27
 url: https://huggingface.co/papers/2602.04315
+Reading?:
 ---
 
 # GeneralVLA: Generalizable Vision-Language-Action Models with Knowledge-Guided Trajectory Planning

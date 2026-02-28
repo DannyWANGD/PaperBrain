@@ -1,22 +1,23 @@
 ---
 aliases:
-- 'Code2Worlds: Empowering Coding LLMs for 4D World Generation'
+  - "Code2Worlds: Empowering Coding LLMs for 4D World Generation"
 github: https://github.com/AIGeeksGroup/Code2Worlds
 institutions:
-- School of Computer Science, Peking University
-local_pdf: '[[Code2Worlds Empowering Coding LLMs for 4D World Generation.pdf]]'
+  - School of Computer Science, Peking University
+local_pdf: "[[Code2Worlds Empowering Coding LLMs for 4D World Generation.pdf]]"
 pdf_url: https://arxiv.org/pdf/2602.11757.pdf
 project_page: https://aigeeksgroup.github.io/Code2Worlds
-publication_date: '2026-02-12'
+publication_date: 2026-02-12
 tags:
-- paper
-- LLM
-- World_Model
-- 4D_World_Generation
-- Retrieval_Augmented_Generation
-- Physics_Aware_Simulation
-- 2026-02-27
+  - paper
+  - LLM
+  - World_Model
+  - 4D_World_Generation
+  - Retrieval_Augmented_Generation
+  - Physics_Aware_Simulation
+  - 2026-02-27
 url: https://huggingface.co/papers/2602.11757
+Reading?:
 ---
 
 # Code2Worlds: Empowering Coding LLMs for 4D World Generation

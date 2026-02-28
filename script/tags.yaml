@@ -1,0 +1,83 @@
+# 标签分类法 (Tag Taxonomy)
+# 格式:
+# - name: "Standard_Tag_Name" (使用下划线，不含空格)
+#   aliases: ["Alias 1", "Alias 2"] (常见的同义词或变体)
+#   description: "简短描述，帮助 AI 理解语境"
+
+taxonomy:
+  - name: "World_Model"
+    aliases: 
+      - "World Models"
+      - "World-Model"
+      - "World Modeling"
+      - "Predictive Model"
+    description: "Models that predict future states based on current state and action."
+
+  - name: "Diffusion_Model"
+    aliases:
+      - "Diffusion Models"
+      - "Diffusion Transformer"
+      - "DiT"
+      - "DDPM"
+      - "Stable Diffusion"
+    description: "Generative models based on denoising diffusion probabilistic processes."
+
+  - name: "Embodied_AI"
+    aliases:
+      - "Embodied Artificial Intelligence"
+      - "Robotics Learning"
+      - "Robot Learning"
+    description: "AI agents that interact with the physical world."
+
+  - name: "3D_Gaussian_Splatting"
+    aliases:
+      - "3DGS"
+      - "Gaussian Splatting"
+      - "3D Gaussians"
+    description: "Explicit 3D representation using 3D Gaussians for real-time rendering."
+
+  - name: "Sim2Real"
+    aliases:
+      - "Simulation to Real"
+      - "Sim-to-Real Transfer"
+      - "Domain Randomization"
+    description: "Transferring policies learned in simulation to the real world."
+
+  - name: "Reinforcement_Learning"
+    aliases:
+      - "RL"
+      - "Deep RL"
+      - "PPO"
+      - "SAC"
+    description: "Learning optimal actions through trial and error to maximize reward."
+
+  - name: "Robot_Manipulation"
+    aliases:
+      - "Robotic Manipulation"
+      - "Grasping"
+      - "Dexterous Manipulation"
+      - "Mobile Manipulation"
+    description: "Robots interacting with objects using end-effectors."
+
+  - name: "VLA"
+    aliases:
+      - "Vision-Language-Action"
+      - "Vision Language Action Model"
+      - "RT-2"
+      - "OpenVLA"
+    description: "Models that integrate vision, language, and action output."
+
+  - name: "Foundation_Model"
+    aliases:
+      - "Foundation Models"
+      - "Large Scale Model"
+      - "Pre-trained Model"
+    description: "Large models trained on vast data adaptable to downstream tasks."
+
+  - name: "LLM"
+    aliases:
+      - "Large Language Model"
+      - "GPT"
+      - "Llama"
+      - "Claude"
+    description: "Models processing and generating human language."

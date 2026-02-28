@@ -1,0 +1,29 @@
+{
+  "pluginList": [
+    "imfenghuang/obsidian-immersive-translate",
+    "dangehub/obsidian-translay-translator"
+  ],
+  "pluginSubListFrozenVersion": [
+    {
+      "repo": "imfenghuang/obsidian-immersive-translate",
+      "version": ""
+    },
+    {
+      "repo": "dangehub/obsidian-translay-translator",
+      "version": ""
+    }
+  ],
+  "themesList": [],
+  "updateAtStartup": true,
+  "updateThemesAtStartup": true,
+  "enableAfterInstall": true,
+  "loggingEnabled": false,
+  "loggingPath": "BRAT-log",
+  "loggingVerboseEnabled": false,
+  "debuggingMode": false,
+  "notificationsEnabled": true,
+  "globalTokenName": "",
+  "personalAccessToken": "",
+  "selectLatestPluginVersionByDefault": false,
+  "allowIncompatiblePlugins": false
+}

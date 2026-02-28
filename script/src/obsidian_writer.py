@@ -148,9 +148,9 @@ class ObsidianWriter:
         # Sanitize tags: Replace spaces/hyphens with underscores to avoid YAML errors and match requirement
         safe_tags = [t.strip().replace(' ', '_').replace('-', '_') for t in tags]
         
-        # Add score tag
+        # Add score tag (REMOVED: Now a property)
         score = paper.get('score', 0)
-        safe_tags.append(f"Score_{score}")
+        # safe_tags.append(f"Score_{score}")
 
         tags_yaml = "\n".join([f"  - {t}" for t in safe_tags])
         
@@ -172,7 +172,6 @@ class ObsidianWriter:
         content = f"""---
 tags:
 {tags_yaml}
-  - {datetime.now().strftime("%Y-%m-%d")}
 aliases:
   - "{paper['title']}"
 url: {paper.get('url')}
@@ -181,6 +180,7 @@ local_pdf: "{pdf_link}"
 github: "{github}"
 project_page: "{project_page}"{institutions_yaml}
 publication_date: "{pub_date}"
+score: {score}
 ---
 
 # {paper['title']}

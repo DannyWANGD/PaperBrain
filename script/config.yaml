@@ -86,6 +86,11 @@ obsidian:
     ## 📝 Papers List
     {{content}}
 
+notification:
+  enabled: true
+  bark_url: "https://api.day.app/eStwe6k6JQ2dGkuXjTixLV/" # Replace with your Bark URL
+  bark_sound: "minuet" # Optional sound
+
 search:
   keywords:
     - "World Model"

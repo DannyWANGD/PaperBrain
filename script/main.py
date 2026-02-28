@@ -7,6 +7,8 @@ import logging
 from src.scraper import PaperScraper
 from src.analyser import PaperAnalyser
 from src.obsidian_writer import ObsidianWriter
+from src.gardener import KnowledgeGardener
+from src.notifier import Notifier
 from datetime import datetime, timedelta
 from tqdm import tqdm # Import tqdm for progress bars
 import argparse
@@ -103,6 +105,8 @@ def job(target_date=None):
     scraper = PaperScraper(config)
     analyser = PaperAnalyser(config)
     obsidian_writer = ObsidianWriter(config)
+    gardener = KnowledgeGardener(config)
+    notifier = Notifier(config)
     
     # 1. Scrape (pass target_date)
     papers = scraper.get_all_papers(target_date=target_date)
@@ -196,6 +200,15 @@ def job(target_date=None):
                 logger.info(f"  [DONE] Analysis complete and saved.")
             else:
                 logger.error(f"  [ERR] Failed to download PDF.")
+
+    # 5. Knowledge Gardening (Backlinking)
+    if high_value_papers:
+        logger.info("[INFO] Starting Knowledge Gardening (Backlinking)...")
+        gardener.prune_and_graft(high_value_papers)
+        
+        # 6. Notification
+        logger.info("[INFO] Sending Notifications...")
+        notifier.send_daily_summary(high_value_papers)
 
     logger.info("[SUCCESS] Job completed successfully.")
 
