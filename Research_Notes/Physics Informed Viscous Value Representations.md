@@ -1,24 +1,26 @@
 ---
 aliases:
-- Physics Informed Viscous Value Representations
+  - Physics Informed Viscous Value Representations
 github: https://github.com/HrishikeshVish/phys-fk-value-GCRL
 institutions:
-- Department of Computer Science, Purdue University, USA
-- College of Engineering, Purdue University, USA
-- DEVCOM Army Research Laboratory, USA
-local_pdf: '[[Physics Informed Viscous Value Representations.pdf]]'
+  - Department of Computer Science, Purdue University, USA
+  - College of Engineering, Purdue University, USA
+  - DEVCOM Army Research Laboratory, USA
+local_pdf: "[[Physics Informed Viscous Value Representations.pdf]]"
 pdf_url: https://arxiv.org/pdf/2602.23280v1
 project_page: None
-publication_date: '2026-02-26'
+publication_date: 2026-02-26
 tags:
-- paper
-- Offline_Reinforcement_Learning
-- Goal_Conditional_Reinforcement_Learning
-- Physics_Informed_RL
-- Robot_Manipulation
-- Optimal_Control
-- 2026-02-27
+  - paper
+  - Offline_Reinforcement_Learning
+  - Goal_Conditional_Reinforcement_Learning
+  - Physics_Informed_RL
+  - Robot_Manipulation
+  - Optimal_Control
+  - 2026-02-27
 url: http://arxiv.org/abs/2602.23280v1
+score: 6
+Reading?:
 ---
 
 # Physics Informed Viscous Value Representations

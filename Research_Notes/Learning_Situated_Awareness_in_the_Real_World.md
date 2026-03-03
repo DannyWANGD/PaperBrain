@@ -1,27 +1,28 @@
 ---
 tags:
-- paper
-- Multimodal_Foundation_Models
-- Embodied_AI
-- Egocentric_Spatial_Reasoning
-- Situated_Awareness_Benchmark
-- 2026-02-28
+  - paper
+  - Multimodal_Foundation_Models
+  - Embodied_AI
+  - Egocentric_Spatial_Reasoning
+  - Situated_Awareness_Benchmark
+  - 2026-02-28
 aliases:
-- Learning Situated Awareness in the Real World
+  - Learning Situated Awareness in the Real World
 url: https://huggingface.co/papers/2602.16682
 pdf_url: https://arxiv.org/pdf/2602.16682.pdf
-local_pdf: '[[Learning Situated Awareness in the Real World.pdf]]'
+local_pdf: "[[Learning Situated Awareness in the Real World.pdf]]"
 github: None
 project_page: https://sawbench.github.io
 institutions:
-- University of California, Santa Barbara
-- Yale University
-- Stanford University
-- University of Maryland, College Park
-- Amazon
-- University of California, Merced
-publication_date: '2026-02-18'
+  - University of California, Santa Barbara
+  - Yale University
+  - Stanford University
+  - University of Maryland, College Park
+  - Amazon
+  - University of California, Merced
+publication_date: 2026-02-18
 score: 7
+Reading?:
 ---
 
 # Learning Situated Awareness in the Real World

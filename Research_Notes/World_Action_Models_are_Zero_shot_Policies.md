@@ -1,23 +1,24 @@
 ---
 tags:
-- paper
-- World_Action_Model
-- Video_Diffusion_Model
-- VLA
-- Cross_Embodiment_Transfer
-- Robot_Manipulation
-- 2026-02-28
+  - paper
+  - World_Action_Model
+  - Video_Diffusion_Model
+  - VLA
+  - Cross_Embodiment_Transfer
+  - Robot_Manipulation
+  - 2026-02-28
 aliases:
-- World Action Models are Zero-shot Policies
+  - World Action Models are Zero-shot Policies
 url: https://huggingface.co/papers/2602.15922
 pdf_url: https://arxiv.org/pdf/2602.15922.pdf
-local_pdf: '[[World Action Models are Zeroshot Policies.pdf]]'
+local_pdf: "[[World Action Models are Zeroshot Policies.pdf]]"
 github: https://github.com/dreamzero0/dreamzero
 project_page: https://dreamzero0.github.io
 institutions:
-- NVIDIA
-publication_date: '2026-02-19'
+  - NVIDIA
+publication_date: 2026-02-19
 score: 9
+Reading?:
 ---
 
 # World Action Models are Zero-shot Policies

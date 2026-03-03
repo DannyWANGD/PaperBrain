@@ -11,12 +11,13 @@ aliases:
 url: http://arxiv.org/abs/2602.16898v3
 pdf_url: https://arxiv.org/pdf/2602.16898v3
 local_pdf: "[[MALLVI A MultiAgent Framework for Integrated Generalized Robotics Manipulation.pdf]]"
-github: "https://github.com/iman1234ahmadi/MALLVI"
-project_page: "None"
+github: https://github.com/iman1234ahmadi/MALLVI
+project_page: None
 institutions:
-  - "Sharif University of Technology"
-publication_date: "2026-02-25"
+  - Sharif University of Technology
+publication_date: 2026-02-25
 score: 7
+Reading?:
 ---
 
 # MALLVI: A Multi-Agent Framework for Integrated Generalized Robotics Manipulation

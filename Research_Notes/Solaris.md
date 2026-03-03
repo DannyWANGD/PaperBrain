@@ -1,21 +1,23 @@
 ---
 aliases:
-- 'Solaris: Building a Multiplayer Video World Model in Minecraft'
+  - "Solaris: Building a Multiplayer Video World Model in Minecraft"
 github: https://github.com/solaris-wm/solaris
 institutions:
-- New York University
-local_pdf: '[[Solaris Building a Multiplayer Video World Model in Minecraft.pdf]]'
+  - New York University
+local_pdf: "[[Solaris Building a Multiplayer Video World Model in Minecraft.pdf]]"
 pdf_url: https://arxiv.org/pdf/2602.22208v1
 project_page: https://solaris-wm.github.io/
-publication_date: '2026-02-25'
+publication_date: 2026-02-25
 tags:
-- paper
-- World_Model
-- Embodied_AI
-- Multi_Agent_Simulation
-- Action_Conditioned_Video_Generation
-- 2026-02-26
+  - paper
+  - World_Model
+  - Embodied_AI
+  - Multi_Agent_Simulation
+  - Action_Conditioned_Video_Generation
+  - 2026-02-26
 url: http://arxiv.org/abs/2602.22208v1
+Reading?:
+score: 6
 ---
 
 # Solaris: Building a Multiplayer Video World Model in Minecraft

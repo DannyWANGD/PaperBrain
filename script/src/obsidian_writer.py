@@ -66,7 +66,8 @@ class ObsidianWriter:
         filename = f"{today_str}-PaperDigest.md"
         filepath = os.path.join(self.daily_folder, filename)
         
-        high_impact = [p for p in papers if p.get('score', 0) >= self.config['doubao']['threshold_score']]
+        threshold = self.config.get('llm', {}).get('threshold_score', 7)
+        high_impact = [p for p in papers if p.get('score', 0) >= threshold]
         
         content = ""
         for p in papers:
@@ -77,9 +78,9 @@ class ObsidianWriter:
             innovation = p.get('innovation', p.get('summary', p.get('abstract', '')[:200] + "..."))
             limitations = p.get('limitations', "Not analyzed.")
             
-            link = f"[[{self.get_filename_from_paper(p)}]]" if score >= self.config['doubao']['threshold_score'] else f"[Link]({p.get('url', '#')})"
+            link = f"[[{self.get_filename_from_paper(p)}]]" if score >= threshold else f"[Link]({p.get('url', '#')})"
             # Requirement 2: Only provide local link for high scoring papers, otherwise just web link
-            if score < self.config['doubao']['threshold_score']:
+            if score < threshold:
                 # Ensure it's just the web link
                  link = f"[Web Link]({p.get('url', '#')})"
             

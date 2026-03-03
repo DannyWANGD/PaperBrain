@@ -10,14 +10,15 @@ aliases:
 url: https://huggingface.co/papers/2602.13294
 pdf_url: https://arxiv.org/pdf/2602.13294.pdf
 local_pdf: "[[VisPhyWorld Probing Physical Reasoning via CodeDriven Video Reconstruction.pdf]]"
-github: "None"
-project_page: "https://tiger-ai-lab.github.io/VisPhyWorld/"
+github: None
+project_page: https://tiger-ai-lab.github.io/VisPhyWorld/
 institutions:
-  - "University of Waterloo"
-  - "Autodesk AI Lab"
-  - "Independent"
-publication_date: "2026-02-20"
+  - University of Waterloo
+  - Autodesk AI Lab
+  - Independent
+publication_date: 2026-02-20
 score: 7
+Reading?:
 ---
 
 # VisPhyWorld: Probing Physical Reasoning via Code-Driven Video Reconstruction

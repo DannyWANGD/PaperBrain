@@ -139,7 +139,7 @@ def job(target_date=None):
     obsidian_writer.write_daily_digest(screened_papers, target_date=target_date)
     
     # 4. Deep Analysis for High Value Papers
-    threshold = config['doubao'].get('threshold_score', 8)
+    threshold = config.get('llm', {}).get('threshold_score', 7)
     existing_notes = obsidian_writer.scan_existing_notes()
     
     # Dynamic Thresholding: Ensure at least 1 and at most 3 papers are analyzed

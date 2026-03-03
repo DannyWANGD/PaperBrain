@@ -1,28 +1,27 @@
 ---
 tags:
-- paper
-- VLA
-- Post_Training_Quantization
-- Diffusion_Transformer
-- Embodied_AI
-- Foundation_Models
-- 2026-02-27
+  - paper
+  - VLA
+  - Post_Training_Quantization
+  - Diffusion_Transformer
+  - Embodied_AI
+  - Foundation_Models
+  - 2026-02-27
 aliases:
-- 'QuantVLA: Scale-Calibrated Post-Training Quantization for Vision-Language-Action
-  Models'
+  - "QuantVLA: Scale-Calibrated Post-Training Quantization for Vision-Language-Action Models"
 url: http://arxiv.org/abs/2602.20309v2
 pdf_url: https://arxiv.org/pdf/2602.20309v2
-local_pdf: '[[QuantVLA ScaleCalibrated PostTraining Quantization for VisionLanguageAction
-  Models.pdf]]'
+local_pdf: "[[QuantVLA ScaleCalibrated PostTraining Quantization for VisionLanguageAction Models.pdf]]"
 github: None
 project_page: None
 institutions:
-- The Ohio State University
-- Indiana University
-- University of Michigan
-- City University of Hong Kong
-publication_date: '2026-02-25'
+  - The Ohio State University
+  - Indiana University
+  - University of Michigan
+  - City University of Hong Kong
+publication_date: 2026-02-25
 score: 7
+Reading?:
 ---
 
 # QuantVLA: Scale-Calibrated Post-Training Quantization for Vision-Language-Action Models

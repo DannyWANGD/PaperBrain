@@ -1,9 +1,10 @@
 views:
   - type: cards
-    name: 表格
+    name: 未读文章
     filters:
       and:
         - file.inFolder("Research_Notes")
+        - note["Reading?"] != true
     groupBy:
       property: file.folder
       direction: ASC
@@ -15,8 +16,9 @@ views:
       - project_page
       - github
       - local_pdf
+      - score
     sort:
-      - property: publication_date
+      - property: score
         direction: DESC
     columnSize:
       file.name: 347
@@ -24,3 +26,19 @@ views:
       note.tags: 182
     cardSize: 310
     imageAspectRatio: 0.65
+  - type: cards
+    name: 已读文章
+    filters:
+      and:
+        - file.inFolder("Research_Notes")
+        - note["Reading?"] == true
+    order:
+      - file.name
+      - publication_date
+      - institutions
+      - tags
+      - project_page
+      - github
+      - local_pdf
+      - score
+    cardSize: 250

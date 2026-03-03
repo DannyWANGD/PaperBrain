@@ -8,63 +8,29 @@
         "type": "tabs",
         "children": [
           {
-            "id": "3853f3039cb88d96",
+            "id": "a361f88e05c08d8b",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Research_Notes/The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models.md",
+                "file": "Research_Notes/Generated_Reality.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models"
+              "title": "Generated_Reality"
             }
           },
           {
-            "id": "c9539fd27c46a7c4",
-            "type": "leaf",
-            "state": {
-              "type": "webviewer",
-              "state": {
-                "url": "https://arxiv.org/pdf/2602.23152",
-                "title": "The Trinity of Consistency as a Defining Principle for General World Models",
-                "mode": "webview"
-              },
-              "icon": "globe-2",
-              "title": "The Trinity of Consistency as a Defining Principle for General World Models"
-            }
-          },
-          {
-            "id": "c8b72256b5f75fc1",
-            "type": "leaf",
-            "state": {
-              "type": "webviewer",
-              "state": {
-                "url": "https://arxiv.org/pdf/2602.04315",
-                "title": "GeneralVLA: Generalizable Vision-Language-Action Models with Knowledge-Guided Trajectory Planning",
-                "mode": "webview"
-              },
-              "icon": "globe-2",
-              "title": "GeneralVLA: Generalizable Vision-Language-Action Models with Knowledge-Guided Trajectory Planning"
-            }
-          }
-        ]
-      },
-      {
-        "id": "ab64bc8416559e9f",
-        "type": "tabs",
-        "children": [
-          {
-            "id": "90cca1b74ccf4a07",
+            "id": "12500584b9c4ea06",
             "type": "leaf",
             "state": {
               "type": "pdf",
               "state": {
-                "file": "PDFs/The Trinity of Consistency as a Defining Principle for General World Models.pdf"
+                "file": "PDFs/Generated Reality Humancentric World Simulation using Interactive Video Generation with Hand and Cam.pdf"
               },
               "icon": "lucide-file-text",
-              "title": "The Trinity of Consistency as a Defining Principle for General World Models"
+              "title": "Generated Reality Humancentric World Simulation using Interactive Video Generation with Hand and Cam"
             }
           }
         ]
@@ -124,8 +90,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 438.501522064209,
-    "collapsed": true
+    "width": 438.501522064209
   },
   "right": {
     "id": "6f4f27bfa99de3fa",
@@ -141,7 +106,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Daily_Papers/2026-02-16-PaperDigest.md",
+                "file": "Research_Notes/Generated_Reality.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -151,7 +116,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "2026-02-16-PaperDigest 的反向链接列表"
+              "title": "Generated_Reality 的反向链接列表"
             }
           },
           {
@@ -160,12 +125,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Daily_Papers/2026-02-16-PaperDigest.md",
+                "file": "Research_Notes/Generated_Reality.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "2026-02-16-PaperDigest 的出链列表"
+              "title": "Generated_Reality 的出链列表"
             }
           },
           {
@@ -203,13 +168,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Research_Notes/The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models.md",
+                "file": "PDFs/Solaris Building a Multiplayer Video World Model in Minecraft.pdf",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models 的大纲"
+              "title": "Solaris Building a Multiplayer Video World Model in Minecraft 的大纲"
             }
           },
           {
@@ -221,14 +186,23 @@
               "icon": "smart-connections",
               "title": "Connections"
             }
+          },
+          {
+            "id": "0291ba19d28bc292",
+            "type": "leaf",
+            "state": {
+              "type": "copilot-chat-view",
+              "state": {},
+              "icon": "message-square",
+              "title": "Copilot"
+            }
           }
         ],
-        "currentTab": 4
+        "currentTab": 6
       }
     ],
     "direction": "horizontal",
-    "width": 311.5,
-    "collapsed": true
+    "width": 742.5
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -246,56 +220,57 @@
       "smart-connections:Smart Connections: Open connections view": false,
       "smart-connections:Smart Lookup: Open lookup view": false,
       "smart-connections:Smart Connections: Open random connection": false,
-      "obsidian42-brat:BRAT": false
+      "obsidian42-brat:BRAT": false,
+      "copilot:Open Copilot Chat": false
     }
   },
-  "active": "3853f3039cb88d96",
+  "active": "0291ba19d28bc292",
   "lastOpenFiles": [
-    "script/test_bark.py",
-    "Research_Notes/GeometryAware_Rotary_Position_Embedding_for_Consistent_Video_World_Model.md",
+    "Research_Notes/FlowHOI.md",
+    "copilot/copilot-conversations/为我详细讲解一下这篇文章中的核心创新贡献是什么，结合数@20260303_225230.md",
+    "copilot/copilot-conversations",
+    "copilot",
+    "PDFs/Generated Reality Humancentric World Simulation using Interactive Video Generation with Hand and Cam.pdf",
     "Research_Notes/Generated_Reality.md",
+    "Assets/FlowHOI Flowbased SemanticsGrounded Generation of HandObject Interactions for Dexterous Robot Manipu_arch.png",
+    "PDFs/FlowHOI Flowbased SemanticsGrounded Generation of HandObject Interactions for Dexterous Robot Manipu.pdf",
+    "Research_Notes/RISE.md",
+    "Assets/RISE SelfImproving Robot Policy with Compositional World Model_arch.png",
+    "PDFs/RISE SelfImproving Robot Policy with Compositional World Model.pdf",
+    "Daily_Papers/2026-02-13-PaperDigest.md",
+    "Daily_Papers/2026-03-02-PaperDigest.md",
+    "PDFs/OnlineX Unified Online 3D Reconstruction and Understanding with ActivetoStable State Evolution.pdf",
+    "README.md",
+    "Research_Notes/OnlineX.md",
     "Research_Notes/GeneralVLA.md",
-    "Research_Notes/EmbodMocap.md",
-    "Research_Notes/Code2Worlds.md",
-    "Research_Notes/The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models.md",
-    "Research_Notes/MoRL.md",
-    "Assets/MoRL Reinforced Reasoning for Unified Motion Understanding and Generation_arch.png",
-    "PDFs/MoRL Reinforced Reasoning for Unified Motion Understanding and Generation.pdf",
-    "Research_Notes/VisPhyWorld.md",
-    "Assets/VisPhyWorld Probing Physical Reasoning via CodeDriven Video Reconstruction_arch.jpeg",
-    "PDFs/VisPhyWorld Probing Physical Reasoning via CodeDriven Video Reconstruction.pdf",
-    "Daily_Papers/2026-02-17-PaperDigest.md",
-    "PDFs/The Trinity of Consistency as a Defining Principle for General World Models.pdf",
-    "Daily_Papers/2026-02-26-PaperDigest.md",
-    "PDFs/XiaomiRobotics0 An OpenSourced VisionLanguageAction Model with RealTime Execution.pdf",
-    "PDFs/Solaris Building a Multiplayer Video World Model in Minecraft.pdf",
     "Paperbase.base",
-    "Research_Notes/Xiaomi-Robotics-0.md",
-    "Research_Notes/SPARR.md",
     "Dashboard.md",
-    "Daily_Papers/2026-02-18-PaperDigest.md",
-    "Research_Notes/SimToolReal.md",
-    "Assets/SimToolReal An ObjectCentric Policy for ZeroShot Dexterous Tool Manipulation_arch.png",
-    "PDFs/SimToolReal An ObjectCentric Policy for ZeroShot Dexterous Tool Manipulation.pdf",
-    "Research_Notes/MALLVI.md",
-    "Assets/MALLVI A MultiAgent Framework for Integrated Generalized Robotics Manipulation_arch.png",
-    "PDFs/MALLVI A MultiAgent Framework for Integrated Generalized Robotics Manipulation.pdf",
-    "Assets/GeometryAware Rotary Position Embedding for Consistent Video World Model_arch.png",
-    "PDFs/GeometryAware Rotary Position Embedding for Consistent Video World Model.pdf",
-    "script/src/__pycache__/notifier.cpython-39.pyc",
-    "Research_Notes/QuantVLA.md",
-    "Research_Notes/Physics Informed Viscous Value Representations.md",
-    "Research_Notes/Learning_Situated_Awareness_in_the_Real_World.md",
-    "Research_Notes/World_Action_Models_are_Zero_shot_Policies.md",
-    "Research_Notes/Solaris.md",
-    "Daily_Papers/2026-02-27-PaperDigest.md",
-    "Assets/EmbodMocap IntheWild 4D HumanScene Reconstruction for Embodied Agents_arch.png",
-    "Assets/The Trinity of Consistency as a Defining Principle for General World Models_arch.png",
+    "Research_Notes/EmbodMocap.md",
+    "Pasted image 20260303220453.png",
+    "Pasted image 20260303220437.png",
+    "Assets/OnlineX Unified Online 3D Reconstruction and Understanding with ActivetoStable State Evolution_arch.png",
+    "Pasted image 20260303220300.png",
+    "Pasted image 20260303220047.png",
     "Research_Notes/RynnBrain.md",
-    "Daily_Papers/2026-02-19-PaperDigest.md",
-    "Assets/Learning Situated Awareness in the Real World_arch.png",
-    "Assets/RynnBrain Open Embodied Foundation Models_arch.png",
-    "Assets/World Action Models are Zeroshot Policies_arch.png",
+    "PDFs/RynnBrain Open Embodied Foundation Models.pdf",
+    "PDFs/World Action Models are Zeroshot Policies.pdf",
+    "Daily_Papers/2026-02-27-PaperDigest.md",
+    "Daily_Papers/2026-02-26-PaperDigest.md",
+    "Research_Notes/MoRL.md",
+    "PDFs/MoRL Reinforced Reasoning for Unified Motion Understanding and Generation.pdf",
+    "Research_Notes/QuantVLA.md",
+    "Daily_Papers/2026-02-23-PaperDigest.md",
+    "Research_Notes/GeometryAware_Rotary_Position_Embedding_for_Consistent_Video_World_Model.md",
+    "Research_Notes/Gaussian_Sequences_with_MultiScale_Dynamics_for_4D_Reconstruction_from_Monocular_Casual_Videos.md",
+    "Daily_Papers/2026-02-14-PaperDigest.md",
+    "Research_Notes/MALLVI.md",
+    "Assets/Gaussian Sequences with MultiScale Dynamics for 4D Reconstruction from Monocular Casual Videos_arch.png",
+    "Research_Notes/Mean_Flow_Policy_with_Instantaneous_Velocity_Constraint_for_Onestep_Action_Generation.md",
+    "Assets/Mean Flow Policy with Instantaneous Velocity Constraint for Onestep Action Generation_arch.png",
+    "Research_Notes/SemanticContact_Fields_for_CategoryLevel_Generalizable_Tactile_Tool_Manipulation.md",
+    "Assets/SemanticContact Fields for CategoryLevel Generalizable Tactile Tool Manipulation_arch.png",
+    "Research_Notes/The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models.md",
+    "Research_Notes/Xiaomi-Robotics-0.md",
     "Daily_Papers/2026-02-16-PaperDigest.md"
   ]
 }

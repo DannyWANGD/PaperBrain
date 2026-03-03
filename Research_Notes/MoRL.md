@@ -10,14 +10,15 @@ aliases:
 url: https://huggingface.co/papers/2602.14534
 pdf_url: https://arxiv.org/pdf/2602.14534.pdf
 local_pdf: "[[MoRL Reinforced Reasoning for Unified Motion Understanding and Generation.pdf]]"
-github: "https://github.com/AIGeeksGroup/MoRL"
-project_page: "https://aigeeksgroup.github.io/MoRL"
+github: https://github.com/AIGeeksGroup/MoRL
+project_page: https://aigeeksgroup.github.io/MoRL
 institutions:
-  - "The University of Sydney"
-  - "Peking University"
-  - "Nanyang Technological University"
-publication_date: "2026-02-16"
+  - The University of Sydney
+  - Peking University
+  - Nanyang Technological University
+publication_date: 2026-02-16
 score: 7
+Reading?:
 ---
 
 # MoRL: Reinforced Reasoning for Unified Motion Understanding and Generation

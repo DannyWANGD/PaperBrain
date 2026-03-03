@@ -18,13 +18,15 @@ institutions:
   - Shanghai Jiao Tong University
 publication_date: 2026-02-24
 score: 8
-Reading?:
+Reading?: true
 ---
 
 # Geometry-Aware Rotary Position Embedding for Consistent Video World Model
 
 ## 📌 Abstract
-Predictive world models that simulate future observations under explicit camera control are fundamental to interactive AI. Despite rapid advances, current systems lack spatial persistence: they fail to maintain stable scene structures over long trajectories, frequently hallucinating details when cameras revisit previously observed locations. We identify that this geometric drift stems from reliance on screen-space positional embeddings, which conflict with the projective geometry required for 3D consistency. We introduce ViewRope, a geometry-aware encoding that injects camera-ray directions directly into video transformer self-attention layers. By parameterizing attention with relative ray geometry rather than pixel locality, ViewRope provides a model-native inductive bias for retrieving 3D-consistent content across temporal gaps. We further propose Geometry-Aware Frame-Sparse Attention, which exploits these geometric cues to selectively attend to relevant historical frames, improving efficiency without sacrificing memory consistency. We also present ViewBench, a diagnostic suite measuring loop-closure fidelity and geometric drift. Our results demonstrate that ViewRope substantially improves long-term consistency while reducing computational costs.
+Predictive world models that simulate future observations under explicit camera control are fundamental to interactive AI. Despite rapid advances, current systems lack spatial persistence: they fail to maintain stable scene structures over long trajectories, frequently hallucinating details when cameras revisit previously observed locations. We identify that this geometric drift stems from reliance on screen-space positional embeddings, which conflict with the projective geometry required for 3D consistency. **We introduce ViewRope, a geometry-aware encoding that injects camera-ray directions directly into video transformer self-attention layers.** By parameterizing attention with relative ray geometry rather than pixel locality, ViewRope provides a model-native inductive bias for retrieving 3D-consistent content across temporal gaps. We further propose Geometry-Aware Frame-Sparse Attention, which exploits these geometric cues to selectively attend to relevant historical frames, improving efficiency without sacrificing memory consistency. We also present ViewBench, a diagnostic suite measuring loop-closure fidelity and geometric drift. Our results demonstrate that ViewRope substantially improves long-term consistency while reducing computational costs.
+
+在显式相机控制下模拟未来观察的预测性世界模型是交互式人工智能的基础。尽管取得了快速进展，当前系统仍缺乏空间持久性：它们无法在长时间轨迹中维持稳定的场景结构，当相机重新访问先前观察过的位置时，经常会出现幻觉细节。我们确定这种几何漂移源于对屏幕空间位置嵌入的依赖，这与实现 3D 一致性的投影几何相冲突。我们引入了 ViewRope，这是一种**几何感知编码，它将相机射线方向直接注入视频转换器自注意力层。通过用相对射线几何而不是像素局部性参数化注意力，ViewRope 为在时间间隔内检索 3D 一致内容提供了模型本地的归纳偏差**。我们进一步提出了几何感知帧稀疏注意力，它利用这些几何线索来选择性地关注相关历史帧，在不牺牲内存一致性的情况下提高效率。我们还展示了 ViewBench，这是一个测量闭环精度和几何漂移的诊断套件。 我们的结果表明，ViewRope 在降低计算成本的同时，显著提高了长期一致性。
 
 ## 🖼️ Architecture
 ![[GeometryAware Rotary Position Embedding for Consistent Video World Model_arch.png]]
@@ -40,6 +42,8 @@ Predictive world models that simulate future observations under explicit camera 
 This work addresses the critical gap that current pose-conditioned video world models lack long-term geometric consistency: existing systems rely on screen-space positional embeddings misaligned with projective 3D geometry, leading to severe geometric drift when cameras revisit previously observed viewpoints (loop closure scenarios). Existing mitigation strategies either use heavy explicit 3D memory pipelines that sacrifice open-domain flexibility, or incur prohibitive compute costs from dense attention for long-sequence generation.
 ### Core Contribution
 This work introduces **ViewRope**, a geometry-aware rotary position embedding that injects per-patch camera ray directions into self-attention, paired with a geometry-driven frame-sparse attention mechanism and the ViewBench consistency evaluation suite, achieving state-of-the-art loop-closure performance for camera-controlled video generation while reducing computational costs by ~25% relative to dense attention baselines.
+
+这项工作引入了 ViewRope，**一种几何感知的旋转位置嵌入，将每个补丁的相机射线方向注入自注意力中**，搭配几何驱动的帧稀疏注意力机制和 ViewBench 一致性评估套件，在降低计算成本约 25%相对于密集注意力基线的同时，实现了相机控制视频生成的最先进的闭环性能。
 ### Academic Rating
 - Innovation: 9/10: The work redefines positional encoding for video transformers to prioritize 3D ray correspondence over pixel-space locality, eliminating the need for external explicit memory structures while enabling efficient long-sequence generation, a highly impactful advance for interactive world modeling.
 - Rigor: 8/10: The experimental design is robust, with fair baseline comparisons, extensive ablations, counterfactual validation, and a purpose-built benchmark, though evaluation is limited to static scenes with known camera parameters, justifying a minor deduction.
@@ -61,6 +65,7 @@ A geometry-aware sparse attention module estimates frame-level relevance from th
 The pipeline is built on the WAN 2.2 TI2V-5B video diffusion backbone, with a 4-stage progressive training schedule: (1) short-clip teacher forcing to align the autoregressive generation interface; (2) enable ViewRope on short clips to learn view correspondence without long-range confounding; (3) enable frame-sparse attention on moderate-length sequences; (4) scale to long sequence lengths under sparse attention to improve loop-closure performance. Inference maintains a KV cache of prior latent frames, with geometric relevance estimated at each denoising step to select relevant context.
 ### Aha Moment
 1. The key theoretical insight is reframing positional encoding as view encoding: instead of encoding pixel-space offsets, ViewRope uses per-patch ray direction rotations to align attention scores to 3D geometric correspondence, eliminating the fundamental mismatch between screen-space positional embeddings and projective 3D geometry.
+	关键理论洞察是**将位置编码重新定义为视图编码**：ViewRope 不是编码像素空间偏移，而是**使用每个补丁的射线方向旋转来对齐注意力分数与 3D 几何对应关系**，消除了屏幕空间位置嵌入与投影 3D 几何之间的基本不匹配。
 2. The key engineering trick is reusing the geometric relevance signal from ViewRope to drive sparse attention frame selection, avoiding the overhead of separate external memory retrieval modules while maintaining consistency.
 
 ## 3. Evidence & Metrics

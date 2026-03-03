@@ -10,13 +10,14 @@ aliases:
 url: http://arxiv.org/abs/2602.16863v2
 pdf_url: https://arxiv.org/pdf/2602.16863v2
 local_pdf: "[[SimToolReal An ObjectCentric Policy for ZeroShot Dexterous Tool Manipulation.pdf]]"
-github: "https://simtoolreal.github.io"
-project_page: "https://simtoolreal.github.io"
+github: https://simtoolreal.github.io
+project_page: https://simtoolreal.github.io
 institutions:
-  - "Cornell University"
-  - "Stanford University"
-publication_date: "2026-02-24"
+  - Cornell University
+  - Stanford University
+publication_date: 2026-02-24
 score: 7
+Reading?:
 ---
 
 # SimToolReal: An Object-Centric Policy for Zero-Shot Dexterous Tool Manipulation

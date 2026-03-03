@@ -1,9 +1,19 @@
-doubao:
-  api_key: "41b256fd-6322-4da2-93cf-d39ec9316a67"
-  # You can use doubao-seed-2-0-lite-260215 for cheaper screening
-  model_flash: "ep-20260226105946-sgmhx"
-  # Use the powerful Pro model for detailed analysis
-  model_pro: "ep-20260226105946-sgmhx"
+llm:
+  # provider: "doubao" # Uncomment to use Doubao
+  provider: "openrouter" # Options: "doubao", "openrouter"
+  
+  openrouter:
+    api_key: "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"
+    base_url: "https://openrouter.ai/api/v1"
+    model_flash: "anthropic/claude-3-haiku"
+    model_pro: "anthropic/claude-3.5-sonnet"
+    
+  doubao:
+    api_key: "41b256fd-6322-4da2-93cf-d39ec9316a67"
+    base_url: "https://ark.cn-beijing.volces.com/api/v3"
+    model_flash: "ep-20260226105946-sgmhx"
+    model_pro: "ep-20260226105946-sgmhx"
+  
   threshold_score: 7
 
 output:
@@ -96,8 +106,6 @@ search:
     - "World Model"
     - "Diffusion model"
     - "Embodied AI"
-    - "3D Gaussian Splatting"
-    - "4D Gaussian Splatting"
     - "Sim2Real"
     - "Reinforcement Learning"
     - "Robot Manipulation"

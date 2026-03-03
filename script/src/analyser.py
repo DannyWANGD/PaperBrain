@@ -19,16 +19,41 @@ import yaml # Ensure yaml is imported
 class PaperAnalyser:
     def __init__(self, config):
         self.config = config
-        self.api_key = config['doubao']['api_key']
-        # Doubao uses the Ark endpoint which is OpenAI compatible
+        
+        # Determine provider and setup client
+        # Support new structure 'llm' with 'provider' switch
+        llm_config = config.get('llm', {})
+        provider = llm_config.get('provider', 'doubao')
+        
+        if provider == 'openrouter':
+            provider_config = llm_config.get('openrouter', {})
+            # Defaults for OpenRouter
+            self.api_key = provider_config.get('api_key', '')
+            self.base_url = provider_config.get('base_url', "https://openrouter.ai/api/v1")
+            self.model_flash = provider_config.get('model_flash', 'anthropic/claude-3-haiku')
+            self.model_pro = provider_config.get('model_pro', 'anthropic/claude-3.5-sonnet')
+            logger.info(f"Using LLM Provider: OpenRouter ({self.model_pro})")
+            
+        elif provider == 'doubao':
+            provider_config = llm_config.get('doubao', {})
+            if not provider_config:
+                # Fallback to legacy root level 'doubao' key if exists
+                provider_config = config.get('doubao', {})
+            
+            self.api_key = provider_config.get('api_key', '')
+            self.base_url = provider_config.get('base_url', "https://ark.cn-beijing.volces.com/api/v3")
+            self.model_flash = provider_config.get('model_flash', 'doubao-seed-2-0-lite-260215')
+            self.model_pro = provider_config.get('model_pro', 'doubao-seed-2-0-pro-260215')
+            logger.info(f"Using LLM Provider: Doubao ({self.model_pro})")
+            
+        else:
+            logger.error(f"Unknown LLM provider: {provider}")
+            raise ValueError(f"Unknown LLM provider: {provider}")
+
         self.client = OpenAI(
             api_key=self.api_key,
-            base_url="https://ark.cn-beijing.volces.com/api/v3"
+            base_url=self.base_url
         )
-        # Use Lite for screening (was Flash)
-        self.model_flash = config['doubao'].get('model_flash', 'doubao-seed-2-0-lite-260215')
-        # Use Pro for deep analysis
-        self.model_pro = config['doubao'].get('model_pro', 'doubao-seed-2-0-pro-260215')
         
         # Load Tag Taxonomy
         self.tags_taxonomy = []

@@ -1,24 +1,24 @@
 ---
 aliases:
-- 'Xiaomi-Robotics-0: An Open-Sourced Vision-Language-Action Model with Real-Time
-  Execution'
+  - "Xiaomi-Robotics-0: An Open-Sourced Vision-Language-Action Model with Real-Time Execution"
 github: https://xiaomi-robotics-0.github.io
 institutions:
-- Xiaomi Robotics
-local_pdf: '[[XiaomiRobotics0 An OpenSourced VisionLanguageAction Model with RealTime
-  Execution.pdf]]'
+  - Xiaomi Robotics
+local_pdf: "[[XiaomiRobotics0 An OpenSourced VisionLanguageAction Model with RealTime Execution.pdf]]"
 pdf_url: https://arxiv.org/pdf/2602.12684.pdf
 project_page: https://xiaomi-robotics-0.github.io
-publication_date: '2026-02-13'
+publication_date: 2026-02-13
 tags:
-- paper
-- VLA
-- Foundation_Models
-- Robot_Manipulation
-- Embodied_AI
-- Sim2Real
-- 2026-02-27
+  - paper
+  - VLA
+  - Foundation_Models
+  - Robot_Manipulation
+  - Embodied_AI
+  - Sim2Real
+  - 2026-02-27
 url: https://huggingface.co/papers/2602.12684
+score: 8
+Reading?: true
 ---
 
 # Xiaomi-Robotics-0: An Open-Sourced Vision-Language-Action Model with Real-Time Execution
