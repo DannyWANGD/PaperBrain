@@ -1,20 +1,18 @@
-llm:
-  # provider: "doubao" # Uncomment to use Doubao
-  provider: "openrouter" # Options: "doubao", "openrouter"
-  
-  openrouter:
-    api_key: "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"
-    base_url: "https://openrouter.ai/api/v1"
-    model_flash: "anthropic/claude-3-haiku"
-    model_pro: "anthropic/claude-3.5-sonnet"
-    
-  doubao:
-    api_key: "41b256fd-6322-4da2-93cf-d39ec9316a67"
-    base_url: "https://ark.cn-beijing.volces.com/api/v3"
-    model_flash: "ep-20260226105946-sgmhx"
-    model_pro: "ep-20260226105946-sgmhx"
-  
+doubao:
+  api_key: "41b256fd-6322-4da2-93cf-d39ec9316a67"
+  # You can use doubao-seed-2-0-lite-260215 for cheaper screening
+  model_flash: "ep-20260226105946-sgmhx"
+  # Use the powerful Pro model for detailed analysis
+  model_pro: "ep-20260226105946-sgmhx"
   threshold_score: 7
+
+openrouter:
+  api_key: "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"
+  # For screening (fast/cheap): Google Gemini 3.1 Flash Lite Preview
+  model_flash: "google/gemini-3.1-flash-lite-preview"
+  # For deep analysis (powerful): Anthropic Claude 4.6 Sonnet (Hypothetical SOTA from user context)
+  # Assuming OpenRouter slug convention. If 4.6 isn't real yet, this placeholder is for the user's simulation.
+  model_pro: "anthropic/claude-4.6-sonnet"
 
 output:
   base_dir: "../output"
@@ -33,7 +31,7 @@ analysis:
     methodology_weight: 0.4
     innovation_weight: 0.3
   prompts:
-    system_role: "You are a Senior Research Scientist at a world-leading AI lab (e.g., DeepMind, OpenAI). You excel at extracting core value from complex system architectures, mathematical derivations, and engineering implementations. You use rigorous terminology (SOTA, Gap, Baseline, Ablation) and demand precision."
+    system_role: "You are a pragmatic Senior Principal Researcher at a top-tier AI lab. You value clarity over complexity and substance over style. Your goal is to help a colleague understand the paper quickly and deeply. Avoid promotional language like 'revolutionary' or 'game-changing'. Use a neutral, objective, and rigorous academic tone."
     quality_assessment: |
       Evaluate the academic quality based on:
       1. **Venue/Author Credibility**: Is it from a top conference (CVPR, ICRA, RSS, NeurIPS) or reputable lab?
@@ -65,10 +63,19 @@ analysis:
       - **Core Contribution**: A single-sentence summary of the most significant technical breakthrough.
       - **Academic Rating**: Rate Innovation and Rigor (1-10) with a concise justification.
 
-      2. **Technical Decomposition**
-      - **Methodology**: Analyze core algorithm logic. Define key objectives mathematically (e.g., Loss $\mathcal{L}$, Probability $P_\theta$). Use standard LaTeX syntax.
-      - **Architecture**: Describe model topology or system pipeline.
-      - **Aha Moment**: What are the 1-2 most ingenious engineering or theoretical tricks?
+      2. **Technical Decomposition** (CRITICAL SECTION: Be detailed and systematic)
+      - **Algorithmic Logic**: 
+          - Provide a step-by-step walkthrough of the method's flow (e.g., Step 1: Input processing... Step 2: Latent diffusion...).
+          - Explain the *intuition* behind why this specific flow was chosen over alternatives.
+      - **Mathematical Formulation**: 
+          - Identify the core objective functions or loss functions (e.g., $\mathcal{L}_{total} = \lambda_1 \mathcal{L}_{rec} + \lambda_2 \mathcal{L}_{adv}$).
+          - **Variable Definition**: For every formula, explicitly define each variable (e.g., where $x_t$ is the noisy latent at step $t$).
+          - **Physical Meaning**: Briefly explain what minimizing/maximizing this term achieves physically or logically.
+      - **Tensor Flow & Architecture**: 
+          - Describe the data shapes at key stages (e.g., Input: $[B, 3, H, W] \rightarrow$ Encoder $\rightarrow$ Latent: $[B, C, h, w]$).
+          - Highlight specific architectural choices (e.g., "Uses FiLM conditioning layers instead of cross-attention").
+      - **Innovation Logic**: 
+          - How does this approach differ mathematically or structurally from prior baselines? (e.g., "Unlike Method A which uses L2 loss, this uses perceptual loss...")
 
       3. **Evidence & Metrics**
       - **Benchmark & Baselines**: Which mainstream models are compared? Is the experimental design fair?
@@ -78,10 +85,6 @@ analysis:
       4. **Critical Assessment**
       - **Hidden Limitations**: Potential failure points in inference latency, scalability, or edge cases.
       - **Engineering Hurdles**: Major pitfalls developers might face during reproduction.
-
-      5. **Next Steps**
-      - Propose 2-3 follow-up research ideas with high publication potential, including specific improvement paths.
-
 
 obsidian:
   vault_path: "../"  # Path to your Obsidian Vault root (Parent Directory)

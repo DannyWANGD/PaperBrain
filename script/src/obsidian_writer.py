@@ -66,8 +66,7 @@ class ObsidianWriter:
         filename = f"{today_str}-PaperDigest.md"
         filepath = os.path.join(self.daily_folder, filename)
         
-        threshold = self.config.get('llm', {}).get('threshold_score', 7)
-        high_impact = [p for p in papers if p.get('score', 0) >= threshold]
+        high_impact = [p for p in papers if p.get('score', 0) >= self.config['doubao']['threshold_score']]
         
         content = ""
         for p in papers:
@@ -78,9 +77,9 @@ class ObsidianWriter:
             innovation = p.get('innovation', p.get('summary', p.get('abstract', '')[:200] + "..."))
             limitations = p.get('limitations', "Not analyzed.")
             
-            link = f"[[{self.get_filename_from_paper(p)}]]" if score >= threshold else f"[Link]({p.get('url', '#')})"
+            link = f"[[{self.get_filename_from_paper(p)}]]" if score >= self.config['doubao']['threshold_score'] else f"[Link]({p.get('url', '#')})"
             # Requirement 2: Only provide local link for high scoring papers, otherwise just web link
-            if score < threshold:
+            if score < self.config['doubao']['threshold_score']:
                 # Ensure it's just the web link
                  link = f"[Web Link]({p.get('url', '#')})"
             
@@ -134,6 +133,7 @@ class ObsidianWriter:
                 img_name = f"{base_name}_arch.{ext}"
                 if os.path.exists(os.path.join(self.assets_folder, img_name)):
                     arch_image_link = f"![[{img_name}]]"
+                    # Only append caption if provided and not empty (Requirement 4: Remove caption)
                     if image_caption:
                         arch_image_link += f"\n*{image_caption}*"
                     break
@@ -192,7 +192,7 @@ score: {score}
 ## 🖼️ Architecture
 {arch_image_link}
 
-## 🧠 AI Analysis (Doubao Seed 2.0 Pro)
+## 🧠 AI Analysis
 {analysis_content}
 
 ## 📂 Resources

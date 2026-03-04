@@ -85,8 +85,7 @@ class KnowledgeGardener:
         for new_paper in new_papers:
             # We only care about high-quality papers that generated a detailed note
             # Assuming main.py passes only analyzed papers or we check score
-            threshold = self.config.get('llm', {}).get('threshold_score', 7)
-            if new_paper.get('score', 0) < threshold:
+            if new_paper.get('score', 0) < self.config['doubao']['threshold_score']:
                 continue
                 
             # Prepare new paper data for matching

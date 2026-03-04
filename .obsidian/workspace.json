@@ -13,12 +13,22 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Research_Notes/Generated_Reality.md",
+                "file": "Research_Notes/ULTRA.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Generated_Reality"
+              "title": "ULTRA"
+            }
+          },
+          {
+            "id": "470a93f882cfe2d1",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "关系图谱"
             }
           },
           {
@@ -106,7 +116,6 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Research_Notes/Generated_Reality.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -116,7 +125,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Generated_Reality 的反向链接列表"
+              "title": "反向链接"
             }
           },
           {
@@ -125,12 +134,11 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Research_Notes/Generated_Reality.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Generated_Reality 的出链列表"
+              "title": "出链"
             }
           },
           {
@@ -202,7 +210,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 742.5
+    "width": 1146.5,
+    "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -224,53 +233,52 @@
       "copilot:Open Copilot Chat": false
     }
   },
-  "active": "0291ba19d28bc292",
+  "active": "a361f88e05c08d8b",
   "lastOpenFiles": [
-    "Research_Notes/FlowHOI.md",
     "copilot/copilot-conversations/为我详细讲解一下这篇文章中的核心创新贡献是什么，结合数@20260303_225230.md",
-    "copilot/copilot-conversations",
-    "copilot",
-    "PDFs/Generated Reality Humancentric World Simulation using Interactive Video Generation with Hand and Cam.pdf",
+    "Podcasts/ULTRA Unified Multimodal Control for Autonomous Hu_Podcast.mp3",
+    "script/src/__pycache__/podcaster.cpython-39.pyc.1384757087344",
+    "Research_Notes/TICVLA.md",
+    "Daily_Papers/2026-02-12-PaperDigest.md",
+    "Research_Notes/FOREST.md",
+    "script/generate_podcast.py",
+    "Research_Notes/Chain of World.md",
+    "Research_Notes/Soft_Contamination.md",
+    "Assets/Soft Contamination Means Benchmarks Test Shallow Generalization_arch.png",
+    "PDFs/Soft Contamination Means Benchmarks Test Shallow Generalization.pdf",
+    "Assets/Visual Foresight for Robotic Stow A DiffusionBased World Model from Sparse Snapshots_arch.png",
+    "PDFs/Visual Foresight for Robotic Stow A DiffusionBased World Model from Sparse Snapshots.pdf",
+    "Assets/TICVLA A ThinkinControl VisionLanguageAction Model for Robot Navigation in Dynamic Environments_arch.png",
+    "PDFs/TICVLA A ThinkinControl VisionLanguageAction Model for Robot Navigation in Dynamic Environments.pdf",
+    "PDFs/Chain of World World Model Thinking in Latent Motion.pdf",
+    "Daily_Papers/2026-03-03-PaperDigest.md",
+    "Research_Notes/Beyond Language Modeling.md",
+    "Research_Notes/ULTRA.md",
     "Research_Notes/Generated_Reality.md",
-    "Assets/FlowHOI Flowbased SemanticsGrounded Generation of HandObject Interactions for Dexterous Robot Manipu_arch.png",
-    "PDFs/FlowHOI Flowbased SemanticsGrounded Generation of HandObject Interactions for Dexterous Robot Manipu.pdf",
+    "Podcasts",
+    "script/src/__pycache__/podcaster.cpython-39.pyc",
+    "script/src/__pycache__/knowledge_base.cpython-39.pyc",
+    "Assets/Chain of World World Model Thinking in Latent Motion_arch.jpeg",
+    "Research_Notes/Utonia.md",
+    "Assets/Utonia Toward One Encoder for All Point Clouds_arch.png",
+    "Research_Notes/ACEBrain0.md",
+    "Assets/ACEBrain0 Spatial Intelligence as a Shared Scaffold for Universal Embodiments_arch.png",
+    "Research_Notes/Beyond_Language_Modeling.md",
+    "Research_Notes/LoGeR.md",
     "Research_Notes/RISE.md",
-    "Assets/RISE SelfImproving Robot Policy with Compositional World Model_arch.png",
-    "PDFs/RISE SelfImproving Robot Policy with Compositional World Model.pdf",
+    "Assets/LoGeR LongContext Geometric Reconstruction with Hybrid Memory_arch.png",
+    "Assets/Beyond Language Modeling An Exploration of Multimodal Pretraining_arch.png",
+    "Assets/ULTRA Unified Multimodal Control for Autonomous Humanoid WholeBody LocoManipulation_arch.png",
+    "Research_Notes/FlowHOI.md",
+    "Assets/FlowHOI Flowbased SemanticsGrounded Generation of HandObject Interactions for Dexterous Robot Manipu_arch.png",
     "Daily_Papers/2026-02-13-PaperDigest.md",
     "Daily_Papers/2026-03-02-PaperDigest.md",
-    "PDFs/OnlineX Unified Online 3D Reconstruction and Understanding with ActivetoStable State Evolution.pdf",
     "README.md",
     "Research_Notes/OnlineX.md",
     "Research_Notes/GeneralVLA.md",
-    "Paperbase.base",
     "Dashboard.md",
     "Research_Notes/EmbodMocap.md",
-    "Pasted image 20260303220453.png",
-    "Pasted image 20260303220437.png",
-    "Assets/OnlineX Unified Online 3D Reconstruction and Understanding with ActivetoStable State Evolution_arch.png",
-    "Pasted image 20260303220300.png",
-    "Pasted image 20260303220047.png",
     "Research_Notes/RynnBrain.md",
-    "PDFs/RynnBrain Open Embodied Foundation Models.pdf",
-    "PDFs/World Action Models are Zeroshot Policies.pdf",
-    "Daily_Papers/2026-02-27-PaperDigest.md",
-    "Daily_Papers/2026-02-26-PaperDigest.md",
-    "Research_Notes/MoRL.md",
-    "PDFs/MoRL Reinforced Reasoning for Unified Motion Understanding and Generation.pdf",
-    "Research_Notes/QuantVLA.md",
-    "Daily_Papers/2026-02-23-PaperDigest.md",
-    "Research_Notes/GeometryAware_Rotary_Position_Embedding_for_Consistent_Video_World_Model.md",
-    "Research_Notes/Gaussian_Sequences_with_MultiScale_Dynamics_for_4D_Reconstruction_from_Monocular_Casual_Videos.md",
-    "Daily_Papers/2026-02-14-PaperDigest.md",
-    "Research_Notes/MALLVI.md",
-    "Assets/Gaussian Sequences with MultiScale Dynamics for 4D Reconstruction from Monocular Casual Videos_arch.png",
-    "Research_Notes/Mean_Flow_Policy_with_Instantaneous_Velocity_Constraint_for_Onestep_Action_Generation.md",
-    "Assets/Mean Flow Policy with Instantaneous Velocity Constraint for Onestep Action Generation_arch.png",
-    "Research_Notes/SemanticContact_Fields_for_CategoryLevel_Generalizable_Tactile_Tool_Manipulation.md",
-    "Assets/SemanticContact Fields for CategoryLevel Generalizable Tactile Tool Manipulation_arch.png",
-    "Research_Notes/The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models.md",
-    "Research_Notes/Xiaomi-Robotics-0.md",
-    "Daily_Papers/2026-02-16-PaperDigest.md"
+    "Daily_Papers/2026-02-27-PaperDigest.md"
   ]
 }

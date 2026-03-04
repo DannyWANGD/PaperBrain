@@ -20,7 +20,7 @@ institutions:
   - UNC Chapel Hill
 publication_date: 2026-02-20
 score: 7
-Reading?:
+Reading?: true
 ---
 
 # Generated Reality: Human-centric World Simulation using Interactive Video Generation with Hand and Camera Control

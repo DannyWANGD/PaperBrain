@@ -17,38 +17,23 @@ import base64
 import yaml # Ensure yaml is imported
 
 class PaperAnalyser:
-    def __init__(self, config):
+    def __init__(self, config, provider='doubao'):
         self.config = config
-        
-        # Determine provider and setup client
-        # Support new structure 'llm' with 'provider' switch
-        llm_config = config.get('llm', {})
-        provider = llm_config.get('provider', 'doubao')
+        self.provider = provider
         
         if provider == 'openrouter':
-            provider_config = llm_config.get('openrouter', {})
-            # Defaults for OpenRouter
-            self.api_key = provider_config.get('api_key', '')
-            self.base_url = provider_config.get('base_url', "https://openrouter.ai/api/v1")
-            self.model_flash = provider_config.get('model_flash', 'anthropic/claude-3-haiku')
-            self.model_pro = provider_config.get('model_pro', 'anthropic/claude-3.5-sonnet')
-            logger.info(f"Using LLM Provider: OpenRouter ({self.model_pro})")
-            
-        elif provider == 'doubao':
-            provider_config = llm_config.get('doubao', {})
-            if not provider_config:
-                # Fallback to legacy root level 'doubao' key if exists
-                provider_config = config.get('doubao', {})
-            
-            self.api_key = provider_config.get('api_key', '')
-            self.base_url = provider_config.get('base_url', "https://ark.cn-beijing.volces.com/api/v3")
-            self.model_flash = provider_config.get('model_flash', 'doubao-seed-2-0-lite-260215')
-            self.model_pro = provider_config.get('model_pro', 'doubao-seed-2-0-pro-260215')
-            logger.info(f"Using LLM Provider: Doubao ({self.model_pro})")
-            
+            self.api_key = config['openrouter']['api_key']
+            self.base_url = "https://openrouter.ai/api/v1"
+            self.model_flash = config['openrouter'].get('model_flash', 'google/gemini-2.0-flash-001')
+            self.model_pro = config['openrouter'].get('model_pro', 'anthropic/claude-3.5-sonnet')
+            logger.info(f"Using OpenRouter Provider. Flash: {self.model_flash}, Pro: {self.model_pro}")
         else:
-            logger.error(f"Unknown LLM provider: {provider}")
-            raise ValueError(f"Unknown LLM provider: {provider}")
+            # Default to Doubao
+            self.api_key = config['doubao']['api_key']
+            self.base_url = "https://ark.cn-beijing.volces.com/api/v3"
+            self.model_flash = config['doubao'].get('model_flash', 'doubao-seed-2-0-lite-260215')
+            self.model_pro = config['doubao'].get('model_pro', 'doubao-seed-2-0-pro-260215')
+            logger.info(f"Using Doubao Provider. Flash: {self.model_flash}, Pro: {self.model_pro}")
 
         self.client = OpenAI(
             api_key=self.api_key,
@@ -129,7 +114,7 @@ class PaperAnalyser:
            - 1-3: Skip. Irrelevant or low quality.
         2. Analyze the **Innovation**: What is the key novelty? (1 sentence)
         3. Analyze the **Limitations/Weaknesses**: What is missing or could be improved? (1 sentence)
-86→        4. Identify **Tags**: Extract 3-5 specific technical tags. **CRITICAL**: Check the "Standard Tag Taxonomy" above. If a concept matches (or is an alias of) a standard tag, YOU MUST USE THE STANDARD TAG NAME (e.g., use 'LLM' instead of 'Large Language Model'). Use underscores. Do not use generic tags like 'AI' or 'Robotics'.
+        4. Identify **Tags**: Extract 3-5 specific technical tags. **CRITICAL**: Check the "Standard Tag Taxonomy" above. If a concept matches (or is an alias of) a standard tag, YOU MUST USE THE STANDARD TAG NAME (e.g., use 'LLM' instead of 'Large Language Model'). Use underscores. Do not use generic tags like 'AI' or 'Robotics'.
         5. **Short Title**: If the paper title has a colon (e.g., "Solaris: Building a ..."), extract the part BEFORE the colon as the short title (e.g., "Solaris"). If no colon, use the full title but replace spaces with underscores.
         6. Return JSON format only: 
         {{
@@ -143,13 +128,23 @@ class PaperAnalyser:
         """
         
         try:
+            extra_params = {}
+            if self.provider == 'openrouter':
+                 # OpenRouter might need headers or specific params, but usually standard OpenAI client works.
+                 # Adding HTTP referer is good practice for OpenRouter
+                 extra_params['extra_headers'] = {
+                    "HTTP-Referer": "https://paperbrain.ai", 
+                    "X-Title": "PaperBrain"
+                 }
+
             response = self.client.chat.completions.create(
                 model=self.model_flash,
                 messages=[
                     {"role": "system", "content": "You are a helpful research assistant. Be objective and critical. Use consistent scoring standards."},
                     {"role": "user", "content": prompt}
                 ],
-                temperature=0.1 # Lower temperature for more stable/deterministic scoring
+                temperature=0.1, # Lower temperature for more stable/deterministic scoring
+                **extra_params
             )
             
             content = response.choices[0].message.content
@@ -335,10 +330,18 @@ JSON ONLY.
                 })
 
             try:
+                extra_params = {}
+                if self.provider == 'openrouter':
+                     extra_params['extra_headers'] = {
+                        "HTTP-Referer": "https://paperbrain.ai", 
+                        "X-Title": "PaperBrain"
+                     }
+                
                 response = self.client.chat.completions.create(
                     model=self.model_pro,
                     messages=vision_messages,
-                    max_tokens=200
+                    max_tokens=200,
+                    **extra_params
                 )
                 choice_text = response.choices[0].message.content.strip()
                 cleaned_json = self._sanitize_json(choice_text)
@@ -374,7 +377,7 @@ JSON ONLY.
             f.write(img_data["bytes"])
         return path
 
-    def analyze_full_paper_iterative(self, paper, pdf_path, existing_notes_list):
+    def analyze_full_paper_iterative(self, paper, pdf_path, existing_notes_list, rag_context=""):
         """
         Performs a multi-round deep analysis using Vision capabilities (PDF to Images).
         """
@@ -425,9 +428,17 @@ JSON ONLY.
         messages_r1.insert(0, {"role": "system", "content": system_role})
         messages_r1.append({"role": "user", "content": round1_prompt})
         
+        extra_params = {}
+        if self.provider == 'openrouter':
+                extra_params['extra_headers'] = {
+                "HTTP-Referer": "https://paperbrain.ai", 
+                "X-Title": "PaperBrain"
+                }
+
         response_r1 = self.client.chat.completions.create(
             model=self.model_pro,
-            messages=messages_r1
+            messages=messages_r1,
+            **extra_params
         )
         r1_content = response_r1.choices[0].message.content
 
@@ -447,16 +458,19 @@ JSON ONLY.
         # --- Round 2: Logical Optimization & Relation Analysis ---
         logger.info(f"  [Round 2] Building knowledge graph and future research directions...")
         
-        context_notes = ', '.join(existing_notes_list[:50])
+        # We use RAG Context here for smarter linking
+        context_notes = rag_context if rag_context else ', '.join(existing_notes_list[:50])
         
         round2_prompt = f"""
         Based on the analysis above, now perform a Connection & Refinement step.
         
-        **Task 1: Knowledge Connections**
-        - Identify 3-5 MOST relevant connections to my existing knowledge base: {context_notes}.
+        {rag_context}
+        
+        **Task 1: Differential Analysis & Connections**
+        - Identify 3-5 MOST relevant connections to my existing knowledge base (see Related Notes above).
+        - **Differential Analysis**: Explicitly state how this new paper differs from or improves upon the specific related notes mentioned.
         - Focus on meaningful relationships (e.g., similar methods, conflicting results, foundational theories).
-        - Do NOT force connections if there are no strong links. Quality over quantity.
-        - Use [[Wiki-Link]] format.
+        - Use [[Wiki-Link]] format for the filenames.
         
         **Task 2: Mermaid Knowledge Graph**
         - Generate a Mermaid JS code block (`graph LR` or `mindmap`) visualizing the paper's core concepts.
@@ -477,11 +491,13 @@ JSON ONLY.
         
         response_r2 = self.client.chat.completions.create(
             model=self.model_pro,
-            messages=messages_r2
+            messages=messages_r2,
+            **extra_params
         )
         r2_content = response_r2.choices[0].message.content
 
         # --- Final Compilation ---
+        provider_name = "Doubao" if self.provider == 'doubao' else f"OpenRouter ({self.model_pro})"
         final_report = f"""
 # 🚀 Deep Analysis Report: {paper['title']}
 
@@ -492,6 +508,6 @@ JSON ONLY.
 {r2_content}
 
 ---
-*Analysis performed by PaperBrain-Doubao (Vision-Enabled)*
+*Analysis performed by PaperBrain-{provider_name} (Vision-Enabled)*
 """
         return final_report

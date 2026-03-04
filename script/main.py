@@ -9,6 +9,8 @@ from src.analyser import PaperAnalyser
 from src.obsidian_writer import ObsidianWriter
 from src.gardener import KnowledgeGardener
 from src.notifier import Notifier
+from src.knowledge_base import KnowledgeBase
+from src.podcaster import Podcaster
 from datetime import datetime, timedelta
 from tqdm import tqdm # Import tqdm for progress bars
 import argparse
@@ -90,7 +92,7 @@ def download_pdf(url, title, destination_folder=None, retries=3):
     logger.error(f"[ERR] All download attempts failed for {title}")
     return None
 
-def job(target_date=None):
+def job(target_date=None, provider='doubao'):
     logger.info("Starting Daily PaperBrain Job...")
     
     # Determine target date
@@ -99,14 +101,17 @@ def job(target_date=None):
         target_date = datetime.now().date() - timedelta(days=1)
     
     logger.info(f"[INFO] Target Date for search: {target_date}")
+    logger.info(f"[INFO] AI Provider: {provider}")
     
     config = load_config()
     
     scraper = PaperScraper(config)
-    analyser = PaperAnalyser(config)
+    analyser = PaperAnalyser(config, provider=provider)
     obsidian_writer = ObsidianWriter(config)
     gardener = KnowledgeGardener(config)
     notifier = Notifier(config)
+    knowledge_base = KnowledgeBase(config, provider=provider)
+    podcaster = Podcaster(config, provider=provider)
     
     # 1. Scrape (pass target_date)
     papers = scraper.get_all_papers(target_date=target_date)
@@ -139,7 +144,7 @@ def job(target_date=None):
     obsidian_writer.write_daily_digest(screened_papers, target_date=target_date)
     
     # 4. Deep Analysis for High Value Papers
-    threshold = config.get('llm', {}).get('threshold_score', 7)
+    threshold = config['doubao'].get('threshold_score', 8)
     existing_notes = obsidian_writer.scan_existing_notes()
     
     # Dynamic Thresholding: Ensure at least 1 and at most 3 papers are analyzed
@@ -162,6 +167,11 @@ def job(target_date=None):
         # 1-3 papers found, keep them all
         high_value_papers = candidates
     
+    highest_scoring_paper = None
+    highest_score = -1
+    highest_analysis_content = ""
+    highest_rag_context = ""
+
     if not high_value_papers:
         logger.info("[INFO] No suitable papers found for deep analysis even after relaxing criteria.")
     else:
@@ -173,6 +183,10 @@ def job(target_date=None):
             if not p.get('pdf_url'):
                 logger.warning(f"[WARN] No PDF URL for {p['title']}, skipping.")
                 continue
+            
+            # Context-Aware RAG Retrieval
+            logger.info(f"  [STEP] Retrieving Context from Knowledge Base...")
+            rag_context = knowledge_base.retrieve_context(p['title'], p['abstract'])
                 
             # Download PDF
             logger.info(f"  [STEP] Downloading PDF...")
@@ -183,10 +197,17 @@ def job(target_date=None):
                 logger.info(f"  [STEP] Extracting Architecture Images...")
                 _, img_caption = analyser.extract_images_from_pdf(pdf_path, obsidian_writer.assets_folder)
                 
-                # Analyze text iteratively
+                # Analyze text iteratively (WITH RAG CONTEXT)
                 logger.info(f"  [STEP] Performing Deep AI Analysis (This may take a minute)...")
-                analysis_text = analyser.analyze_full_paper_iterative(p, pdf_path, existing_notes)
+                analysis_text = analyser.analyze_full_paper_iterative(p, pdf_path, existing_notes, rag_context=rag_context)
                 
+                # Track best paper for podcast
+                if p.get('score', 0) > highest_score:
+                    highest_score = p.get('score', 0)
+                    highest_scoring_paper = p
+                    highest_analysis_content = analysis_text
+                    highest_rag_context = rag_context
+
                 # Try to extract the Academic Rating from the analysis text
                 import re
                 rating_match = re.search(r"Academic Rating\*\*:.*?(\d+(?:\.\d+)?)/10", analysis_text, re.IGNORECASE)
@@ -194,8 +215,8 @@ def job(target_date=None):
                     ai_rating = rating_match.group(1)
                     logger.info(f"  [SCORE] AI Academic Rating: {ai_rating}/10")
                 
-                # Save to Obsidian (Legacy)
-                obsidian_writer.write_detailed_note(p, analysis_text, local_pdf_path=pdf_path, image_caption=img_caption)
+                # Save to Obsidian
+                obsidian_writer.write_detailed_note(p, analysis_text, local_pdf_path=pdf_path, image_caption=None)
                 
                 logger.info(f"  [DONE] Analysis complete and saved.")
             else:
@@ -210,12 +231,18 @@ def job(target_date=None):
         logger.info("[INFO] Sending Notifications...")
         notifier.send_daily_summary(high_value_papers)
 
+    # 7. Generate Podcast for the BEST paper
+    if highest_scoring_paper:
+        logger.info(f"[INFO] Generating Podcast for Top Paper: {highest_scoring_paper['title']}...")
+        podcaster.create_podcast(highest_scoring_paper['title'], highest_analysis_content, highest_rag_context)
+
     logger.info("[SUCCESS] Job completed successfully.")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="PaperBrain Daily Job")
     parser.add_argument("--run-now", action="store_true", help="Run the job immediately")
     parser.add_argument("--date", type=str, help="Target date in YYYY-MM-DD format (default: yesterday)")
+    parser.add_argument("--provider", type=str, default="doubao", choices=["doubao", "openrouter"], help="AI Provider (default: doubao)")
     
     args = parser.parse_args()
     
@@ -228,21 +255,15 @@ if __name__ == "__main__":
             exit(1)
     
     if args.run_now:
-        job(target_date)
+        job(target_date, provider=args.provider)
     else:
-        # If running as a daemon, target_date argument might not make sense unless we want to schedule it for a specific date in the future?
-        # Assuming the daemon always runs for "yesterday" relative to execution time.
-        # But if the user provides --date without --run-now, maybe they want to schedule a one-off for that date?
-        # The prompt implies standard behavior is daemon.
-        # Let's keep the daemon logic simple: it always processes yesterday relative to when it wakes up.
-        
         config = load_config()
         schedule_time = config['schedule'].get('time', "08:00")
-        logger.info(f"Scheduler started. Job set for {schedule_time} daily.")
+        logger.info(f"Scheduler started. Job set for {schedule_time} daily. Provider: {args.provider}")
         
         # Define a wrapper to always calculate yesterday dynamically
         def scheduled_job():
-            job(target_date=None) # Will default to yesterday inside job()
+            job(target_date=None, provider=args.provider) # Will default to yesterday inside job()
             
         schedule.every().day.at(schedule_time).do(scheduled_job)
         
