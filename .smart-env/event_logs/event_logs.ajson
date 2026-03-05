@@ -202,3 +202,4 @@
 "event_logs:item:embedded": {"key":"item:embedded","ct":4908,"first_at":1772258242298,"last_at":1772715754188,"class_name":"EventLog"},
 "event_logs:sources:opened": {"key":"sources:opened","ct":274,"first_at":1772258404413,"last_at":1772715883465,"class_name":"EventLog","event_sources":{"active-leaf-change":271,"open_source method":3}},
 "event_logs:sources:opened": {"key":"sources:opened","ct":275,"first_at":1772258404413,"last_at":1772715887912,"class_name":"EventLog","event_sources":{"active-leaf-change":272,"open_source method":3}},
+"event_logs:sources:deleted": {"key":"sources:deleted","ct":13,"first_at":1772267756325,"last_at":1772716029356,"class_name":"EventLog","event_sources":{"obsidian:vault.delete":13}},
