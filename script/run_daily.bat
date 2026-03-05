@@ -26,9 +26,11 @@ if %errorlevel% neq 0 (
 
 :: 4. Activate Environment
 :: Use 'call' to prevent script termination
-call conda activate wd
+:: Default to 'wd' if CONDA_ENV is not set
+if "%CONDA_ENV%"=="" set CONDA_ENV=wd
+call conda activate %CONDA_ENV%
 if %errorlevel% neq 0 (
-  echo [ERR] Failed to activate conda environment 'wd'.
+  echo [ERR] Failed to activate conda environment '%CONDA_ENV%'.
   goto :cleanup_error
 )
 

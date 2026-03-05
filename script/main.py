@@ -33,6 +33,17 @@ import shutil
 
 def download_pdf(url, title, destination_folder=None, retries=3):
     """Downloads PDF to a file with retries and robust headers."""
+    # Security Check: Validate URL scheme and domain whitelist
+    if not url.startswith(('http://', 'https://')):
+        logger.warning(f"[SECURITY] Skipped unsafe URL scheme: {url}")
+        return None
+        
+    # Optional: strict domain checking (commented out to allow flexibility, but recommended for strict security)
+    # trusted_domains = ['arxiv.org', 'huggingface.co', 'aclweb.org', 'openreview.net']
+    # if not any(domain in url for domain in trusted_domains):
+    #     logger.warning(f"[SECURITY] URL not in trusted domains: {url}")
+    #     # return None # Uncomment to enforce
+
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         'Accept': 'application/pdf,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',

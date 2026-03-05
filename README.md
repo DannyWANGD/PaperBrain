@@ -105,6 +105,13 @@ Use **Task Scheduler** to run `script/run_daily.bat` every morning at 8:00 AM.
 *   *Program*: `D:\PaperBrain\script\run_daily.bat`
 *   *Start in*: `D:\PaperBrain\script\` (Crucial!)
 
+### 🔒 Privacy & Security
+
+This tool processes data locally and interacts with third-party AI services.
+*   **API Keys**: Stored in `.env` (git-ignored). Never shared.
+*   **Data Transmission**: Paper content is sent to ArXiv (search), Hugging Face (metadata), OpenAI/Anthropic (analysis), and Microsoft (TTS).
+*   **See [SECURITY.md](SECURITY.md)** for full details.
+
 ---
 
 <a name="paperbrain---自动化科研情报中枢"></a>
@@ -211,6 +218,13 @@ python generate_podcast.py "Solaris.md" --provider openrouter --minutes 12
 1.  创建基本任务 -> 每天上午 8:00。
 2.  操作：启动程序 -> 选择 `D:\PaperBrain\script\run_daily.bat`。
 3.  **关键点**：在“起始于 (Start in)”一栏中，**必须**填入脚本所在目录 `D:\PaperBrain\script\`，否则会报错。
+
+### 🔒 隐私与安全
+
+本项目注重您的数据隐私与密钥安全。
+*   **API 密钥**：仅存储在本地 `.env` 文件中（默认被 git 忽略），绝不上传。
+*   **数据传输**：论文内容仅发送至 ArXiv (搜索)、Hugging Face (元数据)、OpenAI/Anthropic (分析) 及 Microsoft (语音合成) 用于生成报告。
+*   **详见 [SECURITY.md](SECURITY.md)** 了解完整安全策略。
 
 ---
 *Powered by PaperBrain Team & LLMs*
