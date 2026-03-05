@@ -86,7 +86,7 @@ def download_pdf(url, title, destination_folder=None, retries=3):
     logger.error(f"[ERR] All download attempts failed for {title}")
     return None
 
-def job(target_date=None, provider='doubao'):
+def job(target_date=None, provider='doubao', generate_podcast=True, podcast_minutes=5):
     logger.info("Starting Daily PaperBrain Job...")
     
     # Determine target date
@@ -96,6 +96,8 @@ def job(target_date=None, provider='doubao'):
     
     logger.info(f"[INFO] Target Date for search: {target_date}")
     logger.info(f"[INFO] AI Provider: {provider}")
+    logger.info(f"[INFO] Podcast Generation: {'Enabled' if generate_podcast else 'Disabled'}")
+    logger.info(f"[INFO] Podcast Duration: ~{podcast_minutes} minutes")
     
     config = load_config()
     
@@ -134,10 +136,7 @@ def job(target_date=None, provider='doubao'):
     screened_papers.sort(key=lambda x: x.get('score', 0), reverse=True)
     logger.info("[INFO] Screening complete. Generating Daily Digest...")
     
-    # 3. Write Daily Digest (Keep Obsidian Sync) - pass target_date
-    obsidian_writer.write_daily_digest(screened_papers, target_date=target_date)
-    
-    # 4. Deep Analysis for High Value Papers
+    # 3. Deep Analysis for High Value Papers
     threshold = config['doubao'].get('threshold_score', 8)
     existing_notes = obsidian_writer.scan_existing_notes()
     
@@ -216,6 +215,10 @@ def job(target_date=None, provider='doubao'):
             else:
                 logger.error(f"  [ERR] Failed to download PDF.")
 
+    # 4. Write Daily Digest after note generation.
+    # This guarantees [[note]] links only appear for papers that actually generated detailed notes.
+    obsidian_writer.write_daily_digest(screened_papers, target_date=target_date)
+
     # 5. Knowledge Gardening (Backlinking)
     if high_value_papers:
         logger.info("[INFO] Starting Knowledge Gardening (Backlinking)...")
@@ -226,9 +229,14 @@ def job(target_date=None, provider='doubao'):
         notifier.send_daily_summary(high_value_papers)
 
     # 7. Generate Podcast for the BEST paper
-    if highest_scoring_paper:
+    if generate_podcast and highest_scoring_paper:
         logger.info(f"[INFO] Generating Podcast for Top Paper: {highest_scoring_paper['title']}...")
-        audio_path = podcaster.create_podcast(highest_scoring_paper['title'], highest_analysis_content, highest_rag_context)
+        audio_path = podcaster.create_podcast(
+            highest_scoring_paper['title'],
+            highest_analysis_content,
+            highest_rag_context,
+            duration_minutes=podcast_minutes
+        )
         
         # 8. Send Podcast Notification
         if audio_path:
@@ -241,6 +249,8 @@ if __name__ == "__main__":
     parser.add_argument("--run-now", action="store_true", help="Run the job immediately")
     parser.add_argument("--date", type=str, help="Target date in YYYY-MM-DD format (default: yesterday)")
     parser.add_argument("--provider", type=str, default="doubao", choices=["doubao", "openrouter"], help="AI Provider (default: doubao)")
+    parser.add_argument("--no-podcast", action="store_true", help="Disable podcast generation")
+    parser.add_argument("--podcast-minutes", type=int, default=5, help="Target podcast duration in minutes (default: 5)")
     
     args = parser.parse_args()
     
@@ -251,17 +261,20 @@ if __name__ == "__main__":
         except ValueError:
             logger.error("Invalid date format. Please use YYYY-MM-DD.")
             exit(1)
+            
+    generate_podcast = not args.no_podcast
+    podcast_minutes = max(1, args.podcast_minutes)
     
     if args.run_now:
-        job(target_date, provider=args.provider)
+        job(target_date, provider=args.provider, generate_podcast=generate_podcast, podcast_minutes=podcast_minutes)
     else:
         config = load_config()
         schedule_time = config['schedule'].get('time', "08:00")
-        logger.info(f"Scheduler started. Job set for {schedule_time} daily. Provider: {args.provider}")
+        logger.info(f"Scheduler started. Job set for {schedule_time} daily. Provider: {args.provider}. Podcast: {'Enabled' if generate_podcast else 'Disabled'}. Duration: ~{podcast_minutes} minutes")
         
         # Define a wrapper to always calculate yesterday dynamically
         def scheduled_job():
-            job(target_date=None, provider=args.provider) # Will default to yesterday inside job()
+            job(target_date=None, provider=args.provider, generate_podcast=generate_podcast, podcast_minutes=podcast_minutes) # Will default to yesterday inside job()
             
         schedule.every().day.at(schedule_time).do(scheduled_job)
         

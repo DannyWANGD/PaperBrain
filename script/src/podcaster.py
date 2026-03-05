@@ -39,13 +39,16 @@ class Podcaster:
             timeout=120.0  # Increased timeout for long script generation
         )
 
-    def generate_script(self, paper_title, analysis_content, rag_context=""):
+    def generate_script(self, paper_title, analysis_content, rag_context="", duration_minutes=5):
         """
         Generates a podcast script based on the paper analysis and RAG context.
         """
+        duration_minutes = max(1, int(duration_minutes))
+        target_words_min = duration_minutes * 130
+        target_words_max = duration_minutes * 170
         prompt = f"""
         You are a professional tech podcaster (like Lex Fridman or a specialized AI researcher host).
-        Your task is to create a script for a **detailed "Deep Dive" audio segment** (target duration: ~10 minutes).
+        Your task is to create a script for a **detailed "Deep Dive" audio segment** (target duration: ~{duration_minutes} minutes).
         
         Topic: {paper_title}
         
@@ -60,7 +63,7 @@ class Podcaster:
         - **Enthusiastic but Critical**: Be genuinely excited about the innovation but maintain a healthy skepticism about limitations.
         - **Storytelling**: Frame the research as a narrative. What was the struggle before this? What is the hero (the new method)? What is the climax (the results)?
         
-        **Structure (Aim for ~1500-2000 words for 10 mins)**:
+        **Structure (Aim for ~{target_words_min}-{target_words_max} words for {duration_minutes} mins)**:
         1. **The Hook**: Start with a provocative question or a real-world scenario that this technology solves.
         2. **The "Status Quo"**: Explain why previous methods failed. Use analogies (e.g., "It's like trying to teach a cat calculus...").
         3. **The Breakthrough (The "Meat")**: Deep dive into the technical innovation. Don't just list features; explain the *intuition*.
@@ -100,7 +103,7 @@ class Podcaster:
         communicate = edge_tts.Communicate(text, voice)
         await communicate.save(output_path)
 
-    def create_podcast(self, paper_title, analysis_content, rag_context=""):
+    def create_podcast(self, paper_title, analysis_content, rag_context="", duration_minutes=5):
         """
         Main method to generate script and audio.
         Returns the path to the audio file.
@@ -108,7 +111,7 @@ class Podcaster:
         logger.info(f"Generating Podcast for: {paper_title}")
         
         # 1. Generate Script
-        script = self.generate_script(paper_title, analysis_content, rag_context)
+        script = self.generate_script(paper_title, analysis_content, rag_context, duration_minutes=duration_minutes)
         if not script:
             return None
             

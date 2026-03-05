@@ -33,7 +33,7 @@ Total Papers: 43 | High Impact: 10
 ### ✨ DexEvolve: Evolutionary Optimization for Robust and Diverse Dexterous Grasp Synthesis (Score: 7/10)
 - **💡 Innovation**: The key novelty is a scalable generate-and-refine dexterous grasp synthesis pipeline that uses asynchronous gradient-free evolutionary optimization in high-fidelity Isaac Sim to improve suboptimal analytically generated grasps while preserving diversity, then distills the refined grasp distribution into a diffusion model for robust real-world deployment.
 - **⚠️ Limitations**: The work does not provide explicit quantitative real-world robotic deployment validation results, does not support cross-gripper morphology grasp transfer, and does not integrate or evaluate against other relevant technologies from your listed interests including 3D Gaussian Splatting, foundation models, or reinforcement learning for grasp optimization.
-- **🔗 Link**: [[DexEvolve Evolutionary Optimization for Robust and Diverse Dexterous Grasp Synthesis]]
+- **🔗 Link**: [Web Link](https://arxiv.org/abs/2602.15201)
 - **👥 Authors**: René Zurbrügg, Andrei Cramariuc, Marco Hutter
 - **🏷️ Tags**: 
 
@@ -42,7 +42,7 @@ Total Papers: 43 | High Impact: 10
 ### ✨ ABot-M0: VLA Foundation Model for Robotic Manipulation with Action Manifold Learning (Score: 7/10)
 - **💡 Innovation**: The key novelty lies in the proposed Action Manifold Hypothesis and corresponding Action Manifold Learning with a DiT backbone for efficient stable action prediction, paired with the large-scale cross-robot UniACT dataset and modular dual-stream perception pipeline for generalizable VLA-based robotic manipulation.
 - **⚠️ Limitations**: The work lacks explicit SOTA performance comparisons against existing state-of-the-art robotic VLAs, does not validate sim2real transfer, 3D Gaussian Splatting integration, or reinforcement learning fine-tuning, and provides no quantitative cross-robot transfer performance results in the abstract.
-- **🔗 Link**: [[ABotM0 VLA Foundation Model for Robotic Manipulation with Action Manifold Learning]]
+- **🔗 Link**: [Web Link](https://arxiv.org/abs/2602.11236)
 - **👥 Authors**: Yandan Yang, Shuang Zeng, Tong Lin, Xinyuan Chang, Dekang Qi, Junjin Xiao, Haoyun Liu, Ronghan Chen, Yuzhi Chen, Dongjie Huo, Feng Xiong, Xing Wei, Zhiheng Ma, Mu Xu
 - **🏷️ Tags**: 
 
@@ -51,7 +51,7 @@ Total Papers: 43 | High Impact: 10
 ### ✨ RLinf-Co: Reinforcement Learning-Based Sim-Real Co-Training for VLA Models (Score: 7/10)
 - **💡 Innovation**: The key novelty is the proposed RL-based sim-real co-training (RL-Co) framework for VLA models, which uses a two-stage pipeline combining SFT warm-start on mixed real and simulated demonstrations with RL fine-tuning in simulation paired with an auxiliary real-world supervised loss to mitigate catastrophic forgetting, delivering better real-world manipulation performance and generalization than SFT-only co-training baselines.
 - **⚠️ Limitations**: The work is only evaluated on simple tabletop manipulation tasks, does not explore integration with advanced perceptual representations like 3D/4D Gaussian Splatting or world models, and lacks validation on diverse robot morphologies and long-horizon complex tasks.
-- **🔗 Link**: [[RLinfCo Reinforcement LearningBased SimReal CoTraining for VLA Models]]
+- **🔗 Link**: [Web Link](https://arxiv.org/abs/2602.12628)
 - **👥 Authors**: Liangzhi Shi, Shuaihang Chen, Feng Gao, Yinuo Chen, Kang Chen, Tonghe Zhang, Hongzhi Zhang, Weinan Zhang, Chao Yu, Yu Wang
 - **🏷️ Tags**: 
 
@@ -60,7 +60,7 @@ Total Papers: 43 | High Impact: 10
 ### ✨ OneVision-Encoder: Codec-Aligned Sparsity as a Foundational Principle for Multimodal Intelligence (Score: 6/10)
 - **💡 Innovation**: The key novelty is the codec-aligned patch-level sparsity based OneVision-Encoder, which allocates computation exclusively to high-entropy visual regions, uses 3D RoPE for unified spatio-temporal reasoning, and outperforms state-of-the-art dense vision backbones across image, video and document understanding benchmarks when integrated with LLMs while consuming far fewer compute resources.
 - **⚠️ Limitations**: The work does not evaluate the proposed encoder on robotics, embodied perception, or 3D scene understanding tasks relevant to your core research interests, nor does it validate its utility for downstream use cases including VLAs, robot manipulation, world model construction, or sim2real transfer pipelines.
-- **🔗 Link**: [[OneVisionEncoder CodecAligned Sparsity as a Foundational Principle for Multimodal Intelligence]]
+- **🔗 Link**: [Web Link](https://arxiv.org/abs/2602.08683)
 - **👥 Authors**: Feilong Tang, Xiang An, Yunyao Yan, Yin Xie, Bin Qin, Kaicheng Yang, Yifei Shen, Yuanhan Zhang, Chunyuan Li, Shikun Feng, Changrui Chen, Huajie Tan, Ming Hu, Manyuan Zhang, Bo Li, Ziyong Feng, Ziwei Liu, Zongyuan Ge, Jiankang Deng
 - **🏷️ Tags**: 
 
@@ -69,7 +69,7 @@ Total Papers: 43 | High Impact: 10
 ### ✨ What does RL improve for Visual Reasoning? A Frankenstein-Style Analysis (Score: 6/10)
 - **💡 Innovation**: The key novelty is the proposed Frankenstein-style three-component analysis framework consisting of causal probing for functional localization, parameter comparison for update characterization, and model merging for transferability test, to systematically disentangle the exact capabilities reinforcement learning improves for visual reasoning in vision-language models relative to supervised fine-tuning initialization.
 - **⚠️ Limitations**: The work is limited to analyzing RL improvements on general visual reasoning tasks, and does not extend its analysis to robotics-aligned use cases such as embodied AI, robot manipulation, or VLA deployment, nor does it validate its findings on real-world robotic systems.
-- **🔗 Link**: [[What does RL improve for Visual Reasoning A FrankensteinStyle Analysis]]
+- **🔗 Link**: [Web Link](https://arxiv.org/abs/2602.12395)
 - **👥 Authors**: Xirui Li, Ming Li, Tianyi Zhou
 - **🏷️ Tags**: 
 
@@ -78,7 +78,7 @@ Total Papers: 43 | High Impact: 10
 ### ✨ On Robustness and Chain-of-Thought Consistency of RL-Finetuned VLMs (Score: 6/10)
 - **💡 Innovation**: This work uncovers a previously underexplored accuracy-faithfulness tradeoff in RL-finetuned vision language models, demonstrates that controlled textual perturbations significantly degrade model robustness and chain-of-thought consistency, and quantifies the limited efficacy of adversarial augmentation and faithfulness-aware rewards for mitigating these vulnerabilities.
 - **⚠️ Limitations**: The study only evaluates general multimodal reasoning VLMs without testing its findings on VLAs, robot manipulation pipelines, or embodied AI scenarios, and does not assess the impact of visual input perturbations or 3D perception modalities relevant to real-world robotics use cases.
-- **🔗 Link**: [[On Robustness and ChainofThought Consistency of RLFinetuned VLMs]]
+- **🔗 Link**: [Web Link](https://arxiv.org/abs/2602.12506)
 - **👥 Authors**: Rosie Zhao, Anshul Shah, Xiaoyu Zhu, Xinke Deng, Zhongyu Jiang, Yang Yang, Joerg Liebelt, Arnab Mondal
 - **🏷️ Tags**: 
 
@@ -87,7 +87,7 @@ Total Papers: 43 | High Impact: 10
 ### ✨ FLAC: Maximum Entropy RL via Kinetic Energy Regularized Bridge Matching (Score: 5/10)
 - **💡 Innovation**: The key novelty is formulating maximum entropy reinforcement learning for iterative generative policies (e.g., diffusion models) as a Generalized Schrödinger Bridge problem with kinetic energy regularization, removing the requirement for explicit action log-density estimation.
 - **⚠️ Limitations**: The work is only validated on standard continuous control benchmarks, with no exploration of integration with embodied AI pipelines, robot manipulation tasks, foundation models, VLAs, or other domains aligned with your stated research interests.
-- **🔗 Link**: [[FLAC Maximum Entropy RL via Kinetic Energy Regularized Bridge Matching]]
+- **🔗 Link**: [Web Link](https://arxiv.org/abs/2602.12829)
 - **👥 Authors**: Lei Lv, Yunfei Li, Yu Luo, Fuchun Sun, Xiao Ma
 - **🏷️ Tags**: 
 
@@ -389,5 +389,4 @@ Total Papers: 43 | High Impact: 10
 - **🏷️ Tags**: 
 
 ---
-
 

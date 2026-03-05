@@ -33,7 +33,7 @@ Total Papers: 35 | High Impact: 5
 ### ✨ Causal-JEPA: Learning World Models through Object-Level Latent Interventions (Score: 7/10)
 - **💡 Innovation**: The key novelty is extending masked joint embedding prediction from image patches to object-centric representations, using object-level masking to induce causal latent interventions that improve counterfactual reasoning and planning efficiency for world models.
 - **⚠️ Limitations**: The work does not evaluate performance on real-world embodied tasks like robot manipulation, does not explore integration with foundation models or VLAs, and lacks validation of sim2real transfer capability for the proposed world model.
-- **🔗 Link**: [[CausalJEPA]]
+- **🔗 Link**: [Web Link](https://arxiv.org/abs/2602.11389)
 - **👥 Authors**: Heejeong Nam, Quentin Le Lidec, Lucas Maes, Yann LeCun, Randall Balestriero
 - **🏷️ Tags**: #World_Model #Embodied_AI #Reinforcement_Learning
 
@@ -42,7 +42,7 @@ Total Papers: 35 | High Impact: 5
 ### ✨ Learning Native Continuation for Action Chunking Flow Policies (Score: 7/10)
 - **💡 Innovation**: The key novelty is Legato, a training-time continuation method for action-chunked flow-based VLA policies that uses schedule-shaped denoising initialization from a mixture of known actions and noise, reshapes learned flow dynamics for train-inference consistency, and applies randomized schedule conditioning to eliminate chunk boundary discontinuities and enable controllable trajectory smoothness.
 - **⚠️ Limitations**: The work does not evaluate generalizability to long-horizon manipulation tasks, compare against non-flow-based action chunking baselines, or test integration with widely used large pre-trained generalist VLA models like OpenVLA or RT-2.
-- **🔗 Link**: [[Learning_Native_Continuation_for_Action_Chunking_Flow_Policies]]
+- **🔗 Link**: [Web Link](https://arxiv.org/abs/2602.12978)
 - **👥 Authors**: Yufeng Liu, Hang Yu, Juntu Zhao, Bocheng Li, Di Zhang, Mingzhu Li, Wenxuan Wu, Yingdong Hu, Junyuan Xie, Junliang Guo, Dequan Wang, Yang Gao
 - **🏷️ Tags**: #VLA #Embodied_AI #Robot_Manipulation #Foundation_Model
 
@@ -317,5 +317,4 @@ Total Papers: 35 | High Impact: 5
 - **🏷️ Tags**: #LLM #Foundation_Model
 
 ---
-
 

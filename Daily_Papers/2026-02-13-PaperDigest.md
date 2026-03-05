@@ -33,7 +33,7 @@ Total Papers: 45 | High Impact: 9
 ### 🔥 Steerable Vision-Language-Action Policies for Embodied Reasoning and Hierarchical Control (Score: 8/10)
 - **💡 Innovation**: The key novelty is the development of Steerable Vision-Language-Action (VLA) policies trained on synthetic commands spanning multiple abstraction levels (subtasks, motions, grounded pixel coordinates) to address the limited controllability of standard VLAs by high-level VLM reasoning, enabling improved generalization for long-horizon embodied manipulation tasks.
 - **⚠️ Limitations**: The paper does not report the data efficiency of training steerable VLAs on multi-abstraction synthetic commands, nor does it explore integration with related popular paradigms such as diffusion models, world models, or reinforcement learning to further expand applicability.
-- **🔗 Link**: [[Steerable_VisionLanguageAction_Policies_for_Embodied_Reasoning_and_Hierarchical_Control]]
+- **🔗 Link**: [Web Link](https://arxiv.org/abs/2602.13193)
 - **👥 Authors**: William Chen, Jagdeep Singh Bhatia, Catherine Glossop, Nikhil Mathihalli, Ria Doshi, Andy Tang, Danny Driess, Karl Pertsch, Sergey Levine
 - **🏷️ Tags**: #VLA #Embodied_AI #Robot_Manipulation #Foundation_Model #LLM
 
@@ -42,7 +42,7 @@ Total Papers: 45 | High Impact: 9
 ### 🔥 GigaBrain-0.5M*: a VLA That Learns From World Model-Based Reinforcement Learning (Score: 8/10)
 - **💡 Innovation**: The key novelty is the proposal of GigaBrain-0.5M*, a VLA built on a large pre-trained robotic manipulation foundation model, that leverages the proposed RAMP framework to integrate world model-based reinforcement learning, enabling improved cross-task adaptation and robust long-horizon robot manipulation performance.
 - **⚠️ Limitations**: This work lacks detailed ablation studies to isolate the performance contribution of each core component, only compares against the single RECAP baseline rather than a wider set of state-of-the-art VLAs, and provides no quantitative metrics for real-world deployment performance relying only on video validation.
-- **🔗 Link**: [[GigaBrain05M]]
+- **🔗 Link**: [Web Link](https://arxiv.org/abs/2602.12099)
 - **👥 Authors**: GigaBrain Team, Boyuan Wang, Chaojun Ni, Guan Huang, Guosheng Zhao, Hao Li, Jie Li, Jindi Lv, Jingyu Liu, Lv Feng, Mingming Yu, Peng Li, Qiuping Deng, Tianze Liu, Xinyu Zhou, Xinze Chen, Xiaofeng Wang, Yang Wang, Yifan Li, Yifei Nie, Yilong Li, Yukun Zhou, Yun Ye, Zhichao Liu, Zheng Zhu
 - **🏷️ Tags**: #VLA #World_Model #Reinforcement_Learning #Robot_Manipulation #Foundation_Model
 
@@ -51,7 +51,7 @@ Total Papers: 45 | High Impact: 9
 ### 🔥 Sparse Video Generation Propels Real-World Beyond-the-View Vision-Language Navigation (Score: 8/10)
 - **💡 Innovation**: The key novelty is the first application of long-horizon supervision-aligned video generation models to Beyond-the-View Navigation, paired with the proposed SparseVideoNav framework that reduces inference latency by 27x to enable sub-second 20-second horizon sparse trajectory generation for real-world deployment.
 - **⚠️ Limitations**: The work lacks ablation studies to validate the contribution of individual components of SparseVideoNav, does not test performance on dynamic environments with moving obstacles, and does not report comparisons to non-LLM navigation baselines.
-- **🔗 Link**: [[Sparse_Video_Generation_Propels_RealWorld_BeyondtheView_VisionLanguage_Navigation]]
+- **🔗 Link**: [Web Link]((https://arxiv.org/abs/2602.05827)
 - **👥 Authors**: Hai Zhang, Siqi Liang, Li Chen, Yuxian Li, Yukuan Xu, Yichao Zhong, Fu Zhang, Hongyang Li
 - **🏷️ Tags**: #Embodied_AI #LLM #World_Model #Foundation_Model
 
@@ -60,7 +60,7 @@ Total Papers: 45 | High Impact: 9
 ### 🔥 ABot-N0: Technical Report on the VLA Foundation Model for Versatile Embodied Navigation (Score: 8/10)
 - **💡 Innovation**: The key novelty is the ABot-N0 unified VLA foundation model with a hierarchical Brain-Action architecture pairing an LLM-based cognitive brain for semantic reasoning and a flow matching action expert for continuous trajectory generation, supported by a large-scale data engine curating 21.9M total samples across 7,802 3D scenes, that unifies 5 core embodied navigation tasks, achieves SOTA on 7 benchmarks, and enables robust long-horizon real-world navigation via an integrated agentic system with hierarchical topological memory.
 - **⚠️ Limitations**: The work does not provide quantitative evaluations of sim2real transfer performance, does not compare its flow matching action generation approach to diffusion model baselines, does not explore integration with world models for improved unseen scene adaptation, and does not discuss extensibility to robot manipulation tasks.
-- **🔗 Link**: [[ABotN0]]
+- **🔗 Link**: [Web Link](https://arxiv.org/abs/2602.11598)
 - **👥 Authors**: Zedong Chu, Shichao Xie, Xiaolong Wu, Yanfen Shen, Minghua Luo, Zhengbo Wang, Fei Liu, Xiaoxu Leng, Junjun Hu, Mingyang Yin, Jia Lu, Yingnan Guo, Kai Yang, Jiawei Han, Xu Chen, Yanqing Zhu, Yuxiang Zhao, Xin Liu, Yirong Yang, Ye He, Jiahang Wang, Yang Cai, Tianlin Zhang, Li Gao, Liu Liu, Mingchao Sun, Fan Jiang, Chiyu Wang, Zhicheng Liu, Hongyu Pan, Honglin Han, Zhining Gu, Kuan Yang, Jianfang Zhang, Di Jing, Zihao Guan, Wei Guo, Guoqing Liu, Di Yang, Xiangpo Yang, Menglin Yang, Hongguang Xing, Weiguo Li, Mu Xu
 - **🏷️ Tags**: #VLA #Embodied_AI #Foundation_Model #LLM
 
@@ -69,7 +69,7 @@ Total Papers: 45 | High Impact: 9
 ### ✨ AsyncVLA: An Asynchronous VLA for Fast and Robust Navigation on the Edge (Score: 7/10)
 - **💡 Innovation**: The key novelty is the AsyncVLA asynchronous control framework that decouples high-level semantic reasoning from remote large foundation models and high-frequency reactive execution on edge devices, supported by an end-to-end finetuning protocol and trajectory re-weighting strategy to handle asynchronous streams and up to 6 seconds of communication delay.
 - **⚠️ Limitations**: The work is only evaluated on vision-based navigation tasks, does not test generalization to other common robotic tasks such as manipulation, and does not explore integration with predictive components like world models to further improve performance in highly dynamic environments.
-- **🔗 Link**: [[AsyncVLA]]
+- **🔗 Link**: [Web Link](https://arxiv.org/abs/2602.13476)
 - **👥 Authors**: Noriaki Hirose, Catherine Glossop, Dhruv Shah, Sergey Levine
 - **🏷️ Tags**: #VLA #Foundation_Model #Embodied_AI #LLM
 
@@ -78,7 +78,7 @@ Total Papers: 45 | High Impact: 9
 ### ✨ Dreaming in Code for Curriculum Learning in Open-Ended Worlds (Score: 7/10)
 - **💡 Innovation**: The key novelty is the proposed Dreaming in Code (DiCode) framework that leverages foundation models to synthesize executable code-level environment variations to automatically build scaffolding curricula that enable reinforcement learning agents to make sustained progression in complex open-ended worlds with large combinatorial challenge spaces.
 - **⚠️ Limitations**: The work is only validated on the 2D Craftax game benchmark, with no demonstration of applicability to embodied robotics domains, and does not include comparisons to state-of-the-art curriculum learning methods designed for embodied AI or robot learning tasks.
-- **🔗 Link**: [[Dreaming_in_Code_for_Curriculum_Learning_in_OpenEnded_Worlds]]
+- **🔗 Link**: [Web Link](https://arxiv.org/abs/2602.08194)
 - **👥 Authors**: Konstantinos Mitsides, Maxence Faldor, Antoine Cully
 - **🏷️ Tags**: #Foundation_Model #Reinforcement_Learning #LLM
 
@@ -407,5 +407,4 @@ Total Papers: 45 | High Impact: 9
 - **🏷️ Tags**: #Foundation_Model #LLM
 
 ---
-
 

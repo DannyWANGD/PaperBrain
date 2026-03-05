@@ -33,7 +33,7 @@ Total Papers: 41 | High Impact: 10
 ### 🔥 Planning from Observation and Interaction (Score: 8/10)
 - **💡 Innovation**: The paper introduces a planning-based Inverse Reinforcement Learning (IRL) framework that enables robots to learn complex manipulation tasks from raw observations without requiring demonstrator actions, pre-training, or hand-designed rewards.
 - **⚠️ Limitations**: The reliance on planning-based IRL may struggle with high-dimensional state spaces or long-horizon tasks compared to end-to-end Foundation Models or VLA approaches.
-- **🔗 Link**: [[Planning from Observation and Interaction]]
+- **🔗 Link**: [Web Link](https://arxiv.org/abs/2507.21533)
 - **👥 Authors**: Tyler Han, Siyang Shen, Rohan Baijal, Harine Ravichandiran, Bat Nemekhbold, Kevin Huang, Sanghun Jung, Byron Boots
 - **🏷️ Tags**: #World_Model #Embodied_AI #Reinforcement_Learning #Robot_Manipulation
 
@@ -69,7 +69,7 @@ Total Papers: 41 | High Impact: 10
 ### ✨ WorldStereo: Bridging Camera-Guided Video Generation and Scene Reconstruction via 3D Geometric Memories (Score: 7/10)
 - **💡 Innovation**: The paper introduces a dual-memory architecture (global-geometric and spatial-stereo) that enforces 3D structural consistency in video diffusion models by constraining attention receptive fields with 3D point cloud priors.
 - **⚠️ Limitations**: The reliance on distilled VDM backbones and point cloud updates may struggle with highly dynamic, non-rigid scene elements or long-horizon temporal consistency compared to end-to-end learned world models.
-- **🔗 Link**: [[WorldStereo]]
+- **🔗 Link**: [Web Link](https://arxiv.org/abs/2603.02049)
 - **👥 Authors**: Yisu Zhang, Chenjie Cao, Tengfei Wang, Xuhui Zuo, Junta Wu, Jianke Zhu, Chunchao Guo
 - **🏷️ Tags**: #World_Model #Diffusion_Model #Foundation_Model
 
@@ -78,7 +78,7 @@ Total Papers: 41 | High Impact: 10
 ### ✨ Tool-R0: Self-Evolving LLM Agents for Tool-Learning from Zero Data (Score: 7/10)
 - **💡 Innovation**: The paper introduces a self-evolving framework that uses a Generator-Solver co-evolutionary loop to train tool-calling agents via self-play RL without requiring any pre-existing task datasets.
 - **⚠️ Limitations**: The reliance on a 'real-world tool call' environment for self-play may be computationally expensive or unsafe to scale without a robust, high-fidelity simulation sandbox.
-- **🔗 Link**: [[ToolR0]]
+- **🔗 Link**: [Web Link](https://arxiv.org/abs/2602.21320)
 - **👥 Authors**: Emre Can Acikgoz, Cheng Qian, Jonas Hübotter, Heng Ji, Dilek Hakkani-Tür, Gokhan Tur
 - **🏷️ Tags**: #LLM #Reinforcement_Learning #Foundation_Model
 
@@ -87,7 +87,7 @@ Total Papers: 41 | High Impact: 10
 ### ✨ ArtLLM: Generating Articulated Assets via 3D LLM (Score: 7/10)
 - **💡 Innovation**: ArtLLM introduces a 3D multimodal LLM that autoregressively predicts kinematic structures and part layouts directly from point clouds to condition 3D generative models for articulated asset synthesis.
 - **⚠️ Limitations**: The reliance on a pre-curated dataset for training may limit the model's ability to generalize to highly novel or complex non-standard articulation mechanisms not represented in the training distribution.
-- **🔗 Link**: [[ArtLLM]]
+- **🔗 Link**: [Web Link](https://arxiv.org/abs/2603.01142)
 - **👥 Authors**: Penghao Wang, Siyuan Xie, Hongyu Yan, Xianghui Yang, Jingwei Huang, Chunchao Guo, Jiayuan Gu
 - **🏷️ Tags**: #LLM #Foundation_Model #Embodied_AI #Sim2Real #Diffusion_Model
 
@@ -371,5 +371,4 @@ Total Papers: 41 | High Impact: 10
 - **🏷️ Tags**: #LLM #Foundation_Model
 
 ---
-
 

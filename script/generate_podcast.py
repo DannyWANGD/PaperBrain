@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 # def load_config(path=None): ... REMOVED
 
-def generate_podcast_for_note(filename, provider='doubao'):
+def generate_podcast_for_note(filename, provider='doubao', duration_minutes=5):
     config = load_config()
     
     # Initialize components
@@ -72,7 +72,7 @@ def generate_podcast_for_note(filename, provider='doubao'):
     
     # 4. Generate Podcast
     logger.info(f"Generating Podcast for '{title}'...")
-    output_path = podcaster.create_podcast(title, analysis_content, rag_context)
+    output_path = podcaster.create_podcast(title, analysis_content, rag_context, duration_minutes=duration_minutes)
     
     if output_path:
         logger.info(f"SUCCESS! Podcast generated at: {output_path}")
@@ -83,7 +83,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate a podcast for a specific Research Note")
     parser.add_argument("filename", type=str, help="Filename of the note in Research_Notes (e.g., 'Solaris.md')")
     parser.add_argument("--provider", type=str, default="doubao", choices=["doubao", "openrouter"], help="AI Provider")
+    parser.add_argument("--minutes", type=int, default=5, help="Target podcast duration in minutes (default: 5)")
     
     args = parser.parse_args()
     
-    generate_podcast_for_note(args.filename, provider=args.provider)
+    generate_podcast_for_note(args.filename, provider=args.provider, duration_minutes=max(1, args.minutes))

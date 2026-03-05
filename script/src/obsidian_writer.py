@@ -77,11 +77,13 @@ class ObsidianWriter:
             innovation = p.get('innovation', p.get('summary', p.get('abstract', '')[:200] + "..."))
             limitations = p.get('limitations', "Not analyzed.")
             
-            link = f"[[{self.get_filename_from_paper(p)}]]" if score >= self.config['doubao']['threshold_score'] else f"[Link]({p.get('url', '#')})"
-            # Requirement 2: Only provide local link for high scoring papers, otherwise just web link
-            if score < self.config['doubao']['threshold_score']:
-                # Ensure it's just the web link
-                 link = f"[Web Link]({p.get('url', '#')})"
+            note_name = self.get_filename_from_paper(p)
+            note_path = os.path.join(self.notes_folder, f"{note_name}.md")
+            has_detailed_note = os.path.exists(note_path)
+            if has_detailed_note:
+                link = f"[[{note_name}]]"
+            else:
+                link = f"[Web Link]({p.get('url', '#')})"
             
             content += f"### {icon} {p['title']} (Score: {score}/10)\n"
             content += f"- **💡 Innovation**: {innovation}\n"

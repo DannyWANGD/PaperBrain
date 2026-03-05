@@ -7,150 +7,210 @@
 <a name="english"></a>
 ## 🇬🇧 English
 
-**PaperBrain** is an automated research pipeline that transforms the way you consume academic literature. It daily fetches the latest papers from **ArXiv** and **Hugging Face**, uses **LLMs (Claude/Gemini/Doubao)** for intelligent screening and deep analysis, and seamlessly syncs structured knowledge to your **Obsidian** vault.
+**PaperBrain** is a fully automated research intelligence pipeline that turns daily paper streams into actionable research notes.  
+In one run, it completes a full loop: **Fetch → Screen → Deep Analyze → Link to Your Knowledge Base → Notify/Podcast**.
 
-Now featuring **Context-Aware RAG** and **AI Podcasts**!
+*   **It Thinks**: Uses strong reasoning models for engineering-level analysis (method, math, evidence, limitations).
+*   **It Remembers**: Uses **Context-Aware RAG** to compare new papers with your existing notes.
+*   **It Speaks**: Generates a **~5-minute Deep Dive Podcast by default** (duration configurable via CLI).
+*   **It Organizes**: Writes structured Markdown notes, metadata, and graph-ready links into **Obsidian**.
 
 ### 🚀 Core Features
 
-*   **Intelligent Screening**: Automatically filters hundreds of daily papers using a fast LLM (Gemini Flash), scoring them based on your research interests.
-*   **Deep Analysis**: For high-scoring papers, performs a rigorous, engineering-centric analysis (Methodology, Math, Architecture) using SOTA models (Claude 3.7 Sonnet).
-*   **Visual Extraction**: Automatically extracts architecture diagrams from PDFs.
-*   **Context-Aware RAG**: Before analyzing a new paper, it retrieves relevant notes from your existing knowledge base to provide **differential analysis** (e.g., "Unlike your previous note on X, this paper uses Y...").
-*   **AI Podcast**: Generates a 10-minute "Deep Dive" audio briefing (Lex Fridman style) for the day's top paper, pushed to your phone.
-*   **Obsidian Integration**: Auto-generates Markdown notes with Frontmatter, Mermaid graphs, and backlinks.
-*   **Mobile Notifications**: Pushes summaries and podcast links via **Bark**.
+*   **Intelligent Screening**: Fast first-pass scoring on large daily paper sets.
+*   **Deep Analysis**: Detailed report for high-value papers (problem gap, method, formulas, evidence, critique).
+*   **Context-Aware RAG**: Differential analysis against your prior notes.
+*   **Strict Link Policy**: `[[Note]]` links are used **only** when a detailed note file exists; otherwise, it uses an ArXiv web link.
+*   **Visual Extraction**: Automatic architecture figure extraction from PDFs.
+*   **AI Podcast + Mobile Push**: Audio briefing generation and Bark notifications.
 
-### 🛠️ Installation
+### 🏁 Getting Started (Zero to Hero)
 
-1.  **Clone the Repository**
-    ```bash
-    git clone https://github.com/YourUsername/PaperBrain.git
-    cd PaperBrain/script
-    ```
+#### Prerequisites
+*   **OS**: Windows / macOS / Linux
+*   **Python**: 3.10+ (Conda recommended)
+*   **Obsidian**: For the best knowledge base experience.
 
-2.  **Install Dependencies**
-    ```bash
-    conda create -n wd python=3.10
-    conda activate wd
-    pip install -r requirements.txt
-    ```
+#### Step 1: Installation
+Clone the repository and set up the environment:
 
-3.  **Configuration (.env)**
-    Copy the example env file and fill in your API keys:
+```bash
+git clone https://github.com/YourUsername/PaperBrain.git
+cd PaperBrain/script
+
+# Create Conda environment
+conda create -n wd python=3.10
+conda activate wd
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+#### Step 2: API Configuration
+PaperBrain uses **OpenRouter** (recommended) or Doubao for LLM inference.
+
+1.  Copy the example env file:
     ```bash
     cp .env.example .env
     ```
-    Edit `.env`:
+2.  Edit `.env` and fill in your keys:
     ```ini
-    DOUBAO_API_KEY=your_key
-    OPENROUTER_API_KEY=your_key
-    BARK_URL=your_bark_url
+    # Recommended: Use OpenRouter for access to Claude 3.7 / Gemini Pro
+    OPENROUTER_API_KEY=sk-or-v1-your-key-here
+    
+    # Optional: For Bark Mobile Notifications (iOS)
+    BARK_URL=https://api.day.app/your-token/
     ```
 
-4.  **Customize Config**
-    Edit `config.yaml` to set your **Research Keywords** and **ArXiv Categories**.
+#### Step 3: Customize Your Research Interests
+Edit `config.yaml` to define what you care about:
 
-### 🖥️ Usage
+```yaml
+search:
+  keywords:
+    - "World Model"
+    - "Embodied AI"
+    - "Humanoid Robot"
+  arxiv_categories:
+    - "cs.RO"
+    - "cs.AI"
+```
 
-*   **Run Immediately (Manual)**:
-    ```bash
-    python main.py --run-now --provider openrouter
-    ```
+#### Step 4: Run It!
 
-*   **Generate Podcast for a Specific Note**:
-    ```bash
-    python generate_podcast.py "Solaris.md" --provider openrouter
-    ```
+**Option A: Run Immediately (Manual Mode)**
+```bash
+# Default: Generates Podcast (~5 minutes)
+python main.py --run-now --provider openrouter
 
-*   **Auto-Schedule**:
-    Use Windows Task Scheduler to run `script/run_daily.bat` every morning at 8:00 AM.
+# Skip Podcast (faster)
+python main.py --run-now --provider openrouter --no-podcast
+
+# Custom podcast duration (e.g., 10 minutes)
+python main.py --run-now --provider openrouter --podcast-minutes 10
+```
+
+**Option B: Generate Podcast for Existing Note**
+```bash
+# Great for revisiting old papers!
+python generate_podcast.py "Solaris.md" --provider openrouter
+
+# Custom duration for single-note podcast
+python generate_podcast.py "Solaris.md" --provider openrouter --minutes 12
+```
+
+**Option C: Auto-Schedule (Windows)**
+Use **Task Scheduler** to run `script/run_daily.bat` every morning at 8:00 AM.
+*   *Action*: Start a program
+*   *Program*: `D:\PaperBrain\script\run_daily.bat`
+*   *Start in*: `D:\PaperBrain\script\` (Crucial!)
 
 ---
 
 <a name="paperbrain---自动化科研情报中枢"></a>
 ## 🇨🇳 PaperBrain - 自动化科研情报中枢
 
-**PaperBrain** 是一个专为研究人员设计的全自动科研情报系统。它每天自动从 ArXiv 和 Hugging Face 抓取最新论文，利用大模型进行智能筛选和深度解读，并将结构化的知识同步到您的 **Obsidian** 知识库中。
+**PaperBrain** 不只是“论文抓取器”，而是一个完整的**自动化科研工作流引擎**。  
+一次运行会自动完成：**抓取 → 筛选 → 深度分析 → 知识库关联 → 推送/播客**。
 
-新增 **上下文感知 (RAG)** 与 **AI 播客生成** 功能！
+它每天自动从 ArXiv 和 Hugging Face 抓取最新论文，利用 **快慢思考 (System 1 & 2)** 架构进行筛选和深度解读，并将结构化的知识（公式、图谱、代码审计）同步到您的 **Obsidian** 知识库中。
 
-### 🚀 核心功能
+### ✨ 核心亮点（清晰版）
 
-*   **智能筛选**: 使用轻量级模型 (Gemini Flash) 快速扫描数百篇论文摘要，根据您的研究兴趣打分（1-10分）。
-*   **深度分析**: 对高分论文使用 SOTA 模型 (Claude 3.7 Sonnet) 进行工程化深读，提取数学公式、创新点和系统架构。
-*   **视觉提取**: 自动从 PDF 中提取架构图和关键图表。
-*   **上下文感知 (RAG)**: 在分析新论文前，自动检索您知识库中的旧笔记，进行**差异化对比分析**（例如：“这篇论文的方法解决了你之前记录的 [Note A] 中的梯度消失问题”）。
-*   **AI 播客**: 为当天最重要的论文生成一段 10 分钟的深度解读音频（类似 NotebookLM），风格自然幽默，支持手机端收听。
-*   **Obsidian 深度集成**: 自动生成包含元数据、Mermaid 知识图谱和双向链接的 Markdown 笔记。
-*   **移动端通知**: 通过 **Bark** 推送每日日报和播客音频。
+1.  **智能筛选 + 深度分析双层架构**：
+    *   第一层：快速筛选大批论文，给出相关性评分。
+    *   第二层：只对高价值论文生成深度报告，重点输出方法、公式、实验和局限。
 
-### 🛠️ 安装指南
+2.  **上下文感知 RAG 差异化分析**：
+    *   新论文分析前，先检索您已有笔记。
+    *   报告会明确写出“与既有工作相比，哪里变好、哪里仍不足”。
 
-1.  **克隆项目**
-    ```bash
-    git clone https://github.com/YourUsername/PaperBrain.git
-    cd PaperBrain/script
-    ```
+3.  **严格链接策略（避免误跳转）**：
+    *   只有真正生成了深度笔记的论文，才使用 `[[内联链接]]`。
+    *   未生成深度笔记的论文，一律使用 ArXiv 网页链接。
 
-2.  **安装依赖**
-    ```bash
-    conda create -n wd python=3.10
-    conda activate wd
-    pip install -r requirements.txt
-    ```
+4.  **AI 播客与移动推送**：
+    *   默认生成约 5 分钟英文深度播客（可通过命令行参数调整时长）；
+    *   通过 Bark 推送摘要和播客就绪提醒。
 
-3.  **配置密钥 (.env)**
-    复制示例环境文件并填入 API Key：
+### 🏁 快速上手指南
+
+#### 准备工作
+*   推荐安装 **Anaconda** 或 Miniconda。
+*   推荐使用 **Obsidian** 作为知识库前端。
+
+#### 第一步：安装项目
+```bash
+# 1. 克隆代码
+git clone https://github.com/YourUsername/PaperBrain.git
+cd PaperBrain/script
+
+# 2. 创建环境
+conda create -n wd python=3.10
+conda activate wd
+
+# 3. 安装依赖 (包含 PyTorch, Edge-TTS 等)
+pip install -r requirements.txt
+```
+
+#### 第二步：配置密钥
+为了保护隐私，我们使用 `.env` 文件存储密钥。
+
+1.  复制模板：
     ```bash
     cp .env.example .env
     ```
-    编辑 `.env` 文件：
+2.  编辑 `.env` 文件（使用记事本或 VS Code）：
     ```ini
-    DOUBAO_API_KEY=your_key_here      # 豆包 API Key
-    OPENROUTER_API_KEY=your_key_here  # OpenRouter API Key (推荐使用)
-    BARK_URL=your_bark_url            # Bark 推送链接
+    # 推荐使用 OpenRouter (可访问 Claude 3.7, Gemini Pro 等 SOTA 模型)
+    OPENROUTER_API_KEY=sk-or-v1-your-key-here
+    
+    # 选填：Bark 推送链接 (iOS App Store 下载 Bark)
+    BARK_URL=https://api.day.app/your-token/
     ```
 
-4.  **个性化配置**
-    编辑 `config.yaml`，修改 `keywords`（研究关键词）和 `arxiv_categories`（关注的 ArXiv 分区）。
+#### 第三步：定义研究方向
+打开 `config.yaml`，修改您的关注领域：
 
-### 🖥️ 使用方法
-
-*   **立即运行 (手动模式)**:
-    ```bash
-    python main.py --run-now --provider openrouter
-    ```
-
-*   **为特定笔记生成播客**:
-    ```bash
-    python generate_podcast.py "Solaris.md" --provider openrouter
-    ```
-    *(注：文件名需为 Research_Notes 目录下的现有笔记)*
-
-*   **每日自动运行**:
-    使用 Windows 任务计划程序，设置每天早上 8:00 运行 `script/run_daily.bat`。
-
-### 📂 目录结构
-
-```text
-PaperBrain/
-├── README.md                # 项目文档
-├── script/                  # 核心代码
-│   ├── .env                 # [机密] API 密钥配置 (不要提交到 GitHub)
-│   ├── config.yaml          # 通用配置 (路径、关键词、Prompt)
-│   ├── main.py              # 主程序入口
-│   ├── generate_podcast.py  # 独立播客生成工具
-│   ├── run_daily.bat        # Windows 批处理启动脚本
-│   ├── src/                 # 源代码模块
-│   │   ├── scraper.py       # 论文抓取
-│   │   ├── analyser.py      # AI 分析核心 (Screening & Deep Analysis)
-│   │   ├── knowledge_base.py# RAG 检索模块
-│   │   ├── podcaster.py     # 播客生成模块 (TTS)
-│   │   ├── obsidian_writer.py # Markdown 写入与文件管理
-│   │   └── ...
-└── ...
+```yaml
+search:
+  keywords:
+    - "World Model"
+    - "Embodied AI"
+    - "Humanoid Robot"
+  arxiv_categories:
+    - "cs.RO"  # 机器人
+    - "cs.CV"  # 计算机视觉
 ```
+
+#### 第四步：运行！
+
+**方式一：立即运行 (手动)**
+```bash
+# 默认模式：包含播客生成（默认约 5 分钟）
+python main.py --run-now --provider openrouter
+
+# 纯文本模式：不生成播客 (速度更快)
+python main.py --run-now --provider openrouter --no-podcast
+
+# 自定义播客时长（示例：10分钟）
+python main.py --run-now --provider openrouter --podcast-minutes 10
+```
+
+**方式二：为特定笔记生成播客**
+想听听以前读过的某篇论文？
+```bash
+python generate_podcast.py "Solaris.md" --provider openrouter
+
+# 自定义该篇播客时长（示例：12分钟）
+python generate_podcast.py "Solaris.md" --provider openrouter --minutes 12
+```
+
+**方式三：每日自动运行 (Windows)**
+使用 Windows 自带的 **任务计划程序 (Task Scheduler)**：
+1.  创建基本任务 -> 每天上午 8:00。
+2.  操作：启动程序 -> 选择 `D:\PaperBrain\script\run_daily.bat`。
+3.  **关键点**：在“起始于 (Start in)”一栏中，**必须**填入脚本所在目录 `D:\PaperBrain\script\`，否则会报错。
 
 ---
 *Powered by PaperBrain Team & LLMs*

@@ -33,7 +33,7 @@ Total Papers: 30 | High Impact: 4
 ### ✨ BiManiBench: A Hierarchical Benchmark for Evaluating Bimanual Coordination of Multimodal Large Language Models (Score: 7/10)
 - **💡 Innovation**: The key novelty is the development of BiManiBench, the first hierarchical benchmark that evaluates multimodal large language model performance on bimanual robot manipulation tasks across three tiers (spatial reasoning, high-level planning, low-level end-effector control) to isolate unique dual-arm challenges and distinguish perceptual hallucinations from planning failures.
 - **⚠️ Limitations**: The work does not evaluate non-LLM-based robot manipulation paradigms such as reinforcement learning or world model-driven pipelines, nor does it include sim2real transfer validation for the benchmark tasks to support real-world robot testing.
-- **🔗 Link**: [[BiManiBench]]
+- **🔗 Link**: [Web Link](https://arxiv.org/abs/2602.08392)
 - **👥 Authors**: Xin Wu, Zhixuan Liang, Yue Ma, Mengkang Hu, Zhiyuan Qin, Xiu Li
 - **🏷️ Tags**: #Embodied_AI #Robot_Manipulation #Bimanual_Coordination #Foundation_Models #Large_Language_Models
 
@@ -272,5 +272,4 @@ Total Papers: 30 | High Impact: 4
 - **🏷️ Tags**: #Multimodal_LLM #LLM_Labeling #ML_Assisted_Sampling #Prevalence_Measurement
 
 ---
-
 

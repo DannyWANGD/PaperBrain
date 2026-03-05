@@ -33,7 +33,7 @@ Total Papers: 55 | High Impact: 5
 ### ✨ Self-Refining Vision Language Model for Robotic Failure Detection and Reasoning (Score: 7/10)
 - **💡 Innovation**: The paper introduces a self-refining multi-task framework that leverages heterogeneous supervision—combining sparse binary failure labels with rich reasoning annotations—to enable iterative failure detection and natural language explanation.
 - **⚠️ Limitations**: The reliance on self-certainty metrics for inference-time selection may be prone to overconfidence or calibration issues in novel, out-of-distribution failure scenarios.
-- **🔗 Link**: [[ARMOR]]
+- **🔗 Link**: [Web Link](https://arxiv.org/abs/2602.12405)
 - **👥 Authors**: Carl Qi, Xiaojie Wang, Silong Yong, Stephen Sheng, Huitan Mao, Sriram Srinivasan, Manikantan Nambi, Amy Zhang, Yesh Dattatreya
 - **🏷️ Tags**: #Embodied_AI #Robot_Manipulation #Foundation_Model #LLM
 
@@ -42,7 +42,7 @@ Total Papers: 55 | High Impact: 5
 ### ✨ Weight Decay Improves Language Model Plasticity (Score: 7/10)
 - **💡 Innovation**: The paper identifies that higher weight decay during pretraining significantly enhances model plasticity, enabling better downstream fine-tuning performance despite potentially higher initial validation loss.
 - **⚠️ Limitations**: The study focuses exclusively on text-based LLMs, leaving it unclear whether these findings regarding weight decay and plasticity translate to multimodal models or VLA architectures used in robotics.
-- **🔗 Link**: [[Weight Decay Improves Language Model Plasticity]]
+- **🔗 Link**: [Web Link](https://arxiv.org/abs/2305.07125)
 - **👥 Authors**: Tessa Han, Sebastian Bordt, Hanlin Zhang, Sham Kakade
 - **🏷️ Tags**: #LLM #Foundation_Model
 
@@ -497,5 +497,4 @@ Total Papers: 55 | High Impact: 5
 - **🏷️ Tags**: #LLM #Foundation_Model
 
 ---
-
 
