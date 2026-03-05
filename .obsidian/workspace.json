@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Research_Notes/Beyond Language Modeling.md",
+                "file": "README.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Beyond Language Modeling"
+              "title": "README"
             }
           }
         ]
@@ -232,6 +232,8 @@
   },
   "active": "d3667ee846e4b0bd",
   "lastOpenFiles": [
+    "paperbrain_arch.png",
+    "Research_Notes/Beyond Language Modeling.md",
     "Daily_Papers/2026-03-04-PaperDigest.md",
     "README.md",
     "Podcasts/Beyond Language Modeling An Exploration of Multimo_Podcast.mp3",
@@ -265,7 +267,6 @@
     "Assets/Visual Foresight for Robotic Stow A DiffusionBased World Model from Sparse Snapshots_arch.png",
     "Assets/TICVLA A ThinkinControl VisionLanguageAction Model for Robot Navigation in Dynamic Environments_arch.png",
     "Daily_Papers/2026-03-03-PaperDigest.md",
-    "Research_Notes/Beyond Language Modeling.md",
     "Research_Notes/Generated_Reality.md",
     "Assets/Chain of World World Model Thinking in Latent Motion_arch.jpeg",
     "Research_Notes/Utonia.md",
