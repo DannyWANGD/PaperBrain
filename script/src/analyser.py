@@ -76,13 +76,13 @@ class PaperAnalyser:
 
     def _sanitize_json(self, text):
         """Cleanups LLM response to ensure valid JSON."""
-        # Remove markdown code blocks
+        # Try to find JSON block using regex
+        json_match = re.search(r"(\{.*\})", text, re.DOTALL)
+        if json_match:
+            return json_match.group(1)
+            
+        # Fallback: Remove markdown code blocks
         text = text.replace('```json', '').replace('```', '').strip()
-        
-        # Escape newlines inside strings (common LLM issue)
-        # This regex looks for newlines that are NOT between objects/arrays
-        # But a simpler way is to use strict mode=False in json.loads
-        # Or let's just try to parse, if fail, try to fix common issues
         return text
 
     def screen_paper(self, paper):

@@ -1,5 +1,6 @@
 # PaperBrain 🤖📄 - Automated Research Intelligence Hub
 
+![[Pasted image 20260303220047.png]]
 [中文说明](#paperbrain---自动化科研情报中枢) | [English](#english)
 
 ---

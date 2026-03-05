@@ -19,7 +19,7 @@ output:
   naming_format: "{title}_{type}_{timestamp}.md"
   
 analysis:
-  max_iterations: 3
+  max_iterations: 2
   depth_level: "Deep"
   focus_areas:
     - "Academic Quality Assessment"

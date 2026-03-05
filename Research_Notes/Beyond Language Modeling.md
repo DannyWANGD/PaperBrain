@@ -8,8 +8,8 @@ tags:
   - VLA
 aliases:
   - "Beyond Language Modeling: An Exploration of Multimodal Pretraining"
-url: http://arxiv.org/abs/2603.03276v1
-pdf_url: https://arxiv.org/pdf/2603.03276v1
+url: https://huggingface.co/papers/2603.03276
+pdf_url: https://arxiv.org/pdf/2603.03276.pdf
 local_pdf: "[[Beyond Language Modeling An Exploration of Multimodal Pretraining.pdf]]"
 github: "None"
 project_page: "https://beyond-llms.github.io/"
@@ -35,7 +35,7 @@ The visual world offers a critical axis for advancing foundation models beyond l
 ## 📊 Academic Quality & Innovation
 ---
 
-# Deep Engineering-Centric Analysis: "Beyond Language Modeling: An Exploration of Multimodal Pretraining"
+# Deep Engineering Analysis: *Beyond Language Modeling: An Exploration of Multimodal Pretraining*
 
 ---
 
@@ -43,16 +43,16 @@ The visual world offers a critical axis for advancing foundation models beyond l
 
 ### Problem Statement
 
-The dominant paradigm for building multimodal models is to initialize from pretrained language model checkpoints and then adapt them for vision—a procedure that conflates two distinct sources of knowledge: what is learned from language pretraining and what is learned from multimodal co-training. This initialization bias makes it impossible to cleanly attribute capabilities to multimodal training dynamics, and it leaves fundamental questions unanswered: How do vision and language modalities interact when trained jointly from scratch? What visual representation best serves both understanding and generation? How does the scaling relationship between vision and language data behave under iso-compute conditions? The design space for native, from-scratch multimodal models remains empirically underexplored.
+The dominant paradigm for building multimodal models begins with a pretrained language model (LLM) and then adapts it to handle visual inputs. This initialization from a language-pretrained backbone confounds any empirical conclusions about the intrinsic dynamics of joint vision-language training: it is impossible to separate what the model learned from multimodal data versus what it inherited from language pretraining. Consequently, the fundamental design questions—which visual representation to use, how data mixtures interact, how to scale architecture efficiently across modalities—remain poorly characterized. There is no clean, controlled empirical foundation for the science of native multimodal pretraining from scratch.
 
 ### Core Contribution
 
-Through controlled, from-scratch pretraining experiments under the Transfusion framework, this work provides the first systematic empirical characterization of how visual representation choice, data composition, architecture (MoE vs. dense), and compute scaling jointly govern the capabilities of a unified multimodal model, culminating in the discovery that (i) Representation Autoencoders (RAE) unify visual understanding and generation in a single encoder, (ii) vision and language data are synergistic rather than competitive, (iii) world-modeling capabilities emerge from general multimodal pretraining, and (iv) Mixture-of-Experts architectures harmonize the scaling asymmetry between the two modalities.
+The paper provides a systematic, controlled, from-scratch empirical study of unified multimodal pretraining using the Transfusion framework, yielding four actionable design principles: (1) Representation Autoencoders (RAE) with semantic encoders like SigLIP 2 suffice for both visual understanding and generation; (2) visual and language data are complementary rather than competitive; (3) world modeling capabilities emerge naturally from diverse multimodal pretraining; and (4) Mixture-of-Experts (MoE) resolves the scaling asymmetry between vision (data-hungry) and language (capacity-hungry) by harmonizing compute allocation.
 
 ### Academic Rating
 
-- **Innovation: 7.5/10** — The paper's primary contribution is empirical and systematic rather than algorithmically novel. It does not introduce new architectures or objectives, but its controlled ablation methodology—isolating variables across visual representation, data composition, architecture, and scaling—produces insight that has been inaccessible in prior work due to initialization confounds. The RAE finding and the vision-language scaling asymmetry are substantively new empirical facts.
-- **Rigor: 8/10** — The experimental design is unusually disciplined: fixed compute budgets within each ablation family, consistent hyperparameter settings, multiple evaluation axes (PPL, FID, GenEval, DPGBench, VQA), and IsoFLOP scaling analysis. The primary limitation is that conclusions are drawn at a moderate scale (2.3B total parameters); extrapolation to frontier scales is not empirically validated.
+- **Innovation: 7/10** — The paper does not introduce a new architecture per se; rather, it adapts and rigorously validates existing components (Transfusion, RAE, MoE) in a clean experimental harness. The key novelty lies in the *controlled experimental design* and the discovery of the vision-language scaling asymmetry, particularly the finding that RAE-based semantic encoders outperform VAEs for generation—a non-obvious result that challenges the prevailing assumption that VAEs are necessary for diffusion-based generation.
+- **Rigor: 8/10** — The paper conducts careful IsoFLOP analysis, ablates across multiple encoder families, data compositions, and architecture variants, and reports results across a broad evaluation suite (PPL, FID, GenEval, DPGBench, 16-benchmark VQA average). The controlled experimental design (fixed compute budget within ablation families) is methodologically sound. Some limitations exist in evaluation breadth for world modeling and in the relatively modest scale of the experiments compared to deployed systems.
 
 ---
 
@@ -60,152 +60,148 @@ Through controlled, from-scratch pretraining experiments under the Transfusion f
 
 ### 2.1 Algorithmic Logic
 
-The system is built on the **Transfusion** framework, which trains a single autoregressive transformer to handle both discrete text tokens (via next-token prediction) and continuous visual tokens (via flow matching/diffusion). The full algorithmic pipeline is as follows:
+The system is built around a single decoder-only Transformer trained from scratch. The full pipeline is as follows:
 
-**Step 1: Input Encoding**
-- Text sequences $(x_1, \ldots, x_n)$ are tokenized using a standard BPE tokenizer from LLaMA-3.
-- Each image or video frame is encoded by a *frozen* visual encoder (e.g., SigLIP 2 So400m) into a spatial latent grid. For a 224×224 image with patch size 14×14, the output is a $16 \times 16 = 256$ token sequence in the encoder's latent space. These are denoted $\mathtt{I}$ tokens.
-- A simple linear projection layer maps the visual encoder's output dimensionality into the transformer's model dimensionality (no U-Net used, unlike the original Transfusion).
+**Step 1: Input Tokenization**
+- *Text*: Tokenized with a BPE tokenizer derived from LLaMA-3. Each token is an integer index from the vocabulary.
+- *Visual frames (images/video)*: Each 224×224 image is passed through a frozen visual encoder (e.g., SigLIP 2 So400m). The encoder maps the image to a sequence of patch-level latent vectors. These are passed through a simple linear projection layer to align their dimensionality with the Transformer's hidden space. Crucially, the encoder is not a VAE; it is a semantic encoder, and its decoder is provided by the off-the-shelf RAE decoder (Zheng et al., 2026; Tong et al., 2026), which maps latents back to pixel space.
+- Videos are processed frame-by-frame at 1 FPS.
 
-**Step 2: Noise Injection for Flow Matching**
-- Let $z_0 \in \mathbb{R}^{d \times L}$ denote the clean latent tokens for an image or video frame (flattened into a sequence of $L$ tokens of dimension $d$).
-- Sample $\epsilon \sim \mathcal{N}(0, I)$ and $t \sim \mathcal{U}[0, 1]$.
-- Construct the interpolated noisy latent: $z_t = (1 - t)\epsilon + t z_0$.
-- This linear interpolation (rectified flow) establishes a straight-line trajectory from noise to data.
+**Step 2: Masking Strategy**
+- Text uses a standard causal mask (autoregressive, left-to-right).
+- Visual tokens use a block-wise causal mask: tokens within the same frame attend bidirectionally to each other (as in BERT-style attention within a frame), but frames attend causally to all prior frames. This hybrid masking is implemented via FlexAttention.
+- *Intuition*: The bidirectional within-frame attention is motivated by the fact that spatial relationships within a single image are non-causal, while temporal progression across frames is causal. This mirrors how diffusion models treat images as holistic objects.
 
-**Step 3: Causal Masking Strategy (Hybrid)**
-- For text tokens: standard causal (autoregressive) mask.
-- For visual tokens: a *block-wise causal* mask. All tokens within a single image/video frame attend bidirectionally to each other, and also attend to all prior tokens in the sequence. This respects the spatial independence within a frame while maintaining temporal causality across frames. This is implemented via FlexAttention.
+**Step 3: Forward Pass through Decoder-Only Transformer**
+- The model backbone (2.3B total parameters, 1.5B active per token) is a standard Transformer decoder. Within each block, FFNs are modality-specific by default (one FFN for text tokens, one for visual tokens). In MoE experiments, these are replaced by learned routing.
+- The shared self-attention layers process interleaved text and visual tokens, allowing cross-modal information exchange.
 
-**Step 4: Transformer Forward Pass with Modality-Specific FFNs**
-- The backbone is a decoder-only transformer (similar architecture to LLaMA).
-- Crucially, within each transformer block, there are **two separate FFN sub-networks**: one for text tokens and one for visual tokens. These are selected at the per-token level based on modality type.
-- The intuition: text and visual tokens occupy fundamentally different semantic spaces; shared FFN capacity creates interference, while modality-specific FFNs allow specialized feature transformations without increasing the active parameter count.
-- Default model: 2.3B total parameters, 1.5B active per token (with modality-specific FFNs, a dense model with shared FFNs would also be ~1.5B parameters).
+**Step 4: Dual-Objective Training**
+- For text tokens: standard next-token prediction (cross-entropy).
+- For visual tokens: flow matching. The model predicts a velocity field in the latent space of the frozen encoder.
 
-**Step 5: Dual-Objective Training**
-- Language modeling loss for text tokens; flow matching loss for visual tokens.
-- Both losses are computed in a single forward pass on mixed batches (text-only, video-only, image-text pairs, action-conditioned video).
+**Step 5: Inference**
+- *Text generation*: Standard autoregressive sampling.
+- *Image generation*: The model denoises using a 25-step Euler sampler. Classifier-free guidance (CFG=3.0) is applied by randomly dropping conditioning 10% of training time.
 
-**Step 6: Inference**
-- Text generation: standard autoregressive sampling.
-- Image generation: a 25-step Euler sampler denoises the model's predicted velocity field. The resulting $z_0$ estimate is decoded to pixel space via a pretrained VAE decoder (SD-VAE or FLUX.1 decoder for VAE encoders; RAE decoder for semantic encoders).
-- Classifier-Free Guidance (CFG): conditioning is randomly dropped 10% of the time during training; a fixed CFG scale of 3.0 is used at inference.
-
-**Intuition for this design over alternatives:**
-Prior work maintains dual encoders (one semantic for understanding, one VAE for generation), which doubles the tokenization pipeline complexity. The key insight enabling simplification is that diffusion models can effectively operate in high-dimensional semantic latent spaces (the RAE finding), eliminating the need for a separate generation-specific encoder. The block-wise causal mask for vision is chosen because diffusion over visual tokens requires the model to see all spatial positions of a frame simultaneously (not autoregressively), while still respecting the sequential nature of video.
+**Why this flow over alternatives?**
+The choice of flow matching over discrete tokenization for vision is motivated by the superior generation quality of continuous diffusion-based models compared to VQ-VAE-based discrete visual tokenizers (e.g., VQGAN). The choice of a frozen encoder (rather than end-to-end training of the visual encoder) is a pragmatic compute efficiency decision and follows prior work showing that high-quality pretrained encoders transfer well.
 
 ---
 
 ### 2.2 Mathematical Formulation
 
-**Language Modeling Loss:**
-$$\mathcal{L}_{\text{LM}} = -\sum_{i=1}^{n} \log p_\theta(x_i \mid x_{<i}) \tag{1}$$
-- $x_i$: the $i$-th text token in the sequence.
-- $x_{<i}$: all previous tokens (context).
+**Language Modeling Objective:**
+$$\mathcal{L}_{\text{LM}} = -\sum_{i=1}^{n} \log p_\theta(x_i \mid x_{<i})$$
+
+- $x_i$: the $i$-th text token in a sequence of length $n$.
+- $x_{<i}$: all preceding tokens.
 - $p_\theta$: the model's predicted probability distribution over the vocabulary.
-- *Physical meaning*: Minimizing this loss drives the model to accurately predict the next token given all prior context, i.e., to model the conditional distribution of natural language.
+- *Physical meaning*: Minimizing this loss drives the model to accurately predict the next token, learning syntactic, semantic, and world-knowledge representations from text.
 
-**Flow Matching Loss (Visual Tokens):**
-$$\mathcal{L}_{\text{flow}} = \mathbb{E}_{t, z_0, \epsilon} \left[ \left\| v_\theta(z_t, t, \cdot) - (z_0 - \epsilon) \right\|_2^2 \right] \tag{2}$$
-- $z_0 \in \mathbb{R}^{d \times L}$: the clean (ground-truth) latent representation of an image/video frame, output by the frozen visual encoder.
-- $\epsilon \sim \mathcal{N}(0, I)$: Gaussian noise of the same shape.
-- $t \sim \mathcal{U}[0, 1]$: the interpolation time step, sampled uniformly.
-- $z_t = (1-t)\epsilon + t z_0$: the linearly interpolated noisy latent at time $t$.
-- $v_\theta(z_t, t, \cdot)$: the transformer's predicted velocity field at the noisy latent $z_t$, conditioned on time $t$ and the context (prior tokens).
-- $(z_0 - \epsilon)$: the target velocity field under the rectified flow formulation (the direction from noise to data).
-- *Physical meaning*: The model learns to predict, at any point along the straight-line trajectory from noise to clean image, the exact direction and magnitude required to reach $z_0$. Minimizing this squared error teaches the model to denoise visual representations conditioned on textual or visual context.
+**Flow Matching Objective (Visual):**
+$$\mathcal{L}_{\text{flow}} = \mathbb{E}_{t, z_0, \epsilon} \left[ \| v_\theta(z_t, t, \cdot) - (z_0 - \epsilon) \|_2^2 \right]$$
 
-**Important implementation detail on noise scheduling:** The authors shift the noise schedule toward the noisier end of the spectrum for high-dimensional visual representations, following the recommendation from Esser et al. (2024) and the RAE papers. This counteracts the tendency for the model to trivially predict low-frequency structure when operating in high-dimensional latent spaces.
+- $z_0$: the clean latent for an image or video frame, obtained from the frozen visual encoder.
+- $\epsilon \sim \mathcal{N}(0, I)$: Gaussian noise.
+- $t \sim \mathcal{U}[0,1]$: the interpolation time step.
+- $z_t = (1-t)\epsilon + t z_0$: the interpolated (noisy) latent at time $t$ along the linear flow path.
+- $v_\theta(z_t, t, \cdot)$: the velocity field predicted by the model, where the context (`·`) includes conditioning tokens (e.g., text captions or prior frames).
+- $(z_0 - \epsilon)$: the target velocity, i.e., the direction pointing from noise to clean data.
+- *Physical meaning*: Minimizing this squared error teaches the model to predict the direction of the "flow" from noise to the clean image latent. At inference, this velocity field is integrated (e.g., via Euler steps) to progressively denoise a random latent into a coherent image.
 
-**Alternative parameterization (x-pred):** In Section 3 and 6.1, the authors also explore predicting $z_0$ directly (the "x-prediction" parameterization from JiT/Li & He 2025), rather than the velocity field. The velocity parameterization $(z_0 - \epsilon)$ is the default.
+**Combined Training Objective:**
+$$\mathcal{L} = \lambda_{\text{LM}} \mathcal{L}_{\text{LM}} + \lambda_{\text{flow}} \mathcal{L}_{\text{flow}}$$
 
-**Joint Training Objective:**
-$$\mathcal{L} = \lambda_{\text{LM}} \mathcal{L}_{\text{LM}} + \lambda_{\text{flow}} \mathcal{L}_{\text{flow}} \tag{3}$$
-- $\lambda_{\text{LM}} = 1.0$ and $\lambda_{\text{flow}} = 3.0$ (default, chosen empirically to stabilize joint training).
-- *Physical meaning*: A weighted combination ensures neither objective dominates training dynamics; the higher weight on flow loss compensates for the scale difference between cross-entropy and mean squared error.
+- Default weights: $\lambda_{\text{LM}} = 1.0$, $\lambda_{\text{flow}} = 3.0$.
+- *Rationale*: The higher weight on $\mathcal{L}_{\text{flow}}$ compensates for the lower magnitude of flow matching gradients in high-dimensional latent spaces and helps stabilize joint training.
+
+**Noise Schedule Modification:**
+The noise schedule is shifted toward the noisier end of the spectrum when operating in high-dimensional latent spaces (following RAE and Esser et al., 2024). A single independent $t$ is sampled per image/frame and applied uniformly to all tokens of that frame. This is equivalent to the "Diffusion Forcing" paradigm and ensures consistency with image-wise flow matching.
 
 ---
 
 ### 2.3 Tensor Flow & Architecture
 
-The data flow through the model can be described as follows:
+| Stage | Tensor Shape | Notes |
+|---|---|---|
+| Input image | $[B, 3, 224, 224]$ | Pre-processed to fixed resolution |
+| Frozen visual encoder (SigLIP 2) | $[B, N_v, d_\text{enc}]$ | $N_v$ = number of patch tokens; $d_\text{enc}$ = encoder dim |
+| Linear projection | $[B, N_v, d_\text{model}]$ | Aligned to Transformer hidden dim |
+| Text tokens | $[B, N_t]$ → embedding → $[B, N_t, d_\text{model}]$ | Standard embedding lookup |
+| Interleaved sequence | $[B, N_t + N_v, d_\text{model}]$ | Mixed text and visual tokens |
+| Transformer decoder (L layers) | $[B, N_t + N_v, d_\text{model}]$ | Hybrid causal/bidirectional mask; modality-specific FFNs |
+| Text output head | $[B, N_t, \|\text{vocab}\|]$ | Cross-entropy loss |
+| Visual output head | $[B, N_v, d_\text{model}]$ | Predicts velocity $v_\theta$; flow matching loss |
+| Decoded image (inference) | $[B, 3, H, W]$ | Via RAE decoder after 25-step Euler integration |
 
-**Visual branch:**
-$$\text{Image}\ [B, 3, 224, 224] \xrightarrow{\text{Frozen SigLIP 2}} \text{Latent}\ [B, 256, d_{\text{enc}}] \xrightarrow{\text{Linear Projection}} [B, 256, d_{\text{model}}]$$
-Where $d_{\text{enc}}$ is the encoder's output dimension (e.g., 1152 for SigLIP 2 So400m) and $d_{\text{model}}$ is the transformer's model dimension.
-
-During flow matching training:
-$$[B, 256, d_{\text{model}}] \xrightarrow{\text{Noise injection at time } t} z_t\ [B, 256, d_{\text{model}}]$$
-
-**Text branch:**
-$$\text{Token IDs}\ [B, T] \xrightarrow{\text{Embedding}} [B, T, d_{\text{model}}]$$
-
-**Joint transformer processing:**
-The concatenated mixed-modality sequence $[B, T + 256, d_{\text{model}}]$ is processed through $L$ transformer layers. Within each layer:
-- Self-attention: shared across modalities (with hybrid causal/block-wise mask)
-- FFN: *modality-specific* — a router selects the text FFN or vision FFN based on the token's source modality
-
-**Output heads:**
-- Text tokens: linear head $[B, T, d_{\text{model}}] \rightarrow [B, T, |\mathcal{V}|]$ (vocabulary logits)
-- Visual tokens: velocity prediction head $[B, 256, d_{\text{model}}] \rightarrow [B, 256, d_{\text{latent}}]$
-
-**For VAE-based encoders:** The latent $z_0$ lives in the VAE's low-dimensional latent space (e.g., $[B, 4, 32, 32]$ for SD-VAE, then flattened to $[B, 4096, 4]$). For semantic encoders (SigLIP 2), the latent lives in a high-dimensional space ($[B, 256, 1152]$), which is the RAE regime.
-
-**Key architectural note on MoE (Section 6):** Beyond modality-specific FFNs, the paper explores fully learnable MoE routing. In the MoE setting, each FFN is replaced by a set of $N$ expert FFNs, with a learned router selecting the top-$k$ experts per token. The paper observes that experts *naturally specialize* by modality without explicit modality-supervised routing—an emergent behavior.
+**Key architectural choices:**
+1. **Modality-specific FFNs (default)**: Each Transformer block contains two FFNs—one for text tokens and one for visual tokens. Shared attention weights allow cross-modal communication, while separate FFNs allow modality-specific computation. This is shown to consistently improve all metrics over fully shared FFNs (Figure 3).
+2. **Simple linear projection (not U-Net)**: Unlike the original Transfusion paper which uses a U-Net-style upsampling decoder for visual diffusion, this work uses only a linear layer, because the number of visual tokens is kept fixed and no spatial resolution changes are needed within the Transformer.
+3. **MoE (explored in Section 6)**: In MoE configurations, the modality-specific FFNs are replaced by a learned router that dispatches tokens to a subset of experts. The paper reports emergent modality-specialist behavior in experts even without explicit routing supervision.
+4. **Block-wise causal masking via FlexAttention**: This is an engineering choice that enables a single attention kernel to handle the hybrid masking pattern efficiently on modern hardware.
 
 ---
 
 ### 2.4 Innovation Logic
 
-**vs. Dual-encoder baselines (Janus, BAGEL):** Prior systems maintain two separate visual encoders—a semantic encoder (e.g., SigLIP) for understanding and a VAE (e.g., SD-VAE or FLUX VAE) for generation. This paper demonstrates that a single semantic encoder (SigLIP 2 in RAE mode) can outperform FLUX.1 VAE on generation metrics (DPGBench, GenEval) while simultaneously outperforming it on understanding (VQA), eliminating the dual-encoder overhead entirely.
+**vs. Prior multimodal models (e.g., Janus, BAGEL, LLaVA variants)**: Those models initialize from a pretrained LLM backbone, which conflates language pretraining knowledge with multimodal learning. This work trains *from scratch*, isolating the contribution of multimodal data.
 
-**vs. Standard Transfusion (Zhou et al., 2024):** The original Transfusion uses a U-Net for processing visual tokens within the transformer. This work replaces the U-Net with a simple linear projection, which is motivated by keeping the number of visual tokens fixed (not downsampled), allowing a more direct projection into the transformer's latent space.
+**vs. Discrete visual tokenization (e.g., VQGAN + AR)**: This work uses continuous flow matching in the latent space of a semantic encoder rather than discretizing visual tokens. The key difference is that the model does not lose information through quantization, and the generation task is formulated as a regression (velocity prediction) rather than classification over a visual codebook.
 
-**vs. shared FFN designs:** Mathematically, shared FFNs apply the same $W_1, W_2$ weight matrices to both text and visual hidden states. Modality-specific FFNs apply separate $W_1^{\text{text}}, W_2^{\text{text}}$ and $W_1^{\text{vis}}, W_2^{\text{vis}}$, effectively doubling FFN parameters while keeping active parameters per token constant. This is structurally equivalent to a 2-expert MoE with modality-supervised routing, and it provably provides greater representational capacity per modality without increasing inference cost.
+**vs. Dual-encoder designs (e.g., Janus, BAGEL which use VAE for generation + SigLIP for understanding)**: The central empirical finding of Section 3 is that a *single* RAE-based semantic encoder (SigLIP 2) achieves better performance than VAE-based encoders on both generation benchmarks (DPGBench, GenEval) and understanding benchmarks (VQA), while also matching text perplexity. This challenges the widely held assumption that VAEs are uniquely suited for diffusion-based generation due to their low-dimensional continuous latent spaces. The explanation is that diffusion in high-dimensional semantic latent spaces is equally (or more) effective when combined with the appropriate noise schedule adjustment.
+
+**vs. Dense models for multimodal scaling**: The IsoFLOP analysis reveals that vision requires significantly more data than language to converge (a *scaling asymmetry*). A dense model with sufficient capacity for vision would over-provision capacity for language. MoE resolves this by providing high model capacity (benefiting language) while routing a larger fraction of data-dependent compute to vision experts, effectively addressing both modalities' needs within a single architecture.
 
 ---
 
 ## 3. Evidence & Metrics
 
-### 3.1 Benchmarks & Baselines
+### 3.1 Benchmark & Baselines
 
-The evaluation suite is comprehensive and multi-dimensional:
-- **Language modeling**: Perplexity on held-out DCLM validation set and an in-house "Notes" OOD corpus
-- **Image generation**: COCO FID, DPGBench (compositional text-to-image), GenEval (multi-object alignment)
-- **Visual understanding**: Average VQA accuracy on the 16-benchmark Cambrian evaluation suite (after 1 epoch finetuning on Cambrian-7M)
-- **Diffusion loss**: Held-out CC12M validation set (perceptual proxy for generation quality)
+**Baselines:**
+- Text-only LM (same compute budget): establishes the cost of adding visual modalities.
+- Modality-specific vs. shared FFN ablations.
+- Encoder family ablations: SD-VAE, FLUX.1 (VAE-based), SigLIP 2 So400m, DINOv2-L, WebSSL-L (semantic), raw pixels.
+- Data mixture ablations: Text+Video, Text+MetaCLIP, Text+Video+MetaCLIP+Action.
+- MoE configuration ablations: number of experts, routing granularity, top-k, expert placement frequency.
 
-Baselines compared within the controlled ablation framework include: SigLIP 2 So400m, DINOv2-L, WebSSL-L, SD-VAE, FLUX.1, and raw pixels. All comparisons are at matched compute budgets (~520B text + 520B multimodal tokens), which is a key fairness control.
+**Evaluation suite:**
+- **Language**: DCLM perplexity (in-distribution), Notes perplexity (OOD).
+- **Visual generation**: COCO FID, DPGBench, GenEval.
+- **Visual understanding**: Average VQA accuracy over 16 Cambrian benchmarks (after 1 epoch of SFT on Cambrian-7M).
+- **World modeling**: Navigation rollout quality (qualitative + NWM protocol).
 
-The experimental design is generally fair for ablation purposes. A notable caveat is that VQA results require 1 epoch of finetuning on Cambrian-7M, introducing a small confound; however, this is a standard protocol in the field.
+**Fairness**: The paper explicitly controls compute budgets within each ablation family, which is the correct methodological choice. All models are evaluated at the end of pretraining without instruction tuning, except VQA which uses 1 epoch of finetuning. This is clearly stated, enabling reproducibility.
+
+---
 
 ### 3.2 Key Results
 
-**RAE vs. VAE (Section 3 / Figure 4):**
-- SigLIP 2 (RAE-mode) achieves DPGBench score ~0.60 vs. FLUX.1 ~0.40 (≈+50% relative improvement) and GenEval ~0.35 vs. FLUX.1 ~0.20 (≈+75% relative improvement)
-- Avg VQA: SigLIP 2 ~40% vs. FLUX.1 ~25% (≈+60% relative improvement)
-- SigLIP 2 maintains text PPL comparable to the text-only baseline, while FLUX.1 shows marginal text degradation
+**Visual Representation (Section 3, Figure 4):**
+- SigLIP 2 (RAE) achieves the best generation score on DPGBench (~0.59 vs. ~0.50 for FLUX.1 VAE), best GenEval (~0.35 vs. ~0.22 for FLUX.1), and best VQA (~40% vs. ~27% for FLUX.1), while maintaining text PPL comparable to the text-only baseline.
+- Semantic encoders outperform VAE-based encoders on generation despite VAEs being the conventional choice—a key empirical finding.
 
-**Data composition (Section 4.1 / Figure 5):**
-- Text + Video achieves DCLM PPL ≈13.5, matching text-only baseline (~13.5), confirming raw video does not compete with text
-- Text + MetaCLIP degrades PPL to ~14.0 on DCLM (distribution shift from captions)
-- Text + Video + MetaCLIP + Action recovers partially to ~13.8
+**Data Impact (Section 4, Figures 5-9):**
+- Text+Video achieves comparable or slightly better text PPL than text-only, demonstrating near-zero modality competition from raw video.
+- Text+MetaCLIP causes the largest PPL degradation among data mixtures, attributable to distributional distance of image captions from the DCLM text corpus (cosine distance 0.196 for standard MetaCLIP vs. 0.286 for recaptioned data).
+- Mixed data with 20B VQA + 80B heterogeneous data outperforms 100B VQA-only training, demonstrating positive cross-modal transfer (~5× data efficiency improvement for reaching equivalent VQA performance).
 
-**Cross-modal synergy (Section 4.3 / Figure 9):**
-- Mixed models (20B VQA + 80B heterogeneous) outperform both a 20B VQA-only baseline and a 100B VQA-only baseline on VQA, providing >5× data efficiency gain for the multimodal pretraining approach
+**Architecture—MoE (Section 6):**
+- MoE consistently outperforms dense counterparts at matched active-parameter count. Emergent modality specialization is observed without explicit routing supervision (Figure 11 shows visual and text experts naturally segregating).
 
-**MoE vs. dense (Section 6):**
-- MoE with emergent modality specialization improves across all metrics simultaneously (DPGBench, GenEval, VQA, PPL)
-- Expert specialization by modality emerges without supervision: vision-only experts and text-only experts appear naturally
+**Scaling Laws (Section 7):**
+- Vision follows a steeper data-scaling curve than language under IsoFLOP analysis: vision needs significantly more tokens to achieve the same loss reduction relative to its compute allocation.
+- MoE harmonizes this asymmetry by allowing more model capacity (needed by language) while the data-intensive nature of vision is accommodated by routing more tokens to vision-specialized experts.
 
-**Scaling asymmetry (Section 7):**
-- IsoFLOP analysis shows vision requires substantially more data tokens than language to reach the same loss reduction: the optimal token allocation shifts dramatically toward visual data
-- MoE architecture's ability to provide high model capacity for language (through large total parameter count) while keeping active compute tractable resolves this asymmetry
+---
 
-### 3.3 Ablation Study
+### 3.3 Ablation Study — Critical Components
 
-The most critical component identified is the **visual representation choice** (Section 3). Switching from VAE-based encoders (SD-VAE, FLUX.1) to a semantic encoder (SigLIP 2) in RAE mode yields the largest single improvement across all visual metrics. The modality-specific FFN design is the second most critical architectural choice (Figure 3 shows improvements across all 7 evaluated metrics simultaneously). The data composition finding (synergy from diverse multimodal data) is the third critical factor.
+1. **Modality-specific FFNs** (Figure 3): Replacing shared FFNs with modality-specific FFNs improves *all* metrics simultaneously—lower text PPL, lower diffusion loss, higher DPGBench, GenEval, and VQA scores. This is arguably the lowest-cost, highest-impact architectural choice.
+2. **I/T paired data** (Figure 6): Text+Video alone (no I/T pairs) produces near-zero image generation capability (omitted from generation metrics), demonstrating that paired image-text data is a necessary condition for visual understanding and generation, not just helpful.
+3. **MoE with modality-aware routing** (Section 6.2): Natural expert specialization emerges across layers, with earlier layers showing more modality mixing and later layers showing stronger specialization—suggesting the model learns to process modality-specific features at higher abstraction levels.
+4. **RAE encoder choice** (Section 3): The single most impactful finding is that semantic encoders (SigLIP 2) are superior to VAEs for generation, not just understanding. This collapses the dual-encoder requirement and simplifies the architecture.
 
 ---
 
@@ -213,55 +209,60 @@ The most critical component identified is the **visual representation choice** (
 
 ### 4.1 Hidden Limitations
 
-**Scale ceiling:** All experiments are conducted at the 2.3B parameter scale with ~1T total training tokens. Scaling laws are derived via IsoFLOP analysis, but the conclusions (particularly about vision-language scaling asymmetry and MoE harmonization) are extrapolated beyond empirically validated compute regimes. The behavior of expert specialization and the optimal MoE routing structure may change at much larger scales.
+**1. Inference Latency for Visual Generation**: The 25-step Euler sampler over a full Transformer decoder is substantially more expensive than text generation. For a single image, the model must run 25 full forward passes through the 2.3B-parameter model. This creates a severe latency asymmetry between text and image outputs in any interactive deployment setting. The paper does not report wall-clock generation times.
 
-**Frozen encoder assumption:** The visual encoder (SigLIP 2) is kept frozen throughout training. This means the visual representations are not jointly optimized with the transformer, potentially leaving cross-modal representation alignment on the table. It also implies that the model's visual understanding is upper-bounded by what SigLIP 2 can represent—the model cannot develop visual concepts that SigLIP 2 does not encode.
+**2. Fixed-Resolution Visual Processing**: All frames are preprocessed to 224×224 pixels. This is a hard constraint inherited from the frozen SigLIP 2 encoder. High-resolution image generation or understanding of fine-grained spatial details is not addressed. Any deployment requiring higher-resolution outputs would require retraining or a different encoder.
 
-**VQA evaluation confound:** All VQA results require 1 epoch of finetuning on Cambrian-7M, which introduces a non-trivial confound. Differences in pretraining representations may have differential interaction effects with the finetuning data, making it difficult to cleanly attribute VQA performance to pretraining choices alone.
+**3. World Modeling Evaluation Depth**: The world modeling section (Section 5) demonstrates qualitative rollouts and uses the NWM benchmark, but the evaluation is relatively shallow. Performance on more rigorous planning benchmarks (e.g., requiring multi-step physical reasoning or novel environment generalization) is not provided. The claim that "world modeling capabilities emerge from general training" is supported primarily by qualitative evidence.
 
-**World modeling scope:** The navigation world model (NWM) setting is restricted to ego-centric navigation with structured action tokens (dx, dy, dyaw, rel_t). The generality of the world modeling finding—that capabilities emerge from general multimodal pretraining—is demonstrated only in this narrow domain and may not generalize to more complex physical prediction tasks.
+**4. Scale of Experiments**: The primary models are at the ~2B parameter scale with ~1T tokens. Many conclusions about scaling laws (Section 7) are derived from IsoFLOP experiments at smaller scales (well below 2B). Extrapolating these scaling laws to the 10B–100B regime—where most production systems operate—requires caution, particularly regarding the vision-language scaling asymmetry.
 
-**Video tokenization:** Video is processed frame-by-frame at 1 FPS, with each frame encoded independently. This ignores temporal correlations at the token level, relying entirely on the transformer's attention mechanism to capture temporal dynamics. This may be suboptimal for tasks requiring fine-grained temporal understanding.
+**5. Frozen Encoder Dependency**: The architecture is conditioned on the quality of the frozen visual encoder. Any downstream capability improvement requires retraining the entire system if a better encoder becomes available. End-to-end training of the encoder remains unexplored.
+
+---
 
 ### 4.2 Engineering Hurdles
 
-**Reproducing the noise schedule shift:** The paper references shifting the noise schedule toward the noisier end for high-dimensional RAE latents, following Esser et al. (2024). The precise schedule parameterization is not fully detailed in the main paper and requires careful reading of the appendix and referenced works. Incorrect noise scheduling in RAE-mode training is likely to cause training instability or poor generation quality.
+**1. Reproducing the Noise Schedule**: The paper states the noise schedule is "shifted towards the noisier end" for high-dimensional latents, following RAE and Esser et al. The exact logit-normal or shifted cosine parameterization is not specified in the main text; this is delegated to cited prior works (Zheng et al., 2026; Tong et al., 2026). Practitioners would need to carefully study those companion papers to reproduce the noise schedule correctly, as the choice significantly affects generation quality in high-dimensional spaces.
 
-**FlexAttention implementation for hybrid masking:** The block-wise causal mask for visual tokens combined with the standard causal mask for text tokens requires a custom attention mask pattern. Implementing this correctly in FlexAttention (or equivalent) without introducing memory or speed regressions requires non-trivial engineering. In particular, handling variable-length sequences with mixed modalities and different masking rules in a batched setting is complex.
+**2. FlexAttention for Hybrid Masking**: The block-wise causal mask (bidirectional within frames, causal across frames) requires custom attention mask implementation. FlexAttention (Dong et al., 2024a) is cited but the exact mask specification logic—handling interleaved text and variable-length image sequences—involves non-trivial engineering. Sequences with varying numbers of frames per sample require dynamic mask construction per batch.
 
-**Loss weighting sensitivity:** The $\lambda_{\text{LM}} = 1.0$, $\lambda_{\text{flow}} = 3.0$ weighting was chosen empirically to stabilize joint training. This ratio is likely sensitive to the specific data mixture ratio, model scale, and visual encoder dimensionality. Practitioners who change any of these variables will need to re-tune the loss weights, which requires multiple expensive training runs.
+**3. Modality-Specific FFN Routing in MoE**: In Section 6, the paper explores MoE configurations beyond fixed modality-specific FFNs. The interaction between the learned MoE router and the pre-existing modality structure (text vs. visual tokens) is subtle: the router must effectively rediscover modality identity without explicit supervision. Implementing this correctly requires ensuring that the router's input features (token representations) carry sufficient modality-discriminative information at the beginning of training, which is not guaranteed and may require careful initialization or warmup strategies.
 
-**MoE routing load balancing:** The paper does not provide detailed specification of the load balancing auxiliary loss used to prevent expert collapse in the MoE setting. Expert collapse (all tokens routed to one or two experts) is a well-documented failure mode in MoE training that would prevent the emergent modality specialization from occurring. Reproducers must implement appropriate auxiliary losses with tuned coefficients.
+**4. Decoupled I/T Data Pipelines**: Section 4.2 recommends using MetaCLIP for image-to-text (I→T) and SSTK (Shutterstock) for text-to-image (T→I) generation, sourcing different data by objective. Implementing this in a mixed-batch training loop requires maintaining separate data pipelines with different sampling rates, caption formats, and directional conditioning, adding significant data engineering overhead.
 
-**Decoder dependency at inference:** For semantic encoders (SigLIP 2) in RAE mode, image generation at inference time requires decoding the high-dimensional latent back to pixel space using the RAE decoder (from Zheng et al., 2026; Tong et al., 2026). These decoders are external pretrained components not trained as part of this system. Their availability and compatibility with the specific SigLIP 2 latent space must be verified carefully, and the decoding quality will introduce its own artifacts independent of the generative model's quality.
+**5. Classifier-Free Guidance (CFG) Dropout**: Conditioning is dropped 10% of the time during training to enable CFG at inference. When training on mixed batches containing text-only, video-only, I/T pairs, and action-conditioned data simultaneously, the CFG dropout logic must be applied correctly per-sample and per-modality-pair. Incorrect implementation (e.g., dropping conditioning from text tokens in text-only examples) would corrupt the language modeling objective.
 
-**Data pipeline complexity:** The training data spans four heterogeneous sources (DCLM text, raw YouTube/curated video at 1 FPS, MetaCLIP/Shutterstock image-text pairs, NWM action-conditioned video) with different formats, temporal structures, and quality distributions. Building a batched dataloader that correctly interleaves these modalities, applies appropriate preprocessing (224×224 frame resizing, BPE tokenization, action token formatting), and maintains the desired token budget ratios is a substantial engineering task not documented in detail.
+**6. VQA Evaluation Requires Finetuning**: The paper reports VQA results after 1 epoch of SFT on Cambrian-7M. This means that reproducing VQA numbers requires a separate finetuning stage with a specific dataset. Comparisons against models evaluated without finetuning would be invalid, and the sensitivity of results to the finetuning data distribution is not fully characterized.
+
+---
+
+*Summary*: This paper is best read as a well-executed empirical science paper rather than an architecture paper. Its primary value is in establishing a clean experimental basis for unified multimodal pretraining design decisions. The four key design recommendations—use RAE, embrace diverse data, expect world modeling to emerge, use MoE for scaling—are each supported by controlled experiments, and the vision-language scaling asymmetry finding has direct implications for how future multimodal systems should be architected and budgeted.
 
 ## 🔗 Knowledge Graph & Connections
-## Task 1: Knowledge Connections
+## Task 1: Differential Analysis & Connections
 
-### Connection 1: [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]
-This is the most direct conceptual connection. Both papers address the emergence of **world modeling capabilities from unified multimodal pretraining**. The Trinity paper defines consistency (temporal, semantic, physical) as the organizing principle for world models; the current paper empirically demonstrates that such consistency-grounded prediction capabilities *emerge naturally* from general-purpose video pretraining under the Transfusion framework (Section 5), without domain-specific world model training. The NWM experiments in Section 5 are essentially a minimal test of whether a general multimodal model satisfies the temporal-physical consistency criteria articulated in the Trinity framework. The two papers are complementary: one provides the normative framework, the other provides the empirical mechanism.
+### Connection 1: [[Chain of World]] — Complementary but Architecturally Divergent Approaches to Video-Conditioned Action Modeling
 
----
-
-### Connection 2: [[GeometryAware_Rotary_Position_Embedding_for_Consistent_Video_World_Model]]
-Both papers tackle the architecture of **video-conditioned world models** processed by transformer backbones. The Geometry-Aware RoPE paper addresses the position encoding problem for spatiotemporal video tokens—precisely the issue that arises in the block-wise causal masking scheme of the current paper. The current paper uses a flat, frame-indexed block mask (each frame attends bidirectionally internally, causally to prior frames), which is a coarse approximation of spatial geometry. The Geometry-Aware RoPE work provides a direct upgrade path: replacing the flat position encoding with geometry-aware 3D RoPE could improve temporal consistency in the NWM rollouts described in Section 5.3. This represents a concrete and actionable technical integration point.
+Both papers treat video as a first-class training signal and ground action prediction in visual dynamics. However, the approaches diverge fundamentally in their representational philosophy. CoWVLA uses a **dedicated video VAE** to factorize video into disentangled structure and motion latents, requiring a specialized two-stage pipeline. The present paper instead trains a **single unified decoder-only Transformer** that jointly handles raw video (encoded frame-by-frame by a frozen semantic encoder) and action tokens formatted as text. The key differential is architectural parsimony: this paper's world modeling emerges as a *byproduct* of general multimodal pretraining rather than being explicitly engineered via disentangled motion representations. Empirically, Section 5 demonstrates that navigation world modeling capabilities arise from co-training on generic video data without any motion-specific inductive biases—directly contradicting the design philosophy of CoWVLA, which posits that explicit motion factorization is necessary for effective temporal reasoning. This paper would argue that sufficient data diversity (rather than architectural specialization) is the primary driver.
 
 ---
 
-### Connection 3: [[Generated_Reality]]
-The "Generated Reality" paper and the current work share the **core architectural commitment to unified generative pretraining over visual and linguistic data**, with both treating image/video generation as a first-class training signal rather than a downstream task. However, the current paper's finding on RAE-based representations—that a single semantic encoder suffices for both understanding and generation—directly challenges architectures in the Generated Reality line that maintain dual-pathway tokenization. The empirical evidence here (SigLIP 2 outperforming FLUX.1 on DPGBench by ~+50% relative) suggests that systems like Generated Reality that rely on VAE-based generation latents may be operating with a suboptimal representation. This is a **conflicting empirical result** that warrants cross-examination.
+### Connection 2: [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]] — Empirical Evidence for vs. Theoretical Framework of World Model Properties
+
+The Trinity framework proposes that a general world model must satisfy Modal Consistency, Spatial Consistency, and Temporal Consistency as principled theoretical requirements. The present paper provides empirical grounding that partially validates and partially challenges this framework. Specifically, the finding that multimodal co-training with diverse data (text, video, I/T pairs, action trajectories) produces emergent world modeling behavior suggests that **temporal and modal consistency need not be explicitly enforced**—they arise naturally from the training objective when data is sufficiently diverse. This is a weaker inductive bias than the Trinity framework prescribes. However, the paper's finding that raw video training is essential (Section 5.2: NWM-specific data alone is insufficient) aligns with the Trinity's emphasis on temporal consistency as "the causal engine"—causal video data appears to be the necessary substrate, even if not explicitly architected for. The key differential: Trinity is a normative framework prescribing what a world model *should* be; this paper is a descriptive framework showing what *emerges* from scale and data diversity.
 
 ---
 
-### Connection 4: [[MALLVI]]
-MALLVI (Multimodal Action-Language-Vision-Language Instruction) and the current paper both address the question of **how vision and language co-training affects downstream task capabilities**. The current paper's synergy finding in Section 4.3—that 20B VQA tokens + 80B heterogeneous multimodal tokens outperforms 100B VQA-only tokens—directly validates the motivation behind instruction-tuning pipelines like MALLVI that mix heterogeneous visual data sources. However, the current paper operates at the *pretraining* level while MALLVI operates at the *finetuning* level, suggesting the synergy mechanism is not limited to one training phase and may compound across stages.
+### Connection 3: [[World_Action_Models_are_Zero_shot_Policies]] — Shared Goal of Emergent Physical Generalization, Different Computational Strategies
+
+DreamZero builds a World Action Model (WAM) on top of a **pretrained video diffusion backbone**, achieving real-time control at 7Hz through a 14B autoregressive video diffusion model. The paper under review pursues a conceptually similar goal—learning physical dynamics from video to enable action prediction—but takes a fundamentally different approach: rather than initializing from a domain-specific video diffusion model, it trains a **unified autoregressive-diffusion hybrid** (Transfusion) from scratch on heterogeneous data. The critical differential is the source of generalization. DreamZero achieves cross-embodiment transfer by leveraging a strong video diffusion prior. This paper achieves navigation world modeling by leveraging *general* video pretraining, arguing in Section 5.2 that generic video data contributes more to world modeling than domain-specific navigation data (NWM). This is a stronger generalization claim but is evaluated only in a narrow navigation domain. DreamZero provides stronger evidence of real-world robotic utility; this paper provides stronger evidence of the *architectural unification* path. A practical synthesis would be to apply the MoE scaling and RAE representation findings from this paper to a system like DreamZero to improve its parameter efficiency.
 
 ---
 
-### Connection 5: [[QuantVLA]] and [[GeneralVLA]]
-The **action-conditioned video modeling** component (NWM setting, Section 5) and the MoE architecture findings connect directly to VLA (Vision-Language-Action) model design. Both QuantVLA and GeneralVLA grapple with the question of how to efficiently route computation across vision, language, and action modalities. The current paper's discovery that MoE experts naturally specialize by modality without explicit supervision provides a theoretical foundation for why MoE-based VLA architectures may be superior to dense alternatives. Furthermore, the finding that physical prediction capabilities emerge from *general* video pretraining rather than domain-specific robot data has direct implications for how VLA pretraining corpora should be constructed—a point directly relevant to GeneralVLA's data strategy.
+### Connection 4: Cross-Cutting Theme — The Role of Explicit vs. Emergent Structure Across All Three Related Works
+
+All three related notes ([[Chain of World]], [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]], [[World_Action_Models_are_Zero_shot_Policies]]) share a common underlying assumption: that world modeling requires *explicit structural inductive biases*, whether through motion factorization (CoWVLA), theoretical consistency principles (Trinity), or video diffusion priors (DreamZero). The present paper's most provocative contribution relative to this entire cluster is the demonstration that **emergent structure from diverse multimodal pretraining** may be a viable—and perhaps more scalable—alternative to hand-engineered structure. The MoE result further supports this: modality specialization emerges without explicit routing supervision, suggesting that the model's inductive capacity, when sufficiently large and diversely trained, self-organizes in ways that researchers were previously hand-engineering.
 
 ---
 
@@ -269,88 +270,92 @@ The **action-conditioned video modeling** component (NWM setting, Section 5) and
 
 ```mermaid
 graph LR
-    A["Beyond Language Modeling\nMultimodal Pretraining Study"]
+    A["Beyond Language Modeling\n(This Paper)"] --> B["Core Framework:\nTransfusion\nfrom Scratch"]
+    
+    B --> C["Axis 1: Visual\nRepresentation"]
+    B --> D["Axis 2: Data\nComposition"]
+    B --> E["Axis 3: World\nModeling"]
+    B --> F["Axis 4: Architecture\nMoE Design"]
+    B --> G["Axis 5: Scaling\nLaws"]
 
-    %% Five Axes
-    A --> B["Axis 1: Visual Representation"]
-    A --> C["Axis 2: Data Composition"]
-    A --> D["Axis 3: World Modeling"]
-    A --> E["Axis 4: Architecture MoE"]
-    A --> F["Axis 5: Scaling Laws"]
+    C --> C1["RAE-based Semantic\nEncoder - SigLIP 2"]
+    C --> C2["Outperforms VAE\nfor Generation AND\nUnderstanding"]
+    C --> C3["Single encoder\nsuffices for both tasks"]
+    C1 --> C3
 
-    %% Visual Representation Branch
-    B --> B1["VAE Encoders\nSD-VAE / FLUX.1\nLow-dim latents"]
-    B --> B2["Semantic Encoders\nSigLIP2 / DINOv2\nHigh-dim latents"]
-    B --> B3["Raw Pixels\nPatch-based RGB\nX-Pred param."]
-    B2 --> B4["RAE Mode\nSingle Encoder for\nUnderstanding AND Generation"]
-    B4 --> B5["FINDING: RAE wins\n+50pct DPGBench\n+60pct VQA vs VAE"]
+    D --> D1["Text + Video:\nnear-zero modality\ncompetition"]
+    D --> D2["I/T Pairs:\nnecessary for visual\nunderstanding & gen"]
+    D --> D3["Cross-modal synergy:\n5x data efficiency\non VQA"]
+    D --> D4["Caption distribution\ndistance drives\nPPL degradation"]
 
-    %% Training Objective Branch
-    B4 --> OBJ["Joint Training Objective\nL = 1.0 L_LM + 3.0 L_flow"]
-    OBJ --> OBJ1["L_LM: Cross-Entropy\nNext Token Prediction\nfor Text"]
-    OBJ --> OBJ2["L_flow: Flow Matching\nVelocity Field MSE\nfor Vision"]
-    OBJ2 --> OBJ3["Rectified Flow\nz_t = 1-t * eps + t * z0\nLinear interpolation"]
+    E --> E1["Navigation World\nModel - NWM"]
+    E --> E2["Emergent from general\nvideo pretraining"]
+    E --> E3["Action as text\ntokens - free-form\nlanguage actions"]
+    E2 --> E3
 
-    %% Architecture Details
-    E --> E1["Decoder-only Transformer\nTransfusion Framework\nTrained from SCRATCH"]
-    E1 --> E2["Hybrid Causal Masking\nText: Standard Causal\nVision: Block-wise Causal"]
-    E1 --> E3["Modality-Specific FFNs\n2.3B total / 1.5B active\nper-token routing"]
-    E3 --> E4["Learnable MoE Routing\nTop-k Expert Selection\nN experts per layer"]
-    E4 --> E5["EMERGENT FINDING:\nExperts Specialize by Modality\nNo supervision needed"]
+    F --> F1["Modality-specific\nFFNs - default"]
+    F --> F2["MoE - learned routing\nbeyond fixed assignment"]
+    F2 --> F3["Emergent modality\nspecialization without\nexplicit supervision"]
+    F2 --> F4["Earlier layers:\nmodality mixing\nLater layers:\nspecialization"]
+    F1 --> F2
 
-    %% Data Branch
-    C --> C1["Text Only\nDCLM Web Text\nBaseline"]
-    C --> C2["Raw Video\nYouTube / Curated\n1 FPS"]
-    C --> C3["Image-Text Pairs\nMetaCLIP / Shutterstock\nI+T format"]
-    C --> C4["Action-Conditioned Video\nNWM trajectories\nI+T->I format"]
-    C2 --> C5["FINDING: Video compatible\nwith LM - no competition\nText+Video matches PPL"]
-    C3 --> C6["FINDING: Caption OOD shift\ncauses PPL degradation\nCosine dist DCLM=0.196"]
-    C3 --> C7["SYNERGY FINDING:\n20B VQA + 80B hetero\nbeats 100B VQA-only"]
+    G --> G1["IsoFLOP Analysis"]
+    G1 --> G2["Vision: significantly\nmore data-hungry\nthan language"]
+    G1 --> G3["Language: more\ncapacity-hungry"]
+    G2 --> G4["Scaling Asymmetry\nbetween modalities"]
+    G3 --> G4
+    G4 --> G5["MoE harmonizes\nthe asymmetry"]
+    G5 --> F2
 
-    %% World Modeling Branch
-    D --> D1["NWM Setting\nNavigation World Model\nEgo-centric video"]
-    D1 --> D2["Action tokens as text\ndx dy dyaw rel_t\nFree-form language actions"]
-    D1 --> D3["FINDING: Physical prediction\nemerges from GENERAL\nvideo pretraining"]
-    D3 --> D4["Domain-specific data\nless important than\nbroad multimodal pretraining"]
+    H["Training Objectives"] --> H1["LM Loss:\nCross-Entropy\nfor text tokens"]
+    H --> H2["Flow Matching Loss:\nVelocity field\nprediction for vision"]
+    H --> H3["Combined:\nlambda_LM=1.0\nlambda_flow=3.0"]
+    H1 --> H3
+    H2 --> H3
 
-    %% Scaling Branch
-    F --> F1["IsoFLOP Analysis\nVary model size\nFix compute budget"]
-    F1 --> F2["SCALING ASYMMETRY:\nVision data-hungry\nLanguage efficient"]
-    F2 --> F3["MoE RESOLVES asymmetry\nHigh capacity for language\nHigh data throughput for vision"]
-    F3 --> E4
+    I["Key Architectural\nChoices"] --> I1["Decoder-only\nTransformer - 2.3B\ntotal / 1.5B active"]
+    I --> I2["Block-wise causal\nmask via FlexAttention"]
+    I --> I3["Linear projection\nnot U-Net"]
+    I --> I4["Frozen visual\nencoder"]
+    I --> I5["BPE tokenizer\nfrom LLaMA-3"]
 
-    %% Connections to Related Work
-    B4 -.->|"Validates"| RAE["RAE Papers\nZheng 2026 / Tong 2026"]
-    E1 -.->|"Extends"| TF["Transfusion\nZhou 2024"]
-    D3 -.->|"Empirical evidence for"| WM["World Model Emergence\nTrinity Consistency Paper"]
-    C7 -.->|"Pretraining-level synergy\ncomplementary to"| VLA["VLA Pretraining\nGeneralVLA / QuantVLA"]
+    J["Evaluation Suite"] --> J1["Text: DCLM PPL\nNotes PPL"]
+    J --> J2["Generation: COCO FID\nDPGBench, GenEval"]
+    J --> J3["Understanding:\n16-benchmark VQA avg\nCambrian"]
+    J --> J4["World Modeling:\nNWM rollouts"]
+
+    A --> H
+    A --> I
+    A --> J
+
+    K["Related Works"] --> K1["[[Chain of World]]\nCoWVLA - explicit\nmotion factorization"]
+    K --> K2["[[Trinity of Consistency]]\nNormative WM\nframework"]
+    K --> K3["[[World Action Models]]\nDreamZero - video\ndiffusion for robotics"]
+
+    E2 -. "Challenges explicit\nstructure assumption" .-> K1
+    E2 -. "Empirical evidence for\nemergent consistency" .-> K2
+    F2 -. "Alternative to domain-\nspecific pretraining" .-> K3
 ```
 
 ---
 
 ## Task 3: Future Research Directions
 
-### Direction 1: End-to-End Joint Optimization of Visual Encoder and Multimodal Backbone
+### Direction 1: End-to-End Joint Training of Visual Encoder and Generative Model
 
-**Motivation:** A critical limitation identified in this paper is that the visual encoder (SigLIP 2) is kept *frozen* throughout training. The RAE finding demonstrates that high-dimensional semantic latents are effective for generation, but the representations were learned for discriminative contrastive objectives—not for the flow-matching generation task or for world-modeling. Joint end-to-end training could allow the visual encoder to develop representations that are simultaneously optimal for understanding, generation, and physical prediction.
-
-**Concrete Proposal:** Design a curriculum training scheme where the visual encoder is initially frozen (for training stability), then unfrozen at a specified checkpoint with a much lower learning rate (e.g., 10× lower than the transformer backbone). Evaluate whether jointly-optimized visual representations (i) improve generation quality beyond RAE-mode SigLIP 2, (ii) enable better temporal consistency in video generation, and (iii) develop representations that capture physical properties (depth, contact geometry, optical flow) not present in SigLIP 2's contrastive pretraining. Compare against the current frozen baseline on the full evaluation suite including the NWM setting.
+The present paper uses a **frozen** visual encoder throughout training, which means the encoder's representations are fixed and cannot be optimized for the downstream generation and understanding objectives. A concrete research direction is to study **co-training the visual encoder jointly with the Transfusion backbone**, using a carefully designed optimization schedule (e.g., differential learning rates, staged unfreezing, or distillation from the frozen encoder as a regularizer). The key question is whether the encoder representations would specialize further toward the generative objective, potentially improving generation quality at the cost of understanding, or whether the joint objective would produce a more balanced representation. The RAE framework (Zheng et al., 2026) suggests that high-dimensional semantic latents are sufficient for diffusion; it remains unknown whether jointly trained encoders would converge to qualitatively similar representations or discover fundamentally different visual abstractions. This is practically important because it determines whether future generations of these systems can escape the dependency on externally pretrained encoders.
 
 ---
 
-### Direction 2: Geometry-Aware Spatiotemporal Position Encoding for Video in Multimodal Pretraining
+### Direction 2: Empirical Characterization of the Vision-Language Scaling Asymmetry at Production Scale
 
-**Motivation:** The current paper uses a block-wise causal mask where all tokens within a frame attend bidirectionally, but the positional encoding within a frame is flat (no spatial geometry). Video frames are 2D spatial samples of a 3D world; a flat position encoding discards the camera geometry and spatial topology that is critical for physical world modeling (depth estimation, 3D consistency, egomotion prediction). The NWM rollout failures (e.g., poor handling of rapid camera rotation) are likely attributable in part to this geometric blindness.
-
-**Concrete Proposal:** Replace the flat 1D positional encoding for visual tokens with a geometry-aware 3D RoPE scheme (extending [[GeometryAware_Rotary_Position_Embedding_for_Consistent_Video_World_Model]]) that encodes (x, y) patch coordinates within a frame and (t) frame index. Investigate whether this improves: (i) temporal consistency in multi-frame generation rollouts, (ii) NWM prediction accuracy on egomotion-conditioned trajectories, and (iii) VQA tasks requiring spatial reasoning (object localization, relative position questions). Conduct an IsoFLOP comparison to determine whether the geometry-aware encoding provides sufficient benefit per parameter count to justify its added complexity.
+The scaling law analysis in Section 7 is conducted at relatively modest scales (sub-2B parameters, sub-1T tokens per modality). The finding that vision is significantly more data-hungry than language is derived from IsoFLOP curves at these scales, but the functional form and the crossover point of the asymmetry at 10B–100B parameter scales remain unknown. A concrete research direction is to conduct **IsoFLOP scaling experiments across a wider compute range** (e.g., 10^20 to 10^23 FLOPs) with systematic variation of the text-to-vision token ratio, measuring whether the asymmetry persists, narrows, or reverses at scale. Of particular interest is the interaction with MoE: the paper claims MoE harmonizes the asymmetry, but this claim is made based on fixed-scale experiments. Characterizing MoE scaling laws for the multimodal setting—specifically, how the optimal number of experts, expert capacity, and top-k routing interact with the text/vision token ratio as a function of total compute—would provide actionable design guidelines for building production-scale unified multimodal systems and directly extend the Chinchilla-style analysis to the multimodal regime.
 
 ---
 
-### Direction 3: Modality-Adaptive Compute Allocation via Learned Token Dropping in MoE Multimodal Models
+### Direction 3: Structured World Model Probing and Benchmark Development for Emergent Physical Reasoning
 
-**Motivation:** This paper demonstrates a scaling asymmetry—vision is substantially more data-hungry than language under matched compute. The MoE architecture partially resolves this by increasing total model capacity without proportionally increasing active compute per token. However, the asymmetry also manifests *within* a sequence: visual tokens may require more representational work (higher-dimensional space, more spatial detail) than text tokens. Current models allocate a fixed number of transformer layers and attention heads to every token regardless of modality.
-
-**Concrete Proposal:** Develop a *dynamic depth routing* scheme within the MoE multimodal transformer, where each token (text or visual) is assigned a variable number of active transformer layers based on a learned importance score. Visual tokens in high-uncertainty (noisy, high-$t$) diffusion steps would receive more compute; visual tokens at low-$t$ (near-clean) or simple text tokens would early-exit. This is inspired by adaptive computation time (Graves, 2016) but applied specifically to the multimodal MoE setting. Evaluate against fixed-depth baselines at matched FLOP budgets using the IsoFLOP methodology from Section 7, measuring whether dynamic allocation achieves better utilization of the compute budget across the vision-language scaling asymmetry.
+Section 5 demonstrates that world modeling capabilities emerge from general multimodal pretraining, but the evaluation is limited to qualitative navigation rollouts and the narrow NWM benchmark. A critical open question is whether the emergent world model encodes **generalizable physical laws** (object permanence, conservation principles, contact mechanics) or merely superficial visual patterns sufficient for navigation. A concrete research direction is to develop a **structured physical reasoning benchmark** specifically designed to probe emergent world models trained via the approach described in this paper: the benchmark would include held-out physical scenarios (novel object geometries, unseen material properties, counterfactual physics) evaluated via next-frame prediction accuracy, rollout consistency over long horizons, and downstream policy performance in zero-shot transfer settings. This would directly connect to the theoretical framework in [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]] by testing whether the Trinity's consistency axes are satisfied by emergent representations, and would provide the rigorous evaluation scaffold needed to determine whether the "train on diverse data and world modeling emerges" hypothesis scales beyond narrow domains.
 
 ---
 *Analysis performed by PaperBrain-OpenRouter (anthropic/claude-4.6-sonnet) (Vision-Enabled)*
@@ -358,5 +363,5 @@ graph LR
 
 ## 📂 Resources
 - **Local PDF**: [[Beyond Language Modeling An Exploration of Multimodal Pretraining.pdf]]
-- [Online PDF](https://arxiv.org/pdf/2603.03276v1)
-- [ArXiv Link](http://arxiv.org/abs/2603.03276v1)
+- [Online PDF](https://arxiv.org/pdf/2603.03276.pdf)
+- [ArXiv Link](https://huggingface.co/papers/2603.03276)
