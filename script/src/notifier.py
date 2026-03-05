@@ -43,6 +43,28 @@ class Notifier:
         body = "\n\n".join(body_lines)
         
         # Send Request
+        # Check if body is too long (Bark limit ~2000 chars roughly, but safer to keep under 1000 per message)
+        # If too long, split into multiple messages
+        max_len = 800
+        if len(body) > max_len:
+            logger.info("Notification body too long, splitting...")
+            parts = [body[i:i+max_len] for i in range(0, len(body), max_len)]
+            for i, part in enumerate(parts):
+                part_title = f"{title} ({i+1}/{len(parts)})"
+                self._send_bark(part_title, part)
+        else:
+            self._send_bark(title, body)
+
+    def send_podcast_notification(self, paper_title, audio_path):
+        """
+        Sends a notification with the podcast audio link/file.
+        Note: Bark typically supports text. Sending audio file directly might need a public URL.
+        Since this is local, we just notify that it's ready.
+        """
+        if not self.enabled: return
+        
+        title = "🎙️ Podcast Ready"
+        body = f"Podcast generated for: {paper_title}\n\nFile saved at: {os.path.basename(audio_path)}\n(Please sync to phone to listen)"
         self._send_bark(title, body)
 
     def _send_bark(self, title, body):

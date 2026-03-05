@@ -1,5 +1,5 @@
 doubao:
-  api_key: "41b256fd-6322-4da2-93cf-d39ec9316a67"
+  api_key: "${DOUBAO_API_KEY}"
   # You can use doubao-seed-2-0-lite-260215 for cheaper screening
   model_flash: "ep-20260226105946-sgmhx"
   # Use the powerful Pro model for detailed analysis
@@ -7,7 +7,7 @@ doubao:
   threshold_score: 7
 
 openrouter:
-  api_key: "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"
+  api_key: "${OPENROUTER_API_KEY}"
   # For screening (fast/cheap): Google Gemini 3.1 Flash Lite Preview
   model_flash: "google/gemini-3.1-flash-lite-preview"
   # For deep analysis (powerful): Anthropic Claude 4.6 Sonnet (Hypothetical SOTA from user context)
@@ -101,7 +101,7 @@ obsidian:
 
 notification:
   enabled: true
-  bark_url: "https://api.day.app/eStwe6k6JQ2dGkuXjTixLV/" # Replace with your Bark URL
+  bark_url: "${BARK_URL}" # Replace with your Bark URL
   bark_sound: "minuet" # Optional sound
 
 search:

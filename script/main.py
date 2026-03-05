@@ -4,6 +4,7 @@ import time
 import requests
 import os
 import logging
+from src.config_loader import load_config # Use new secure loader
 from src.scraper import PaperScraper
 from src.analyser import PaperAnalyser
 from src.obsidian_writer import ObsidianWriter
@@ -26,14 +27,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-def load_config(path=None):
-    if path is None:
-        # Default to config.yaml in the same directory as this script
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        path = os.path.join(base_dir, "config.yaml")
-        
-    with open(path, "r", encoding="utf-8") as f:
-        return yaml.safe_load(f)
+# def load_config(path=None): ... REMOVED, imported from src.config_loader
 
 import shutil
 
@@ -234,7 +228,11 @@ def job(target_date=None, provider='doubao'):
     # 7. Generate Podcast for the BEST paper
     if highest_scoring_paper:
         logger.info(f"[INFO] Generating Podcast for Top Paper: {highest_scoring_paper['title']}...")
-        podcaster.create_podcast(highest_scoring_paper['title'], highest_analysis_content, highest_rag_context)
+        audio_path = podcaster.create_podcast(highest_scoring_paper['title'], highest_analysis_content, highest_rag_context)
+        
+        # 8. Send Podcast Notification
+        if audio_path:
+            notifier.send_podcast_notification(highest_scoring_paper['title'], audio_path)
 
     logger.info("[SUCCESS] Job completed successfully.")
 

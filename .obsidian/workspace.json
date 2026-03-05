@@ -4,8 +4,53 @@
     "type": "split",
     "children": [
       {
-        "id": "db7e93fc932ecbf2",
+        "id": "95f6adbc0e62df12",
+        "type": "split",
+        "dimension": 48.7698986975398,
+        "children": [
+          {
+            "id": "db7e93fc932ecbf2",
+            "type": "tabs",
+            "dimension": 41.63793103448276,
+            "children": [
+              {
+                "id": "470a93f882cfe2d1",
+                "type": "leaf",
+                "state": {
+                  "type": "graph",
+                  "state": {},
+                  "icon": "lucide-git-fork",
+                  "title": "关系图谱"
+                }
+              }
+            ]
+          },
+          {
+            "id": "21dd9e2154a4e22d",
+            "type": "tabs",
+            "dimension": 58.362068965517246,
+            "children": [
+              {
+                "id": "460c313be19e9b17",
+                "type": "leaf",
+                "state": {
+                  "type": "pdf",
+                  "state": {
+                    "file": "PDFs/ULTRA Unified Multimodal Control for Autonomous Humanoid WholeBody LocoManipulation.pdf"
+                  },
+                  "icon": "lucide-file-text",
+                  "title": "ULTRA Unified Multimodal Control for Autonomous Humanoid WholeBody LocoManipulation"
+                }
+              }
+            ]
+          }
+        ],
+        "direction": "horizontal"
+      },
+      {
+        "id": "334938ce7ac24e7a",
         "type": "tabs",
+        "dimension": 51.230101302460206,
         "children": [
           {
             "id": "a361f88e05c08d8b",
@@ -19,28 +64,6 @@
               },
               "icon": "lucide-file",
               "title": "ULTRA"
-            }
-          },
-          {
-            "id": "470a93f882cfe2d1",
-            "type": "leaf",
-            "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "关系图谱"
-            }
-          },
-          {
-            "id": "12500584b9c4ea06",
-            "type": "leaf",
-            "state": {
-              "type": "pdf",
-              "state": {
-                "file": "PDFs/Generated Reality Humancentric World Simulation using Interactive Video Generation with Hand and Cam.pdf"
-              },
-              "icon": "lucide-file-text",
-              "title": "Generated Reality Humancentric World Simulation using Interactive Video Generation with Hand and Cam"
             }
           }
         ]
@@ -100,7 +123,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 438.501522064209
+    "width": 247.50694274902344
   },
   "right": {
     "id": "6f4f27bfa99de3fa",
@@ -210,8 +233,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 1146.5,
-    "collapsed": true
+    "width": 460.5
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -233,10 +255,16 @@
       "copilot:Open Copilot Chat": false
     }
   },
-  "active": "a361f88e05c08d8b",
+  "active": "470a93f882cfe2d1",
   "lastOpenFiles": [
-    "copilot/copilot-conversations/为我详细讲解一下这篇文章中的核心创新贡献是什么，结合数@20260303_225230.md",
+    "README.md",
+    "script/src/config_loader.py",
+    "Research_Notes/ULTRA.md",
+    "PDFs/ULTRA Unified Multimodal Control for Autonomous Humanoid WholeBody LocoManipulation.pdf",
+    "Research_Notes/RynnBrain.md",
+    "Research_Notes/Code2Worlds.md",
     "Podcasts/ULTRA Unified Multimodal Control for Autonomous Hu_Podcast.mp3",
+    "copilot/copilot-conversations/为我详细讲解一下这篇文章中的核心创新贡献是什么，结合数@20260303_225230.md",
     "script/src/__pycache__/podcaster.cpython-39.pyc.1384757087344",
     "Research_Notes/TICVLA.md",
     "Daily_Papers/2026-02-12-PaperDigest.md",
@@ -253,11 +281,8 @@
     "PDFs/Chain of World World Model Thinking in Latent Motion.pdf",
     "Daily_Papers/2026-03-03-PaperDigest.md",
     "Research_Notes/Beyond Language Modeling.md",
-    "Research_Notes/ULTRA.md",
     "Research_Notes/Generated_Reality.md",
     "Podcasts",
-    "script/src/__pycache__/podcaster.cpython-39.pyc",
-    "script/src/__pycache__/knowledge_base.cpython-39.pyc",
     "Assets/Chain of World World Model Thinking in Latent Motion_arch.jpeg",
     "Research_Notes/Utonia.md",
     "Assets/Utonia Toward One Encoder for All Point Clouds_arch.png",
@@ -273,12 +298,9 @@
     "Assets/FlowHOI Flowbased SemanticsGrounded Generation of HandObject Interactions for Dexterous Robot Manipu_arch.png",
     "Daily_Papers/2026-02-13-PaperDigest.md",
     "Daily_Papers/2026-03-02-PaperDigest.md",
-    "README.md",
     "Research_Notes/OnlineX.md",
     "Research_Notes/GeneralVLA.md",
     "Dashboard.md",
-    "Research_Notes/EmbodMocap.md",
-    "Research_Notes/RynnBrain.md",
-    "Daily_Papers/2026-02-27-PaperDigest.md"
+    "Research_Notes/EmbodMocap.md"
   ]
 }

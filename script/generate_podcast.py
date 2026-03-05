@@ -2,6 +2,7 @@ import argparse
 import os
 import logging
 import yaml
+from src.config_loader import load_config # Use new secure loader
 from src.podcaster import Podcaster
 from src.knowledge_base import KnowledgeBase
 import re
@@ -13,13 +14,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-def load_config(path=None):
-    if path is None:
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        path = os.path.join(base_dir, "config.yaml")
-        
-    with open(path, "r", encoding="utf-8") as f:
-        return yaml.safe_load(f)
+# def load_config(path=None): ... REMOVED
 
 def generate_podcast_for_note(filename, provider='doubao'):
     config = load_config()

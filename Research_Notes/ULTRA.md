@@ -17,7 +17,7 @@ institutions:
 publication_date: "2026-03-03"
 score: 8
 ---
-![[ULTRA Unified Multimodal Control for Autonomous Hu_Podcast.mp3]]
+**English Podcast：**![[ULTRA Unified Multimodal Control for Autonomous Hu_Podcast.mp3]]
 # ULTRA: Unified Multimodal Control for Autonomous Humanoid Whole-Body Loco-Manipulation
 
 ## 📌 Abstract

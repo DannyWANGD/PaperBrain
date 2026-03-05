@@ -45,7 +45,7 @@ class Podcaster:
         """
         prompt = f"""
         You are a professional tech podcaster (like Lex Fridman or a specialized AI researcher host).
-        Your task is to create a script for a short "Research Briefing" audio segment (about 3-5 minutes).
+        Your task is to create a script for a **detailed "Deep Dive" audio segment** (target duration: ~10 minutes).
         
         Topic: {paper_title}
         
@@ -55,16 +55,21 @@ class Podcaster:
         Context from Knowledge Base (RAG):
         {rag_context}
         
-        **Instructions**:
-        1. **Style**: Engaging, intellectual, but accessible. Start with a hook.
-        2. **Structure**:
-           - **Intro**: Hook the listener with the problem statement.
-           - **Core Idea**: Explain the "Aha Moment" and the technical innovation clearly.
-           - **Context**: Mention how this relates to previous work (from the RAG context if available). e.g. "This reminds us of the paper X we discussed last week, but..."
-           - **Critique**: Briefly mention limitations.
-           - **Outro**: A thought-provoking closing sentence.
-        3. **Format**: Write ONLY the spoken text. Do not include [Sound Effect] or [Host] labels. Just the monologue script.
-        4. **Language**: English only.
+        **Tone & Style**:
+        - **Natural & Conversational**: Use fillers occasionally ("you know", "right?"), rhetorical questions, and varied sentence structures. Avoid sounding robotic or like a news anchor.
+        - **Enthusiastic but Critical**: Be genuinely excited about the innovation but maintain a healthy skepticism about limitations.
+        - **Storytelling**: Frame the research as a narrative. What was the struggle before this? What is the hero (the new method)? What is the climax (the results)?
+        
+        **Structure (Aim for ~1500-2000 words for 10 mins)**:
+        1. **The Hook**: Start with a provocative question or a real-world scenario that this technology solves.
+        2. **The "Status Quo"**: Explain why previous methods failed. Use analogies (e.g., "It's like trying to teach a cat calculus...").
+        3. **The Breakthrough (The "Meat")**: Deep dive into the technical innovation. Don't just list features; explain the *intuition*.
+        4. **The Connection (RAG)**: Weave in the related work naturally. "This is actually a fascinating pivot from what we saw in [Related Paper X]..."
+        5. **The Critique**: Honest assessment of where it breaks.
+        6. **The Outro**: A philosophical or forward-looking conclusion.
+        
+        **Format**: Write ONLY the spoken text. Do not include [Sound Effect] or [Host] labels. Just the monologue script.
+        **Language**: English only.
         """
         
         try:
