@@ -4,41 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "83c40796a5e81269",
+        "id": "0a49a9cea26a13be",
         "type": "tabs",
         "children": [
           {
-            "id": "d3667ee846e4b0bd",
+            "id": "558da110fd3aa30c",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "README.md",
+                "file": "Research_Notes/RynnBrain.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "README"
-            }
-          }
-        ]
-      },
-      {
-        "id": "334938ce7ac24e7a",
-        "type": "tabs",
-        "children": [
-          {
-            "id": "d14f9c336f86aeb1",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Research_Notes/ULTRA.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "ULTRA"
+              "title": "RynnBrain"
             }
           }
         ]
@@ -208,7 +188,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 460.5
+    "width": 686.5,
+    "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -230,53 +211,53 @@
       "copilot:Open Copilot Chat": false
     }
   },
-  "active": "d3667ee846e4b0bd",
+  "active": "558da110fd3aa30c",
   "lastOpenFiles": [
-    "paperbrain_arch.png",
+    "Daily_Papers/2026-03-06-PaperDigest.md",
+    "Research_Notes/ArtHOI.md",
+    "Daily_Papers/2026-03-05-PaperDigest.md",
     "Research_Notes/Beyond Language Modeling.md",
     "Daily_Papers/2026-03-04-PaperDigest.md",
-    "README.md",
+    "Research_Notes/Latent Particle World Models.md",
+    "Research_Notes/GeneralVLA.md",
+    "Podcasts/Latent Particle World Models Selfsupervised Object_Podcast.mp3",
+    "Assets/Latent Particle World Models Selfsupervised Objectcentric Stochastic Dynamics Modeling_arch.png",
+    "PDFs/Latent Particle World Models Selfsupervised Objectcentric Stochastic Dynamics Modeling.pdf",
+    "PDFs/ArtHOI Articulated HumanObject Interaction Synthesis by 4D Reconstruction from Video Priors.pdf",
+    "Podcasts/ArtHOI Articulated HumanObject Interaction Synthes_Podcast.mp3",
+    "Paperbase.base",
+    "Research_Notes/SPARR.md",
+    "Research_Notes/The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models.md",
+    "Daily_Papers/2026-02-26-PaperDigest.md",
+    "copilot/copilot-conversations/准确、清晰、简洁地回答我下面的几个问题_1、什么是HOI，这@20260306_120239.md",
+    "Research_Notes/Memex.md",
+    "Assets/MemexRL Scaling LongHorizon LLM Agents via Indexed Experience Memory_arch.png",
+    "PDFs/MemexRL Scaling LongHorizon LLM Agents via Indexed Experience Memory.pdf",
+    "Assets/ArtHOI Articulated HumanObject Interaction Synthesis by 4D Reconstruction from Video Priors_arch.png",
+    "script/test_openrouter.py",
+    "script/debug_env.py",
+    "Daily_Papers/2026-03-03-PaperDigest.md",
+    "Daily_Papers/2026-02-27-PaperDigest.md",
+    "Daily_Papers/2026-03-02-PaperDigest.md",
     "Podcasts/Beyond Language Modeling An Exploration of Multimo_Podcast.mp3",
+    "Daily_Papers/2026-02-16-PaperDigest.md",
+    "Dashboard.md",
+    "README.md",
+    "paperbrain_arch.png",
     "Research_Notes/ManipulationNet.md",
     "Assets/ManipulationNet An Infrastructure for Benchmarking RealWorld Robot Manipulation with Physical Skill _arch.png",
     "PDFs/ManipulationNet An Infrastructure for Benchmarking RealWorld Robot Manipulation with Physical Skill .pdf",
-    "PDFs/ULTRA Unified Multimodal Control for Autonomous Humanoid WholeBody LocoManipulation.pdf",
     "Research_Notes/ULTRA.md",
     "Research_Notes/QuantVLA.md",
-    "Research_Notes/The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models.md",
-    "PDFs/The Trinity of Consistency as a Defining Principle for General World Models.pdf",
-    "Daily_Papers/2026-02-27-PaperDigest.md",
     "Daily_Papers/2026-02-13-PaperDigest.md",
-    "script/paperbrain.log",
-    "script/src/__pycache__/podcaster.cpython-39.pyc",
-    "script/src/__pycache__/knowledge_base.cpython-39.pyc",
-    "script/src/__pycache__/notifier.cpython-39.pyc",
-    "script/src/__pycache__/gardener.cpython-39.pyc",
-    "script/src/__pycache__/obsidian_writer.cpython-39.pyc",
     "SECURITY.md",
     "copilot/copilot-conversations/为我详细讲解一下这篇文章中的核心创新贡献是什么，结合数@20260303_225230.md",
     "Daily_Papers/2026-02-18-PaperDigest.md",
     "Research_Notes/RynnBrain.md",
-    "Research_Notes/Code2Worlds.md",
-    "Research_Notes/TICVLA.md",
-    "Daily_Papers/2026-02-12-PaperDigest.md",
-    "Research_Notes/FOREST.md",
-    "Research_Notes/Chain of World.md",
-    "Research_Notes/Soft_Contamination.md",
     "Assets/Soft Contamination Means Benchmarks Test Shallow Generalization_arch.png",
     "Assets/Visual Foresight for Robotic Stow A DiffusionBased World Model from Sparse Snapshots_arch.png",
     "Assets/TICVLA A ThinkinControl VisionLanguageAction Model for Robot Navigation in Dynamic Environments_arch.png",
-    "Daily_Papers/2026-03-03-PaperDigest.md",
-    "Research_Notes/Generated_Reality.md",
     "Assets/Chain of World World Model Thinking in Latent Motion_arch.jpeg",
-    "Research_Notes/Utonia.md",
-    "Assets/Utonia Toward One Encoder for All Point Clouds_arch.png",
-    "Research_Notes/ACEBrain0.md",
-    "Assets/ACEBrain0 Spatial Intelligence as a Shared Scaffold for Universal Embodiments_arch.png",
-    "Research_Notes/Beyond_Language_Modeling.md",
-    "Research_Notes/LoGeR.md",
-    "Assets/LoGeR LongContext Geometric Reconstruction with Hybrid Memory_arch.png",
-    "Assets/Beyond Language Modeling An Exploration of Multimodal Pretraining_arch.png",
-    "Assets/ULTRA Unified Multimodal Control for Autonomous Humanoid WholeBody LocoManipulation_arch.png"
+    "Assets/Utonia Toward One Encoder for All Point Clouds_arch.png"
   ]
 }

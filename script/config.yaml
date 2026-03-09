@@ -12,7 +12,7 @@ openrouter:
   model_flash: "google/gemini-3.1-flash-lite-preview"
   # For deep analysis (powerful): Anthropic Claude 4.6 Sonnet (Hypothetical SOTA from user context)
   # Assuming OpenRouter slug convention. If 4.6 isn't real yet, this placeholder is for the user's simulation.
-  model_pro: "anthropic/claude-4.6-sonnet"
+  model_pro: "anthropic/claude-sonnet-4.6"
 
 output:
   base_dir: "../output"
@@ -106,13 +106,13 @@ notification:
 
 search:
   keywords:
+    - "Robot Manipulation"
+    - "VLA"
     - "World Model"
+    - "Reinforcement Learning"
     - "Diffusion model"
     - "Embodied AI"
     - "Sim2Real"
-    - "Reinforcement Learning"
-    - "Robot Manipulation"
-    - "VLA"
     - "Foundation Models"
     - "LLM"
   max_results: 50
