@@ -5,3 +5,6 @@ __pycache__/
 .vscode/
 paperbrain.log
 temp_pdfs/
+# Security: Ignore Obsidian Plugin Data (contains API keys)
+.obsidian/plugins/**/data.json
+
