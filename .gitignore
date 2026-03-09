@@ -8,3 +8,6 @@ temp_pdfs/
 # Security: Ignore Obsidian Plugin Data (contains API keys)
 .obsidian/plugins/**/data.json
 
+# Large Files: Ignore Copilot Vector Index (Generated, ~60MB+)
+.obsidian/copilot-index-*.json
+
