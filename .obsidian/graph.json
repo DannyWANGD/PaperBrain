@@ -8,7 +8,7 @@
   "collapse-color-groups": true,
   "colorGroups": [
     {
-      "query": "file:Digest",
+      "query": "path:Daily_Papers  ",
       "color": {
         "a": 1,
         "rgb": 14701138
@@ -25,7 +25,14 @@
       "query": "path:PDFs  ",
       "color": {
         "a": 1,
-        "rgb": 11068463
+        "rgb": 6545709
+      }
+    },
+    {
+      "query": "path:Research_Themes  ",
+      "color": {
+        "a": 1,
+        "rgb": 5419488
       }
     }
   ],
@@ -35,10 +42,10 @@
   "nodeSizeMultiplier": 1,
   "lineSizeMultiplier": 1,
   "collapse-forces": true,
-  "centerStrength": 0.458333333333333,
-  "repelStrength": 10,
-  "linkStrength": 0.114583333333333,
-  "linkDistance": 500,
-  "scale": 0.4434794370470375,
+  "centerStrength": 0.638200649878148,
+  "repelStrength": 12.2874356891416,
+  "linkStrength": 0.300264012997563,
+  "linkDistance": 268,
+  "scale": 0.39681210740036593,
   "close": true
 }

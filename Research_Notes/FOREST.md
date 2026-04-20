@@ -359,6 +359,52 @@ FOREST is trained exclusively on ARMBench production data, which requires large-
 *Analysis performed by PaperBrain-OpenRouter (anthropic/claude-4.6-sonnet) (Vision-Enabled)*
 
 
+## 🧩 Claim Cards
+
+### Claim-01
+- Claim: FOREST, a diffusion-based world model trained exclusively from sparse pre/post-stow RGB snapshots, can predict post-stow bin configurations without access to intermediate motion trajectories or explicit physics simulation.
+- Evidence: FOREST is trained on ARMBench production data using only paired pre-stow and post-stow snapshots as supervision. Three variants (FOREST-DI, FOREST-SI, FOREST-J) are evaluated, all conditioned on pre-stow bin state, new item mask, and stow intent, demonstrating that a generative diffusion model can learn stow dynamics implicitly from temporally sparse observations alone.
+- Boundary/Failure: The approach degrades when MaskDINO-based instance segmentation fails on novel item categories (e.g., transparent or heavily occluded items), corrupting both training signal extraction and test-time item representation. Training data filtering (requiring post-stow count = pre-stow count + 1) mitigates but does not eliminate noisy supervision.
+- Compared Against: Copy-Paste (CP) and Copy-Paste with Gravity (CP+G) heuristic baselines, which do not use any learned model of stow dynamics.
+- Confidence: 7
+- Links:
+  - same_problem:: [[Chain of World]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-02
+- Claim: FOREST outperforms both Copy-Paste and Copy-Paste with Gravity baselines on post-stow bin configuration prediction, as measured on the ARMBench proprietary production dataset.
+- Evidence: All three FOREST variants (FOREST-DI, FOREST-SI, FOREST-J) are evaluated against CP and CP+G on identical inputs and ground-truth post-stow masks from ARMBench. The heuristic baselines fail to model non-local item interactions (pushing, sliding, toppling), while FOREST learns these associations from data, yielding superior prediction accuracy across evaluation metrics.
+- Boundary/Failure: Results are reported only on a proprietary dataset (ARMBench) with no public benchmark, limiting external comparability. Performance on out-of-distribution item categories or bin configurations not represented in ARMBench production data is unknown.
+- Compared Against: Copy-Paste (CP) and Copy-Paste with Gravity (CP+G) heuristic baselines; no other learning-based baseline is included, which the authors justify by claiming FOREST is the first learned world model for this specific domain.
+- Confidence: 6
+- Links:
+  - same_problem:: 待定
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-03
+- Claim: FOREST's implicit physics modeling is insufficient for rare, high-magnitude physical events such as cascade toppling of multiple existing items, because the training data distribution provides inadequate coverage of such tail outcomes.
+- Evidence: The paper explicitly acknowledges that FOREST models stow dynamics through learned associations rather than explicit physics, and that for highly unusual physical outcomes (e.g., an item causing cascade toppling of multiple existing items), the training distribution may not provide sufficient supervisory signal. No quantitative ablation isolating tail-event failure rate is reported, but this is identified as a known architectural limitation.
+- Boundary/Failure: This limitation is most severe for stow scenarios involving highly deformable, large, or unusually rigid items that produce non-local cascading effects rarely observed in training data. The single-step world model architecture has no mechanism to extrapolate beyond its training distribution for such events.
+- Compared Against: Explicit physics simulation approaches (not implemented or compared in this work); the limitation is stated relative to the idealized behavior of a physics-grounded model.
+- Confidence: 7
+- Links:
+  - same_problem:: [[Chain of World]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-04
+- Claim: Diffusion-based world models trained from sparse real-world operational snapshots represent a viable paradigm for enabling anticipatory planning in robotic manipulation domains where dense trajectory supervision is unavailable, with direct implications for load-quality assessment and multi-stow planning.
+- Evidence: FOREST demonstrates that a diffusion model conditioned on pre-stow state, item identity, and action intent can generate plausible post-stow predictions useful for downstream decisions such as estimating remaining horizontal free space and sequencing future stows, all without requiring any intermediate trajectory data or simulation. This positions sparse-snapshot world models as a practical alternative to trajectory-supervised or physics-based approaches in large-scale warehouse automation.
+- Boundary/Failure: The paradigm assumes that pre/post snapshot pairs encode sufficient causal information about stow outcomes, which breaks down when item interactions are highly stochastic, when bin states are partially observable due to occlusion, or when the action space (stow intent) is underspecified relative to the diversity of physical outcomes.
+- Compared Against: World model approaches requiring dense trajectory supervision or explicit physics engines, such as those explored in multi-step video prediction literature including [[Chain of World]].
+- Confidence: 6
+- Links:
+  - same_problem:: [[Chain of World]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
 ## 📂 Resources
 - **Local PDF**: [[Visual Foresight for Robotic Stow A DiffusionBased World Model from Sparse Snapshots.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2602.13347v1)

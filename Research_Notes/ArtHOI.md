@@ -388,6 +388,52 @@ graph LR
 *Analysis performed by PaperBrain-OpenRouter (anthropic/claude-sonnet-4.6) (Vision-Enabled)*
 
 
+## 🧩 Claim Cards
+
+### Claim-01
+- Claim: ArtHOI's two-stage pipeline — (1) 4D Gaussian reconstruction with flow-based part segmentation to extract articulated object kinematics, followed by (2) joint optimization of human motion and object articulation guided by 3D contact targets — enables zero-shot articulated HOI synthesis without any 3D/4D supervision.
+- Evidence: The method is evaluated on single-view videos from the ArtGS dataset with ground-truth joint annotations, and on ZeroHSI-protocol Replicate scenes using XHumans and Trellis-generated objects across 60–120 frame sequences. The pipeline uniquely satisfies all four criteria simultaneously: HOI synthesis, RGB rendering, articulated object modeling, and physical constraint enforcement — a combination no prior zero-shot method achieves.
+- Boundary/Failure: The two-stage design assumes that articulated parts can be cleanly segmented via k-means clustering of optical flow. Objects with multiple independently moving parts (e.g., a microwave door plus a rotating dial) cause part-assignment conflicts, as the flow-based segmentation produces only a single dynamic cluster per object, breaking the pipeline's part-discovery mechanism.
+- Compared Against: ZeroHSI (zero-shot rigid HOI), D3D-HOI, 3DADN (monocular articulated object estimation), TRUMANS, LINGO, CHOIS
+- Confidence: 8
+- Links:
+  - same_problem:: [[FlowHOI]]
+  - improves_over:: [[FlowHOI]]
+  - conflicts_with:: 待定
+
+### Claim-02
+- Claim: ArtHOI outperforms dedicated monocular articulated object estimation baselines (D3D-HOI and 3DADN) on joint state accuracy when evaluated on the ArtGS benchmark with ground-truth joint annotations.
+- Evidence: Quantitative comparison is conducted on single-view videos from the ArtGS dataset against D3D-HOI and 3DADN, which are specifically designed for monocular articulated object estimation. The evaluation uses ground-truth joint annotations as reference, providing a direct and fair metric for articulation quality.
+- Boundary/Failure: The benchmark uses single-view video inputs; performance may degrade significantly under heavy occlusion or when the camera viewpoint provides insufficient parallax to disambiguate joint axis orientation. The comparison is limited to the ArtGS dataset categories (fridges, cabinets, drawers) and may not generalize to articulated objects with non-standard joint types.
+- Compared Against: D3D-HOI, 3DADN
+- Confidence: 7
+- Links:
+  - same_problem:: [[FlowHOI]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-03
+- Claim: The monocular depth-lifting strategy used in Stage II to derive 3D contact targets is unreliable when the hand approaches the object at a grazing angle or under significant occlusion, causing contact targets to be lifted to incorrect 3D depths and degrading interaction plausibility.
+- Evidence: The paper explicitly identifies this as a hidden limitation: the 3D contact target derivation assumes the nearest dynamic Gaussian in 2D image space corresponds to the actual contact surface. This assumption is violated at grazing approach angles or under occlusion, leading to incorrect depth assignments. No ablation quantifying the frequency or magnitude of this failure is provided.
+- Boundary/Failure: This failure mode is inherent to any single-view depth-lifting approach and cannot be resolved without multi-view input or a learned depth prior that is contact-geometry-aware. The limitation is most severe for interactions where the hand moves parallel to the object surface (e.g., sliding a drawer from the side).
+- Compared Against: No direct baseline for this specific failure; it is an internal architectural limitation relative to multi-view or depth-sensor-based methods.
+- Confidence: 8
+- Links:
+  - same_problem:: [[FlowHOI]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-04
+- Claim: Decoupling articulated object kinematics extraction (Stage I: 4D reconstruction) from human motion optimization (Stage II: contact-guided synthesis) resolves the conflicting gradient problem that arises when jointly optimizing human pose and object articulation from monocular video in a single stage.
+- Evidence: The paper motivates the two-stage design by identifying that joint optimization of human motion and object articulation from monocular 2D video produces conflicting gradients and unstable convergence due to inherent depth ambiguity. By pre-computing stable articulation parameters and 3D contact targets in Stage I, Stage II receives fixed kinematic constraints, eliminating the gradient conflict. This architectural choice is validated through the overall system's ability to produce stable outputs across 60–120 frame sequences on both ArtGS and Replicate benchmarks.
+- Boundary/Failure: The decoupling assumes that object articulation during the interaction can be accurately pre-reconstructed from a reference video prior to human motion synthesis. If the reference video does not cover the full range of articulation states required by the interaction (e.g., a partially opened door in the video but a fully opened door needed for synthesis), Stage II will be constrained by an incomplete kinematic model.
+- Compared Against: ZeroHSI (single-stage joint optimization treating objects as rigid bodies)
+- Confidence: 7
+- Links:
+  - same_problem:: [[FlowHOI]]
+  - improves_over:: [[FlowHOI]]
+  - conflicts_with:: 待定
+
 ## 📂 Resources
 - **Local PDF**: [[ArtHOI Articulated HumanObject Interaction Synthesis by 4D Reconstruction from Video Priors.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2603.04338.pdf)

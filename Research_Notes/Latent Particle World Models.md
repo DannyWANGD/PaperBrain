@@ -421,6 +421,52 @@ graph LR
 *Analysis performed by PaperBrain-OpenRouter (anthropic/claude-sonnet-4.6) (Vision-Enabled)*
 
 
+## 🧩 Claim Cards
+
+### Claim-01
+- Claim: LPWM's patch-anchored particle design enables fully parallelizable, end-to-end self-supervised training of an object-centric world model with stochastic dynamics, overcoming the sequential frame encoding bottleneck of its particle-based predecessor DDLP.
+- Evidence: Unlike DDLP, which requires explicit sequential particle tracking across frames, LPWM anchors particles to fixed grid locations and models stochastic dynamics via per-particle latent actions inferred from video alone, enabling parallel training. The architecture supports multiple conditioning modalities (actions, language, image goals, multi-view) simultaneously, a capability absent in DDLP and all prior slot-based methods evaluated.
+- Boundary/Failure: The patch-anchored design constrains particles to move only within a limited region around their grid origin (acknowledged in Appendix A.4.4). For scenes with large camera motion or objects traversing long distances — common in real-world robotics — particles may decouple from true object identity, undermining the object-centric guarantee.
+- Compared Against: DDLP (Daniel & Tamar, 2024) as direct parent model; PlaySlot as slot-based competitor with latent action conditioning.
+- Confidence: 7
+- Links:
+  - same_problem:: [[Chain of World]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-02
+- Claim: The object-centric inductive bias in LPWM provides measurable empirical gains over a parameter-matched patch-based dynamics VAE (DVAE) baseline across both simulated and real-world stochastic video prediction benchmarks.
+- Evidence: DVAE shares the same architecture and parameter count as LPWM but lacks object-centric structure, making it the most controlled ablation of the object-centric inductive bias. LPWM outperforms DVAE on OBJ3D, PHYRE, Mario, Sketchy, BAIR, Bridge, and LanguageTable datasets, demonstrating that the structured particle representation — not model capacity — drives the improvement in prediction quality.
+- Boundary/Failure: On datasets with dense, textureless backgrounds or scenes lacking clear object boundaries, the object-centric decomposition may not produce semantically meaningful particles, potentially reducing the advantage over DVAE. The gain is also likely smaller in purely deterministic settings where stochastic per-particle latent actions provide less benefit.
+- Compared Against: DVAE (patch-based, same architecture and parameter budget as LPWM).
+- Confidence: 7
+- Links:
+  - same_problem:: 待定
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-03
+- Claim: The patch-anchored particle regime in LPWM introduces a fundamental conceptual inconsistency: particles are neither freely-moving object trackers nor fixed patches, creating an implicit hybrid regime that can degrade interpretability and downstream task performance when objects move beyond their anchor region.
+- Evidence: The paper explicitly acknowledges in Appendix A.4.4 that particles operate in an "implicit regime where particles can move in a certain region around their origin." This design choice resolves the scalability bottleneck of DDLP's explicit tracking but sacrifices strict object-identity preservation. In real-world robotics datasets (Sketchy, BAIR, Bridge) where objects undergo large displacements, particle-to-object correspondence is not guaranteed, which may explain residual performance gaps relative to oracle object-centric representations.
+- Boundary/Failure: The limitation is most severe in scenes with significant camera ego-motion or fast-moving objects that traverse distances larger than the anchor region radius. In static or slow-motion scenes (e.g., OBJ3D), the regime is effectively equivalent to true object tracking and the inconsistency is benign.
+- Compared Against: Ideal freely-moving particle trackers (as in DDLP) and fixed patch-based methods (as in DVAE and G-SWM).
+- Confidence: 8
+- Links:
+  - same_problem:: 待定
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-04
+- Claim: Self-supervised object-centric world models with per-entity stochastic latent dynamics represent a scalable architectural paradigm for multi-entity decision-making, bridging the gap between unstructured video prediction models and structured world models required for downstream planning and control.
+- Evidence: LPWM is evaluated on seven datasets spanning simulated physics (OBJ3D, PHYRE), stochastic gameplay (Mario), and real-world robot manipulation (Sketchy, BAIR, Bridge, LanguageTable), demonstrating that a single model architecture trained purely from video can support action conditioning, language conditioning, image-goal conditioning, and multi-view conditioning — modalities directly relevant to robot planning and control. This breadth of conditioning modalities, absent in all prior object-centric world models, positions LPWM as a foundation for structured model-based reinforcement learning.
+- Boundary/Failure: The claim weakens if downstream planning experiments (e.g., model-predictive control or model-based RL) are not demonstrated, as video prediction quality alone does not guarantee utility for decision-making. The current paper focuses on prediction benchmarks; transfer to closed-loop control tasks remains to be validated.
+- Compared Against: PlaySlot, SlotFormer, OCVP (slot-based); G-SWM (patch-based); DDLP (particle-based); Chain of World (language-conditioned video world modeling).
+- Confidence: 6
+- Links:
+  - same_problem:: [[Chain of World]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
 ## 📂 Resources
 - **Local PDF**: [[Latent Particle World Models Selfsupervised Objectcentric Stochastic Dynamics Modeling.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2603.04553.pdf)

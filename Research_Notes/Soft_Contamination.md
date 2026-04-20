@@ -308,6 +308,52 @@ The paper demonstrates the *existence* of shallow generalization as a confound b
 *Analysis performed by PaperBrain-OpenRouter (anthropic/claude-4.6-sonnet) (Vision-Enabled)*
 
 
+## 🧩 Claim Cards
+
+### Claim-01
+- Claim: Semantic-similarity-based duplicate detection reveals that standard LLM benchmarks contain ecologically valid rates of "soft contamination" that n-gram decontamination pipelines cannot detect, with up to 78% of CodeForces items having semantically similar counterparts in open training corpora.
+- Evidence: The authors use top-0.1% cosine similarity matching with 100 randomly sampled candidates per benchmark item to identify semantic duplicates across ZebraLogic, MBPP, CodeForces, and MuSR. CodeForces shows the highest empirically measured duplicate prevalence (~78%), and these duplicates are syntactically distinct, rendering n-gram pipelines blind to them. The contamination rates are derived from actual corpus measurements rather than artificially injected examples, constituting a methodological advance over prior proof-of-concept studies.
+- Boundary/Failure: The detection method has a built-in false negative rate: semantic duplicates falling outside the top-0.1% cosine similarity threshold are not captured, meaning the 78% figure is a lower bound. The approach also cannot be applied to closed-model corpora (e.g., Llama 4 with ~30T tokens) where corpus access is unavailable.
+- Compared Against: Conventional n-gram overlap decontamination pipelines used in standard benchmark release procedures.
+- Confidence: 7
+- Links:
+  - same_problem:: 待定
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-02
+- Claim: Finetuning on semantically contaminated benchmark-adjacent data produces measurable benchmark score inflation on Olmo3-Instruct across multiple reasoning benchmarks, while leaving same-domain control benchmarks largely unaffected, indicating shallow rather than genuine generalization.
+- Evidence: Using a 50/50 seen/unseen split design with ecologically valid contamination rates, the paper shows that Olmo3-Instruct gains on contaminated versions of ZebraLogic, MBPP, CodeForces, and MuSR after finetuning on semantically similar data. Cross-benchmark controls (TrueDetective for MuSR, Arc Challenge for ZebraLogic, HumanEval for MBPP, plus Arc Easy, BoolQ, HellaSwag, PIQA, Winogrande) do not show corresponding gains, isolating the effect to benchmark-specific shallow memorization rather than domain-wide capability improvement.
+- Boundary/Failure: The Qwen3-8B replication produces unexpected gains even in the clean finetuning condition, described by the authors as "noisy," which undermines the clean/contaminated comparison for that model and limits the generalizability of the effect size estimates beyond the Olmo3 family.
+- Compared Against: Clean finetuning condition (no semantically similar data) on the same Olmo3-Instruct model; broad capability control benchmarks.
+- Confidence: 7
+- Links:
+  - same_problem:: 待定
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-03
+- Claim: The primary empirical findings are limited to a single open-source model family (Olmo3-7B/Instruct), and the only replication attempt (Qwen3-8B-base) is confounded by unexplained gains in the clean condition, making cross-model generalization of the contamination effect unverified.
+- Evidence: The paper explicitly acknowledges that all primary results derive from Olmo3-7B/Instruct. The Qwen3-8B replication is labeled "noisy" in the paper's own critical assessment, with the clean finetuning condition producing gains that should not appear if the experimental design cleanly isolates contamination effects. No closed-model experiments are conducted, by design, because their corpora are inaccessible for auditing.
+- Boundary/Failure: The limitation is structural: frontier models (e.g., those trained on 30T+ tokens) likely have higher semantic duplicate rates than Olmo3's training corpus, but the contamination effect magnitude and shape cannot be studied without corpus access. The claim that the effect is general across model families therefore remains an extrapolation.
+- Compared Against: Ideal multi-model replication study with at least three independent model families and auditable corpora.
+- Confidence: 9
+- Links:
+  - same_problem:: 待定
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-04
+- Claim: Benchmark score improvements reported in the LLM literature since 2020 are systematically confounded by soft contamination at scale, implying that observed capability gains on standard reasoning benchmarks may overestimate true out-of-distribution generalization as training corpora have grown by at least 10,000x.
+- Evidence: The paper situates its findings in the context of training corpus growth (at least 10,000× since 2020) and demonstrates that semantic duplicates of benchmark items exist at high prevalence in open corpora even after standard n-gram decontamination. The controlled finetuning experiments show that exposure to semantically similar (not identical) data is sufficient to inflate scores on ZebraLogic, MBPP, CodeForces, and MuSR without improving performance on same-domain held-out controls, directly supporting the confound hypothesis.
+- Boundary/Failure: The broader implication assumes that the contamination-to-score-inflation relationship observed in controlled finetuning experiments scales to pretraining dynamics, which is not directly demonstrated. Pretraining involves orders-of-magnitude more data and different learning dynamics than the finetuning setup used here, so the magnitude of the confound in actual pretraining remains an open empirical question.
+- Compared Against: Prior contamination studies that operated at small scale, did not study within-benchmark generalization, or used artificially injected rather than ecologically valid contamination rates; also compared against the implicit assumption in benchmark leaderboards that n-gram decontamination is sufficient.
+- Confidence: 6
+- Links:
+  - same_problem:: [[VisPhyWorld]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
 ## 📂 Resources
 - **Local PDF**: [[Soft Contamination Means Benchmarks Test Shallow Generalization.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2602.12413v1)

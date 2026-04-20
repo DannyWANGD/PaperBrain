@@ -180,6 +180,52 @@ graph LR
 *Analysis performed by PaperBrain-Doubao (Vision-Enabled)*
 
 
+## 🧩 Claim Cards
+
+### Claim-01
+- Claim: Code2Worlds' hierarchical dual-scale code generation architecture — separating local object structural synthesis from global environmental layout — produces higher-fidelity 4D scenes than monolithic code-to-scene pipelines by resolving multi-scale context entanglement.
+- Evidence: Evaluated on the Code4D benchmark across object generation, scene generation, and dynamic simulation dimensions, Code2Worlds outperforms static code-centric baselines (MeshCoder, Infinigen, Infinigen Indoors, 3D-GPT, SceneCraft, ImmerseGen) on metrics covering semantic alignment and structural fidelity, demonstrating that decoupling local and global generation scales prevents the coarse, low-detail asset degradation observed in monolithic pipelines.
+- Boundary/Failure: The dual-scale decomposition is constrained to Infinigen procedural templates; scenes requiring custom 3D asset imports or third-party procedural engines fall outside the supported object and scene class vocabulary, limiting generalization to novel asset categories.
+- Compared Against: MeshCoder, Infinigen, Infinigen Indoors, 3D-GPT, SceneCraft, ImmerseGen (static code-centric 3D generation baselines)
+- Confidence: 7
+- Links:
+  - same_problem:: [[Solaris]]
+  - improves_over:: [[README]]
+  - conflicts_with:: 待定
+
+### Claim-02
+- Claim: Code2Worlds' closed-loop VLM-Motion critic and self-reflection pipeline significantly reduces physical hallucinations (invalid collisions, unphysical motion) in generated 4D dynamic scenes compared to open-loop code generation and video diffusion baselines.
+- Evidence: On the Code4D benchmark's dynamic simulation dimension, Code2Worlds is evaluated against video diffusion 4D generation methods (Stable Video Diffusion, AnimateDiff, CogVideoX, Hunyuan) on temporal consistency and physical plausibility metrics. The closed-loop self-reflection pipeline performs 3-5 render passes per scene to iteratively correct physical violations, yielding measurably higher physical plausibility scores than open-loop diffusion methods that lack explicit physics enforcement.
+- Boundary/Failure: The VLM-Motion critic fails to detect fine-grained physical artifacts in complex multi-object interaction scenarios such as multi-body collision stacks and fluid-solid coupling, resulting in non-trivial failure rates for high-complexity dynamic scenes.
+- Compared Against: Stable Video Diffusion, AnimateDiff, CogVideoX, Hunyuan (video diffusion 4D generation baselines)
+- Confidence: 7
+- Links:
+  - same_problem:: [[Physics Informed Viscous Value Representations]]
+  - improves_over:: [[2026-02-16-PaperDigest]]
+  - conflicts_with:: 待定
+
+### Claim-03
+- Claim: Code2Worlds' closed-loop self-reflection pipeline incurs prohibitive inference latency — 10 to 30 minutes per 10-second 4D sequence — making it unsuitable for real-time or interactive 4D world generation applications.
+- Evidence: End-to-end generation time for a 10-second 4D sequence ranges from 10 to 30 minutes due to 3-5 render passes required per scene by the self-reflection loop. This latency is an inherent architectural cost of the closed-loop physical validation mechanism and is explicitly acknowledged as a limitation in the paper.
+- Boundary/Failure: The latency constraint is most severe for high-complexity dynamic scenes requiring the maximum number of self-reflection iterations (5 passes); simpler scenes with fewer physical violations may converge faster but still cannot approach real-time performance.
+- Compared Against: Video diffusion baselines (Stable Video Diffusion, AnimateDiff, CogVideoX, Hunyuan), which generate sequences in a single forward pass without iterative render-and-correct loops.
+- Confidence: 9
+- Links:
+  - same_problem:: [[SPARR]]
+  - improves_over:: 待定
+  - conflicts_with:: [[2026-02-26-PaperDigest]]
+
+### Claim-04
+- Claim: Framing 4D world generation as a code synthesis and execution problem — rather than a pixel-space diffusion problem — enables explicit scene editability and full-scene physical consistency enforcement that text-to-4D diffusion methods structurally cannot provide.
+- Evidence: Code2Worlds demonstrates on the Code4D benchmark that its code-centric paradigm supports post-hoc scene editing (object placement, motion parameter modification) and enforces physical constraints via procedural simulation, capabilities absent in diffusion-based baselines (CogVideoX, Hunyuan) which generate opaque pixel sequences with no structured scene representation. Evaluation across semantic alignment, structural fidelity, temporal consistency, and physical plausibility metrics confirms the advantage of the symbolic, executable scene representation.
+- Boundary/Failure: The editability advantage is bounded by the expressiveness of the Infinigen procedural template library; scene types and object classes not covered by existing templates cannot be edited or generated, and the approach does not generalize to arbitrary open-world content without library expansion.
+- Compared Against: CogVideoX, Hunyuan, Stable Video Diffusion, AnimateDiff (text-to-4D video diffusion methods)
+- Confidence: 7
+- Links:
+  - same_problem:: [[Solaris]]
+  - improves_over:: [[2026-02-16-PaperDigest]]
+  - conflicts_with:: 待定
+
 ## 📂 Resources
 - **Local PDF**: [[Code2Worlds Empowering Coding LLMs for 4D World Generation.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2602.11757.pdf)

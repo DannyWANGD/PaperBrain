@@ -133,6 +133,52 @@ graph LR
 *Analysis performed by PaperBrain-Doubao (Vision-Enabled)*
 
 
+## 🧩 Claim Cards
+
+### Claim-01
+- Claim: MALLVI's decomposed multi-agent architecture — comprising specialized Planner, Localizer, Executor, and Reflector agents with closed-loop feedback — outperforms monolithic VLM-based manipulation frameworks on zero-shot generalization across diverse task categories.
+- Evidence: Evaluated zero-shot across 8 custom real-world tasks, 12 VIMABench tasks (4 partitions: basic manipulation, novel concept generalization, visual reasoning, goal-directed planning), and 5 RLBench tasks with 20 repetitions per task. MALLVI surpasses all listed SOTA baselines (MALMM, VoxPoser, ReKep, Wonderful Team, CoTDiffusion, PERIA, PerAct) across these benchmarks, with ablations confirming that both the multi-agent decomposition and the Reflector agent contribute independently to performance gains.
+- Boundary/Failure: Performance advantage diminishes for deformable object manipulation (cloth, liquids) and mobile manipulation tasks, as agent prompts are hand-engineered for rigid object scenarios and require non-trivial re-engineering to generalize.
+- Compared Against: MALMM, VoxPoser, ReKep, Wonderful Team, CoTDiffusion, PERIA, PerAct, and an internal single-agent monolithic VLM baseline.
+- Confidence: 8
+- Links:
+  - same_problem:: [[GeneralVLA]]
+  - improves_over:: [[RynnBrain]]
+  - conflicts_with:: 待定
+
+### Claim-02
+- Claim: The inclusion of a dedicated Reflector agent in MALLVI's pipeline provides measurable error-recovery capability over open-loop multi-agent baselines, reducing task failure due to accumulated errors and hallucinations in dynamic environments.
+- Evidence: Ablation study comparing full MALLVI against MALLVI-without-Reflector across the same 3 benchmark suites (8 real-world, 12 VIMABench, 5 RLBench tasks, 20 repetitions each) demonstrates that removing the Reflector agent causes a statistically meaningful drop in success rate, confirming the Reflector's role in closed-loop error correction rather than full-scene replanning.
+- Boundary/Failure: The Reflector's recovery mechanism is contingent on accurate environmental feedback from the Localizer; in heavily cluttered scenes where objects are more than 60% occluded, the Localizer confidence drops below 30%, providing unreliable state estimates that undermine the Reflector's corrective actions.
+- Compared Against: Internal ablation: MALLVI without Reflector agent; open-loop frameworks such as VoxPoser and CoTDiffusion.
+- Confidence: 7
+- Links:
+  - same_problem:: [[Learning_Situated_Awareness_in_the_Real_World]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-03
+- Claim: MALLVI's multi-stage sequential pipeline introduces a 2-3x end-to-end inference latency overhead compared to monolithic VLM baselines, making it unsuitable for time-critical manipulation tasks such as high-speed manufacturing assembly.
+- Evidence: The latency overhead is attributed to the sequential execution of multiple specialized agents (Planner, Localizer, Executor, Reflector) plus potential retry loops triggered by the Reflector on failure detection. The 2-3x slowdown is reported relative to single-agent monolithic VLM baselines tested under the same experimental conditions.
+- Boundary/Failure: This limitation is most severe in tasks requiring sub-second reaction times; for slower-paced tabletop manipulation tasks (the primary evaluation domain), the latency overhead does not prevent task completion within reasonable time windows.
+- Compared Against: Single-agent monolithic VLM baseline; implicitly against faster end-to-end frameworks such as PerAct.
+- Confidence: 6
+- Links:
+  - same_problem:: [[World_Action_Models_are_Zero_shot_Policies]]
+  - improves_over:: 待定
+  - conflicts_with:: [[GeneralVLA]]
+
+### Claim-04
+- Claim: Decomposing robotic manipulation into specialized LLM/VLM agents with distinct perceptual and reasoning roles is a viable architectural strategy for achieving zero-shot generalization to novel objects, instructions, and environments without task-specific fine-tuning.
+- Evidence: MALLVI achieves competitive or superior zero-shot performance across all 4 VIMABench partitions — including novel concept generalization and visual reasoning partitions specifically designed to test out-of-distribution robustness — and across 5 RLBench tasks, all without any task-specific training, demonstrating that role specialization enables broader generalization than monolithic approaches.
+- Boundary/Failure: The zero-shot generalization claim is bounded by the rigid-object, tabletop manipulation domain; extending to deformable objects, mobile manipulation, or environments with severe occlusion (>60% object occlusion causing <30% Localizer confidence) requires prompt re-engineering and domain-specific calibration, breaking the zero-shot assumption.
+- Compared Against: MALMM, Wonderful Team, PERIA, and the internal single-agent monolithic VLM baseline, all evaluated in the same zero-shot setting.
+- Confidence: 8
+- Links:
+  - same_problem:: [[GeneralVLA]]
+  - improves_over:: [[RynnBrain]]
+  - conflicts_with:: [[World_Action_Models_are_Zero_shot_Policies]]
+
 ## 📂 Resources
 - **Local PDF**: [[MALLVI A MultiAgent Framework for Integrated Generalized Robotics Manipulation.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2602.16898v3)

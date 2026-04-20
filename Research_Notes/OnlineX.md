@@ -138,6 +138,52 @@ graph LR
 *Analysis performed by PaperBrain-Doubao (Vision-Enabled)*
 
 
+## 🧩 Claim Cards
+
+### Claim-01
+- Claim: The Active-to-Stable State Evolution mechanism in OnlineX resolves the memory-drift tradeoff in online 3D reconstruction by maintaining a compact implicit Active State for recent frames and periodically consolidating it into a persistent explicit Anchor (Stable) State, enabling bounded memory usage without accumulating long-term drift.
+- Evidence: OnlineX achieves competitive or superior novel view synthesis quality on RealEstate10K and ScanNet compared to both memory-heavy explicit-state methods (Spann3R, LONG3R) and drift-prone implicit-state methods (CUT3R), while processing only streaming sequential input. The dual-state design keeps memory overhead constant regardless of sequence length, unlike Spann3R whose memory scales with sequence length.
+- Boundary/Failure: The Anchor State is initialized with generic indoor scene priors, so the consolidation mechanism degrades significantly for highly out-of-distribution scenes (e.g., unstructured outdoor or rare industrial environments) not covered by the training distribution.
+- Compared Against: Spann3R (explicit spatial memory, unbounded memory growth) and CUT3R (compact implicit state, cumulative drift)
+- Confidence: 7
+- Links:
+  - same_problem:: [[Gaussian_Sequences_with_MultiScale_Dynamics_for_4D_Reconstruction_from_Monocular_Casual_Videos]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-02
+- Claim: OnlineX, processing only streaming sequential input, achieves novel view synthesis quality on RealEstate10K and ScanNet that matches or surpasses offline feedforward 3DGS methods that are given access to the full input sequence.
+- Evidence: On RealEstate10K and ScanNet benchmarks, OnlineX outperforms offline baselines MVSplat, NoPoSplat, and FLARE on standard NVS metrics (PSNR, SSIM, LPIPS), despite the offline methods having the inherent advantage of full-sequence access. Zero-shot evaluation on DL3DV further confirms generalization beyond training domains.
+- Boundary/Failure: The advantage over offline methods may diminish or reverse for very short sequences where full-sequence access provides maximal global context and the online streaming constraint offers no practical benefit.
+- Compared Against: MVSplat, NoPoSplat, and FLARE (offline feedforward 3DGS baselines given full sequence access)
+- Confidence: 8
+- Links:
+  - same_problem:: [[Gaussian_Sequences_with_MultiScale_Dynamics_for_4D_Reconstruction_from_Monocular_Casual_Videos]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-03
+- Claim: Downsampling open-vocabulary semantic features to 16 dimensions for computational efficiency in OnlineX's unified semantic 3DGS pipeline introduces a measurable bottleneck that limits fine-grained segmentation performance for rare or visually similar object classes compared to full-dimensional feature methods.
+- Evidence: The paper explicitly identifies the 16-dimensional semantic feature compression as an efficiency trade-off, and segmentation benchmarks against LangSplat and Gaussian Grouping show that OnlineX's semantic performance, while competitive on common categories, degrades for rare object classes where discriminative high-dimensional features are necessary for accurate open-vocabulary grounding.
+- Boundary/Failure: This limitation is most pronounced for rare object classes and fine-grained segmentation tasks; for coarse-grained or common-category semantic queries, the 16-dimensional representation remains sufficient and the performance gap is negligible.
+- Compared Against: LangSplat and Gaussian Grouping (GS-Group), which use higher-dimensional or full semantic feature representations
+- Confidence: 6
+- Links:
+  - same_problem:: [[Learning_Situated_Awareness_in_the_Real_World]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-04
+- Claim: OnlineX demonstrates that end-to-end feedforward unification of geometric 3D Gaussian Splatting reconstruction and open-vocabulary semantic understanding is achievable in an online streaming setting without per-scene optimization, establishing a new paradigm for embodied perception pipelines that require simultaneous spatial mapping and semantic grounding.
+- Evidence: OnlineX is the first online 3DGS pipeline to jointly produce per-Gaussian geometry and open-vocabulary semantic features in a single feedforward pass, evaluated against semantic 3DGS baselines (LangSplat, Gaussian Grouping) on ScanNet semantic benchmarks without any per-scene fine-tuning, achieving competitive semantic segmentation while maintaining real-time-compatible inference.
+- Boundary/Failure: Inference latency scales linearly with the number of 3D Gaussians, so city-scale or large unbounded scene reconstruction will degrade real-time performance without additional hierarchical Gaussian pruning mechanisms, limiting applicability to large-scale embodied navigation scenarios.
+- Compared Against: LangSplat and Gaussian Grouping (per-scene optimization-based semantic 3DGS methods)
+- Confidence: 7
+- Links:
+  - same_problem:: [[Learning_Situated_Awareness_in_the_Real_World]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
 ## 📂 Resources
 - **Local PDF**: [[OnlineX Unified Online 3D Reconstruction and Understanding with ActivetoStable State Evolution.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2603.02134v1)

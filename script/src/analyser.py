@@ -17,23 +17,26 @@ import base64
 import yaml # Ensure yaml is imported
 
 class PaperAnalyser:
-    def __init__(self, config, provider='doubao'):
+    def __init__(self, config, provider='doubao', prompts=None):
         self.config = config
         self.provider = provider
+        self.prompts = prompts or {}
+        self._openrouter_banned_authors = set()
         
         if provider == 'openrouter':
             self.api_key = config['openrouter']['api_key']
             self.base_url = "https://openrouter.ai/api/v1"
             self.model_flash = config['openrouter'].get('model_flash', 'google/gemini-2.0-flash-001')
+            self.model_screening_pro = config['openrouter'].get('model_screening_pro', self.model_flash)
             self.model_pro = config['openrouter'].get('model_pro', 'anthropic/claude-3.5-sonnet')
-            logger.info(f"Using OpenRouter Provider. Flash: {self.model_flash}, Pro: {self.model_pro}")
+            logger.info(f"Using OpenRouter Provider. Flash: {self.model_flash}, Screening-Pro: {self.model_screening_pro}, Pro: {self.model_pro}")
         else:
-            # Default to Doubao
             self.api_key = config['doubao']['api_key']
             self.base_url = "https://ark.cn-beijing.volces.com/api/v3"
             self.model_flash = config['doubao'].get('model_flash', 'doubao-seed-2-0-lite-260215')
+            self.model_screening_pro = config['doubao'].get('model_screening_pro', self.model_flash)
             self.model_pro = config['doubao'].get('model_pro', 'doubao-seed-2-0-pro-260215')
-            logger.info(f"Using Doubao Provider. Flash: {self.model_flash}, Pro: {self.model_pro}")
+            logger.info(f"Using Doubao Provider. Flash: {self.model_flash}, Screening-Pro: {self.model_screening_pro}, Pro: {self.model_pro}")
 
         self.client = OpenAI(
             api_key=self.api_key,
@@ -49,6 +52,72 @@ class PaperAnalyser:
                 self.tags_taxonomy = data.get('taxonomy', [])
         except Exception as e:
             logger.warning(f"Could not load tags.yaml: {e}")
+
+    def _openrouter_model_candidates(self, primary_model: str, kind: str):
+        if self.provider != 'openrouter':
+            return [primary_model]
+
+        cfg = self.config.get('openrouter', {})
+        fallback_key = f"{kind}_fallbacks"
+        fallbacks = cfg.get(fallback_key, [])
+        if not isinstance(fallbacks, list):
+            fallbacks = []
+
+        defaults = []
+        if kind == "model_flash":
+            defaults = [
+                "deepseek/deepseek-chat",
+                "google/gemini-2.0-flash-001",
+                "openai/gpt-4o-mini",
+            ]
+        elif kind == "model_screening_pro":
+            defaults = [
+                "anthropic/claude-3.5-sonnet",
+                "deepseek/deepseek-chat",
+                "openai/gpt-4o-mini",
+            ]
+        elif kind == "model_pro":
+            defaults = [
+                "anthropic/claude-3.5-sonnet",
+                "deepseek/deepseek-chat",
+                "openai/gpt-4o",
+                "openai/gpt-4o-mini",
+            ]
+
+        candidates = []
+        for m in [primary_model, *fallbacks, *defaults]:
+            if m and m not in candidates:
+                candidates.append(m)
+        if self._openrouter_banned_authors:
+            filtered = []
+            for m in candidates:
+                author = (m.split("/", 1)[0] if "/" in m else "").strip().lower()
+                if author and author in self._openrouter_banned_authors:
+                    continue
+                filtered.append(m)
+            candidates = filtered
+        return candidates
+
+    def _chat_with_fallback(self, models, messages, **kwargs):
+        last_err = None
+        for model in models:
+            try:
+                return self.client.chat.completions.create(model=model, messages=messages, **kwargs), model
+            except Exception as e:
+                msg = str(e)
+                last_err = e
+                m = re.search(r"Author\s+([A-Za-z0-9_-]+)\s+is banned", msg)
+                if m:
+                    self._openrouter_banned_authors.add(m.group(1).strip().lower())
+                if self.provider == 'openrouter' and (
+                    "not available in your region" in msg
+                    or "Error code: 403" in msg
+                    or "Error code: 404" in msg
+                ):
+                    logger.warning(f"[WARN] OpenRouter model failed, trying fallback: {model} ({msg})")
+                    continue
+                raise
+        raise last_err
 
     def pdf_to_base64_images(self, pdf_path, max_pages=10):
         """Converts PDF pages to base64 encoded images for Vision API."""
@@ -75,96 +144,382 @@ class PaperAnalyser:
             return []
 
     def _sanitize_json(self, text):
-        """Cleanups LLM response to ensure valid JSON."""
-        # Try to find JSON block using regex
-        json_match = re.search(r"(\{.*\})", text, re.DOTALL)
-        if json_match:
-            return json_match.group(1)
-            
-        # Fallback: Remove markdown code blocks
-        text = text.replace('```json', '').replace('```', '').strip()
-        return text
+        """Robustly extract a JSON object from LLM response text."""
+        if not text:
+            return "{}"
+        # 1. Try direct parse first
+        try:
+            json.loads(text.strip())
+            return text.strip()
+        except Exception:
+            pass
+        # 2. Strip markdown code fences
+        cleaned = re.sub(r"^```(?:json)?\s*", "", text.strip(), flags=re.MULTILINE)
+        cleaned = re.sub(r"\s*```$", "", cleaned.strip(), flags=re.MULTILINE)
+        try:
+            json.loads(cleaned.strip())
+            return cleaned.strip()
+        except Exception:
+            pass
+        # 3. Extract outermost {...} block (non-greedy to avoid over-matching)
+        m = re.search(r"\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}", cleaned, re.DOTALL)
+        if not m:
+            # fallback: greedy match
+            m = re.search(r"\{[\s\S]*\}", cleaned)
+        if m:
+            candidate = m.group(0)
+            # Clean trailing commas
+            candidate = re.sub(r',\s*}', '}', candidate)
+            candidate = re.sub(r',\s*]', ']', candidate)
+            try:
+                json.loads(candidate)
+                return candidate
+            except Exception:
+                pass
+        # 4. Return original stripped text as last resort
+        return text.strip()
 
-    def screen_paper(self, paper):
-        """
-        Uses Doubao Lite (equivalent to Flash) to screen the paper based on abstract.
-        Returns a dict with 'score' (1-10), 'reason', 'innovation', 'limitations', and 'tags'.
-        """
-        # Prepare Taxonomy String for Prompt
+    def _clamp_score(self, value, default=5):
+        try:
+            n = int(round(float(value)))
+        except Exception:
+            n = default
+        return max(1, min(10, n))
+
+    def _short_title_from_title(self, title):
+        title = title or ""
+        short_title = title.split(':')[0].strip() if ':' in title else title.strip()
+        return short_title.replace(' ', '_')
+
+    def _taxonomy_prompt(self):
         taxonomy_str = ""
         if self.tags_taxonomy:
             taxonomy_str = "\n**Standard Tag Taxonomy (Choose from these if applicable):**\n"
             for tag in self.tags_taxonomy:
                 taxonomy_str += f"- {tag['name']} (Aliases: {', '.join(tag['aliases'])})\n"
+        return taxonomy_str
 
-        prompt = f"""
-        You are an expert researcher in Robotics and AI.
-        Please evaluate the following paper based on these keywords: {', '.join(self.config['search']['keywords'])}.
-        
-        Title: {paper['title']}
-        Abstract: {paper['abstract']}
-        
-        {taxonomy_str}
+    def _screening_extra_params(self):
+        extra_params = {}
+        if self.provider == 'openrouter':
+            extra_params['extra_headers'] = {
+                "HTTP-Referer": "https://paperbrain.ai",
+                "X-Title": "PaperBrain"
+            }
+        return extra_params
 
-        Task:
-        1. Rate the "Research Value" for my interests on a scale of 1-10.
-           - 8-10: Must read immediately. SOTA results or major theoretical breakthrough.
-           - 6-7: Worth reading. Interesting idea or good results.
-           - 4-5: Maybe later. Standard incremental work.
-           - 1-3: Skip. Irrelevant or low quality.
-        2. Analyze the **Innovation**: What is the key novelty? (1 sentence)
-        3. Analyze the **Limitations/Weaknesses**: What is missing or could be improved? (1 sentence)
-        4. Identify **Tags**: Extract 3-5 specific technical tags. **CRITICAL**: Check the "Standard Tag Taxonomy" above. If a concept matches (or is an alias of) a standard tag, YOU MUST USE THE STANDARD TAG NAME (e.g., use 'LLM' instead of 'Large Language Model'). Use underscores. Do not use generic tags like 'AI' or 'Robotics'.
-        5. **Short Title**: If the paper title has a colon (e.g., "Solaris: Building a ..."), extract the part BEFORE the colon as the short title (e.g., "Solaris"). If no colon, use the full title but replace spaces with underscores.
-        6. Return JSON format only: 
+    def _screening_fallback_payload(self, paper, reason, stage="detailed"):
+        short_title_fallback = self._short_title_from_title(paper.get('title', ''))
+        base = {
+            "score": 0,
+            "relevance": 0,
+            "novelty": 0,
+            "rigor": 0,
+            "evidence": 0,
+            "reproducibility": 0,
+            "confidence": 0,
+            "red_flags": [],
+            "innovation": "Analysis failed",
+            "limitations": "Analysis failed",
+            "reason": str(reason),
+            "tags": [],
+            "short_title": short_title_fallback,
+            "screening_stage": stage,
+        }
+        if stage == "coarse":
+            base.update({
+                "coarse_score": 0,
+                "method_completeness": 0,
+                "should_rescreen": False,
+            })
+        return base
+
+    def coarse_screen_paper(self, paper):
+        taxonomy_str = self._taxonomy_prompt()
+        keywords = ', '.join(self.config['search']['keywords'])
+
+        # Get prompt from prompts.yaml or use inline fallback
+        system_prompt = self.prompts.get('screening', {}).get('coarse_system',
+            "You are a careful research triage assistant. Be conservative, fast, and structured.")
+        user_template = self.prompts.get('screening', {}).get('coarse_user', """
+        You are performing the FIRST-PASS coarse screening for a robotics/AI paper pipeline.
+        Evaluate only whether this paper is promising enough to enter a stricter second-stage review for these interests: {keywords}.
+
+        Title: {title}
+        Abstract: {abstract}
+
+        {taxonomy_block}
+
+        Score each dimension from 1-10:
+        - relevance: how well the paper matches the target interests.
+        - evidence: how much concrete empirical/theoretical support is visible from the abstract.
+        - method_completeness: whether the abstract describes a real method with enough mechanism detail to justify deeper review.
+
+        Decision goal:
+        - This is NOT the final accept/reject decision.
+        - Be recall-oriented for high-potential work, but still filter obvious weak matches, shallow papers, and poorly supported work.
+        - If the abstract is vague, underspecified, or clearly off-topic, set should_rescreen to false.
+
+        Output requirements:
+        - coarse_score: overall coarse priority for second-stage review.
+        - should_rescreen: true only if this paper is worth spending a stronger model on.
+        - reason: exactly 1 concise sentence stating why it should or should not enter second-stage review.
+
+        Return JSON only:
         {{
-            "score": int, 
-            "innovation": "string", 
-            "limitations": "string", 
-            "reason": "string",
-            "tags": ["string", "string"],
-            "short_title": "string"
+            "coarse_score": int,
+            "relevance": int,
+            "evidence": int,
+            "method_completeness": int,
+            "should_rescreen": bool,
+            "reason": "string"
         }}
-        """
-        
-        try:
-            extra_params = {}
-            if self.provider == 'openrouter':
-                 # OpenRouter might need headers or specific params, but usually standard OpenAI client works.
-                 # Adding HTTP referer is good practice for OpenRouter
-                 extra_params['extra_headers'] = {
-                    "HTTP-Referer": "https://paperbrain.ai", 
-                    "X-Title": "PaperBrain"
-                 }
+        """)
 
-            response = self.client.chat.completions.create(
-                model=self.model_flash,
+        prompt = user_template.format(
+            keywords=keywords,
+            title=paper['title'],
+            abstract=paper['abstract'],
+            taxonomy_block=taxonomy_str
+        )
+
+        try:
+            models = self._openrouter_model_candidates(self.model_flash, "model_flash")
+            response, used_model = self._chat_with_fallback(
+                models=models,
                 messages=[
-                    {"role": "system", "content": "You are a helpful research assistant. Be objective and critical. Use consistent scoring standards."},
+                    {"role": "system", "content": system_prompt},
                     {"role": "user", "content": prompt}
                 ],
-                temperature=0.1, # Lower temperature for more stable/deterministic scoring
-                **extra_params
+                temperature=0.0,
+                **self._screening_extra_params()
             )
-            
+
+            data = json.loads(self._sanitize_json(response.choices[0].message.content), strict=False)
+            relevance = self._clamp_score(data.get("relevance", data.get("coarse_score", 5)))
+            evidence = self._clamp_score(data.get("evidence", data.get("coarse_score", 5)))
+            method_completeness = self._clamp_score(data.get("method_completeness", data.get("coarse_score", 5)))
+            coarse_score = self._clamp_score(
+                0.45 * relevance + 0.35 * evidence + 0.20 * method_completeness
+            )
+            if relevance <= 4:
+                coarse_score = min(coarse_score, 5)
+            if evidence <= 4 and method_completeness <= 4:
+                coarse_score = min(coarse_score, 5)
+            should_rescreen = data.get("should_rescreen")
+            if not isinstance(should_rescreen, bool):
+                should_rescreen = coarse_score >= 6 and relevance >= 6 and (evidence >= 5 or method_completeness >= 6)
+
+            return {
+                "coarse_score": coarse_score,
+                "score": coarse_score,
+                "relevance": relevance,
+                "evidence": evidence,
+                "method_completeness": method_completeness,
+                "should_rescreen": should_rescreen,
+                "reason": data.get("reason", ""),
+                "short_title": self._short_title_from_title(paper.get('title', '')),
+                "screening_stage": "coarse",
+                "used_model": used_model,
+            }
+        except Exception as e:
+            logger.error(f"Error coarse-screening paper {paper['title']}: {e}")
+            return self._screening_fallback_payload(paper, e, stage="coarse")
+
+    def screen_paper(self, paper):
+        taxonomy_str = self._taxonomy_prompt()
+        doc_excerpt = (paper.get('screening_document_excerpt') or '').strip()
+        doc_context_block = ""
+        if doc_excerpt:
+            doc_context_block = f"""
+        Additional document excerpt (from first PDF pages; may include methods/results details):
+        {doc_excerpt}
+        """
+        keywords = ', '.join(self.config['search']['keywords'])
+
+        system_prompt = self.prompts.get('screening', {}).get('detailed_system',
+            "You are a senior research reviewer. Be objective, critical, conservative, and use consistent scoring standards.")
+        user_template = self.prompts.get('screening', {}).get('detailed_user', """
+        You are performing the SECOND-PASS rigorous screening for a robotics/AI research workflow.
+        This paper has already passed a coarse triage stage. Your job is to make a high-quality final screening judgment.
+        Evaluate expected research value for these interests: {keywords}.
+
+        Title: {title}
+        Abstract: {abstract}
+        {doc_context_block}
+
+        {taxonomy_block}
+
+        Score each dimension from 1-10:
+        - relevance: fit to the target interests and application scope.
+        - novelty: originality versus common baseline ideas.
+        - rigor: methodological soundness and evaluation quality.
+        - evidence: strength of empirical/theoretical support in the abstract.
+        - reproducibility: clarity of setup, assumptions, and implementability signal.
+
+        Overall score guidance:
+        - 9-10: high relevance + high novelty + high rigor + strong evidence.
+        - 7-8: strong paper with minor gaps.
+        - 5-6: useful but incremental/partially matched.
+        - 1-4: weak match or weak evidence/rigor.
+
+        Calibration constraints:
+        - if relevance <= 4, overall score must be <= 6.
+        - if rigor <= 4 or evidence <= 4, overall score must be <= 7.
+        - if abstract lacks concrete method/evaluation details, reduce confidence and avoid optimistic scoring.
+        - keep scoring conservative and discriminative.
+        - if additional document excerpt is provided, use it as supporting evidence for rigor/evidence/reproducibility.
+        - if abstract and excerpt conflict, prefer concrete technical details from the excerpt and lower confidence if inconsistency is severe.
+
+        Output requirements:
+        - innovation: exactly 1 sentence, concrete and technical.
+        - limitations: exactly 1 sentence, concrete and technical.
+        - reason: 1 concise sentence mentioning key drivers of score.
+        - tags: 3-5 specific tags.
+          - if concept matches taxonomy tag/alias above, MUST use the standard tag name.
+          - use underscores; avoid generic tags like AI/Robotics.
+        - short_title:
+          - if title contains ":", use text before ":".
+          - otherwise use full title.
+          - replace spaces with underscores.
+
+        Return JSON only:
+        {{
+            "score": int,
+            "relevance": int,
+            "novelty": int,
+            "rigor": int,
+            "evidence": int,
+            "reproducibility": int,
+            "confidence": int,
+            "red_flags": ["string"],
+            "innovation": "string",
+            "limitations": "string",
+            "reason": "string",
+            "tags": ["string", "string", "string"],
+            "short_title": "string"
+        }}
+        """)
+
+        prompt = user_template.format(
+            keywords=keywords,
+            title=paper['title'],
+            abstract=paper['abstract'],
+            doc_context_block=doc_context_block,
+            taxonomy_block=taxonomy_str
+        )
+
+        try:
+            models = self._openrouter_model_candidates(self.model_screening_pro, "model_screening_pro")
+            response, used_model = self._chat_with_fallback(
+                models=models,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.1,
+                **self._screening_extra_params()
+            )
+
             content = response.choices[0].message.content
             cleaned_content = self._sanitize_json(content)
-            
-            # Use strict=False to allow control characters like newlines in strings
-            return json.loads(cleaned_content, strict=False)
-            
+            data = json.loads(cleaned_content, strict=False)
+
+            relevance = self._clamp_score(data.get("relevance", data.get("score", 5)))
+            novelty = self._clamp_score(data.get("novelty", data.get("score", 5)))
+            rigor = self._clamp_score(data.get("rigor", data.get("score", 5)))
+            evidence = self._clamp_score(data.get("evidence", data.get("score", 5)))
+            reproducibility = self._clamp_score(data.get("reproducibility", data.get("score", 5)))
+            confidence = self._clamp_score(data.get("confidence", 6))
+
+            weights = self.config.get("analysis", {}).get("screening_weights", {})
+            w_rel = float(weights.get("relevance", 0.30))
+            w_nov = float(weights.get("novelty", 0.23))
+            w_rig = float(weights.get("rigor", 0.22))
+            w_evd = float(weights.get("evidence", 0.15))
+            w_rep = float(weights.get("reproducibility", 0.10))
+            total_w = w_rel + w_nov + w_rig + w_evd + w_rep
+            if total_w <= 0:
+                total_w = 1.0
+            weighted = (
+                w_rel * relevance +
+                w_nov * novelty +
+                w_rig * rigor +
+                w_evd * evidence +
+                w_rep * reproducibility
+            ) / total_w
+            calibrated_score = self._clamp_score(weighted)
+            if relevance <= 4:
+                calibrated_score = min(calibrated_score, 6)
+            if rigor <= 4 or evidence <= 4:
+                calibrated_score = min(calibrated_score, 7)
+            if confidence <= 4:
+                calibrated_score = min(calibrated_score, 7)
+
+            data["score"] = calibrated_score
+            data["relevance"] = relevance
+            data["novelty"] = novelty
+            data["rigor"] = rigor
+            data["evidence"] = evidence
+            data["reproducibility"] = reproducibility
+            data["confidence"] = confidence
+            if "red_flags" not in data or not isinstance(data.get("red_flags"), list):
+                data["red_flags"] = []
+            data["short_title"] = data.get("short_title") or self._short_title_from_title(paper.get('title', ''))
+            data["screening_stage"] = "detailed"
+            data["used_model"] = used_model
+            return data
+
         except Exception as e:
             logger.error(f"Error screening paper {paper['title']}: {e}")
-            # Fallback parsing if JSON mode fails or returns text
-            short_title_fallback = paper['title'].split(':')[0].strip() if ':' in paper['title'] else paper['title']
-            return {
-                "score": 0, 
-                "innovation": "Analysis failed", 
-                "limitations": "Analysis failed", 
-                "reason": str(e),
-                "tags": [],
-                "short_title": short_title_fallback
+            return self._screening_fallback_payload(paper, e, stage="detailed")
+
+    def analyze_from_abstract(self, paper, rag_context=""):
+        system_role = self.prompts.get('analysis', {}).get('system_role') or \
+                      self.config.get('analysis', {}).get('prompts', {}).get('system_role', '')
+        user_template = self.prompts.get('analysis', {}).get('abstract_fallback_user', """
+        Generate a concise deep-analysis fallback report using only the title, abstract, and related notes context.
+        If evidence is missing from abstract, explicitly mark as "Unknown from abstract".
+
+        Title: {title}
+        Abstract: {abstract}
+
+        Related Notes Context:
+        {rag_context}
+
+        Output structure:
+        1) Core Snapshot
+        2) Technical Decomposition (only what can be inferred)
+        3) Evidence & Metrics (unknown values explicitly marked)
+        4) Critical Assessment
+        """)
+        prompt = user_template.format(
+            title=paper.get('title', ''),
+            abstract=paper.get('abstract', ''),
+            rag_context=rag_context
+        )
+
+        extra_params = {}
+        if self.provider == 'openrouter':
+            extra_params['extra_headers'] = {
+                "HTTP-Referer": "https://paperbrain.ai",
+                "X-Title": "PaperBrain"
             }
+
+        models = [self.model_pro]
+        if self.provider == 'openrouter':
+            models = self._openrouter_model_candidates(self.model_pro, "model_pro")
+
+        response, used_model = self._chat_with_fallback(
+            models=models,
+            messages=[
+                {"role": "system", "content": system_role},
+                {"role": "user", "content": prompt}
+            ],
+            **extra_params
+        )
+        content = response.choices[0].message.content
+        return f"# 🚀 Deep Analysis Report: {paper.get('title','')}\n\n{content}\n\n---\n*Generated from abstract fallback (model: {used_model})*"
 
     def extract_text_from_pdf(self, pdf_path):
         """Extracts text from a PDF file."""
@@ -220,109 +575,116 @@ class PaperAnalyser:
 
     def extract_images_from_pdf(self, pdf_path, output_folder):
         """
-        Extracts images from the first 5 pages, uses Vision API to identify the best Architecture/Overview figure,
-        and saves it. Considers BOTH extracted images and rendered pages to ensure vector diagrams are caught.
-        Returns the path to the saved image AND a caption/description.
+        Intelligently extracts the model/logic architecture diagram from a research paper PDF.
+
+        Strategy:
+          Phase 1 — Full-text scan with two-tier keyword scoring to rank pages by
+                    likelihood of containing an architecture figure.
+          Phase 2 — Render top candidate pages as high-res images and ask a Vision LLM
+                    to pick the best architecture/framework diagram.
+
+        Returns (saved_path, caption) or (None, "").
         """
         try:
             doc = fitz.open(pdf_path)
             if not os.path.exists(output_folder):
                 os.makedirs(output_folder)
-            
-            # --- Phase 0: Text-based Pre-Filtering ---
-            # Scan text to find pages with "Figure X: ... Architecture/Overview ..."
-            target_page_indices = set()
-            keyword_pattern = re.compile(r'(Figure|Fig\.)\s*\d+.*?(Architecture|Overview|Framework|Pipeline|System)', re.IGNORECASE)
-            
-            for i in range(min(10, len(doc))):
-                page_text = doc[i].get_text()
-                if keyword_pattern.search(page_text):
-                    target_page_indices.add(i)
-            
-            # If no keywords found, fallback to first 5 pages
-            if not target_page_indices:
-                target_page_indices = set(range(min(5, len(doc))))
-            else:
-                # Add adjacent pages just in case the figure is on one page and caption on another
-                # But prioritize the found pages
-                pass
 
-            # --- Collection Phase ---
+            # ── Phase 1: Full-text page scoring ──────────────────────────────
+            STRONG_KW = re.compile(
+                r'(architecture|framework|overview|pipeline|system design|'
+                r'model overview|method overview|proposed method|our approach|'
+                r'overall structure|our method|our framework|our pipeline|'
+                r'proposed framework|proposed architecture|system overview)',
+                re.IGNORECASE
+            )
+            WEAK_KW = re.compile(
+                r'(module|network|workflow|diagram|schematic|block diagram|'
+                r'inference|training pipeline|encoder|decoder|backbone|'
+                r'data flow|processing pipeline)',
+                re.IGNORECASE
+            )
+            FIG_CAPTION = re.compile(
+                r'(Figure|Fig\.)\s*\d+', re.IGNORECASE
+            )
+
+            page_scores = []  # (page_index, score)
+            for i in range(len(doc)):
+                text = doc[i].get_text()
+                score = 0
+                has_fig = bool(FIG_CAPTION.search(text))
+                strong_hits = len(STRONG_KW.findall(text))
+                weak_hits = len(WEAK_KW.findall(text))
+                if has_fig and strong_hits:
+                    score = 10 + strong_hits
+                elif strong_hits:
+                    score = 5 + strong_hits
+                elif has_fig and weak_hits:
+                    score = 2 + weak_hits
+                if score > 0:
+                    page_scores.append((i, score))
+
+            # Sort by score descending, take top 5 pages
+            page_scores.sort(key=lambda x: x[1], reverse=True)
+            target_pages = [p[0] for p in page_scores[:5]]
+
+            # Fallback: if nothing matched, use pages 1-3 (skip page 0 which is often the title/teaser)
+            if not target_pages:
+                target_pages = list(range(min(1, len(doc)), min(4, len(doc))))
+
+            # ── Phase 2: Render candidate pages ──────────────────────────────
             candidates = []
-
-            # 1. Extracted Images from Target Pages
-            extracted_candidates = []
-            for page_num in sorted(list(target_page_indices)):
+            for page_num in target_pages:
                 page = doc.load_page(page_num)
-                images = page.get_images(full=True)
-                for img_index, img in enumerate(images):
-                    xref = img[0]
-                    try:
-                        base_image = doc.extract_image(xref)
-                        image_bytes = base_image["image"]
-                        if self._is_valid_image(image_bytes):
-                            extracted_candidates.append({
-                                "bytes": image_bytes,
-                                "ext": base_image["ext"],
-                                "source": f"Extracted Image (Page {page_num+1})",
-                                "type": "extracted"
-                            })
-                    except Exception:
-                        continue
-            
-            extracted_candidates.sort(key=lambda x: len(x["bytes"]), reverse=True)
-            candidates.extend(extracted_candidates[:5]) # Top 5 largest extracted
-
-            # 2. Rendered Pages (Target Pages only)
-            for page_num in sorted(list(target_page_indices)):
-                page = doc.load_page(page_num)
-                pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))
+                pix = page.get_pixmap(matrix=fitz.Matrix(2.5, 2.5))
                 img_bytes = pix.tobytes("png")
                 candidates.append({
                     "bytes": img_bytes,
                     "ext": "png",
-                    "source": f"Full Page {page_num+1} Render",
+                    "source": f"Page {page_num + 1}",
                     "type": "rendered_page"
                 })
 
             if not candidates:
-                logger.warning("No images or pages could be rendered.")
+                logger.warning("No candidate pages could be rendered.")
                 return None, ""
 
-            # --- Selection Phase ---
-            vision_messages = [
-                {
-                    "role": "user",
-                    "content": [
-                        {"type": "text", "text": """
-I have extracted these images from a research paper. Some are specific extracted figures, others are full page renders.
-Please identify the **Main Architecture Diagram** (System Pipeline/Framework).
+            # ── Phase 3: Vision LLM selection ────────────────────────────────
+            vision_prompt = self.prompts.get('analysis', {}).get('vision_select_user', """You are an expert at reading research papers. I will show you several rendered pages from a PDF.
 
-**Selection Rules:**
-1. **Target**: Look for block diagrams, flowcharts, or schematics with boxes, arrows, and technical text labels.
-2. **Context**: Look for captions like "Figure 1: Overview", "Figure 2: Architecture", "Framework".
-3. **Negative Filter (CRITICAL)**: 
-   - IGNORE "Teaser Images" (often Figure 1, showing a cool result/screenshot/3D render).
-   - IGNORE Gameplay screenshots, Photos, or 3D Scenes.
-   - IGNORE Bar charts/Plots.
-4. **Tie-breaker**: If unsure between a "cool image" and a "boring chart", CHOOSE THE CHART. If a Full Page contains the diagram clearly, select the Full Page.
+Your task: find the page that contains the **model / method architecture diagram** — the figure that shows the overall structure of the proposed approach, with components, modules, data flow arrows, and technical labels.
 
-**Output Format**:
-Return a JSON object with:
-- "index": The index of the best image (integer).
-- "caption": A verbatim extraction of the figure caption from the image if readable (e.g. "Figure 2: The overall architecture..."). If not readable, write a descriptive caption.
+**What counts as an architecture diagram:**
+- Block diagrams showing model components and their connections
+- Flowcharts depicting the method pipeline (input → processing stages → output)
+- System schematics with named modules, arrows, and tensor/data annotations
+- Training/inference pipeline overviews
 
-JSON ONLY.
-"""}
-                    ]
-                }
-            ]
+**What does NOT count (reject these):**
+- Teaser/splash images showing qualitative results, photos, or 3D renders
+- Bar charts, line plots, scatter plots, or any quantitative result figures
+- Tables (comparison tables, ablation tables)
+- Qualitative comparison grids (side-by-side result images)
+- Title pages or author information pages
+
+**Rules:**
+1. If multiple pages contain architecture-like figures, prefer the one showing the OVERALL method (not a sub-module detail).
+2. If NO page contains a clear architecture diagram, return index -1.
+3. Do NOT guess — only select a page if you can clearly see a structural diagram.
+
+**Output:** Return ONLY a JSON object:
+{"index": <int or -1>, "caption": "<figure caption if readable, else brief description>"}""")
+
+            vision_messages = [{
+                "role": "user",
+                "content": [{"type": "text", "text": vision_prompt}]
+            }]
 
             for idx, item in enumerate(candidates):
                 b64_img = base64.b64encode(item["bytes"]).decode('utf-8')
                 vision_messages[0]["content"].append({
-                    "type": "text", 
-                    "text": f"Index {idx} [{item['source']}]:"
+                    "type": "text",
+                    "text": f"[Page candidate {idx} — {item['source']}]:"
                 })
                 vision_messages[0]["content"].append({
                     "type": "image_url",
@@ -332,37 +694,56 @@ JSON ONLY.
             try:
                 extra_params = {}
                 if self.provider == 'openrouter':
-                     extra_params['extra_headers'] = {
-                        "HTTP-Referer": "https://paperbrain.ai", 
+                    extra_params['extra_headers'] = {
+                        "HTTP-Referer": "https://paperbrain.ai",
                         "X-Title": "PaperBrain"
-                     }
-                
-                response = self.client.chat.completions.create(
-                    model=self.model_pro,
-                    messages=vision_messages,
-                    max_tokens=200,
-                    **extra_params
-                )
+                    }
+
+                # Try primary model, then fallbacks
+                response = None
+                models_to_try = [self.model_pro, "google/gemini-2.0-flash-001", "openai/gpt-4o-mini"]
+                for model in models_to_try:
+                    try:
+                        response = self.client.chat.completions.create(
+                            model=model,
+                            messages=vision_messages,
+                            max_tokens=200,
+                            **extra_params
+                        )
+                        break
+                    except Exception as e:
+                        err_str = str(e)
+                        if "404" in err_str or "403" in err_str:
+                            logger.warning(f"Vision model {model} unavailable: {err_str}")
+                            continue
+                        raise
+
+                if response is None:
+                    raise RuntimeError("All vision models failed")
+
                 choice_text = response.choices[0].message.content.strip()
                 cleaned_json = self._sanitize_json(choice_text)
                 data = json.loads(cleaned_json, strict=False)
-                
+
                 best_idx = data.get("index", -1)
                 caption = data.get("caption", "Architecture Diagram")
 
-                if best_idx >= 0 and best_idx < len(candidates):
+                if 0 <= best_idx < len(candidates):
                     chosen = candidates[best_idx]
-                    logger.info(f"Vision Model selected Index {best_idx} ({chosen['source']}) as architecture diagram.")
+                    logger.info(f"Vision selected {chosen['source']} as architecture diagram.")
                     saved_path = self._save_image(chosen, pdf_path, output_folder)
                     return saved_path, caption
+                elif best_idx == -1:
+                    logger.info("Vision LLM determined no architecture diagram exists in this paper.")
+                    return None, ""
+
             except Exception as e:
-                logger.error(f"Error in Vision selection: {e}")
-                
-            # Fallback: If vision fails, just save Page 1 render
-            logger.info("Vision selection failed. Defaulting to Page 1 Render.")
-            fallback = next((c for c in candidates if "Page 1" in c['source']), candidates[0])
-            saved_path = self._save_image(fallback, pdf_path, output_folder)
-            return saved_path, "Figure: Overview (Fallback Selection)"
+                logger.error(f"Vision selection error: {e}")
+
+            # Fallback: save the highest-scored page
+            logger.info("Vision selection failed. Saving top-scored page as fallback.")
+            saved_path = self._save_image(candidates[0], pdf_path, output_folder)
+            return saved_path, "Architecture Diagram (fallback)"
 
         except Exception as e:
             logger.error(f"Error extracting images from PDF: {e}")
@@ -377,137 +758,473 @@ JSON ONLY.
             f.write(img_data["bytes"])
         return path
 
+    def _extract_figures_from_pdf(self, pdf_path, max_figures=5):
+        """
+        Extracts meaningful figure images from a PDF using PyMuPDF.
+        Returns list of dicts: [{"bytes": ..., "ext": ..., "page": ..., "label": ...}]
+        Filters out icons, logos, solid backgrounds via _is_valid_image.
+        """
+        figures = []
+        try:
+            doc = fitz.open(pdf_path)
+            for page_num in range(min(len(doc), 15)):
+                page = doc.load_page(page_num)
+                images = page.get_images(full=True)
+                for img in images:
+                    xref = img[0]
+                    try:
+                        base_image = doc.extract_image(xref)
+                        image_bytes = base_image["image"]
+                        if self._is_valid_image(image_bytes):
+                            figures.append({
+                                "bytes": image_bytes,
+                                "ext": base_image["ext"],
+                                "page": page_num + 1,
+                                "label": f"Figure from page {page_num + 1}"
+                            })
+                    except Exception:
+                        continue
+            doc.close()
+        except Exception as e:
+            logger.error(f"Error extracting figures from PDF: {e}")
+
+        # Sort by size descending (larger images are more likely to be key figures)
+        figures.sort(key=lambda x: len(x["bytes"]), reverse=True)
+        return figures[:max_figures]
+
+    def _extract_text_from_pdf_fitz(self, pdf_path, max_pages=12):
+        """
+        Extracts clean text from PDF using PyMuPDF (fitz).
+        More reliable than pypdf for most academic papers.
+        Stops before references section to save tokens.
+        """
+        try:
+            doc = fitz.open(pdf_path)
+            pages_text = []
+            for i in range(min(len(doc), max_pages)):
+                text = doc[i].get_text()
+                # Stop if we hit the references section
+                ref_match = re.search(r'^(References|Bibliography|REFERENCES)\s*$', text, re.MULTILINE)
+                if ref_match:
+                    pages_text.append(text[:ref_match.start()])
+                    break
+                pages_text.append(text)
+            doc.close()
+            full_text = "\n\n".join(pages_text)
+            # Clean up excessive whitespace
+            full_text = re.sub(r'\n{3,}', '\n\n', full_text)
+            return full_text.strip()
+        except Exception as e:
+            logger.error(f"Error extracting text with fitz: {e}")
+            return ""
+
     def analyze_full_paper_iterative(self, paper, pdf_path, existing_notes_list, rag_context=""):
         """
-        Performs a multi-round deep analysis using Vision capabilities (PDF to Images).
+        Performs a multi-round deep analysis using extracted text + selective figure images.
+
+        Token-efficient approach:
+          - Paper text is extracted as plain text via PyMuPDF (cheap text tokens)
+          - Only key figures (filtered, max 5) are sent as images (expensive vision tokens)
+          - Compared to sending 8 full-page renders, this saves 50-70% of token cost
         """
         logger.info(f"Starting Iterative Deep Analysis for: {paper['title']}")
-        
-        # Step 1: Convert PDF to images for Vision model
-        # We process the first 8 pages which usually contain the main text
-        images = self.pdf_to_base64_images(pdf_path, max_pages=8)
-        
-        if not images:
-            logger.error("Failed to convert PDF to images. Fallback to text extraction.")
-            # Fallback logic could go here, but for now we return error
-            return "Failed to read PDF visually."
 
-        # Construct Vision API messages
-        vision_messages = [
-            {
-                "role": "user",
-                "content": [
-                    {"type": "text", "text": f"This is the paper titled '{paper['title']}'. Please read it carefully page by page."}
-                ]
-            }
-        ]
-        
-        # Add images to message
-        for img_b64 in images:
-            vision_messages[0]["content"].append({
+        # Step 1: Extract text from PDF
+        paper_text = self._extract_text_from_pdf_fitz(pdf_path, max_pages=12)
+        if not paper_text:
+            logger.warning("fitz text extraction failed, falling back to pypdf...")
+            paper_text = self.extract_text_from_pdf(pdf_path)
+
+        if not paper_text or len(paper_text) < 200:
+            logger.error("Text extraction failed or too short. Falling back to full-page vision mode.")
+            return self._analyze_full_paper_vision_fallback(paper, pdf_path, existing_notes_list, rag_context)
+
+        # Step 2: Extract key figures from PDF
+        figures = self._extract_figures_from_pdf(pdf_path, max_figures=5)
+        logger.info(f"  Extracted {len(figures)} key figures from PDF.")
+
+        # Step 3: Build messages — text as text, figures as images
+        text_intro = (
+            f"Below is the full text of the paper titled '{paper['title']}', "
+            f"followed by {len(figures)} key figures extracted from the paper.\n\n"
+            f"--- PAPER TEXT START ---\n{paper_text}\n--- PAPER TEXT END ---"
+        )
+
+        user_content = [{"type": "text", "text": text_intro}]
+
+        for idx, fig in enumerate(figures):
+            b64_img = base64.b64encode(fig["bytes"]).decode('utf-8')
+            user_content.append({
+                "type": "text",
+                "text": f"\n[Figure {idx + 1} — {fig['label']}]:"
+            })
+            user_content.append({
                 "type": "image_url",
-                "image_url": {"url": f"data:image/png;base64,{img_b64}"}
+                "image_url": {"url": f"data:image/{fig['ext']};base64,{b64_img}"}
             })
 
-        # --- Round 1: Comprehensive Analysis & Academic Quality ---
-        logger.info(f"  [Round 1] Performing initial academic quality & innovation assessment...")
-        
-        # Load custom prompts from config
-        system_role = self.config['analysis']['prompts']['system_role']
-        deep_analysis_prompt = self.config['analysis']['prompts']['deep_analysis']
-        
-        round1_prompt = f"""
-        {deep_analysis_prompt}
-        
-        **Visual Context**: Please refer to the provided images to interpret figures and tables accurately.
-        """
-        
-        # Copy vision messages for this turn
-        messages_r1 = vision_messages.copy()
-        # Update system role
-        messages_r1.insert(0, {"role": "system", "content": system_role})
-        messages_r1.append({"role": "user", "content": round1_prompt})
-        
+        base_messages = [{"role": "user", "content": user_content}]
+
+        # --- Round 1: Comprehensive Analysis ---
+        logger.info(f"  [Round 1] Academic quality & innovation assessment...")
+
+        system_role = self.prompts.get('analysis', {}).get('system_role') or \
+                      self.config.get('analysis', {}).get('prompts', {}).get('system_role', '')
+        deep_analysis_prompt = self.prompts.get('analysis', {}).get('deep_analysis') or \
+                               self.config.get('analysis', {}).get('prompts', {}).get('deep_analysis', '')
+        round1_suffix = self.prompts.get('analysis', {}).get('round1_suffix', """
+        **Context**: The paper text is provided above as plain text. Key figures are provided as images — refer to them when discussing architecture, data flow, or visual results. If a figure shows the method pipeline, describe it in detail within the Technical Decomposition section.
+
+        **Mandatory Formatting**:
+        - Create a section exactly named "## 📌 Abstract".
+        - Under it, first place the complete English abstract from the paper.
+        - Immediately after that, add "### 中文译文" and provide the complete Chinese translation of that abstract.
+        - After "## 📌 Abstract", all remaining section titles and prose must be Chinese.
+
+        **Quality Gate — Self-check before outputting**:
+        - Does every subsection contain at least one multi-sentence paragraph (not just bullets)?
+        - Does the Technical Decomposition section trace the full pipeline from input to output?
+        - Are all loss functions written in LaTeX with every variable defined?
+        - Does the Critical Assessment name specific failure scenarios, not generic concerns?
+        - If any answer is "no", revise that section before outputting.
+        """)
+
+        round1_prompt = f"{deep_analysis_prompt}\n\n{round1_suffix}"
+
+        messages_r1 = [{"role": "system", "content": system_role}] + base_messages + [
+            {"role": "user", "content": round1_prompt}
+        ]
+
         extra_params = {}
         if self.provider == 'openrouter':
-                extra_params['extra_headers'] = {
-                "HTTP-Referer": "https://paperbrain.ai", 
+            extra_params['extra_headers'] = {
+                "HTTP-Referer": "https://paperbrain.ai",
                 "X-Title": "PaperBrain"
-                }
+            }
 
-        response_r1 = self.client.chat.completions.create(
-            model=self.model_pro,
-            messages=messages_r1,
-            **extra_params
-        )
+        response_r1 = None
+        models_to_try = [self.model_pro]
+        if self.provider == 'openrouter':
+            models_to_try = self._openrouter_model_candidates(self.model_pro, "model_pro")
+
+        for model in models_to_try:
+            try:
+                response_r1 = self.client.chat.completions.create(
+                    model=model,
+                    messages=messages_r1,
+                    **extra_params
+                )
+                break
+            except Exception as e:
+                err_str = str(e)
+                if "404" in err_str or "403" in err_str:
+                    logger.warning(f"[Round 1] Model {model} unavailable: {err_str}")
+                    continue
+                raise
+
+        if response_r1 is None:
+            logger.error("[Round 1] All models failed. Aborting.")
+            return "Analysis Failed: All models unavailable."
+
         r1_content = response_r1.choices[0].message.content
 
-        # Extract Metadata JSON
+        # Extract Metadata JSON (robust matching for various malformed formats)
         metadata = {}
         try:
-            json_match = re.search(r"```json\s*(\{.*?\})\s*```", r1_content, re.DOTALL)
-            if json_match:
-                json_str = json_match.group(1)
-                metadata = json.loads(json_str)
-                # Remove the JSON block from the content to keep the report clean
-                r1_content = r1_content.replace(json_match.group(0), "").strip()
-                paper['metadata'] = metadata
-        except Exception as e:
-            logger.error(f"Failed to extract metadata JSON: {e}")
+            json_match = None
+            # Pattern 1: Standard ```json {...} ```
+            json_match = re.search(r"```json\s*(\{[\s\S]*?\})\s*```", r1_content, re.DOTALL)
 
-        # --- Round 2: Logical Optimization & Relation Analysis ---
-        logger.info(f"  [Round 2] Building knowledge graph and future research directions...")
-        
-        # We use RAG Context here for smarter linking
-        context_notes = rag_context if rag_context else ', '.join(existing_notes_list[:50])
-        
-        round2_prompt = f"""
-        Based on the analysis above, now perform a Connection & Refinement step.
-        
-        {rag_context}
-        
-        **Task 1: Differential Analysis & Connections**
-        - Identify 3-5 MOST relevant connections to my existing knowledge base (see Related Notes above).
-        - **Differential Analysis**: Explicitly state how this new paper differs from or improves upon the specific related notes mentioned.
-        - Focus on meaningful relationships (e.g., similar methods, conflicting results, foundational theories).
-        - Use [[Wiki-Link]] format for the filenames.
-        
-        **Task 2: Mermaid Knowledge Graph**
-        - Generate a Mermaid JS code block (`graph LR` or `mindmap`) visualizing the paper's core concepts.
-        - **STRICT MERMAID RULES**:
-          1. Use ONLY English characters and numbers for Node IDs (e.g., A, B, Node1). No spaces or special chars in IDs.
-          2. Put descriptive text in quotes or brackets (e.g., A["Descriptive Text"]).
-          3. DO NOT use Chinese characters anywhere.
-          4. Ensure all parentheses are balanced.
-        
-        **Task 3: Future Directions**
-        - Propose 3 concrete research ideas based on this paper.
-        """
-        
-        messages_r2 = messages_r1 + [
-            {"role": "assistant", "content": r1_content},
-            {"role": "user", "content": round2_prompt}
-        ]
-        
-        response_r2 = self.client.chat.completions.create(
-            model=self.model_pro,
-            messages=messages_r2,
-            **extra_params
-        )
-        r2_content = response_r2.choices[0].message.content
+            if not json_match:
+                # Pattern 2: Without code fence, complete JSON object
+                json_match = re.search(r"^\s*(\{[\s\S]*?\"project_page\"[\s\S]*?\})\s*$", r1_content, re.MULTILINE)
+
+            if not json_match:
+                # Pattern 3: Incomplete JSON (missing opening brace), try to reconstruct
+                partial_match = re.search(r'^\s*"publication_date":\s*"[^"]*",\s*\n\s*"institutions":\s*\[[\s\S]*?\],\s*\n\s*"github":\s*"[^"]*",\s*\n\s*"project_page":\s*"[^"]*"\s*\n\s*\}', r1_content, re.MULTILINE)
+                if partial_match:
+                    # Reconstruct by adding opening brace
+                    json_str = "{" + partial_match.group(0).strip()
+                    try:
+                        metadata = json.loads(json_str)
+                        r1_content = r1_content.replace(partial_match.group(0), "").strip()
+                        json_match = True  # Mark as handled
+                    except Exception:
+                        pass
+
+            if json_match and not isinstance(json_match, bool):
+                json_str = json_match.group(1).strip()
+                metadata = json.loads(json_str)
+                r1_content = r1_content.replace(json_match.group(0), "").strip()
+                json_match = True
+
+            if json_match:
+                # Remove any leading "0. **Metadata Extraction**" header
+                r1_content = re.sub(r'^0\.\s*\*\*Metadata Extraction\*\*[^\n]*\n+', '', r1_content, flags=re.MULTILINE)
+                # Remove stray ```json or ``` markers
+                r1_content = re.sub(r'^```json\s*\n', '', r1_content, flags=re.MULTILINE)
+                r1_content = re.sub(r'^```\s*\n', '', r1_content, flags=re.MULTILINE)
+                paper['metadata'] = metadata
+                logger.info(f"  Extracted metadata: {metadata.get('institutions', [])} | {metadata.get('publication_date', 'Unknown')}")
+        except Exception as e:
+            logger.warning(f"Failed to extract metadata JSON: {e}")
+
+        # Clean up any remaining markdown artifacts
+        r1_content = re.sub(r'^#\s+🚀\s+Deep Analysis Report:.*?\n+', '', r1_content, flags=re.MULTILINE)
+        r1_content = re.sub(r'^##\s+📊\s+Academic Quality & Innovation\s*\n+', '', r1_content, flags=re.MULTILINE)
+        # Collapse excessive blank lines
+        r1_content = re.sub(r'\n{3,}', '\n\n', r1_content).strip()
+
+        max_iterations = int(self.config.get('analysis', {}).get('max_iterations', 2))
+        max_iterations = max(1, max_iterations)
+
+        r2_content = ""
+        if max_iterations >= 2:
+            logger.info(f"  [Round 2] Knowledge graph and connections...")
+
+            context_notes = rag_context if rag_context else ', '.join(existing_notes_list[:50])
+
+            round2_template = self.prompts.get('analysis', {}).get('round2_user', """
+            Based on the comprehensive analysis you produced above, now perform a Connection & Refinement step.
+
+            ═══════════════════════════════════════════════════════════════
+            WRITING RULES (same as Round 1 — do NOT regress to bullet-point skeletons)
+            ═══════════════════════════════════════════════════════════════
+            - Every task below must be answered in coherent paragraphs (≥3 sentences each).
+            - Bullet points are allowed ONLY for structured data (link lists, Mermaid code).
+            - Always close the reasoning loop: claim → evidence → implication.
+            ═══════════════════════════════════════════════════════════════
+
+            Output language: Chinese for all prose.
+            Keep proprietary names and technical terms in original English (method/model/dataset/loss/module/API/benchmark names, metric abbreviations like mAP/FID/IoU, and math symbols).
+            Keep [[Wiki-Link]] filenames and Mermaid node IDs in English-safe format.
+
+            {context_notes}
+
+            **Task 1: Differential Analysis & Connections**
+            For each of the TOP 3 most relevant papers from my knowledge base (listed above), write a dedicated paragraph that covers:
+            - What specific technical component or research question is shared between this paper and the related note.
+            - How this paper's approach differs from or improves upon the related note's method.
+            - What the implication of this difference is.
+            - Use [[Wiki-Link]] format for all note references.
+
+            **Task 2: Mermaid Knowledge Graph**
+            Generate a Mermaid JS code block (`graph LR`) that visualizes:
+            - The paper's core method pipeline (input → key modules → output)
+            - Connections to related work from the knowledge base (as dashed links)
+            - **STRICT MERMAID RULES**:
+              1. Use ONLY English characters and numbers for Node IDs. No spaces or special chars in IDs.
+              2. Put descriptive text in quotes or brackets (e.g., A["Descriptive Text"]).
+              3. DO NOT use Chinese characters anywhere in the Mermaid block.
+              4. Ensure all parentheses are balanced.
+              5. Do NOT output literal "\\\\n". Use "<br/>" for line breaks in labels.
+
+            **Task 3: Future Directions**
+            For each of 3 research directions, write a full paragraph (not bullets) containing:
+            - A specific finding or limitation from this paper that motivates the direction.
+            - A concrete experiment design that could be executed in 1-2 weeks.
+            - The primary risk that could invalidate this direction and an early diagnostic to detect it.
+            - How this direction connects to broader trends in the field.
+            """)
+            round2_prompt = round2_template.format(context_notes=context_notes)
+
+            # Round 2 does NOT need images again — text context from R1 is sufficient
+            messages_r2 = messages_r1 + [
+                {"role": "assistant", "content": r1_content},
+                {"role": "user", "content": round2_prompt}
+            ]
+
+            response_r2 = None
+            for model in models_to_try:
+                try:
+                    response_r2 = self.client.chat.completions.create(
+                        model=model,
+                        messages=messages_r2,
+                        **extra_params
+                    )
+                    break
+                except Exception as e:
+                    err_str = str(e)
+                    if "404" in err_str or "403" in err_str:
+                        logger.warning(f"[Round 2] Model {model} unavailable: {err_str}")
+                        continue
+                    raise
+
+            if response_r2 is None:
+                logger.error("[Round 2] All models failed.")
+            else:
+                r2_content = response_r2.choices[0].message.content
+                # Strip any stray section headers the model may have added
+                r2_content = re.sub(r'^##\s+🔗\s+Knowledge Graph[^\n]*\n+', '', r2_content, flags=re.MULTILINE)
+                r2_content = re.sub(r'^Analysis\s*&\s*Connections\s*\n+', '', r2_content, flags=re.MULTILINE)
+                r2_content = re.sub(r'^###\s+Task\s+\d+[^\n]*\n', '', r2_content, flags=re.MULTILINE)
+                r2_content = re.sub(r'^\*\*Task\s+\d+[^\n]*\n', '', r2_content, flags=re.MULTILINE)
+                r2_content = re.sub(r'\n{3,}', '\n\n', r2_content).strip()
 
         # --- Final Compilation ---
-        provider_name = "Doubao" if self.provider == 'doubao' else f"OpenRouter ({self.model_pro})"
-        final_report = f"""
-# 🚀 Deep Analysis Report: {paper['title']}
+        connections_section = ""
+        if r2_content:
+            connections_section = f"\n\n## 🔗 Knowledge Graph & Connections\n\n{r2_content.strip()}"
 
-## 📊 Academic Quality & Innovation
-{r1_content}
-
-## 🔗 Knowledge Graph & Connections
-{r2_content}
-
----
-*Analysis performed by PaperBrain-{provider_name} (Vision-Enabled)*
-"""
+        final_report = f"{r1_content.strip()}{connections_section}\n\n---\n*Analysis by PaperBrain ({self.model_pro})*"
         return final_report
+
+    def generate_paper_aliases(self, paper, analysis_text=""):
+        """
+        Uses flash model to generate 5-10 searchable aliases for the paper.
+        Returns a list of strings.
+        """
+        title = paper.get('title', '')
+        abstract = paper.get('abstract', '')
+        innovation = paper.get('innovation', '')
+
+        # Take first 500 chars of analysis if provided
+        analysis_snippet = analysis_text[:500] if analysis_text else ""
+
+        user_template = self.prompts.get('analysis', {}).get('alias_generation_user', """
+        Given the following paper, generate 5-10 concise, searchable aliases that other researchers might use to refer to this work.
+        Focus on: method names, key technical terms, acronyms, and distinctive concepts introduced by this paper.
+        Aliases should be specific enough to uniquely identify this paper's contributions (avoid generic terms like "robot" or "model").
+
+        Title: {title}
+        Abstract: {abstract}
+        Key innovation: {innovation}
+
+        Return ONLY a JSON array of strings, e.g.: ["Alias One", "AliasTwo", "Key_Term"]
+        Each alias should be 1-4 words. Prefer English. No duplicates.
+        """)
+
+        prompt = user_template.format(
+            title=title,
+            abstract=abstract[:300],
+            innovation=innovation
+        )
+
+        try:
+            models = self._openrouter_model_candidates(self.model_flash, "model_flash")
+            response, _ = self._chat_with_fallback(
+                models=models,
+                messages=[
+                    {"role": "system", "content": "You are a research metadata assistant. Output valid JSON only."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.2,
+                **self._screening_extra_params()
+            )
+
+            content = response.choices[0].message.content or ""
+            # Extract JSON array
+            match = re.search(r'\[.*?\]', content, re.DOTALL)
+            if match:
+                aliases = json.loads(match.group(0))
+                if isinstance(aliases, list):
+                    return [str(a).strip() for a in aliases if a][:10]
+        except Exception as e:
+            logger.warning(f"Alias generation failed: {e}")
+
+        return []
+
+    def _analyze_full_paper_vision_fallback(self, paper, pdf_path, existing_notes_list, rag_context=""):
+        """
+        Fallback: sends full page renders when text extraction fails.
+        This is the old approach, kept as a safety net.
+        """
+        logger.info("  Using full-page vision fallback mode...")
+        images = self.pdf_to_base64_images(pdf_path, max_pages=8)
+        if not images:
+            return "Failed to read PDF."
+
+        vision_messages = [{
+            "role": "user",
+            "content": [
+                {"type": "text", "text": f"This is the paper titled '{paper['title']}'. Please read it carefully page by page."}
+            ] + [
+                {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{img}"}}
+                for img in images
+            ]
+        }]
+
+        system_role = self.prompts.get('analysis', {}).get('system_role') or \
+                      self.config.get('analysis', {}).get('prompts', {}).get('system_role', '')
+        deep_analysis_prompt = self.prompts.get('analysis', {}).get('deep_analysis') or \
+                               self.config.get('analysis', {}).get('prompts', ).get('deep_analysis', '')
+        vision_suffix = self.prompts.get('analysis', {}).get('vision_fallback_suffix', """
+        **Visual Context**: Please refer to the provided images to interpret figures and tables accurately.
+        **Mandatory Formatting**:
+        - Create a section exactly named "## 📌 Abstract".
+        - Under it, first place the complete English abstract from the paper.
+        - Immediately after that, add "### 中文译文" and provide the complete Chinese translation of that abstract.
+        - After "## 📌 Abstract", all remaining section titles and prose must be Chinese.
+        """)
+        round1_prompt = f"{deep_analysis_prompt}\n\n{vision_suffix}"
+
+        messages_r1 = [{"role": "system", "content": system_role}] + vision_messages + [
+            {"role": "user", "content": round1_prompt}
+        ]
+
+        extra_params = {}
+        if self.provider == 'openrouter':
+            extra_params['extra_headers'] = {
+                "HTTP-Referer": "https://paperbrain.ai",
+                "X-Title": "PaperBrain"
+            }
+
+        models_to_try = [self.model_pro]
+        if self.provider == 'openrouter':
+            models_to_try = self._openrouter_model_candidates(self.model_pro, "model_pro")
+
+        response_r1 = None
+        for model in models_to_try:
+            try:
+                response_r1 = self.client.chat.completions.create(
+                    model=model, messages=messages_r1, **extra_params
+                )
+                break
+            except Exception as e:
+                err_str = str(e)
+                if "404" in err_str or "403" in err_str:
+                    logger.warning(f"[Fallback R1] Model {model} unavailable: {err_str}")
+                    continue
+                raise
+
+        if response_r1 is None:
+            return "Analysis Failed: All models unavailable."
+
+        r1_content = response_r1.choices[0].message.content
+
+        metadata = {}
+        try:
+            json_match = None
+            json_match = re.search(r"```json\s*(\{[\s\S]*?\})\s*```", r1_content, re.DOTALL)
+            if not json_match:
+                json_match = re.search(r"^\s*(\{[\s\S]*?\"project_page\"[\s\S]*?\})\s*$", r1_content, re.MULTILINE)
+            if not json_match:
+                partial_match = re.search(r'^\s*"publication_date":\s*"[^"]*",\s*\n\s*"institutions":\s*\[[\s\S]*?\],\s*\n\s*"github":\s*"[^"]*",\s*\n\s*"project_page":\s*"[^"]*"\s*\n\s*\}', r1_content, re.MULTILINE)
+                if partial_match:
+                    try:
+                        metadata = json.loads("{" + partial_match.group(0).strip())
+                        r1_content = r1_content.replace(partial_match.group(0), "").strip()
+                        json_match = True
+                    except Exception:
+                        pass
+            if json_match and not isinstance(json_match, bool):
+                metadata = json.loads(json_match.group(1).strip())
+                r1_content = r1_content.replace(json_match.group(0), "").strip()
+                json_match = True
+            if json_match:
+                r1_content = re.sub(r'^0\.\s*\*\*Metadata Extraction\*\*[^\n]*\n+', '', r1_content, flags=re.MULTILINE)
+                r1_content = re.sub(r'^```json\s*\n', '', r1_content, flags=re.MULTILINE)
+                r1_content = re.sub(r'^```\s*\n', '', r1_content, flags=re.MULTILINE)
+                paper['metadata'] = metadata
+        except Exception:
+            pass
+
+        r1_content = re.sub(r'^#\s+🚀\s+Deep Analysis Report:.*?\n+', '', r1_content, flags=re.MULTILINE)
+        r1_content = re.sub(r'^##\s+📊\s+Academic Quality & Innovation\s*\n+', '', r1_content, flags=re.MULTILINE)
+        r1_content = re.sub(r'\n{3,}', '\n\n', r1_content).strip()
+
+        # Remove any stray wrapper headers
+        r1_content = re.sub(r'^#\s+🚀\s+Deep Analysis Report:.*?\n+', '', r1_content, flags=re.MULTILINE)
+        r1_content = re.sub(r'^##\s+📊\s+Academic Quality & Innovation\s*\n+', '', r1_content, flags=re.MULTILINE)
+
+        return f"{r1_content.strip()}\n\n---\n*Analysis by PaperBrain ({self.model_pro}) — Vision Fallback Mode*"

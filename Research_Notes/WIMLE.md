@@ -158,6 +158,52 @@ graph LR
 *Analysis performed by PaperBrain-Doubao (Vision-Enabled)*
 
 
+## 🧩 Claim Cards
+
+### Claim-01
+- Claim: Replacing unimodal Gaussian world model predictions with IMLE-based implicit multi-modal sampling, combined with uncertainty-weighted synthetic rollout prioritization, enables WIMLE to outperform all evaluated model-based and model-free baselines across three continuous control benchmark suites within 1 million environment steps.
+- Evidence: WIMLE is evaluated on 40 tasks spanning DeepMind Control Suite (16 tasks), MyoSuite (10 tasks), and HumanoidBench (14 tasks) against 7 baselines including DreamerV3, TD-MPC2, BRO, SimbaV2, MR.Q, PPO, and SAC. All runs use 1 million environment steps, 10 random seeds, standardized per-benchmark score normalization, and a single NVIDIA L40S GPU. WIMLE achieves top aggregate normalized scores across all three benchmarks, with the IMLE sampling component (K=7 ensemble, m=5–10 latent samples) and uncertainty weighting both contributing positively in ablations.
+- Boundary/Failure: Performance gains are expected to diminish or reverse on long-horizon tasks requiring exploration of out-of-distribution state spaces far from the training data distribution, since all synthetic rollouts are initialized from real observed states.
+- Compared Against: DreamerV3, TD-MPC2, BRO, SimbaV2, Simba, MR.Q, PPO, SAC
+- Confidence: 8
+- Links:
+  - same_problem:: [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]
+  - improves_over:: [[MoRL]]
+  - conflicts_with:: 待定
+
+### Claim-02
+- Claim: IMLE-based world model predictions produce diverse, non-averaged multi-modal transition samples that avoid the regression-to-the-mean failure mode of standard Gaussian world models, leading to more realistic synthetic rollouts for policy learning in continuous control.
+- Evidence: The paper identifies unimodal Gaussian world models as a core flaw of existing MBRL methods, causing averaged and unrealistic predictions for inherently multi-modal transition dynamics. WIMLE replaces this with IMLE sampling using K=7 ensemble members and m=5–10 latent samples per transition, explicitly covering multiple plausible next-state modes. Ablation experiments confirm that removing the IMLE component and reverting to Gaussian predictions degrades normalized benchmark scores across all three suites.
+- Boundary/Failure: The diversity benefit of IMLE sampling is reduced in near-deterministic environments where transition dynamics are effectively unimodal, making the added computational cost of multi-sample generation unnecessary overhead.
+- Compared Against: Standard unimodal Gaussian world models as used in DreamerV3 and TD-MPC2
+- Confidence: 7
+- Links:
+  - same_problem:: [[Generated_Reality]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-03
+- Claim: WIMLE's inference latency scales linearly with ensemble size K and number of latent samples m, making the method computationally unsuitable for low-latency real-time control applications without architectural optimization.
+- Evidence: The method uses K=7 ensemble members and m=5–10 latent samples per forward pass, and wall-clock time comparisons are conducted on a single NVIDIA L40S GPU. The paper explicitly acknowledges that inference latency scales linearly with K and m, and identifies this as a limitation for high-frequency robotic manipulation use cases. No distillation, pruning, or amortization strategy is proposed to mitigate this cost.
+- Boundary/Failure: This limitation does not apply to offline or asynchronous planning settings where inference latency is not a hard constraint, or if future work applies ensemble distillation to compress the K=7 models into a single faster network.
+- Compared Against: Single-model baselines such as DreamerV3 and TD-MPC2, which require only one forward pass per prediction
+- Confidence: 9
+- Links:
+  - same_problem:: 待定
+  - improves_over:: 待定
+  - conflicts_with:: [[World_Action_Models_are_Zero_shot_Policies]]
+
+### Claim-04
+- Claim: Uncertainty-aware synthetic rollout weighting in MBRL, as demonstrated by WIMLE, represents a broadly applicable principle for mitigating compounding model error in sample-constrained continuous control, suggesting that calibrated uncertainty estimation is a necessary component for closing the MBRL–MFRL performance gap.
+- Evidence: WIMLE addresses three identified core flaws of prior MBRL: compounding rollout error, unimodal predictions, and overconfident uncalibrated predictions. The uncertainty weighting scheme deprioritizes low-confidence synthetic transitions during policy training, and ablations show this component contributes meaningfully to final performance across all 40 tasks evaluated at 1 million environment steps. The consistent improvement over strong model-free baselines (MR.Q, SAC) supports the broader claim that calibration is a key missing ingredient in prior MBRL approaches.
+- Boundary/Failure: The uncertainty weighting scheme assumes approximately homoscedastic TD error noise after reweighting; this assumption breaks down in environments with extreme non-stationarity or episodic dynamics, causing suboptimal sample weighting and degraded policy learning.
+- Compared Against: Uncalibrated MBRL baselines (DreamerV3, TD-MPC2, BRO) and model-free upper bounds (MR.Q, SAC)
+- Confidence: 7
+- Links:
+  - same_problem:: [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]
+  - improves_over:: [[MoRL]]
+  - conflicts_with:: 待定
+
 ## 📂 Resources
 - **Local PDF**: [[WIMLE UncertaintyAware World Models with IMLE for SampleEfficient Continuous Control.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2602.14351v1)

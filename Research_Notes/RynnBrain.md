@@ -155,6 +155,52 @@ graph LR
 *Analysis performed by PaperBrain-Doubao (Vision-Enabled)*
 
 
+## 🧩 Claim Cards
+
+### Claim-01
+- Claim: RynnBrain's unified embodied foundation model architecture, which integrates physical grounding, spatio-temporal reasoning, and actionable planning into a VLM backbone, outperforms existing embodied foundation models on both general multimodal understanding and task-specific embodied benchmarks at the same parameter scale.
+- Evidence: RynnBrain is evaluated against SOTA embodied foundation models including RoboBrain 2.0, Robix, and π0.5, as well as same-scale Qwen3-VL variants, across general vision-language tasks and the newly curated RynnBrain-Bench for fine-grained spatio-temporal reasoning. The experimental design controls for parameter count, ensuring fair comparison across all model variants.
+- Boundary/Failure: Performance advantages may not hold for highly specialized manipulation tasks requiring sub-millimeter localization, where the fixed [0, 1000] coordinate normalization (0.1% spatial resolution) is insufficient.
+- Compared Against: RoboBrain 2.0, Robix, π0.5, same-scale Qwen3-VL variants, and general VLM baselines.
+- Confidence: 7
+- Links:
+  - same_problem:: [[GeneralVLA]]
+  - improves_over:: [[GeneralVLA]]
+  - conflicts_with:: 待定
+
+### Claim-02
+- Claim: The RynnBrain 30B-A3B MoE variant achieves superior embodied reasoning performance compared to dense 8B baselines, but incurs 4–6x higher inference latency, making it unsuitable for real-time edge robot deployment without model compression.
+- Evidence: The hidden limitations section explicitly documents that the 30B-A3B MoE variant exhibits 4–6x higher inference latency than dense 8B baselines. Benchmark evaluations confirm performance gains of the MoE variant on embodied tasks, but no latency-optimized deployment results (e.g., quantization or expert pruning) are reported in the paper.
+- Boundary/Failure: The latency gap renders the 30B-A3B MoE variant impractical for low-latency edge robotics without aggressive quantization or expert pruning; the claim of superior performance does not translate to deployment-ready advantage in time-critical scenarios.
+- Compared Against: Dense 8B baseline models at the same task benchmarks.
+- Confidence: 8
+- Links:
+  - same_problem:: [[QuantVLA]]
+  - improves_over:: 待定
+  - conflicts_with:: [[QuantVLA]]
+
+### Claim-03
+- Claim: The fixed [0, 1000] coordinate normalization scheme used in RynnBrain for spatial grounding fundamentally limits spatial resolution to 0.1% of scene size, causing the model to fail on high-precision manipulation tasks requiring sub-millimeter localization accuracy.
+- Evidence: The hidden limitations section explicitly identifies that the [0, 1000] normalization constrains spatial resolution to 0.1% of scene size. No ablation or alternative coordinate representation is presented to mitigate this limitation, and no high-precision manipulation benchmark results are reported.
+- Boundary/Failure: This limitation is inherent to the fixed normalization design and cannot be resolved without architectural changes to the coordinate representation; it affects all tasks where localization precision below 0.1% of scene size is required.
+- Compared Against: Implicit comparison to systems capable of continuous or higher-resolution spatial coordinate representations for fine-grained manipulation.
+- Confidence: 8
+- Links:
+  - same_problem:: [[GeometryAware_Rotary_Position_Embedding_for_Consistent_Video_World_Model]]
+  - improves_over:: 待定
+  - conflicts_with:: [[GeometryAware_Rotary_Position_Embedding_for_Consistent_Video_World_Model]]
+
+### Claim-04
+- Claim: Bridging general-purpose VLMs with physical grounding through embodied pretraining on curated spatio-temporal data is a viable path toward zero-shot or few-shot generalization in robotic action policies, but scalability is bottlenecked by human-in-the-loop annotation requirements that cap the training corpus at approximately 20 million samples.
+- Evidence: RynnBrain's pretraining pipeline relies on human-in-the-loop annotation for fine-grained spatio-temporal data, with the current corpus limited to 20 million samples. The paper introduces RynnBrain-Bench to address gaps in existing benchmarks for spatio-temporal reasoning, implying that broader generalization requires data diversity beyond what automated pipelines currently provide.
+- Boundary/Failure: The annotation bottleneck prevents scaling beyond 20 million samples without proportional increases in human labor, limiting the model's ability to match the generalization breadth of fully automated large-scale pretraining pipelines used by general VLMs.
+- Compared Against: Large-scale automated pretraining pipelines of general VLMs (e.g., Qwen3-VL) and world-model-based zero-shot policy approaches.
+- Confidence: 7
+- Links:
+  - same_problem:: [[World_Action_Models_are_Zero_shot_Policies]]
+  - improves_over:: 待定
+  - conflicts_with:: [[World_Action_Models_are_Zero_shot_Policies]]
+
 ## 📂 Resources
 - **Local PDF**: [[RynnBrain Open Embodied Foundation Models.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2602.14979v1)

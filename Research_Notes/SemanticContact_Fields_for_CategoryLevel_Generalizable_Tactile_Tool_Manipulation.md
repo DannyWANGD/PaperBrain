@@ -149,6 +149,52 @@ O --> P
 *Analysis performed by PaperBrain-Doubao (Vision-Enabled)*
 
 
+## 🧩 Claim Cards
+
+### Claim-01
+- Claim: The Semantic-Contact Fields (SCF) framework, which combines simulation pre-training with real-world alignment for tactile contact field estimation, achieves superior category-level generalization of contact force localization across unseen tool geometries compared to instance-specific and vision-only baselines.
+- Evidence: In contact field evaluation experiments, SCF outperforms Neural Contact Fields (NCF), the Sim-Only variant, the Real-Only variant, the No-Tactile ablation, and the 2D CNN Tactile Encoder ablation on held-out unseen tool sets across all 3 task categories. The hybrid sim-to-real alignment strategy is specifically validated by the Sim-Only and Real-Only ablations, both of which show degraded performance, confirming that neither simulation pre-training nor real data alone is sufficient.
+- Boundary/Failure: Generalization breaks down for entirely unseen tool categories (e.g., screwdrivers, knives) not represented during semantic encoder pre-training, as the backbone is trained on only 3 fixed tool categories and cannot extrapolate semantic features to out-of-distribution geometries.
+- Compared Against: Neural Contact Fields (NCF), No-Tactile ablation, 2D CNN Tactile Encoder ablation, BCE Loss ablation, Sim-Only, Real-Only
+- Confidence: 8
+- Links:
+  - same_problem:: [[SimToolReal]]
+  - improves_over:: [[SimToolReal]]
+  - conflicts_with:: 待定
+
+### Claim-02
+- Claim: Integrating Semantic-Contact Fields into a diffusion-based manipulation policy yields higher task success rates on contact-rich tool manipulation tasks than vision-only generalizable policies and raw end-to-end tactile policies, demonstrating that explicit contact field representations are necessary for precise force-regulated manipulation.
+- Evidence: In policy evaluation experiments across all 3 manipulation tasks on held-out unseen tools, the SCF-augmented policy outperforms the Vision-Only baseline (GenDP), the Raw Tactile end-to-end policy, and ablations using Sim-Only Contact Field, Real-Only Contact Field, and No Explicit Force conditions. The No Explicit Force ablation specifically isolates the contribution of the contact field representation to policy performance.
+- Boundary/Failure: The policy pipeline runs at approximately 5Hz due to PointNet++ encoding and iterative diffusion inference, making it unsuitable for high-frequency dynamic tasks (e.g., cutting, dynamic insertion) that require 30Hz+ control loops, where the claim of superior performance would not hold.
+- Compared Against: Vision-Only (GenDP), Raw Tactile end-to-end policy, Sim-Only Contact Field ablation, Real-Only Contact Field ablation, No Explicit Force ablation
+- Confidence: 8
+- Links:
+  - same_problem:: [[GeneralVLA]]
+  - improves_over:: [[GeneralVLA]]
+  - conflicts_with:: 待定
+
+### Claim-03
+- Claim: Pure zero-shot sim-to-real transfer of tactile contact models is insufficient for reliable contact-rich manipulation due to unmodeled nonlinear deformation dynamics of soft tactile sensors, and a real-world alignment stage is required to bridge the sim-to-real gap.
+- Evidence: The Sim-Only ablation (no real alignment) consistently underperforms the full SCF model in both contact field estimation accuracy and downstream policy success across all 3 tasks on unseen tools, directly demonstrating that simulation pre-training alone cannot capture the nonlinear sensor dynamics present in real hardware. The Real-Only ablation also underperforms the full model, confirming that simulation pre-training provides essential coverage that real data alone cannot supply.
+- Boundary/Failure: This claim is specific to soft tactile sensors with significant nonlinear deformation dynamics. For rigid or well-characterized tactile sensors with accurate simulation models, zero-shot sim-to-real transfer may be viable, and the alignment stage may provide diminishing returns.
+- Compared Against: Sim-Only variant (no real alignment), Real-Only variant (no simulation pre-training)
+- Confidence: 8
+- Links:
+  - same_problem:: [[SimToolReal]]
+  - improves_over:: [[SimToolReal]]
+  - conflicts_with:: [[World_Action_Models_are_Zero_shot_Policies]]
+
+### Claim-04
+- Claim: Semantic-Contact Fields represent a broader paradigm shift suggesting that physically grounded contact representations, rather than purely visual descriptors, are necessary for scalable category-level generalization in contact-rich robot manipulation, pointing toward physics-informed world models as a foundation for dexterous manipulation policies.
+- Evidence: The consistent failure of vision-only baselines (GenDP, D3Field-style approaches) on contact-rich tasks requiring precise force regulation, combined with the success of SCF across diverse unseen tool geometries and environmental variations (different table heights, tool geometries), supports the claim that visual features alone are insufficient and that contact-physics grounding is a necessary inductive bias for this class of tasks.
+- Boundary/Failure: The broader implication is bounded by the current category scalability limitation: the framework requires retraining the semantic encoder for new tool categories, meaning the paradigm does not yet scale to open-vocabulary tool manipulation without significant additional data collection and training effort.
+- Compared Against: Vision-centric generalizable policies (GenDP, D3Field), instance-specific tactile policies
+- Confidence: 7
+- Links:
+  - same_problem:: [[VisPhyWorld]]
+  - improves_over:: [[GeneralVLA]]
+  - conflicts_with:: [[Physics Informed Viscous Value Representations]]
+
 ## 📂 Resources
 - **Local PDF**: [[SemanticContact Fields for CategoryLevel Generalizable Tactile Tool Manipulation.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2602.13833v1)

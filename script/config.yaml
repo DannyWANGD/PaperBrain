@@ -8,18 +8,26 @@ doubao:
 
 openrouter:
   api_key: "${OPENROUTER_API_KEY}"
-  # For screening (fast/cheap): Google Gemini 3.1 Flash Lite Preview
-  model_flash: "google/gemini-3.1-flash-lite-preview"
-  # For deep analysis (powerful): Anthropic Claude 4.6 Sonnet (Hypothetical SOTA from user context)
-  # Assuming OpenRouter slug convention. If 4.6 isn't real yet, this placeholder is for the user's simulation.
-  model_pro: "anthropic/claude-sonnet-4.6"
+  model_flash: "qwen/qwen3.6-plus"
+  model_screening_pro: "qwen/qwen3.6-plus"
+  model_pro: "qwen/qwen3.6-plus"
+  threshold_score: 7
 
-output:
-  base_dir: "../output"
-  naming_format: "{title}_{type}_{timestamp}.md"
-  
+
+
 analysis:
   max_iterations: 2
+  max_papers_per_day: 2
+  screening_second_stage_top_k: 10
+  screening_second_stage_use_pdf_context: true
+  screening_second_stage_pdf_context_pages: 3
+  screening_second_stage_pdf_context_max_chars: 5000
+  screening_weights:
+    relevance: 0.30
+    novelty: 0.23
+    rigor: 0.22
+    evidence: 0.15
+    reproducibility: 0.10
   depth_level: "Deep"
   focus_areas:
     - "Academic Quality Assessment"
@@ -30,66 +38,14 @@ analysis:
     venue_weight: 0.3
     methodology_weight: 0.4
     innovation_weight: 0.3
-  prompts:
-    system_role: "You are a pragmatic Senior Principal Researcher at a top-tier AI lab. You value clarity over complexity and substance over style. Your goal is to help a colleague understand the paper quickly and deeply. Avoid promotional language like 'revolutionary' or 'game-changing'. Use a neutral, objective, and rigorous academic tone."
-    quality_assessment: |
-      Evaluate the academic quality based on:
-      1. **Venue/Author Credibility**: Is it from a top conference (CVPR, ICRA, RSS, NeurIPS) or reputable lab?
-      2. **Methodological Rigor**: Are claims supported by mathematical proofs or extensive ablation studies?
-      3. **Experimental Completeness**: Are baselines SOTA? Is there Sim2Real validation?
-      
-      **Scoring Criteria (1-10)**:
-      - **9-10**: Top-tier innovation, rigorous math, SOTA results, reputable source.
-      - **7-8**: Strong contribution, solid experiments, but minor gaps.
-      - **5-6**: Incremental improvement, valid but limited novelty.
-      - **<5**: Flawed methodology or lack of validation.
-    deep_analysis: |
-      Please perform a deep engineering-centric analysis of the provided paper and output a high-quality report following the structure below. 
-      **Output Language**: STRICTLY ENGLISH ONLY. No Chinese allowed.
-      **Output Style**: Academic, rigorous, and concise. Avoid fragmented sentences. Each paragraph must be logically complete.
-
-      0. **Metadata Extraction** (CRITICAL: Output this as a JSON block at the very beginning)
-      ```json
-      {
-        "publication_date": "YYYY-MM-DD or 'Unknown'",
-        "institutions": ["Institution 1", "Institution 2"],
-        "github": "URL or 'None'",
-        "project_page": "URL or 'None'"
-      }
-      ```
-
-      1. **Core Snapshot**
-      - **Problem Statement**: What is the specific industry/research pain point (Gap) addressed?
-      - **Core Contribution**: A single-sentence summary of the most significant technical breakthrough.
-      - **Academic Rating**: Rate Innovation and Rigor (1-10) with a concise justification.
-
-      2. **Technical Decomposition** (CRITICAL SECTION: Be detailed and systematic)
-      - **Algorithmic Logic**: 
-          - Provide a step-by-step walkthrough of the method's flow (e.g., Step 1: Input processing... Step 2: Latent diffusion...).
-          - Explain the *intuition* behind why this specific flow was chosen over alternatives.
-      - **Mathematical Formulation**: 
-          - Identify the core objective functions or loss functions (e.g., $\mathcal{L}_{total} = \lambda_1 \mathcal{L}_{rec} + \lambda_2 \mathcal{L}_{adv}$).
-          - **Variable Definition**: For every formula, explicitly define each variable (e.g., where $x_t$ is the noisy latent at step $t$).
-          - **Physical Meaning**: Briefly explain what minimizing/maximizing this term achieves physically or logically.
-      - **Tensor Flow & Architecture**: 
-          - Describe the data shapes at key stages (e.g., Input: $[B, 3, H, W] \rightarrow$ Encoder $\rightarrow$ Latent: $[B, C, h, w]$).
-          - Highlight specific architectural choices (e.g., "Uses FiLM conditioning layers instead of cross-attention").
-      - **Innovation Logic**: 
-          - How does this approach differ mathematically or structurally from prior baselines? (e.g., "Unlike Method A which uses L2 loss, this uses perceptual loss...")
-
-      3. **Evidence & Metrics**
-      - **Benchmark & Baselines**: Which mainstream models are compared? Is the experimental design fair?
-      - **Key Results**: Improvement magnitude in key performance metrics (e.g., % Improvement).
-      - **Ablation Study**: Which component is most critical to the success?
-
-      4. **Critical Assessment**
-      - **Hidden Limitations**: Potential failure points in inference latency, scalability, or edge cases.
-      - **Engineering Hurdles**: Major pitfalls developers might face during reproduction.
+  # Prompts have been moved to script/prompts.yaml
+  # analysis.prompts is kept as an empty placeholder for backward compatibility
 
 obsidian:
   vault_path: "../"  # Path to your Obsidian Vault root (Parent Directory)
   daily_digest_folder: "Daily_Papers"
   detailed_notes_folder: "Research_Notes"
+  themes_folder: "Research_Themes"
   pdf_storage_folder: "PDFs"  # New folder for storing PDFs
   daily_digest_template: |
     # 📅 {{date}} - Paper Digest
@@ -99,10 +55,12 @@ obsidian:
     ## 📝 Papers List
     {{content}}
 
-notification:
+theme_enrichment:
   enabled: true
-  bark_url: "${BARK_URL}" # Replace with your Bark URL
-  bark_sound: "minuet" # Optional sound
+  openrouter_model: "qwen/qwen3.6-plus"
+  doubao_model: "ep-20260226105946-sgmhx"
+  temperature: 0.2
+  max_tokens: 4000
 
 search:
   keywords:
@@ -112,7 +70,6 @@ search:
     - "Reinforcement Learning"
     - "Diffusion model"
     - "Embodied AI"
-    - "Sim2Real"
     - "Foundation Models"
     - "LLM"
   max_results: 50

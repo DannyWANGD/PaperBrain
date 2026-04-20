@@ -160,6 +160,52 @@ graph LR
 *Analysis performed by PaperBrain-Doubao (Vision-Enabled)*
 
 
+## 🧩 Claim Cards
+
+### Claim-01
+- Claim: Replacing the first-order Eikonal PDE regularizer with a second-order viscous Hamilton-Jacobi-Bellman (HJB) constraint yields well-posed, numerically stable value estimates in offline goal-conditioned RL across contact-rich manipulation and high-DoF navigation tasks.
+- Evidence: On 13 OGBench tasks, the proposed Physics Informed Viscous Value Representations method outperforms Eik-HIQL and DUAL+EIK baselines, which rely on first-order Eikonal regularization and exhibit instability in contact-rich and high-dimensional settings. The viscous formulation introduces a diffusion term that regularizes the PDE, resolving the ill-posedness identified in prior first-order approaches.
+- Boundary/Failure: The viscous constraint still fails to capture global long-range dependencies in extremely long-horizon tasks such as `antsoccer-arena` and `humanoid-large`, where random walk sampling used to enforce the local geometric constraint is insufficient.
+- Compared Against: Eik-HIQL and DUAL+EIK (prior physics-informed value regularization methods using first-order Eikonal PDEs)
+- Confidence: 8
+- Links:
+  - same_problem:: [[2026-02-26-PaperDigest]]
+  - improves_over:: [[2026-02-26-PaperDigest]]
+  - conflicts_with:: 待定
+
+### Claim-02
+- Claim: Physics Informed Viscous Value Representations achieves superior or competitive task success rates compared to all representation learning and physics-informed baselines on the OGBench benchmark, with consistent improvements across navigation and manipulation task families.
+- Evidence: Evaluated on 13 OGBench tasks spanning pointmaze, antmaze, humanoid maze, antsoccer, cube stacking, scene play, and combinatorial puzzles, the method outperforms ORIG, VIB, VIP, TRA, BYOL, Dual-Goal, Eik-HIQL, and DUAL+EIK under identical training protocols, dataset sizes, compute budgets, and 4 independent random seeds per method.
+- Boundary/Failure: On pixel-based stochastic domains such as Powderworld, gains are marginal (approximately 3 percentage points), as random walk sampling does not respect non-Euclidean structure in learned latent spaces, leading to constraint violations.
+- Compared Against: ORIG, VIB, VIP, TRA, BYOL, Dual-Goal, Eik-HIQL, DUAL+EIK on OGBench
+- Confidence: 8
+- Links:
+  - same_problem:: [[2026-02-26-PaperDigest]]
+  - improves_over:: [[2026-02-26-PaperDigest]]
+  - conflicts_with:: 待定
+
+### Claim-03
+- Claim: The inference cost of the proposed method scales linearly with the number of Monte Carlo samples K used to estimate the viscous HJB expectation, introducing a deployment bottleneck for low-latency robotic applications when value estimates are not precomputed offline.
+- Evidence: The paper explicitly identifies that inference latency grows linearly with K, and notes that this cost can be mitigated by precomputing expectation estimates offline. No runtime benchmarks with specific millisecond figures are reported, but the linear scaling relationship is stated as a known limitation.
+- Boundary/Failure: The limitation is most severe in online, low-latency deployment scenarios; it does not affect offline evaluation settings where all value estimates are precomputed before policy execution.
+- Compared Against: Standard single-forward-pass value function inference (implicit baseline with K=1 or no Monte Carlo sampling)
+- Confidence: 7
+- Links:
+  - same_problem:: 待定
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-04
+- Claim: Incorporating second-order viscous PDE structure as an inductive bias into offline GCRL value learning represents a principled bridge between numerical PDE theory and deep RL, suggesting that higher-order physics-informed constraints are a broadly applicable design principle for stabilizing value iteration in sparse-reward settings.
+- Evidence: The paper demonstrates that the viscous HJB formulation resolves the ill-posedness of first-order Eikonal-based methods across 13 diverse OGBench tasks, including both low-dimensional navigation and high-dimensional robotic manipulation, supporting the generality of the second-order inductive bias beyond any single task family.
+- Boundary/Failure: The principle breaks down in domains with non-Euclidean or highly stochastic latent geometry (e.g., Powderworld pixel-based tasks), where the Euclidean random walk sampling underlying the viscous constraint is misspecified, limiting transferability of the approach to arbitrary representation spaces.
+- Compared Against: First-order PDE-based methods (Eik-HIQL, DUAL+EIK) and representation learning methods without physics-informed structure (VIB, VIP, TRA, BYOL)
+- Confidence: 7
+- Links:
+  - same_problem:: [[2026-02-26-PaperDigest]]
+  - improves_over:: [[2026-02-26-PaperDigest]]
+  - conflicts_with:: [[Solaris]]
+
 ## 📂 Resources
 - **Local PDF**: [[Physics Informed Viscous Value Representations.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2602.23280v1)

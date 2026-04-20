@@ -170,6 +170,52 @@ graph LR
 *Analysis performed by PaperBrain-Doubao (Vision-Enabled)*
 
 
+## 🧩 Claim Cards
+
+### Claim-01
+- Claim: MoRL's Chain-of-Motion (CoM) decoding with reinforcement learning-based reasoning enables a unified model to achieve strong performance on both motion understanding (text captioning) and motion generation tasks simultaneously, without sacrificing one direction for the other.
+- Evidence: On HumanML3D, MoRL achieves competitive R-Precision (Top-3) and FID scores against LLM-based unified baselines (MotionGPT, MotionLLM, LaMP) while also improving motion captioning metrics (BLEU, ROUGE, CIDEr) over the same baselines. The model uses 8 candidate samples with 2 refinement iterations under CoM decoding to balance semantic alignment and physical plausibility across both task directions.
+- Boundary/Failure: The unified performance advantage degrades for fine-grained short motion sequences where diffusion-only generation models (e.g., ReMoGPT, MoRAG-Diffuse) produce lower FID, indicating MoRL trades realism for cross-task consistency.
+- Compared Against: MotionGPT, MotionLLM, LaMP (unified multimodal motion models); ReMoGPT, MoRAG-Diffuse (diffusion-based generation specialists)
+- Confidence: 7
+- Links:
+  - same_problem:: [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-02
+- Claim: MoRL outperforms all LLM-based motion models on both HumanML3D and KIT-ML benchmarks across standard motion generation metrics (R-Precision, FID, Multimodal Distance) and motion captioning metrics (BLEU-4, CIDEr), establishing a new state-of-the-art among unified motion-language frameworks.
+- Evidence: Evaluations on HumanML3D (14.6K clips, 44.9K annotations) and KIT-ML (3.9K clips, 6.3K annotations) with standardized SMPL feature inputs and consistent train/val/test splits (0.8/0.15/0.05) show MoRL surpassing MotionGPT, Motion Agent, MoGenTS, MotionLLM, and LaMP on the reported metrics. Ablations confirm that both the reinforcement learning reward signal and CoM multi-step reasoning contribute independently to these gains.
+- Boundary/Failure: MoRL does not surpass specialized diffusion-only models (ReMoGPT, MoRAG-Diffuse) on FID for short motion sequences, meaning the empirical superiority claim is bounded to the LLM-based and unified model categories.
+- Compared Against: MotionGPT, Motion Agent, MoGenTS, MotionLLM, LaMP, Seq2Seq(Att)
+- Confidence: 8
+- Links:
+  - same_problem:: 待定
+  - improves_over:: [[GeneralVLA]]
+  - conflicts_with:: 待定
+
+### Claim-03
+- Claim: MoRL's Chain-of-Motion (CoM) decoding introduces approximately 3x inference latency compared to single-pass decoding due to sampling 8 candidates and performing 2 refinement iterations, making it unsuitable for real-time motion applications such as robotics control or AR avatar interaction.
+- Evidence: The latency overhead is directly attributed to the CoM pipeline: 8 candidate samples are generated and scored per query, followed by 2 iterative refinement passes. This multi-step process is structurally incompatible with the sub-100ms response budgets required by real-time robotic or interactive avatar systems, as acknowledged in the paper's limitation analysis.
+- Boundary/Failure: The latency limitation is most severe in online, closed-loop control settings; for offline batch motion synthesis or dataset augmentation tasks, the 3x overhead is acceptable and does not undermine the method's utility.
+- Compared Against: Single-pass autoregressive decoding baselines (e.g., standard MotionGPT inference)
+- Confidence: 7
+- Links:
+  - same_problem:: [[World_Action_Models_are_Zero_shot_Policies]]
+  - improves_over:: 待定
+  - conflicts_with:: [[GeneralVLA]]
+
+### Claim-04
+- Claim: Incorporating stepwise reinforcement learning-based reasoning into motion-language models is a viable path toward achieving the cross-modal consistency and logical coherence required for general motion understanding, suggesting that RL-guided reasoning is a broadly applicable principle beyond language-only domains.
+- Evidence: MoRL demonstrates that reward signals targeting semantic alignment, logical coherence, physical plausibility, and cross-modal consistency can be jointly optimized within a single RL training loop on standard SMPL-based motion benchmarks (HumanML3D, KIT-ML), yielding measurable improvements over non-reasoning LLM baselines across all four consistency dimensions.
+- Boundary/Failure: The generalization of this RL reasoning approach is currently limited to single-person human SMPL motion; it has not been validated for multi-agent motion, non-human motion, or scene-constrained motion, leaving open whether the principle transfers to broader embodied AI settings.
+- Compared Against: Non-reasoning LLM-based motion models (MotionGPT, MotionLLM); diffusion models without explicit reasoning (ReMoGPT)
+- Confidence: 6
+- Links:
+  - same_problem:: [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]
+  - improves_over:: [[QuantVLA]]
+  - conflicts_with:: [[Physics Informed Viscous Value Representations]]
+
 ## 📂 Resources
 - **Local PDF**: [[MoRL Reinforced Reasoning for Unified Motion Understanding and Generation.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2602.14534.pdf)

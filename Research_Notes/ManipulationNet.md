@@ -380,6 +380,52 @@ graph LR
 *Analysis performed by PaperBrain-OpenRouter (anthropic/claude-4.6-sonnet) (Vision-Enabled)*
 
 
+## 🧩 Claim Cards
+
+### Claim-01
+- Claim: ManipulationNet's client-server architecture (mnet-client / mnet-server) is the first benchmark infrastructure for robot manipulation that simultaneously achieves realism (physical execution), authenticity (verifiable protocol compliance), and accessibility (asynchronous, geographically distributed participation), resolving the "impossible trinity" that afflicts all prior benchmarking approaches.
+- Evidence: The paper's Figure 1 "impossible trinity" diagram explicitly categorizes all prior approaches—standardized object sets, real-world competitions, and simulation benchmarks—as satisfying at most two of the three properties. The mnet-client/mnet-server design is presented as the architectural solution that enforces protocol adherence remotely while allowing any lab to participate without temporal or geographic constraints.
+- Boundary/Failure: The claim holds only for the infrastructure design intent; if participating labs can tamper with the mnet-client software stack or substitute non-standard objects outside camera view, authenticity guarantees break down. The paper does not detail cryptographic or hardware-level tamper-proofing mechanisms.
+- Compared Against: Standardized object sets (e.g., YCB object set with published protocols), centralized real-world competitions (e.g., IROS/ICRA manipulation challenges), and simulation benchmarks (e.g., RLBench, ManiSkill).
+- Confidence: 7
+- Links:
+  - same_problem:: [[Learning_Situated_Awareness_in_the_Real_World]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-02
+- Claim: ManipulationNet's two-track structure—a Physical Skills Track targeting low-level sensorimotor competencies and an Embodied Reasoning Track targeting multimodal language-conditioned task interpretation—provides broader coverage of manipulation competencies than any single prior benchmark.
+- Evidence: The paper defines the Physical Skills Track as covering grasping, insertion, and manipulation under physical constraints, while the Embodied Reasoning Track covers multimodal grounding and language-conditioned task interpretation. Prior benchmarks are described as addressing either physical dexterity or semantic reasoning but not both within a unified, physically executed evaluation protocol.
+- Boundary/Failure: Specific task definitions, success metrics, and comparative results across participating systems are not presented in the available pages (through page 8), so the empirical breadth advantage remains an architectural claim rather than a demonstrated experimental result at this stage.
+- Compared Against: Single-modality benchmarks such as RLBench (simulation, skill-focused) and language-conditioned simulation environments that lack physical contact-dynamics fidelity.
+- Confidence: 5
+- Links:
+  - same_problem:: [[Learning_Situated_Awareness_in_the_Real_World]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-03
+- Claim: ManipulationNet does not eliminate the sim-to-real gap but instead transfers the comparability problem: because robot embodiment (end-effector type, sensor suite, degrees of freedom) is not standardized across participants, identical task protocols may systematically favor certain robot morphologies, introducing a confound that undermines cross-system result comparability.
+- Evidence: The paper's infrastructure standardizes object sets and task protocols via the mnet-client/mnet-server system but explicitly does not mandate robot hardware. The critical assessment notes that parallel-jaw grippers versus dexterous hands face structurally different difficulty levels on the same physical task, and no morphology-normalization or handicapping mechanism is described in the available pages.
+- Boundary/Failure: This limitation is less severe for tasks where success is binary and morphology-agnostic (e.g., binary grasp success on large objects), but becomes critical for fine-manipulation tasks (e.g., peg-in-hole insertion) where gripper geometry directly determines feasibility.
+- Compared Against: Simulation benchmarks (e.g., ManiSkill, IsaacGym environments) where robot embodiment can be held constant across all evaluated policies.
+- Confidence: 8
+- Links:
+  - same_problem:: 待定
+  - improves_over:: 待定
+  - conflicts_with:: [[Learning_Situated_Awareness_in_the_Real_World]]
+
+### Claim-04
+- Claim: The fragmentation of manipulation research progress—where results across groups are largely incomparable even for ostensibly identical tasks—is primarily caused by the absence of a shared physical benchmark with verified protocols, not by algorithmic diversity alone, implying that infrastructure investment yields higher community-wide returns than incremental algorithmic advances in isolation.
+- Evidence: The paper's problem statement explicitly attributes incomparability to the lack of a unified benchmark satisfying realism, authenticity, and accessibility simultaneously, and motivates ManipulationNet as an infrastructure contribution rather than an algorithmic one. The literature review surveys a wide range of prior benchmarks and competitions to demonstrate that no existing effort has closed this gap.
+- Boundary/Failure: This implication assumes that once a shared benchmark exists, labs will adopt it broadly; if adoption remains low due to hardware cost, object procurement difficulty, or protocol complexity, the infrastructure investment does not translate into improved comparability in practice.
+- Compared Against: The implicit counterfactual of continued algorithm-centric publication without standardized evaluation, as evidenced by the current state of the field described in the paper's introduction and related work.
+- Confidence: 6
+- Links:
+  - same_problem:: [[Learning_Situated_Awareness_in_the_Real_World]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
 ## 📂 Resources
 - **Local PDF**: [[ManipulationNet An Infrastructure for Benchmarking RealWorld Robot Manipulation with Physical Skill .pdf]]
 - [Online PDF](https://arxiv.org/pdf/2603.04363v1)

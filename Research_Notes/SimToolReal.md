@@ -161,6 +161,52 @@ graph LR
 *Analysis performed by PaperBrain-Doubao (Vision-Enabled)*
 
 
+## 🧩 Claim Cards
+
+### Claim-01
+- Claim: SimToolReal's object-centric policy, trained purely in simulation with procedurally generated tool variants, achieves zero-shot transfer to 24 real-world dexterous tool-use tasks across 6 tool categories without any real-world fine-tuning.
+- Evidence: Evaluated on DexToolBench, SimToolReal successfully executes the full skill sequence (stable grasping, in-hand reorientation, forceful contact interaction) across all 6 tool categories (hammer, marker, eraser, brush, spatula, screwdriver) with no task-specific fine-tuning, outperforming all baselines including Kinematic Retargeting and Fixed Grasp on the same hardware setup.
+- Boundary/Failure: Zero-shot transfer breaks down for deformable tools (e.g., sponges) or articulated tools (e.g., pliers), as the object-centric representation assumes rigid, handle-headed tool geometry and cannot accommodate these morphologies without architectural modification.
+- Compared Against: Kinematic Retargeting (state-of-the-art human motion retargeting pipeline) and Fixed Grasp (arm-only manipulation without in-hand reorientation).
+- Confidence: 7
+- Links:
+  - same_problem:: [[GeneralVLA]]
+  - improves_over:: [[World_Action_Models_are_Zero_shot_Policies]]
+  - conflicts_with:: 待定
+
+### Claim-02
+- Claim: SimToolReal outperforms specialist RL policies trained per object and task on DexToolBench, demonstrating that a single generalizable object-centric policy can match or exceed task-specific reward-engineered baselines across diverse tool categories.
+- Evidence: Specialist RL policies, despite being trained with per-task reward engineering and object-specific simulation modeling, are evaluated on the same 24 tasks in DexToolBench; SimToolReal achieves superior or comparable task progress without any per-task reward design, validating the generalization advantage of the object-centric formulation.
+- Boundary/Failure: The performance advantage over Specialist RL is expected to narrow or reverse for tasks requiring highly dynamic interactions (e.g., fast hammering), where SimToolReal's reliance on 30Hz FoundationPose tracking introduces latency that degrades closed-loop control quality.
+- Compared Against: Specialist RL policies trained per object and per task with custom reward functions and object-specific simulation models.
+- Confidence: 7
+- Links:
+  - same_problem:: [[Physics Informed Viscous Value Representations]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-03
+- Claim: SimToolReal's dependence on 30Hz 6D pose tracking via FoundationPose introduces a critical failure mode: task success drops to near zero when the tool is occluded for more than 500ms, and performance degrades by 15-20% for tools that are extremely thin (<1cm) or heavy (>300g).
+- Evidence: The pipeline requires continuous 6D pose estimates at 30Hz; occlusion exceeding 500ms causes complete task failure due to loss of the object-centric state representation. Task progress metrics drop by 15-20% for edge-case tool geometries (thin or heavy tools) not well-covered by the procedural training distribution.
+- Boundary/Failure: This limitation is inherent to the perception backbone choice and is not mitigated by the policy itself; any real-world deployment scenario with frequent occlusion (e.g., cluttered environments, human co-presence) will systematically degrade performance regardless of policy quality.
+- Compared Against: Implicit comparison to ideal closed-loop control with perfect state estimation; no explicit baseline uses an alternative perception stack.
+- Confidence: 8
+- Links:
+  - same_problem:: 待定
+  - improves_over:: 待定
+  - conflicts_with:: [[GeneralVLA]]
+
+### Claim-04
+- Claim: The introduction of DexToolBench as a standardized benchmark with 24 real-world tasks, 6 tool categories, human demonstrations, and digital twin simulation environments establishes a reproducible evaluation protocol that exposes the failure modes of existing dexterous manipulation baselines, including kinematic retargeting and fixed-grasp methods, on the full tool-use skill sequence.
+- Evidence: DexToolBench reveals that Kinematic Retargeting and Fixed Grasp baselines cannot execute the complete skill chain (stable grasping + in-hand reorientation + forceful contact interaction) required for real-world tool use, as these methods either fail at reorientation or lack the compliance for forceful contact, a gap not measurable by prior benchmarks lacking this task diversity.
+- Boundary/Failure: DexToolBench's scope is restricted to rigid, handle-headed tools and tabletop manipulation contexts; it does not benchmark deformable, articulated, or bimanual tool-use scenarios, limiting its generalizability as a community-wide standard for dexterous manipulation research.
+- Compared Against: Prior dexterous manipulation benchmarks that do not include the full tool-use skill sequence or digital twin simulation counterparts for sim-to-real evaluation.
+- Confidence: 7
+- Links:
+  - same_problem:: [[Code2Worlds]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
 ## 📂 Resources
 - **Local PDF**: [[SimToolReal An ObjectCentric Policy for ZeroShot Dexterous Tool Manipulation.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2602.16863v2)

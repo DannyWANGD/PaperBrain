@@ -148,6 +148,52 @@ graph LR
 *Analysis performed by PaperBrain-Doubao (Vision-Enabled)*
 
 
+## 🧩 Claim Cards
+
+### Claim-01
+- Claim: Replacing screen-space positional embeddings with geometry-aware rotary position embeddings (GA-RoPE) derived from projective 3D geometry significantly reduces geometric drift in pose-conditioned video world models, particularly under loop-closure camera trajectories.
+- Evidence: GA-RoPE is evaluated on ViewBench against 3D RoPE (no-geometry baseline) and GTA (state-of-the-art SE(3) relative encoding), using the same backbone, training budget, and data with controlled RoPE channel allocation. The method demonstrates measurable improvements in geometric consistency across yaw/pitch/roll rotations and loop-closure trajectories where prior screen-space methods fail to maintain cross-view correspondence.
+- Boundary/Failure: The geometric consistency guarantee breaks down in dynamic scenes with moving objects, where cross-view geometric correspondence is temporally inconsistent, and in extreme scene transitions (e.g., disjoint rooms) where no valid geometric correspondence exists.
+- Compared Against: 3D RoPE (no-geometry baseline) and GTA (relative SE(3) encoding baseline), both evaluated under identical training and architectural conditions on ViewBench.
+- Confidence: 8
+- Links:
+  - same_problem:: [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]
+  - improves_over:: [[Generated_Reality]]
+  - conflicts_with:: 待定
+
+### Claim-02
+- Claim: GA-RoPE with geometry-guided sparse attention achieves competitive long-sequence geometric consistency compared to interactive world model baselines (Matrix-Game-2, HY-WorldPlay) and dense attention approaches, without incurring prohibitive computational costs.
+- Evidence: On ViewBench, GA-RoPE is benchmarked against Matrix-Game-2 and HY-WorldPlay (interactive world model baselines), sliding window sparse attention, and naive sparse attention without geometric guidance. The geometry-guided sparse attention variant avoids the quadratic cost of dense attention for long-sequence generation while outperforming naive sparse attention, demonstrating that geometric guidance is the critical factor rather than attention density alone.
+- Boundary/Failure: The computational advantage over dense attention diminishes for short sequences where the overhead of geometric correspondence computation is not amortized; performance also degrades when camera intrinsics and extrinsics are unavailable, as the method requires known pose information at inference time.
+- Compared Against: Sliding window sparse attention, naive sparse attention without geometric guidance, Matrix-Game-2, and HY-WorldPlay on ViewBench loop-closure trajectories.
+- Confidence: 7
+- Links:
+  - same_problem:: [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-03
+- Claim: The requirement for known camera intrinsics and extrinsics at inference time is a fundamental limitation of GA-RoPE that prevents deployment in unconstrained real-world scenarios without pose estimation preprocessing.
+- Evidence: The paper explicitly acknowledges that the current implementation assumes access to camera intrinsics and extrinsics, which are unavailable for user-captured video without pose tracking. This is identified as a known limitation in the critical assessment, and no ablation or workaround is provided for the pose-free inference setting.
+- Boundary/Failure: This limitation is absolute in the current formulation: without pose information, the geometric ray-based RoPE frequencies cannot be computed, causing the method to degrade to a standard (non-geometry-aware) positional embedding or fail entirely.
+- Compared Against: Implicit comparison to pose-free video generation models that operate on unconstrained video without requiring camera metadata.
+- Confidence: 9
+- Links:
+  - same_problem:: [[Generated_Reality]]
+  - improves_over:: 待定
+  - conflicts_with:: [[World_Action_Models_are_Zero_shot_Policies]]
+
+### Claim-04
+- Claim: Geometry-aware positional encoding in video world models is a necessary architectural component for achieving the geometric consistency dimension of general world model quality, suggesting that purely data-driven or screen-space approaches are insufficient for open-domain 3D-consistent generation.
+- Evidence: The paper motivates GA-RoPE by demonstrating that existing pose-conditioned models using screen-space embeddings exhibit severe geometric drift under loop-closure scenarios, a failure mode not addressed by scaling data or model size alone. ViewBench is purpose-built to expose this gap, supporting full 3-axis rotation and loop-closure evaluation that prior benchmarks (CaM, GF-MC) lack, confirming that the problem is systematic rather than incidental.
+- Boundary/Failure: The broader implication weakens for scene types dominated by dynamic content or for generation tasks where geometric consistency is not a primary quality criterion (e.g., abstract or stylized video synthesis without 3D grounding).
+- Compared Against: Prior world model benchmarks (CaM, GF-MC) and the implicit assumption in screen-space RoPE designs that 2D positional structure suffices for 3D-consistent generation.
+- Confidence: 7
+- Links:
+  - same_problem:: [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]
+  - improves_over:: [[Generated_Reality]]
+  - conflicts_with:: 待定
+
 ## 📂 Resources
 - **Local PDF**: [[GeometryAware Rotary Position Embedding for Consistent Video World Model.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2602.07854.pdf)

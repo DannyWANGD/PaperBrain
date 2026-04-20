@@ -160,6 +160,52 @@ graph LR
 *Analysis performed by PaperBrain-Doubao (Vision-Enabled)*
 
 
+## 🧩 Claim Cards
+
+### Claim-01
+- Claim: Existing spatial reasoning benchmarks for multimodal foundation models systematically omit observer-centric situated awareness tasks (egocentric pose, motion, and relative position inference), creating a measurable evaluation gap for embodied AI systems.
+- Evidence: The paper identifies that all prior benchmarks prioritize allocentric, object-object relational reasoning from third-person or synthetic perspectives, and constructs a new benchmark covering egocentric situated awareness evaluated across 8 proprietary and 16 open-source MFMs in a zero-shot setting to fill this gap.
+- Boundary/Failure: The claim applies specifically to benchmarks targeting MFMs; specialized robotics localization benchmarks (e.g., SLAM evaluation suites) may already address some egocentric pose estimation tasks outside the MFM evaluation paradigm.
+- Compared Against: Prior allocentric spatial reasoning benchmarks that use object-object relation tasks and third-person or synthetic scene inputs.
+- Confidence: 8
+- Links:
+  - same_problem:: [[SPARR]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-02
+- Claim: State-of-the-art multimodal foundation models, including top proprietary systems such as GPT-5.2 and Gemini 2.5 Pro, perform substantially below human-level on situated awareness tasks, with performance on several task categories approaching or falling near chance-level baselines.
+- Evidence: The benchmark evaluates 24 total models (8 proprietary, 16 open-source) zero-shot; five reference baselines are included (uniform random, most-frequent-answer, blind GPT-5.2, Socratic GPT-5.2, and human annotators). Model scores are compared against human performance from graduate annotators with full video access, and against blind/Socratic GPT-5.2 baselines, revealing that even top models fail to substantially exceed these weak baselines on egocentric spatial tasks.
+- Boundary/Failure: Performance gaps may narrow on situated awareness tasks that overlap with training distribution of large-scale video-language pretraining data; models fine-tuned specifically on egocentric video datasets are not evaluated and may perform differently.
+- Compared Against: Human performance (graduate annotators), uniform random chance, most-frequent-answer chance, blind GPT-5.2, and Socratic GPT-5.2 baselines.
+- Confidence: 8
+- Links:
+  - same_problem:: [[SPARR]]
+  - improves_over:: 待定
+  - conflicts_with:: [[GeneralVLA]]
+
+### Claim-03
+- Claim: Current MFM inference latency (12–30 seconds per video query) is orders of magnitude too slow for real-time embodied applications, meaning benchmark-level situated awareness capability cannot directly transfer to deployed robotics or AR/VR systems even if accuracy improves.
+- Evidence: Measured inference latency for SOTA models on benchmark video queries ranges from 12 to 30 seconds, compared to the <100 ms latency requirement for real-time embodied applications, representing a gap of 2–3 orders of magnitude.
+- Boundary/Failure: This latency limitation applies to cloud-hosted API-based MFMs; edge-optimized or distilled model variants running on dedicated hardware may achieve lower latency, though at likely accuracy cost. The claim also does not apply to offline post-hoc analysis tasks where real-time response is not required.
+- Compared Against: The <100 ms real-time latency threshold required for embodied robotic and AR/VR applications.
+- Confidence: 9
+- Links:
+  - same_problem:: [[GeneralVLA]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-04
+- Claim: Situated awareness — the capacity to infer egocentric pose, motion, and environmental position from first-person sensory input — represents a foundational capability gap that must be closed before multimodal foundation models can serve as general-purpose spatial reasoning engines for real-world embodied systems such as robots and wearable assistants.
+- Evidence: The benchmark is constructed from real-world egocentric video captured in controlled static scenes and evaluated via multiple-choice QA across 24 MFMs; results show that even the strongest models (GPT-5.2, Gemini 2.5 Pro) fail to reliably solve situated awareness tasks, while human annotators succeed, demonstrating that this capability is learnable but absent in current MFMs. The benchmark explicitly targets the embodied AI use-case motivation.
+- Boundary/Failure: The benchmark uses only controlled static scenes without dynamic moving objects (pedestrians, vehicles), so the generalization of this implication to unconstrained real-world egocentric footage with dynamic distractors remains unverified. Additionally, the discrete multiple-choice QA format does not directly test continuous action planning or closed-loop state estimation required in deployed embodied systems.
+- Compared Against: Allocentric MFM benchmarks and prior embodied spatial reasoning evaluations; human performance as an upper bound.
+- Confidence: 7
+- Links:
+  - same_problem:: [[GeneralVLA]]
+  - improves_over:: [[SPARR]]
+  - conflicts_with:: [[Code2Worlds]]
+
 ## 📂 Resources
 - **Local PDF**: [[Learning Situated Awareness in the Real World.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2602.16682.pdf)

@@ -1,0 +1,295 @@
+# PaperBrain Theme Definitions
+# Edit this file to add, remove, or modify research themes.
+# theme_manager.py loads this file at startup; falls back to hardcoded defaults if missing.
+
+themes:
+  - id: Theme_Embodied_AI_System
+    title: "Embodied AI Systems"
+    parent: Root
+    keywords:
+      - embodied
+      - embodied AI
+      - embodied agent
+      - physical agent
+      - robot
+      - embodied learning
+    tags:
+      - Embodied_AI
+      - Robot_Learning
+    description: "Systems that learn and act in physical environments through sensorimotor interaction."
+
+  - id: Theme_Robot_Manipulation_General
+    title: "Robot Manipulation"
+    parent: Theme_Embodied_AI_System
+    keywords:
+      - manipulation
+      - grasping
+      - pick and place
+      - robotic arm
+      - end-effector
+      - gripper
+    tags:
+      - Robot_Manipulation
+      - Grasping
+    description: "Techniques for controlling robotic arms and grippers to manipulate objects."
+
+  - id: Theme_Dexterous_Contact
+    title: "Dexterous Manipulation & Contact Dynamics"
+    parent: Theme_Robot_Manipulation_General
+    keywords:
+      - dexterous
+      - contact
+      - tactile
+      - force control
+      - in-hand manipulation
+      - contact dynamics
+    tags:
+      - Dexterous_Manipulation
+      - Tactile
+    description: "Advanced manipulation with fine-grained control and tactile feedback."
+
+  - id: Theme_VLA_Policy
+    title: "Vision-Language-Action Policies"
+    parent: Theme_Embodied_AI_System
+    keywords:
+      - VLA
+      - vision-language-action
+      - multimodal policy
+      - language-conditioned
+      - instruction following
+    tags:
+      - VLA
+      - Multimodal_Policy
+    description: "Policies that combine vision, language, and action for embodied AI."
+
+  - id: Theme_VLA_Reasoning
+    title: "VLA Reasoning & Planning"
+    parent: Theme_VLA_Policy
+    keywords:
+      - reasoning
+      - planning
+      - task decomposition
+      - hierarchical
+      - multi-step
+    tags:
+      - VLA
+      - Planning
+    description: "Reasoning and planning capabilities within VLA systems."
+
+  - id: Theme_World_Model_Dynamics
+    title: "World Models & Dynamics Prediction"
+    parent: Theme_Embodied_AI_System
+    keywords:
+      - world model
+      - dynamics
+      - forward model
+      - prediction
+      - environment model
+    tags:
+      - World_Model
+      - Dynamics
+    description: "Models that predict future states and dynamics of the environment."
+
+  - id: Theme_Video_World_Model
+    title: "Video World Models"
+    parent: Theme_World_Model_Dynamics
+    keywords:
+      - video
+      - video generation
+      - video prediction
+      - generative model
+    tags:
+      - World_Model
+      - Video_Generation
+    description: "World models that generate or predict video sequences."
+
+  - id: Theme_Model_Based_Planning
+    title: "Model-Based Planning & Control"
+    parent: Theme_World_Model_Dynamics
+    keywords:
+      - model-based
+      - planning
+      - control
+      - trajectory optimization
+      - MPC
+    tags:
+      - Model_Based_RL
+      - Planning
+    description: "Planning and control methods using learned or known environment models."
+
+  - id: Theme_RL_Algorithms
+    title: "Reinforcement Learning Algorithms"
+    parent: Theme_Embodied_AI_System
+    keywords:
+      - reinforcement learning
+      - RL
+      - policy gradient
+      - Q-learning
+      - actor-critic
+    tags:
+      - Reinforcement_Learning
+      - RL
+    description: "Core RL algorithms for learning control policies."
+
+  - id: Theme_Reward_Credit
+    title: "Reward Design & Credit Assignment"
+    parent: Theme_RL_Algorithms
+    keywords:
+      - reward
+      - credit assignment
+      - reward shaping
+      - intrinsic motivation
+    tags:
+      - Reinforcement_Learning
+      - Reward_Design
+    description: "Methods for designing rewards and assigning credit in RL."
+
+  - id: Theme_Diffusion_Policy
+    title: "Diffusion-Based Policies"
+    parent: Theme_Embodied_AI_System
+    keywords:
+      - diffusion
+      - diffusion model
+      - denoising
+      - generative policy
+    tags:
+      - Diffusion_Model
+      - Policy
+    description: "Policies based on diffusion models for action generation."
+
+  - id: Theme_Foundation_LLM
+    title: "Foundation LLMs & Language Models"
+    parent: Theme_Embodied_AI_System
+    keywords:
+      - LLM
+      - language model
+      - foundation model
+      - large language model
+      - GPT
+    tags:
+      - LLM
+      - Foundation_Model
+    description: "Large language models and their applications in embodied AI."
+
+  - id: Theme_Sim2Real
+    title: "Sim-to-Real Transfer"
+    parent: Theme_Embodied_AI_System
+    keywords:
+      - sim-to-real
+      - simulation
+      - domain randomization
+      - reality gap
+    tags:
+      - Sim2Real
+      - Domain_Adaptation
+    description: "Techniques for transferring policies from simulation to real robots."
+
+  - id: Theme_3D_Perception
+    title: "3D Perception & Scene Understanding"
+    parent: Theme_Embodied_AI_System
+    keywords:
+      - 3D
+      - perception
+      - scene understanding
+      - object detection
+      - point cloud
+    tags:
+      - 3D_Perception
+      - Scene_Understanding
+    description: "3D perception and understanding of scenes for embodied agents."
+
+  - id: Theme_Imitation_HRI
+    title: "Imitation Learning & Human-Robot Interaction"
+    parent: Theme_Embodied_AI_System
+    keywords:
+      - imitation
+      - learning from demonstration
+      - HRI
+      - human-robot
+      - behavioral cloning
+    tags:
+      - Imitation_Learning
+      - HRI
+    description: "Learning from human demonstrations and human-robot interaction."
+
+  - id: Theme_Multimodal_Perception
+    title: "Multimodal Perception"
+    parent: Theme_Embodied_AI_System
+    keywords:
+      - multimodal
+      - vision
+      - audio
+      - sensor fusion
+      - cross-modal
+    tags:
+      - Multimodal
+      - Sensor_Fusion
+    description: "Integration of multiple sensory modalities for perception."
+
+relations:
+  Theme_Embodied_AI_System:
+    - Theme_Robot_Manipulation_General
+    - Theme_Sim2Real
+    - Theme_VLA_Policy
+    - Theme_Foundation_LLM
+  Theme_Robot_Manipulation_General:
+    - Theme_Embodied_AI_System
+    - Theme_Dexterous_Contact
+    - Theme_Diffusion_Policy
+    - Theme_Sim2Real
+  Theme_Dexterous_Contact:
+    - Theme_Robot_Manipulation_General
+    - Theme_Sim2Real
+    - Theme_Imitation_HRI
+  Theme_VLA_Policy:
+    - Theme_VLA_Reasoning
+    - Theme_Foundation_LLM
+    - Theme_Diffusion_Policy
+    - Theme_World_Model_Dynamics
+  Theme_VLA_Reasoning:
+    - Theme_VLA_Policy
+    - Theme_Foundation_LLM
+    - Theme_Model_Based_Planning
+  Theme_World_Model_Dynamics:
+    - Theme_Video_World_Model
+    - Theme_Model_Based_Planning
+    - Theme_RL_Algorithms
+  Theme_Video_World_Model:
+    - Theme_World_Model_Dynamics
+    - Theme_Diffusion_Policy
+    - Theme_VLA_Policy
+  Theme_Model_Based_Planning:
+    - Theme_World_Model_Dynamics
+    - Theme_RL_Algorithms
+    - Theme_VLA_Reasoning
+  Theme_RL_Algorithms:
+    - Theme_Reward_Credit
+    - Theme_Model_Based_Planning
+    - Theme_Sim2Real
+  Theme_Reward_Credit:
+    - Theme_RL_Algorithms
+    - Theme_VLA_Policy
+  Theme_Diffusion_Policy:
+    - Theme_VLA_Policy
+    - Theme_Video_World_Model
+    - Theme_Robot_Manipulation_General
+  Theme_Foundation_LLM:
+    - Theme_VLA_Policy
+    - Theme_VLA_Reasoning
+    - Theme_Multimodal_Perception
+  Theme_Sim2Real:
+    - Theme_Embodied_AI_System
+    - Theme_RL_Algorithms
+    - Theme_Robot_Manipulation_General
+  Theme_3D_Perception:
+    - Theme_Embodied_AI_System
+    - Theme_World_Model_Dynamics
+    - Theme_Robot_Manipulation_General
+  Theme_Imitation_HRI:
+    - Theme_Robot_Manipulation_General
+    - Theme_Foundation_LLM
+    - Theme_Dexterous_Contact
+  Theme_Multimodal_Perception:
+    - Theme_Foundation_LLM
+    - Theme_VLA_Policy
+    - Theme_3D_Perception

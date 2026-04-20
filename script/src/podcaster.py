@@ -3,18 +3,21 @@ import asyncio
 import logging
 from openai import OpenAI
 import edge_tts
-import nest_asyncio
 
-# Apply nest_asyncio to allow running asyncio in Jupyter/scripts that might already have an event loop
-nest_asyncio.apply()
+try:
+    import nest_asyncio
+    nest_asyncio.apply()
+except Exception:
+    pass
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class Podcaster:
-    def __init__(self, config, provider='doubao'):
+    def __init__(self, config, provider='doubao', prompts=None):
         self.config = config
         self.provider = provider
+        self.prompts = prompts or {}
         # config['obsidian']['vault_path'] might be relative, so we need to resolve it
         base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) # Go up one level from src to script
         vault_path = os.path.abspath(os.path.join(base_dir, config['obsidian']['vault_path']))
@@ -39,30 +42,51 @@ class Podcaster:
             timeout=120.0  # Increased timeout for long script generation
         )
 
+    def _openrouter_model_candidates(self, primary_model: str):
+        if self.provider != 'openrouter':
+            return [primary_model]
+
+        cfg = self.config.get('openrouter', {})
+        fallbacks = cfg.get('model_pro_fallbacks', [])
+        if not isinstance(fallbacks, list):
+            fallbacks = []
+
+        defaults = [
+            "openai/gpt-4o-mini",
+            "google/gemini-2.0-flash-001",
+            "deepseek/deepseek-chat",
+        ]
+
+        candidates = []
+        for m in [primary_model, *fallbacks, *defaults]:
+            if m and m not in candidates:
+                candidates.append(m)
+        return candidates
+
     def generate_script(self, paper_title, analysis_content, rag_context="", duration_minutes=5):
-        """
-        Generates a podcast script based on the paper analysis and RAG context.
-        """
+        """Generates a podcast script based on the paper analysis and RAG context."""
         duration_minutes = max(1, int(duration_minutes))
         target_words_min = duration_minutes * 130
         target_words_max = duration_minutes * 170
-        prompt = f"""
+
+        system_prompt = self.prompts.get('podcast', {}).get('system', "You are an expert science communicator.")
+        user_template = self.prompts.get('podcast', {}).get('script_user', """
         You are a professional tech podcaster (like Lex Fridman or a specialized AI researcher host).
         Your task is to create a script for a **detailed "Deep Dive" audio segment** (target duration: ~{duration_minutes} minutes).
-        
+
         Topic: {paper_title}
-        
+
         Deep Analysis Report:
         {analysis_content}
-        
+
         Context from Knowledge Base (RAG):
         {rag_context}
-        
+
         **Tone & Style**:
         - **Natural & Conversational**: Use fillers occasionally ("you know", "right?"), rhetorical questions, and varied sentence structures. Avoid sounding robotic or like a news anchor.
         - **Enthusiastic but Critical**: Be genuinely excited about the innovation but maintain a healthy skepticism about limitations.
         - **Storytelling**: Frame the research as a narrative. What was the struggle before this? What is the hero (the new method)? What is the climax (the results)?
-        
+
         **Structure (Aim for ~{target_words_min}-{target_words_max} words for {duration_minutes} mins)**:
         1. **The Hook**: Start with a provocative question or a real-world scenario that this technology solves.
         2. **The "Status Quo"**: Explain why previous methods failed. Use analogies (e.g., "It's like trying to teach a cat calculus...").
@@ -70,28 +94,52 @@ class Podcaster:
         4. **The Connection (RAG)**: Weave in the related work naturally. "This is actually a fascinating pivot from what we saw in [Related Paper X]..."
         5. **The Critique**: Honest assessment of where it breaks.
         6. **The Outro**: A philosophical or forward-looking conclusion.
-        
+
         **Format**: Write ONLY the spoken text. Do not include [Sound Effect] or [Host] labels. Just the monologue script.
         **Language**: English only.
-        """
-        
+        """)
+        prompt = user_template.format(
+            duration_minutes=duration_minutes,
+            paper_title=paper_title,
+            analysis_content=analysis_content,
+            rag_context=rag_context,
+            target_words_min=target_words_min,
+            target_words_max=target_words_max,
+        )
+
         try:
             extra_params = {}
             if self.provider == 'openrouter':
                  extra_params['extra_headers'] = {
-                    "HTTP-Referer": "https://paperbrain.ai", 
+                    "HTTP-Referer": "https://paperbrain.ai",
                     "X-Title": "PaperBrain"
                  }
 
-            response = self.client.chat.completions.create(
-                model=self.model_pro,
-                messages=[
-                    {"role": "system", "content": "You are an expert science communicator."},
-                    {"role": "user", "content": prompt}
-                ],
-                **extra_params
-            )
-            return response.choices[0].message.content
+            models = self._openrouter_model_candidates(self.model_pro)
+            last_err = None
+            for model in models:
+                try:
+                    response = self.client.chat.completions.create(
+                        model=model,
+                        messages=[
+                            {"role": "system", "content": system_prompt},
+                            {"role": "user", "content": prompt}
+                        ],
+                        **extra_params
+                    )
+                    return response.choices[0].message.content
+                except Exception as e:
+                    msg = str(e)
+                    last_err = e
+                    if self.provider == 'openrouter' and (
+                        "not available in your region" in msg
+                        or "Error code: 403" in msg
+                        or "Error code: 404" in msg
+                    ):
+                        logger.warning(f"[WARN] OpenRouter model failed, trying fallback: {model} ({msg})")
+                        continue
+                    raise
+            raise last_err
         except Exception as e:
             logger.error(f"Error generating podcast script: {e}")
             return ""

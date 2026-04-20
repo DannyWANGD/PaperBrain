@@ -454,6 +454,52 @@ graph LR
 *Analysis performed by PaperBrain-OpenRouter (anthropic/claude-4.6-sonnet) (Vision-Enabled)*
 
 
+## 🧩 Claim Cards
+
+### Claim-01
+- Claim: CoWVLA's latent motion token Q, derived from a motion-specialized VAE over 16-frame video segments, enables temporally continuous dynamic modeling without pixel-level reconstruction, simultaneously achieving compact motion representation and world-knowledge-level generalization in a single VLA pretraining paradigm.
+- Evidence: The core architectural innovation is the extraction of a single latent motion vector Q (dimension D_m = 1792) from 16-frame video segments via a motion VAE, which is then used as a chain-of-thought intermediate in the VLA's reasoning process. This design avoids the redundant background reconstruction cost of pixel-level world models while extending beyond the two-frame temporal horizon of latent-action methods. The paper positions this as directly addressing the gap identified in both WorldVLA/UniVLA (pixel waste) and LAPA/TLA (temporal shallowness).
+- Boundary/Failure: The pipeline assumes exactly f = 16 frames sampled uniformly; tasks with highly variable execution speeds, contact-rich stalls, or pauses may produce semantically inconsistent Q estimates due to temporal aliasing, as no explicit mechanism handles variable-length dynamics.
+- Compared Against: World-model VLAs (WorldVLA, UniVLA, FlowVLA) and latent-action VLAs (LAPA, villa-X, TLA)
+- Confidence: 7
+- Links:
+  - same_problem:: [[World_Action_Models_are_Zero_shot_Policies]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-02
+- Claim: CoWVLA achieves state-of-the-art or competitive performance across all four LIBERO task suites and SimplerEnv-WidowX benchmarks, outperforming both latent-action and world-model VLA baselines on the majority of evaluated tasks.
+- Evidence: On LIBERO, CoWVLA achieves 0.928 on LIBERO-Long, surpassing TLA (0.920) and most other baselines. On SimplerEnv-WidowX, CoWVLA outperforms all three latent-action baselines (LAPA, villa-X, TLA) and world-model baselines (WorldVLA, CoT-VLA, UniVLA, FlowVLA) across the four real-world-correlated manipulation tasks (Stack Block, Put Carrot, Put Spoon, Put Eggplant), evaluated over 20 episodes × 10 tasks per suite. Results span three paradigm categories including strong VLA baselines such as GR00T-N1 and π₀.
+- Boundary/Failure: The paper does not fully control for parameter count or training data volume across all baselines; GR00T-N1 and π₀ may use substantially different pretraining corpora, introducing potential confounds that could inflate or deflate relative performance claims.
+- Compared Against: OpenVLA, SpatialVLA, CogACT, DiTA, π₀, π₀-FAST, GR00T-N1, LAPA, villa-X, TLA, WorldVLA, CoT-VLA, UniVLA, FlowVLA
+- Confidence: 7
+- Links:
+  - same_problem:: [[World_Action_Models_are_Zero_shot_Policies]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-03
+- Claim: The single fixed-dimension latent motion token Q (D_m = 1792) constitutes an information bottleneck for long-horizon compositional tasks, as evidenced by CoWVLA's relatively modest margin over TLA on LIBERO-Long compared to shorter-horizon suites.
+- Evidence: On LIBERO-Long — the suite with the most compositional and temporally extended tasks — CoWVLA achieves 0.928, only marginally above TLA's 0.920, whereas on shorter-horizon suites the margins are larger. The paper acknowledges that a single Q token must compress dynamics across significantly longer and more compositional action sequences as task horizon grows, and that a fixed D_m = 1792 vector may become an information bottleneck. No adaptive or hierarchical token mechanism is proposed to address this scaling issue.
+- Boundary/Failure: This limitation becomes most acute when task horizons grow substantially beyond the training distribution or when tasks require highly compositional sub-goal sequencing that cannot be adequately summarized by a single fixed-size latent vector.
+- Compared Against: TLA (0.920 on LIBERO-Long)
+- Confidence: 6
+- Links:
+  - same_problem:: 待定
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-04
+- Claim: Encoding world dynamics as a latent motion chain-of-thought intermediate — rather than as explicit pixel-level future frames — represents a broadly applicable pretraining strategy that bridges world-model generalization and latent-action efficiency, suggesting that future VLA architectures should decouple dynamic motion representation from static scene reconstruction.
+- Evidence: The paper demonstrates that pixel-level world models (WorldVLA, UniVLA, FlowVLA) incur prohibitive computational cost by reconstructing redundant background content, while latent-action models (LAPA, TLA) remain temporally shallow. CoWVLA's motion VAE extracts only the dynamic transition signal across 16 frames into Q, discarding static scene content, and this design achieves competitive or superior results across both LIBERO and SimplerEnv-WidowX without pixel reconstruction. This architectural principle — latent motion as world knowledge — is generalizable beyond the specific CoWVLA instantiation.
+- Boundary/Failure: The broader implication assumes that motion-only latent representations are sufficient for world-knowledge transfer; tasks requiring precise spatial reasoning about static scene geometry (e.g., fine-grained placement with occlusion) may still benefit from pixel-level world model supervision that CoWVLA explicitly discards.
+- Compared Against: WorldVLA, UniVLA, FlowVLA (pixel-level world models); LAPA, villa-X, TLA (temporally shallow latent-action models)
+- Confidence: 6
+- Links:
+  - same_problem:: [[World_Action_Models_are_Zero_shot_Policies]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
 ## 📂 Resources
 - **Local PDF**: [[Chain of World World Model Thinking in Latent Motion.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2603.03195.pdf)

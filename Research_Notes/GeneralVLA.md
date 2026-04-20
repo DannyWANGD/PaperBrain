@@ -28,7 +28,7 @@ Large foundation models have shown strong open-world generalization to complex p
 
 ## 🖼️ Architecture
 ![[GeneralVLA Generalizable VisionLanguageAction Models with KnowledgeGuided Trajectory Planning_arch.png]]
-*Fig. 3: Detailed framework of ASM and 3DAgent. (a) Given the input image and task text as query, the multimodal LLM (e.g., LLaVA [36]) generates text output. The last-layer embedding for the <SEG> token is then decoded into the segmentation mask via the decoder. We use LoRA [19] for efficient fine-tuning. The choice of vision backbone can be flexible (e.g., SAM3 [7]).*
+*Fig. 3: Detailed framework of ASM and 3DAgent. (a) Given the input image and task text as query, the multimodal LLM (e.g., LLaVA [36]) generates text output. The last-layer embedding for the SEG token is then decoded into the segmentation mask via the decoder. We use LoRA [19] for efficient fine-tuning. The choice of vision backbone can be flexible (e.g., SAM3 [7]).*
 
 ## 🧠 AI Analysis (Doubao Seed 2.0 Pro)
 
@@ -151,6 +151,52 @@ graph LR
 ---
 *Analysis performed by PaperBrain-Doubao (Vision-Enabled)*
 
+
+## 🧩 Claim Cards
+
+### Claim-01
+- Claim: GeneralVLA's knowledge-guided trajectory planning pipeline, combining a Knowledge Bank with an Adaptive Spatial Module (ASM) for iterative 3D trajectory refinement, enables zero-shot cross-domain robotic manipulation without requiring any in-domain demonstration data.
+- Evidence: On the RLBench 14-task benchmark, GeneralVLA outperforms all zero-shot data generation baselines (VoxPoser, Code-as-Policies, Scaling-up-Distilling-Down) and approaches the performance of upper-bound human expert demonstration data, using only the RVT-2 backbone trained on GeneralVLA-generated trajectories with no in-domain fine-tuning.
+- Boundary/Failure: The zero-shot capability breaks down for force-sensitive tasks (e.g., tight peg insertion) because the system relies solely on visual observation and does not integrate proprioceptive or tactile sensory inputs, making it unable to handle contact-rich manipulation requiring haptic feedback.
+- Compared Against: VoxPoser, Code-as-Policies (CAP), Scaling-up-Distilling-Down (zero-shot baselines), and RLBench human expert demonstrations (upper bound).
+- Confidence: 8
+- Links:
+  - same_problem:: [[README]]
+  - improves_over:: [[2026-02-16-PaperDigest]]
+  - conflicts_with:: 待定
+
+### Claim-02
+- Claim: Behavior cloning policies trained on GeneralVLA-generated synthetic trajectory data achieve competitive performance with policies trained on human expert demonstrations across 14 RLBench simulation tasks and 4 real-world manipulation tasks.
+- Evidence: All behavior cloning experiments use the identical RVT-2 backbone across all data sources, metrics are averaged over 3 random seeds, and GeneralVLA-generated data approaches the human expert demonstration upper bound on RLBench while outperforming all other zero-shot data generation baselines on both simulation and 4 custom real-world tasks.
+- Boundary/Failure: The experimental design uses a fixed front-facing camera in core simulation experiments, which slightly favors GeneralVLA's ASM design and may overestimate generalization to multi-view or dynamic camera setups; performance gap relative to human demonstrations may widen on tasks requiring precise depth estimation from non-frontal viewpoints.
+- Compared Against: RLBench human expert demonstration data (upper bound); VoxPoser, Code-as-Policies, Scaling-up-Distilling-Down (zero-shot baselines).
+- Confidence: 7
+- Links:
+  - same_problem:: [[2026-02-26-PaperDigest]]
+  - improves_over:: [[2026-02-16-PaperDigest]]
+  - conflicts_with:: 待定
+
+### Claim-03
+- Claim: The iterative ASM refinement loop in GeneralVLA introduces a critical inference latency of up to 2.3 seconds per step, rendering the system unsuitable for high-frequency dynamic manipulation tasks that require sub-100ms control loops.
+- Evidence: The paper reports up to 2.3s per inference step attributable to the iterative ASM refinement process, which is more than an order of magnitude above the <100ms threshold required for reactive or high-frequency robotic control scenarios such as catching, dynamic grasping, or compliant contact tasks.
+- Boundary/Failure: This latency limitation is inherent to the iterative refinement design and does not manifest as a problem for quasi-static manipulation tasks (e.g., tabletop pick-and-place) where inter-step delays of several seconds are acceptable; the claim breaks down in slow-paced task settings.
+- Compared Against: General real-time robotic control requirements (<100ms); no specific baseline system latency is directly compared in the paper.
+- Confidence: 8
+- Links:
+  - same_problem:: [[SPARR]]
+  - improves_over:: 待定
+  - conflicts_with:: [[Solaris]]
+
+### Claim-04
+- Claim: Knowledge Bank retrieval in GeneralVLA suffers from scalability degradation, with retrieval performance dropping by 18% when stored skill snippets exceed 1000 entries, due to embedding similarity search drift among semantically overlapping skills, limiting the system's applicability to large-scale open-world skill libraries.
+- Evidence: The paper explicitly reports an 18% performance degradation in knowledge bank retrieval when the number of stored skill snippets surpasses 1000, attributed to embedding similarity search drift caused by semantic overlap between skills, indicating that the current retrieval mechanism does not scale linearly with knowledge base size.
+- Boundary/Failure: This scalability limitation is specific to the embedding-based similarity search used for retrieval; it would not apply if the knowledge bank is kept small (fewer than 1000 snippets) or if a hierarchical or structured retrieval mechanism were substituted, suggesting the limitation is architectural rather than fundamental to the VLA approach.
+- Compared Against: Implicit baseline of ideal linear scaling with knowledge bank size; no external retrieval system is directly benchmarked against in the paper.
+- Confidence: 7
+- Links:
+  - same_problem:: [[Physics Informed Viscous Value Representations]]
+  - improves_over:: 待定
+  - conflicts_with:: [[2026-02-26-PaperDigest]]
 
 ## 📂 Resources
 - **Local PDF**: [[GeneralVLA Generalizable VisionLanguageAction Models with KnowledgeGuided Trajectory Planning.pdf]]

@@ -160,6 +160,52 @@ graph LR
 *Analysis performed by PaperBrain-Doubao (Vision-Enabled)*
 
 
+## 🧩 Claim Cards
+
+### Claim-01
+- Claim: The Trinity of Consistency framework — comprising Morphological Consistency (M), Semantic Consistency (S), and Temporal Consistency (T) — constitutes a necessary and sufficient set of principled properties that distinguish General World Models from statistical pattern-mimicking video generators.
+- Evidence: The paper formalizes three consistency axes and demonstrates their necessity by showing that all observed failure modes in 8 SOTA models (HunyuanVideo, BAGEL, Kling, Seedream-4-5, Sora, Nano Banana Pro, Emu3.5, GPT-image-1.5) map onto violations of at least one of the three axes across 6 task categories (single-axis M/S/T and cross-axis MS/MT/ST), with no failure mode falling outside this taxonomy.
+- Boundary/Failure: The framework assumes Newtonian physical scenarios and common in-distribution object interactions; it does not formally cover non-Newtonian fluid dynamics or rare non-rigid collision events, where the three axes may be insufficient to characterize all failure modes.
+- Compared Against: Existing ad-hoc evaluation criteria for video generation models (e.g., FID, FVD, perceptual quality metrics) that do not decompose consistency into structured physical axes.
+- Confidence: 7
+- Links:
+  - same_problem:: [[World_Action_Models_are_Zero_shot_Policies]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-02
+- Claim: All 8 evaluated SOTA models score substantially below ceiling on CoW-Bench, with performance degrading further on cross-axis tasks (MS/MT/ST) compared to single-axis tasks (M/S/T), demonstrating that no current model achieves joint Trinity consistency.
+- Evidence: CoW-Bench evaluates all 8 models under a unified protocol with raw scores linearly rescaled to a standardized 0-100 range across 6 task categories. Cross-axis categories (MS, MT, ST) consistently yield lower scores than their corresponding single-axis counterparts across all tested models, confirming that simultaneous satisfaction of multiple consistency axes remains an unsolved challenge for SOTA systems including Sora and GPT-image-1.5.
+- Boundary/Failure: CoW-Bench covers common in-distribution physical scenarios; models that score highly on CoW-Bench may still fail on out-of-distribution cases not represented in the benchmark, limiting the generalizability of these rankings as absolute capability measures.
+- Compared Against: HunyuanVideo, BAGEL, Kling, Seedream-4-5, Sora, Nano Banana Pro, Emu3.5, and GPT-image-1.5 evaluated head-to-head under identical CoW-Bench protocol.
+- Confidence: 8
+- Links:
+  - same_problem:: [[GeneralVLA]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-03
+- Claim: Test-time consistency correction methods (gradient-guided latent planning and tree-of-thoughts reasoning) that enforce Trinity consistency increase inference latency by 3-10x relative to single-pass generation, making real-time interactive deployment infeasible with current implementations.
+- Evidence: The paper explicitly reports a 3-10x inference latency overhead introduced by test-time correction mechanisms designed to enforce consistency constraints, directly identifying this as a hidden limitation of the proposed approach for real-time applications.
+- Boundary/Failure: This latency penalty may be reduced by future hardware acceleration, model distillation, or amortized consistency training; the 3-10x figure applies specifically to current unoptimized implementations and may not hold for future optimized deployments.
+- Compared Against: Single-pass generation baselines (standard autoregressive or diffusion inference without test-time correction) across the same 8 evaluated SOTA models.
+- Confidence: 7
+- Links:
+  - same_problem:: [[QuantVLA]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-04
+- Claim: Achieving Trinity of Consistency is a prerequisite for world models to serve as reliable internal simulators for AGI and embodied agent applications, implying that current video generation and unified multimodal models are architecturally insufficient as world model backbones without explicit consistency enforcement.
+- Evidence: The paper argues that systematic structural hallucinations, temporal inconsistencies, and causal logic violations observed across all 8 SOTA models on CoW-Bench directly prevent their use as trustworthy internal world simulators; the Trinity framework is positioned as the minimal theoretical requirement bridging pixel-level statistical generation and physically grounded world modeling for AGI.
+- Boundary/Failure: This implication assumes that AGI applications require high-fidelity physical simulation; for tasks where approximate or stylized world models suffice (e.g., abstract planning in symbolic domains), Trinity consistency may be unnecessary, weakening the universality of the claim.
+- Compared Against: Prior conceptions of world models in model-based reinforcement learning and video prediction literature that do not impose explicit multi-axis physical consistency requirements.
+- Confidence: 6
+- Links:
+  - same_problem:: [[World_Action_Models_are_Zero_shot_Policies]]
+  - improves_over:: [[Physics Informed Viscous Value Representations]]
+  - conflicts_with:: 待定
+
 ## 📂 Resources
 - **Local PDF**: [[The Trinity of Consistency as a Defining Principle for General World Models.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2602.23152.pdf)

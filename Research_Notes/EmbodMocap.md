@@ -155,6 +155,52 @@ graph LR
 *Analysis performed by PaperBrain-Doubao (Vision-Enabled)*
 
 
+## 🧩 Claim Cards
+
+### Claim-01
+- Claim: EmbodMocap's dual-iPhone stereo pipeline with LiDAR-aided scene reconstruction achieves metrically consistent 4D human-scene motion capture in uncontrolled, in-the-wild environments without studio rigs, wearable markers, or fixed multi-camera setups.
+- Evidence: The system uses two consumer iPhones (one per side) fused with LiDAR depth for metric-scale scene grounding, and is validated against Vicon optical mocap as gold-standard ground truth, demonstrating competitive reconstruction accuracy on held-out data across both indoor and outdoor environments.
+- Boundary/Failure: The pipeline operates at approximately 10x slower than real time, making live or online capture infeasible; it is also constrained to scenes where the human remains within 3.5m (indoor) or 5m (outdoor) of the capture device, failing in large open environments.
+- Compared Against: Vicon optical mocap (gold-standard ground truth); monocular GVHMR; single-view optimization variants; out-of-the-box pi3 and VIMO.
+- Confidence: 8
+- Links:
+  - same_problem:: [[Learning_Situated_Awareness_in_the_Real_World]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-02
+- Claim: EmbodMocap produces more accurate human body reconstruction and scene-relative alignment than monocular reconstruction baselines, as measured by standardized alignment error and reconstruction accuracy metrics on identical held-out data.
+- Evidence: Quantitative comparisons on held-out sequences show EmbodMocap outperforms monocular GVHMR, single-view optimization variants, and out-of-the-box pi3 and VIMO across alignment error and reconstruction accuracy metrics, with Vicon mocap serving as the reference ground truth for all evaluations.
+- Boundary/Failure: Performance degrades substantially under full occlusion of the human in both camera views simultaneously, or during fast motion that induces significant motion blur in both RGB streams, conditions where the stereo advantage over monocular methods diminishes.
+- Compared Against: Monocular GVHMR; single-view optimization variants; pi3 (out-of-the-box); VIMO (out-of-the-box); Vicon optical mocap as ground truth.
+- Confidence: 7
+- Links:
+  - same_problem:: 待定
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-03
+- Claim: The LiDAR capture range of consumer iPhones constitutes a hard physical ceiling on EmbodMocap's operating envelope, limiting the system to indoor scenes within 3.5m and outdoor scenes within 5m and rendering it inapplicable to large-scale or open-world environments.
+- Evidence: The paper explicitly identifies the iPhone LiDAR sensor operating range as the source of the 3.5m (indoor) and 5m (outdoor) capture limits, and acknowledges this as a known failure mode of the pipeline rather than an algorithmic shortcoming.
+- Boundary/Failure: Any scenario requiring capture of human motion across distances exceeding these thresholds — such as sports fields, large plazas, or warehouse-scale robotics environments — falls entirely outside the system's valid operating regime.
+- Compared Against: Studio-based Vicon optical mocap systems, which are not range-constrained in the same way but require controlled environments.
+- Confidence: 9
+- Links:
+  - same_problem:: [[Learning_Situated_Awareness_in_the_Real_World]]
+  - improves_over:: 待定
+  - conflicts_with:: [[Xiaomi-Robotics-0]]
+
+### Claim-04
+- Claim: Metrically consistent, scene-conditioned human motion data captured by EmbodMocap can serve as a scalable data source for training and evaluating embodied AI agents, offering a low-cost alternative to AMASS optical mocap data for downstream animation and policy learning tasks.
+- Evidence: Downstream motion estimation experiments for animation compare EmbodMocap-derived data against monocular GVHMR outputs and AMASS optical mocap data, demonstrating that EmbodMocap data supports competitive or superior downstream task performance while being collectable in arbitrary real-world environments without laboratory infrastructure.
+- Boundary/Failure: The 10x-slower-than-real-time processing latency prevents online or closed-loop use within embodied agent control loops; the data pipeline is suitable only for offline dataset construction, not reactive policy execution.
+- Compared Against: AMASS optical mocap dataset; monocular GVHMR as a motion estimation baseline for animation tasks.
+- Confidence: 7
+- Links:
+  - same_problem:: [[World_Action_Models_are_Zero_shot_Policies]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
 ## 📂 Resources
 - **Local PDF**: [[EmbodMocap IntheWild 4D HumanScene Reconstruction for Embodied Agents.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2602.23205.pdf)

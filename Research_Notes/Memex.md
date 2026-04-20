@@ -391,6 +391,52 @@ The key technical challenge is **index drift**: an artifact indexed as `ctx_unit
 *Analysis performed by PaperBrain-OpenRouter (anthropic/claude-sonnet-4.6) (Vision-Enabled)*
 
 
+## 🧩 Claim Cards
+
+### Claim-01
+- Claim: Memex(RL) enables lossless context compression in long-horizon LLM agents by replacing discarded trajectory segments with deterministically addressable index entries, such that any archived artifact (code snippet, API response, log output) can be precisely re-injected into the active context on demand via exact-match key lookup.
+- Evidence: The method section describes a WriteExperience/ReadExperience tool pair where the agent assigns explicit string index keys at compression time and retrieves full, unmodified content by supplying the same key at dereference time. The paper explicitly contrasts this with rolling summaries and semantic retrieval, arguing those are "fundamentally lossy" while indexed experience memory is not, because the original artifact bytes are stored and returned verbatim.
+- Boundary/Failure: Losslessness holds only at the storage-retrieval layer; if the agent never issues a ReadExperience call for a stored entry (e.g., due to policy failure or forgetting the index name exists), the evidence is functionally lost even though it is physically intact. The guarantee is conditional on correct agent behavior, not unconditional.
+- Compared Against: Rolling summarization baselines and semantic similarity-based retrieval (e.g., dense vector search over trajectory history), both of which irreversibly transform or discard fine-grained artifacts.
+- Confidence: 7
+- Links:
+  - same_problem:: [[LoGeR]]
+  - improves_over:: [[LoGeR]]
+  - conflicts_with:: 待定
+
+### Claim-02
+- Claim: Reinforcement learning is necessary for Memex agents to learn stable, self-consistent index naming conventions, because the joint policy over when to compress, what name to assign, and when to dereference constitutes a higher-dimensional credit-assignment problem that supervised fine-tuning on static demonstrations cannot adequately solve.
+- Evidence: The paper motivates RL training specifically by the need to co-learn compression timing and index naming coherence across arbitrarily long horizons. The introduction and method sections argue that RL reward signals propagated from task success back through multi-step trajectories are required to shape the naming policy, as no ground-truth index name supervision exists in offline data.
+- Boundary/Failure: This claim is asserted architecturally but not yet validated with an ablation comparing RL-trained vs. SFT-trained Memex agents on index naming consistency metrics; the experimental results section was not available in the provided pages, so the empirical support is indirect.
+- Compared Against: Supervised fine-tuning approaches and prompt-engineered agents without RL, which lack a mechanism to receive delayed reward signals for index naming decisions made dozens of steps earlier.
+- Confidence: 5
+- Links:
+  - same_problem:: [[LoGeR]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-03
+- Claim: Deterministic key-based retrieval in Memex(RL) introduces a hard failure mode absent in semantic retrieval systems: a single index name typo or concept drift between WriteExperience and ReadExperience calls causes complete, unrecoverable evidence loss with no graceful degradation.
+- Evidence: The critical assessment identifies that unlike semantic retrieval — which tolerates paraphrase and partial match — exact-match lookup returns nothing on any string mismatch. There is no fallback fuzzy-match layer described in the method. The paper acknowledges this as a core dependency: "if the agent compresses evidence under a misnamed index, that evidence is effectively irretrievable."
+- Boundary/Failure: This failure mode is most severe in tasks requiring the agent to reference an index entry after many intervening steps, where concept drift in the agent's internal naming is most likely. Short-horizon tasks with few stored entries are less exposed to this risk.
+- Compared Against: Semantic similarity-based retrieval systems, which degrade gracefully under paraphrase or partial query mismatch by returning approximate nearest neighbors rather than returning nothing.
+- Confidence: 8
+- Links:
+  - same_problem:: [[LoGeR]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-04
+- Claim: Indexed experience memory represents a general architectural principle for scaling any tool-using LLM agent to unbounded trajectory lengths, suggesting that future long-horizon agent benchmarks should evaluate not only task success but also memory utilization efficiency (compression rate, retrieval precision, and evidence recovery rate) as first-class metrics.
+- Evidence: The paper frames Memex(RL) as a solution to a universal bottleneck — finite context windows against unbounded trajectory growth — applicable across coding, web navigation, and scientific reasoning domains. The introduction argues that existing benchmarks measuring only final task success mask the memory management failures that cause long-horizon degradation, motivating new evaluation dimensions.
+- Boundary/Failure: This implication assumes that index-based memory generalizes across modalities and task types; it may not extend cleanly to agents operating over continuous sensory streams (e.g., video or robotics) where discrete artifact boundaries required for named indexing are not naturally present.
+- Compared Against: Prior long-horizon agent frameworks such as LoGeR, which address trajectory length scaling but do not expose memory utilization as an explicit, measurable agent capability.
+- Confidence: 6
+- Links:
+  - same_problem:: [[LoGeR]]
+  - improves_over:: [[LoGeR]]
+  - conflicts_with:: 待定
+
 ## 📂 Resources
 - **Local PDF**: [[MemexRL Scaling LongHorizon LLM Agents via Indexed Experience Memory.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2603.04257.pdf)

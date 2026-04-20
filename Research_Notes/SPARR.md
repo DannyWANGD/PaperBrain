@@ -150,6 +150,52 @@ graph LR
 *Analysis performed by PaperBrain-Doubao (Vision-Enabled)*
 
 
+## 🧩 Claim Cards
+
+### Claim-01
+- Claim: SPARR's asymmetric residual policy architecture — which augments a frozen sim-trained base policy with a real-world residual that observes wrist RGB images unavailable to the base policy — enables autonomous sim-to-real fine-tuning for fine-grained insertion tasks without human demonstrations or interventions.
+- Evidence: SPARR uses the base policy's zero-shot rollouts to seed an initial demonstration buffer, then trains a residual RL policy on top using only real-world interaction within a 0.5-hour budget. The asymmetric observation design (residual sees wrist RGB; base policy does not) is the core architectural contribution enabling this autonomy.
+- Boundary/Failure: The approach requires the base policy to achieve at least ~40% zero-shot success to collect a viable initial demonstration buffer; if the base policy has near-zero zero-shot performance on a target task, the residual policy cannot bootstrap and the method fails.
+- Compared Against: AutoMate (zero-shot sim-to-real, no fine-tuning), SERL (real-world RL without human demos), HIL-SERL (human-in-the-loop real-world RL)
+- Confidence: 8
+- Links:
+  - same_problem:: [[README]]
+  - improves_over:: [[2026-02-26-PaperDigest]]
+  - conflicts_with:: 待定
+
+### Claim-02
+- Claim: SPARR achieves success rates meeting or exceeding the ≥95% industrial deployment threshold on fine-grained assembly tasks within a 0.5-hour real-world training budget, outperforming SOTA zero-shot sim-to-real and autonomous real-world RL baselines.
+- Evidence: SOTA zero-shot sim-to-real (AutoMate) achieves at most 80% success, falling below the 95% industrial requirement. SPARR surpasses this threshold within the equal 0.5-hour real-world training budget across evaluated tasks, evaluated over 20 episodes per task. SERL (autonomous real-world RL with 20 zero-shot demos) fails to match SPARR's performance under the same budget.
+- Boundary/Failure: Performance is validated only on two-part insertion tasks; generalization to multi-step assemblies, deformable parts, or tasks with significantly different geometry is unverified. Results may not hold if pose estimation noise exceeds the range encountered during evaluation.
+- Compared Against: AutoMate (SOTA zero-shot sim-to-real), SERL (autonomous real-world RL), HIL-SERL (oracle human-in-the-loop upper bound)
+- Confidence: 8
+- Links:
+  - same_problem:: [[README]]
+  - improves_over:: [[2026-02-26-PaperDigest]]
+  - conflicts_with:: 待定
+
+### Claim-03
+- Claim: SPARR's reliance on a rigid, fixed-grasp assumption and its ~2x inference latency overhead relative to the base policy constitute concrete deployment limitations that prevent direct application to high-speed assembly or tasks with grasp variability.
+- Evidence: The residual policy processes two wrist RGB images per timestep, approximately doubling inference latency compared to the base policy alone, which may violate <100ms per-step latency requirements in high-speed assembly. The framework explicitly assumes no grasp slippage or partial grasp variation during execution, and no experiments address grasp perturbation robustness.
+- Boundary/Failure: These limitations are inherent to the current architecture; the latency constraint breaks down for any assembly use case requiring sub-100ms control cycles, and the grasp assumption fails whenever the inserted part shifts in the gripper during execution.
+- Compared Against: Pure base policy inference (latency baseline); no explicit grasp-robustness baseline is evaluated.
+- Confidence: 7
+- Links:
+  - same_problem:: [[Solaris]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-04
+- Claim: Autonomous sim-to-real residual fine-tuning without human supervision can close the gap between zero-shot sim-to-real policies and human-in-the-loop RL upper bounds for contact-rich assembly, suggesting that high-quality simulation priors can substitute for costly human interventions in structured industrial settings.
+- Evidence: SPARR, which requires zero human demonstrations or interventions, approaches the performance of HIL-SERL (the oracle human-in-the-loop upper bound) within the same 0.5-hour real-world budget, while AutoMate's zero-shot ceiling of 80% and SERL's autonomous baseline both fall substantially short of the industrial 95% threshold. This implies the simulation prior embedded in the base policy effectively replaces the role of human-provided demonstrations.
+- Boundary/Failure: This implication holds only for tasks where a competent simulation-trained base policy already exists (≥~40% zero-shot success). For novel task geometries or environments with large sim-to-real gaps where no suitable base policy is available, human supervision or demonstrations would still be required.
+- Compared Against: HIL-SERL (human-in-the-loop oracle), AutoMate (zero-shot sim-to-real), SERL (autonomous real-world RL)
+- Confidence: 7
+- Links:
+  - same_problem:: [[README]]
+  - improves_over:: [[2026-02-26-PaperDigest]]
+  - conflicts_with:: 待定
+
 ## 📂 Resources
 - **Local PDF**: [[SPARR Simulationbased Policies with Asymmetric Realworld Residuals for Assembly.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2602.23253v1)

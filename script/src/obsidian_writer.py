@@ -7,8 +7,9 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class ObsidianWriter:
-    def __init__(self, config):
+    def __init__(self, config, provider='doubao'):
         self.config = config
+        self.provider = provider
         self.vault_path = config['obsidian']['vault_path']
         self.daily_folder = os.path.join(self.vault_path, config['obsidian']['daily_digest_folder'])
         self.notes_folder = os.path.join(self.vault_path, config['obsidian']['detailed_notes_folder'])
@@ -27,6 +28,14 @@ class ObsidianWriter:
         # Collapse multiple spaces
         safe_name = re.sub(r'\s+', ' ', safe_name)
         return safe_name[:100] # Limit length
+
+    def _sanitize_obsidian_text(self, text):
+        if not text:
+            return ""
+        t = str(text).replace("\r\n", "\n").replace("\r", "\n")
+        t = t.replace("\\n", "\n")
+        t = t.replace("\u200b", "").replace("\ufeff", "")
+        return t
 
     def get_filename_from_paper(self, paper):
         """Generates filename based on short_title or title."""
@@ -47,6 +56,34 @@ class ObsidianWriter:
         base_name = self.get_filename_from_paper(paper)
         return os.path.join(self.pdf_folder, f"{base_name}.pdf")
 
+    def _extract_arxiv_id(self, url):
+        """Extracts normalized arXiv ID from a URL (arxiv.org or huggingface.co/papers)."""
+        if not url:
+            return ""
+        m = re.search(r'arxiv\.org/(?:abs|pdf)/([0-9]+\.[0-9]+)', url)
+        if m:
+            return m.group(1)
+        m = re.search(r'huggingface\.co/papers/([0-9]+\.[0-9]+)', url)
+        if m:
+            return m.group(1)
+        return ""
+
+    def _find_note_by_arxiv_id(self, arxiv_id, exclude=""):
+        """Returns filename of an existing note with the same arXiv ID, or empty string."""
+        if not os.path.exists(self.notes_folder):
+            return ""
+        for fn in os.listdir(self.notes_folder):
+            if not fn.endswith(".md") or fn == exclude:
+                continue
+            try:
+                with open(os.path.join(self.notes_folder, fn), "r", encoding="utf-8") as f:
+                    content = f.read(2000)  # only need frontmatter
+                if arxiv_id in content:
+                    return fn
+            except Exception:
+                continue
+        return ""
+
     def scan_existing_notes(self):
         """Scans the vault for existing markdown files to use for context."""
         notes = []
@@ -66,10 +103,25 @@ class ObsidianWriter:
         filename = f"{today_str}-PaperDigest.md"
         filepath = os.path.join(self.daily_folder, filename)
         
-        high_impact = [p for p in papers if p.get('score', 0) >= self.config['doubao']['threshold_score']]
-        
+        provider_cfg = self.config.get(self.provider, self.config.get('doubao', {}))
+        threshold = provider_cfg.get('threshold_score', 7)
+        high_impact = [p for p in papers if p.get('score', 0) >= threshold]
+
+        # Filter papers for digest: skip score <= 6, show all >= 7
+        # Within 7-score papers, only include if relevance >= 5 (basic quality gate)
+        MIN_DIGEST_SCORE = 7
+        digest_papers = [
+            p for p in papers
+            if p.get('score', 0) >= MIN_DIGEST_SCORE
+            and p.get('relevance', 10) >= 5
+        ]
+        digest_papers.sort(key=lambda x: x.get('score', 0), reverse=True)
+
+        if not digest_papers:
+            logger.info("No papers met the minimum score threshold for daily digest. Writing summary-only digest.")
+
         content = ""
-        for p in papers:
+        for p in digest_papers:
             score = p.get('score', 0)
             icon = "🔥" if score >= 8 else "✨" if score >= 5 else "📄"
             
@@ -102,9 +154,12 @@ class ObsidianWriter:
             
             content += "\n---\n\n"
 
+        if not content:
+            content = "_今日无符合质量标准的论文（分数 ≥ 7）。_\n"
+
         template = self.config['obsidian']['daily_digest_template']
         final_content = template.replace("{{date}}", today_str) \
-                                .replace("{{total_count}}", str(len(papers))) \
+                                .replace("{{total_count}}", str(len(digest_papers))) \
                                 .replace("{{high_impact_count}}", str(len(high_impact))) \
                                 .replace("{{content}}", content)
 
@@ -119,6 +174,19 @@ class ObsidianWriter:
         safe_title = self.get_filename_from_paper(paper)
         filename = f"{safe_title}.md"
         filepath = os.path.join(self.notes_folder, filename)
+
+        # Dedup check: scan existing notes for same arXiv ID
+        paper_url = paper.get('url', '')
+        arxiv_id = self._extract_arxiv_id(paper_url)
+        if arxiv_id:
+            existing = self._find_note_by_arxiv_id(arxiv_id, exclude=filename)
+            if existing:
+                logger.warning(
+                    f"[DEDUP] Skipping write for '{filename}': "
+                    f"arXiv ID {arxiv_id} already exists as '{existing}'. "
+                    f"Delete the old file first if you want to overwrite."
+                )
+                return os.path.join(self.notes_folder, existing)
         
         pdf_link = ""
         if local_pdf_path:
@@ -142,41 +210,66 @@ class ObsidianWriter:
 
         # Add metadata frontmatter
         tags = paper.get('tags', [])
-        # Ensure default tags
         if not tags:
             tags = ['paper', 'robotics', 'AI']
         else:
             tags = ['paper'] + tags
-        
-        # Sanitize tags: Replace spaces/hyphens with underscores to avoid YAML errors and match requirement
         safe_tags = [t.strip().replace(' ', '_').replace('-', '_') for t in tags]
-        
-        # Add score tag (REMOVED: Now a property)
         score = paper.get('score', 0)
-        # safe_tags.append(f"Score_{score}")
-
         tags_yaml = "\n".join([f"  - {t}" for t in safe_tags])
-        
-        # Extract metadata from deep analysis
+
+        # Build aliases: original title + AI-generated aliases
+        all_aliases = [paper['title']]
+        ai_aliases = paper.get('ai_aliases', [])
+        for a in ai_aliases:
+            if a and a not in all_aliases:
+                all_aliases.append(a)
+        aliases_yaml = "\n".join([f'  - "{a}"' for a in all_aliases])
+
+        # arxiv_id for dedup
+        arxiv_id_val = arxiv_id or ""
+
         meta = paper.get('metadata', {})
-        # Default to "Unknown" if not found, but we want YYYY-MM-DD format if possible
         pub_date = meta.get('publication_date', 'Unknown')
         institutions = meta.get('institutions', [])
         if isinstance(institutions, str):
             institutions = [institutions]
-        
         github = meta.get('github', 'None')
         project_page = meta.get('project_page', 'None')
-        
         institutions_yaml = ""
         if institutions:
             institutions_yaml = "\ninstitutions:" + "".join([f"\n  - \"{i}\"" for i in institutions])
+
+        abstract_block = paper.get('abstract', '')
+        analysis_clean = analysis_content or ""
+        try:
+            m = re.search(r"##\s*📌\s*Abstract\s*\n([\s\S]*?)(?:\n##\s+|\Z)", analysis_clean)
+            if m:
+                abstract_block = m.group(1).strip()
+                analysis_clean = analysis_clean.replace(m.group(0), "").strip()
+        except Exception:
+            pass
+
+        # Strip any stray wrapper headers the model or analyser may have injected
+        analysis_clean = re.sub(r'^#\s+🚀\s+Deep Analysis Report:[^\n]*\n+', '', analysis_clean, flags=re.MULTILINE)
+        analysis_clean = re.sub(r'^##\s+📊\s+Academic Quality & Innovation\s*\n+', '', analysis_clean, flags=re.MULTILINE)
+        analysis_clean = re.sub(r'^#\s+Deep (Analysis|Engineering Analysis):[^\n]*\n+', '', analysis_clean, flags=re.MULTILINE)
+        # Strip residual metadata JSON blocks
+        analysis_clean = re.sub(r'^[^\n]*"publication_date"[^\n]*\n(?:.*\n)*?.*\}\s*\n(?:```[^\n]*\n)?', '', analysis_clean, flags=re.MULTILINE)
+        # Fix numbered section headers missing ## prefix: "1. 核心摘要" → "## 1. 核心摘要"
+        analysis_clean = re.sub(r'^(\d+\.\s+(?:核心摘要|技术分解|证据与指标|批判性评估|研究者灵感提示))', r'## \1', analysis_clean, flags=re.MULTILINE)
+        # Collapse 3+ consecutive blank lines to 2
+        analysis_clean = re.sub(r'\n{3,}', '\n\n', analysis_clean).strip()
+
+        abstract_block = self._sanitize_obsidian_text(abstract_block)
+        analysis_clean = self._sanitize_obsidian_text(analysis_clean)
 
         content = f"""---
 tags:
 {tags_yaml}
 aliases:
-  - "{paper['title']}"
+{aliases_yaml}
+arxiv_id: "{arxiv_id_val}"
 url: {paper.get('url')}
 pdf_url: {paper.get('pdf_url')}
 local_pdf: "{pdf_link}"
@@ -189,13 +282,13 @@ score: {score}
 # {paper['title']}
 
 ## 📌 Abstract
-{paper['abstract']}
+{abstract_block}
 
 ## 🖼️ Architecture
 {arch_image_link}
 
 ## 🧠 AI Analysis
-{analysis_content}
+{analysis_clean}
 
 ## 📂 Resources
 - **Local PDF**: {pdf_link}
@@ -204,6 +297,6 @@ score: {score}
 """
         with open(filepath, "w", encoding="utf-8") as f:
             f.write(content)
-        
+
         logger.info(f"Detailed note written to {filepath}")
         return filepath

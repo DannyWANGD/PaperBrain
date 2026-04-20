@@ -155,6 +155,52 @@ graph LR
 *Analysis performed by PaperBrain-Doubao (Vision-Enabled)*
 
 
+## 🧩 Claim Cards
+
+### Claim-01
+- Claim: The Spatial Scaffold Routing (SSR) pipeline — which uses spatial intelligence as a shared representational scaffold combined with domain-specific expert merging — resolves the joint-training vs. sequential fine-tuning dilemma, enabling a single model to achieve both cross-embodiment generalization and high domain-specific performance without catastrophic forgetting.
+- Evidence: Ablation studies directly compare SSR against joint training and sequential fine-tuning under identical data and compute constraints across 24 benchmarks spanning 4 task families. SSR outperforms both alternatives, with sequential fine-tuning showing measurable degradation on previously learned domains and joint training exhibiting diluted per-domain performance due to gradient interference and long-tail data bias.
+- Boundary/Failure: The merging optimization complexity scales poorly beyond 4 embodied domains; adding heterogeneous agent morphologies risks performance degradation for individual domains and may reintroduce the interference problems SSR is designed to solve.
+- Compared Against: Joint multi-domain training and sequential domain-specific fine-tuning baselines under identical data and compute constraints.
+- Confidence: 7
+- Links:
+  - same_problem:: [[GeneralVLA]]
+  - improves_over:: [[RynnBrain]]
+  - conflicts_with:: 待定
+
+### Claim-02
+- Claim: ACE-Brain-0 achieves state-of-the-art performance across all 4 embodied task families — spatial intelligence, autonomous driving, low-altitude UAV sensing, and embodied interaction — outperforming leading generalist embodied models on 24 benchmarks.
+- Evidence: ACE-Brain-0 is evaluated on 24 benchmarks including SAT, Mindcube-Tiny (spatial intelligence), MME-RealWorld, NuPlanQA (autonomous driving), UrbanVideo-Bench, AircopBench (UAV sensing), and embodied interaction tasks. It surpasses all reported baselines — VeBrain, Pelican-VL, MiMo-Embodied, RoboBrain2.5, and Vlaser — across these benchmarks under identical evaluation conditions.
+- Boundary/Failure: Evaluation is restricted to standard benchmark datasets; performance on out-of-distribution edge cases (e.g., extreme weather for autonomous driving, unstructured cluttered scenes for robotic manipulation) is not reported, leaving generalization to real-world deployment conditions unverified.
+- Compared Against: VeBrain, Pelican-VL, MiMo-Embodied, RoboBrain2.5, Vlaser on identical benchmark tasks.
+- Confidence: 7
+- Links:
+  - same_problem:: [[Xiaomi-Robotics-0]]
+  - improves_over:: [[GeneralVLA]]
+  - conflicts_with:: 待定
+
+### Claim-03
+- Claim: ACE-Brain-0's large LLM backbone introduces inference latency that makes it unsuitable for low-latency edge deployment scenarios, such as high-speed UAV navigation requiring sub-10ms inference, representing a fundamental deployment limitation of the current architecture.
+- Evidence: The paper explicitly acknowledges that the large LLM backbone delivers higher inference latency relative to task-specific embodied models. No latency benchmarks or profiling numbers are reported, but the architectural choice of a large generalist backbone is identified as incompatible with sub-10ms real-time control requirements at the edge.
+- Boundary/Failure: This limitation is intrinsic to the large-backbone design choice; it does not apply to offline or near-real-time tasks (e.g., scene understanding, route planning) where latency constraints are relaxed.
+- Compared Against: Task-specific embodied models optimized for low-latency edge deployment.
+- Confidence: 6
+- Links:
+  - same_problem:: [[World_Action_Models_are_Zero_shot_Policies]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-04
+- Claim: Spatial intelligence functions as a universal representational scaffold that transfers structural geometric and relational reasoning across heterogeneous embodied domains, suggesting that spatial cognition is a domain-agnostic foundation for generalist embodied AI rather than a domain-specific capability.
+- Evidence: The SSR pipeline is architecturally grounded in the hypothesis that spatial reasoning (evaluated on SAT and Mindcube-Tiny) provides shared representational structure that benefits autonomous driving, UAV sensing, and robotic manipulation simultaneously. The empirical success of SSR across all 4 task families on 24 benchmarks supports this cross-domain transfer hypothesis, as the spatial scaffold enables coherent merging of domain-specific experts without catastrophic forgetting.
+- Boundary/Failure: The claim is weakened if spatial scaffolding proves insufficient for embodied domains with minimal geometric structure (e.g., purely language-driven instruction following or abstract symbolic reasoning tasks), where spatial representations may provide no transfer benefit.
+- Compared Against: Domain-specific models and generalist baselines (VeBrain, RoboBrain2.5) that do not explicitly leverage spatial intelligence as a shared scaffold.
+- Confidence: 6
+- Links:
+  - same_problem:: [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]
+  - improves_over:: [[RynnBrain]]
+  - conflicts_with:: 待定
+
 ## 📂 Resources
 - **Local PDF**: [[ACEBrain0 Spatial Intelligence as a Shared Scaffold for Universal Embodiments.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2603.03198v1)

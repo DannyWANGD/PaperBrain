@@ -155,6 +155,52 @@ graph LR
 *Analysis performed by PaperBrain-Doubao (Vision-Enabled)*
 
 
+## 🧩 Claim Cards
+
+### Claim-01
+- Claim: FlowHOI, a flow-based generative model grounded in language semantics, produces hand-object interaction trajectories with significantly reduced inference latency compared to diffusion-based HOI generators while maintaining or improving generation quality.
+- Evidence: Diffusion-based SOTA methods (DiffH2O, LatentHOI) require 3–7 seconds per sequence at inference time. FlowHOI uses a flow-matching formulation with 50-step Euler integration, achieving substantially faster inference. All baselines were retrained on identical data splits with the same T5 text encoder to ensure fair comparison on GRAB and HOT3D benchmarks.
+- Boundary/Failure: The 50-step Euler integration is not yet optimized for closed-loop real-time control on edge robot hardware, so latency advantages may not translate to reactive manipulation scenarios requiring sub-100ms replanning.
+- Compared Against: DiffH2O and LatentHOI, both retrained under identical experimental conditions on GRAB and HOT3D datasets.
+- Confidence: 7
+- Links:
+  - same_problem:: [[GeneralVLA]]
+  - improves_over:: [[Mean_Flow_Policy_with_Instantaneous_Velocity_Constraint_for_Onestep_Action_Generation]]
+  - conflicts_with:: 待定
+
+### Claim-02
+- Claim: FlowHOI achieves superior semantic alignment between natural language instructions and generated HOI trajectories, reducing interpenetration artifacts compared to SOTA diffusion-based baselines on standard HOI benchmarks.
+- Evidence: Evaluations on GRAB (synthetic mocap) and HOT3D (real-world egocentric) datasets show FlowHOI outperforms DiffH2O and LatentHOI on metrics capturing semantic fidelity and physical plausibility (interpenetration). A shared T5 text encoder was used across all methods to eliminate encoding bias, isolating the generative architecture as the differentiating factor.
+- Boundary/Failure: Performance degrades under heavy occlusions or with texture-less and reflective objects, where the upstream 3DGS reconstruction and hand/object state estimation required by the pipeline produce noisy inputs that corrupt generation quality.
+- Compared Against: DiffH2O (diffusion-based) and LatentHOI (latent-based), both using the same T5 text encoder and identical data splits.
+- Confidence: 8
+- Links:
+  - same_problem:: [[SemanticContact_Fields_for_CategoryLevel_Generalizable_Tactile_Tool_Manipulation]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-03
+- Claim: FlowHOI's kinematically consistent trajectory generation does not model contact forces or dynamic object properties, causing systematic failure on manipulation tasks involving deformable or heavy objects.
+- Evidence: The paper explicitly acknowledges that generated trajectories are kinematically consistent but lack explicit force or dynamics modeling. No quantitative experiments on deformable or heavy object categories are reported, and this is identified as a known boundary condition of the approach.
+- Boundary/Failure: Any task requiring force-sensitive grasping, compliant contact with deformable materials (e.g., cloth, foam), or load-aware trajectory adaptation for heavy objects falls outside the validated operating envelope of FlowHOI.
+- Compared Against: No direct baseline comparison exists for this failure mode; the limitation is self-reported relative to the broader dexterous manipulation literature.
+- Confidence: 8
+- Links:
+  - same_problem:: [[SemanticContact_Fields_for_CategoryLevel_Generalizable_Tactile_Tool_Manipulation]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-04
+- Claim: Semantics-grounded HOI generation represents a critical missing component in current VLA models, and integrating explicit HOI dynamics into robot policy frameworks can bridge the gap between language-conditioned planning and contact-rich dexterous manipulation in real-world deployment.
+- Evidence: The paper motivates FlowHOI by demonstrating that SOTA VLA models fail at long-horizon, contact-rich dexterous tasks due to the absence of structured HOI modeling. By grounding generation in language semantics via a T5 encoder and validating on real-world egocentric data (HOT3D), the work provides evidence that semantics-grounded HOI generation is a viable pathway toward deployable robot manipulation policies.
+- Boundary/Failure: The broader implication holds only when high-fidelity 3DGS scene reconstruction is available; in unstructured environments with poor lighting, occlusion, or novel object geometries, the pipeline's dependence on accurate scene representation limits generalization to real-world deployment.
+- Compared Against: GeneralVLA and other VLA frameworks that lack explicit HOI modeling, as identified in the problem statement.
+- Confidence: 7
+- Links:
+  - same_problem:: [[GeneralVLA]]
+  - improves_over:: [[GeneralVLA]]
+  - conflicts_with:: [[Gaussian_Sequences_with_MultiScale_Dynamics_for_4D_Reconstruction_from_Monocular_Casual_Videos]]
+
 ## 📂 Resources
 - **Local PDF**: [[FlowHOI Flowbased SemanticsGrounded Generation of HandObject Interactions for Dexterous Robot Manipu.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2602.13444v1)

@@ -169,6 +169,52 @@ graph LR
 *Analysis performed by PaperBrain-Doubao (Vision-Enabled)*
 
 
+## 🧩 Claim Cards
+
+### Claim-01
+- Claim: Utonia's three-component design — RoPE-enhanced PTv3 backbone, granularity rescaling, and modality-agnostic SSL objectives — enables a single encoder to learn transferable representations across five heterogeneous point cloud domains (remote sensing, outdoor LiDAR, indoor RGB-D, object-centric CAD, and video-lifted point clouds) without domain-specific architectural modifications.
+- Evidence: Utonia is pre-trained on 250k cross-domain samples plus 1M CAD assets using a unified 137M-parameter PTv3 backbone augmented with rotary position embeddings, and is evaluated under identical linear probing, decoder probing, and full fine-tuning protocols across all five domains, demonstrating consistent performance improvements over domain-specialized baselines including Sonata and Concerto.
+- Boundary/Failure: The unified design breaks down for extremely sparse point clouds (<100 points per scene), where granularity rescaling and RoPE cannot extract meaningful geometric features from under-sampled data, limiting applicability to low-density sensing scenarios.
+- Compared Against: Sonata, Concerto, PTv3, PointMAE, PointM2AE, MSC, PPT — all evaluated under identical protocols.
+- Confidence: 8
+- Links:
+  - same_problem:: 待定
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-02
+- Claim: Utonia achieves state-of-the-art or competitive performance across all five point cloud domains simultaneously, outperforming domain-specialized SOTA models (Sonata, Concerto) on their respective home domains while also succeeding on domains those models fail to transfer to.
+- Evidence: Under controlled comparisons using the same PTv3 backbone and matched parameter counts, Utonia surpasses Sonata and Concerto — which are trained on siloed domain-specific datasets — across all evaluated benchmarks spanning remote sensing, outdoor LiDAR, indoor RGB-D, object-centric, and video-lifted point clouds, as measured by linear probing, decoder probing, and full fine-tuning metrics.
+- Boundary/Failure: The performance advantage is measured against baselines using the same PTv3 backbone; comparisons against architecturally distinct encoders with larger parameter budgets or domain-specific inductive biases may not hold uniformly across all tasks.
+- Compared Against: Sonata, Concerto (primary SOTA baselines); also PTv3, PointMAE, PointM2AE, MSC, PPT.
+- Confidence: 7
+- Links:
+  - same_problem:: 待定
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-03
+- Claim: The RoPE-enhanced PTv3 backbone introduces a measurable inference latency overhead of approximately 7% per 100k points compared to standard PTv3, making Utonia less suitable for latency-critical deployment scenarios such as real-time autonomous driving perception.
+- Evidence: Rotary position encoding is applied at every attention layer in the PTv3 backbone, and the paper reports ~7% higher inference latency per 100k points relative to the standard PTv3 baseline, representing a concrete computational cost of the geometry-aware positional encoding strategy.
+- Boundary/Failure: This latency penalty is measured at 100k points per scene; the relative overhead may scale differently for very small or very large point clouds, and hardware-specific optimizations (e.g., fused CUDA kernels for RoPE) could reduce the gap in practice.
+- Compared Against: Standard PTv3 (without rotary position embeddings).
+- Confidence: 6
+- Links:
+  - same_problem:: [[GeometryAware_Rotary_Position_Embedding_for_Consistent_Video_World_Model]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-04
+- Claim: The existence of Utonia demonstrates that cross-domain unification of point cloud SSL is achievable through coordinate-space normalization and modality-agnostic objectives, implying that domain-fragmented pre-training pipelines are an artifact of design choices rather than a fundamental constraint of 3D perception, with broader implications for universal embodied perception systems.
+- Evidence: Prior SOTA models (Sonata, Concerto) explicitly rely on domain-specific datasets and fail to transfer across the five identified domain boundaries due to inconsistent auxiliary modality availability, unaligned spatial granularity, and domain-specific coordinate priors (e.g., gravity alignment). Utonia resolves all three mismatches within a single pre-training pipeline, establishing the first universal cross-domain point encoder as reported in this work.
+- Boundary/Failure: The claim of universality is bounded by the five domains covered in pre-training; point clouds from novel domains not represented in the 250k cross-domain corpus (e.g., medical imaging, underwater sonar) may still require domain-specific adaptation, and the prohibitive pre-training cost (137M parameters, 250k+ samples) limits reproducibility for small research teams.
+- Compared Against: Sonata, Concerto, PPT (the closest prior attempts at multi-domain or cross-domain point cloud learning).
+- Confidence: 7
+- Links:
+  - same_problem:: [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
 ## 📂 Resources
 - **Local PDF**: [[Utonia Toward One Encoder for All Point Clouds.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2603.03283v1)

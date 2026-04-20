@@ -133,6 +133,52 @@ graph LR
 *Analysis performed by PaperBrain-Doubao (Vision-Enabled)*
 
 
+## 🧩 Claim Cards
+
+### Claim-01
+- Claim: Imposing an instantaneous velocity constraint (IVC) on the mean flow ODE boundary condition eliminates solution multiplicity and enables a one-step flow policy to match or exceed the expressiveness of multi-step flow-based RL policies on sparse-reward robotic manipulation tasks.
+- Evidence: Mean Flow Policy with IVC achieves competitive or superior success rates compared to multi-step baselines (FQL, BFN, QC) across all 9 evaluated tasks (3 Robomimic + 6 OGBench), while generating actions in a single forward pass. The IVC ablation shows that removing the boundary constraint degrades accuracy, confirming the constraint's role in resolving ODE solution multiplicity.
+- Boundary/Failure: The constraint is derived under assumptions of smooth, well-behaved flow trajectories; in high-dimensional or highly multimodal action spaces (e.g., legged locomotion), the IVC may be insufficient to uniquely constrain the solution, and the benefit may diminish.
+- Compared Against: Multi-step FQL, BFN, and QC baselines, as well as one-step variants of all three baselines without IVC.
+- Confidence: 8
+- Links:
+  - same_problem:: [[MoRL]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-02
+- Claim: Mean Flow Policy with IVC achieves higher task success rates than all evaluated one-step baseline variants (one-step FQL, one-step BFN, one-step QC) on 9 sparse-reward robotic manipulation benchmarks, demonstrating that the expressiveness gap between one-step and multi-step flow policies can be closed without iterative ODE solving.
+- Evidence: Evaluated on 3 Robomimic tasks (lift, can, square) and 6 OGBench tasks (cube-double-task 2/3/4, cube-triple-task 2/3/4) under identical offline pre-training data, online fine-tuning compute budgets, and network sizes. Mean Flow Policy with IVC consistently outperforms one-step counterparts of FQL, BFN, and QC across these benchmarks, with the performance gap being most pronounced on harder tasks (e.g., square, cube-triple-task 4).
+- Boundary/Failure: All evaluations are confined to low-to-moderate dimensional manipulation tasks; the claim may not hold for discrete action spaces or tasks requiring long-horizon planning beyond the tested suite.
+- Compared Against: One-step FQL, one-step BFN, one-step QC, and their multi-step counterparts.
+- Confidence: 8
+- Links:
+  - same_problem:: [[World_Action_Models_are_Zero_shot_Policies]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-03
+- Claim: The best-of-N candidate selection step in Mean Flow Policy introduces inference latency that scales linearly with N, because ranking N one-step action candidates requires N separate Q-network forward passes, undermining the real-time deployment advantage for large N on resource-constrained robotic hardware.
+- Evidence: The paper acknowledges that while action generation itself is one-step, the best-of-N selection requires N Q-network evaluations. No latency profiling for large N (e.g., N > 10) on edge hardware is reported, leaving the practical overhead unquantified for deployment scenarios with strict cycle-time budgets.
+- Boundary/Failure: For small N (e.g., N = 1 or N = 4), the overhead is negligible on modern GPUs; the limitation becomes critical only in low-resource edge deployments or when N must be large to compensate for a weak Q function.
+- Compared Against: Pure one-step generation without best-of-N selection; multi-step flow policies with fixed ODE solver steps.
+- Confidence: 7
+- Links:
+  - same_problem:: [[Xiaomi-Robotics-0]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-04
+- Claim: Constraining instantaneous velocity in flow-based generative policies represents a broadly applicable design principle for one-step generative RL, suggesting that boundary condition specification — rather than increased solver steps — is the key factor governing policy expressiveness in flow-matching frameworks.
+- Evidence: The paper demonstrates that unconstrained one-step mean velocity flow policies (without IVC) underperform multi-step baselines due to solution multiplicity, while adding IVC recovers expressiveness without additional ODE steps. This finding implies that prior multi-step flow RL methods (FQL, BFN, QC) may have been compensating for missing boundary conditions through extra solver iterations rather than inherent architectural necessity.
+- Boundary/Failure: This principle is validated only within continuous, bounded robotic manipulation action spaces; it may not generalize to diffusion-based policies with stochastic sampling, discrete action spaces, or settings where the flow trajectory is inherently non-smooth.
+- Compared Against: Multi-step FQL, BFN, QC as representatives of the prevailing multi-step paradigm; Physics-informed value representations as a related approach to constraining learned dynamics.
+- Confidence: 7
+- Links:
+  - same_problem:: [[Physics Informed Viscous Value Representations]]
+  - improves_over:: [[MoRL]]
+  - conflicts_with:: 待定
+
 ## 📂 Resources
 - **Local PDF**: [[Mean Flow Policy with Instantaneous Velocity Constraint for Onestep Action Generation.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2602.13810v1)

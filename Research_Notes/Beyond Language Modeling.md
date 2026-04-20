@@ -361,6 +361,52 @@ Section 5 demonstrates that world modeling capabilities emerge from general mult
 *Analysis performed by PaperBrain-OpenRouter (anthropic/claude-4.6-sonnet) (Vision-Enabled)*
 
 
+## 🧩 Claim Cards
+
+### Claim-01
+- Claim: Training a unified multimodal model from scratch—without initializing from a pretrained LLM—using a shared Transformer decoder with modality-specific Mixture-of-Experts FFNs and a frozen SigLIP 2 visual encoder enables competitive joint vision-language pretraining while preserving clean empirical attribution of learned capabilities to multimodal data alone.
+- Evidence: The paper ablates modality-specific vs. shared FFN configurations, encoder families (SD-VAE, FLUX.1 VAE, SigLIP 2 So400m, DINOv2-L, WebSSL-L, raw pixels), and MoE configurations (number of experts, routing granularity, top-k, expert placement frequency) under controlled compute budgets. SigLIP 2 So400m is selected as the best visual encoder across the understanding benchmarks. The 2.3B-parameter model is trained entirely from scratch, enabling clean separation of multimodal vs. language-inherited knowledge.
+- Boundary/Failure: The claim breaks down if the frozen SigLIP 2 encoder itself was pretrained on large-scale vision-language data, which reintroduces indirect language-pretraining bias into the visual representation; the "from scratch" guarantee applies only to the decoder backbone.
+- Compared Against: The dominant paradigm of initializing from a pretrained LLM (e.g., LLaVA-style adaptation) and then fine-tuning on visual data.
+- Confidence: 7
+- Links:
+  - same_problem:: 待定
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-02
+- Claim: Adding diverse multimodal data mixtures (video, image-text pairs, and action data) to text-only pretraining improves visual understanding and generation metrics without catastrophically degrading language modeling performance relative to a text-only baseline trained at the same compute budget.
+- Evidence: The paper evaluates data mixture ablations across Text+Video, Text+MetaCLIP, and Text+Video+MetaCLIP+Action configurations. Language quality is tracked via DCLM perplexity (in-distribution) and Notes perplexity (OOD). Visual generation is assessed via COCO FID, DPGBench, and GenEval. Visual understanding is measured as average VQA accuracy over 16 Cambrian benchmarks after 1 epoch of SFT on Cambrian-7M. A text-only LM at the same compute budget serves as the explicit cost baseline.
+- Boundary/Failure: The claim may break down at extreme multimodal data ratios where visual data crowds out text tokens sufficiently to cause measurable language perplexity degradation; the paper does not report the tipping-point ratio.
+- Compared Against: Text-only language model trained at the same compute budget.
+- Confidence: 7
+- Links:
+  - same_problem:: 待定
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-03
+- Claim: The 25-step Euler diffusion sampler required for visual generation in this architecture introduces a severe inference latency asymmetry—requiring 25 full forward passes through the 2.3B-parameter model per image—that makes the system impractical for interactive deployment without architectural mitigation, a limitation the paper does not quantify or address.
+- Evidence: The paper describes using a 25-step Euler sampler for image generation over the full Transformer decoder. The model has 2.3B parameters. No wall-clock generation times are reported anywhere in the paper, and no distillation, caching, or consistency-model alternatives are discussed. Text generation requires a single forward pass per token, creating an asymmetry of at least 25x in forward-pass count for a single image output.
+- Boundary/Failure: The limitation is less severe if the deployment context is batch offline generation rather than interactive use, or if future work applies consistency distillation to reduce sampling steps to 1-4.
+- Compared Against: Autoregressive text generation (single forward pass per token) within the same model.
+- Confidence: 8
+- Links:
+  - same_problem:: 待定
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-04
+- Claim: Native multimodal pretraining from scratch—jointly learning vision, language, and action prediction—provides a principled foundation for world modeling, suggesting that the field's reliance on LLM-initialized backbones has obscured the true data-efficiency and capability profile of joint multimodal learning.
+- Evidence: The paper includes a world modeling evaluation using navigation rollout quality assessed via qualitative analysis and the NWM protocol, with a Text+Video+MetaCLIP+Action data mixture ablation specifically targeting this capability. The broader argument is methodological: by removing LLM initialization, the paper isolates what multimodal data alone contributes, providing a cleaner empirical signal than prior LLM-adapted approaches.
+- Boundary/Failure: The broader implication weakens if the from-scratch models consistently underperform LLM-initialized counterparts on downstream benchmarks at matched compute, which the paper does not fully rule out given the limited scale (2.3B parameters) of the experiments.
+- Compared Against: LLM-initialized multimodal models (e.g., LLaVA, Flamingo-style architectures) that conflate language pretraining with multimodal learning.
+- Confidence: 6
+- Links:
+  - same_problem:: [[Chain of World]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
 ## 📂 Resources
 - **Local PDF**: [[Beyond Language Modeling An Exploration of Multimodal Pretraining.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2603.03276.pdf)

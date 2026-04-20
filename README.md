@@ -1,231 +1,205 @@
-# PaperBrain 🤖📄 - Automated Research Intelligence Hub
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.10+-blue?logo=python&logoColor=white" />
+  <img src="https://img.shields.io/badge/Obsidian-Vault-7C3AED?logo=obsidian&logoColor=white" />
+  <img src="https://img.shields.io/badge/LLM-OpenRouter%20%7C%20Doubao-FF6600" />
+  <img src="https://img.shields.io/badge/Workflow-Auto%20Research-00A86B" />
+</p>
 
-![PaperBrain Architecture](paperbrain_arch.png)
-[中文说明](#paperbrain---自动化科研情报中枢) | [English](#english)
+# PaperBrain
 
----
+> From paper stream to knowledge graph.  
+> 自动抓取、分层筛选、深度分析、主题聚合、播客生成，一站式沉淀到 Obsidian。
 
-<a name="english"></a>
-## 🇬🇧 English
+<p align="center">
+  <img src="./paperbrain_arch.png" alt="PaperBrain Architecture" width="900" />
+</p>
 
-**PaperBrain** is a fully automated research intelligence pipeline that turns daily paper streams into actionable research notes.  
-In one run, it completes a full loop: **Fetch → Screen → Deep Analyze → Link to Your Knowledge Base → Notify/Podcast**.
+## 为什么是 PaperBrain
+- 面向 Embodied AI / Robotics / VLA / World Model 的研究自动化流水线。
+- 两阶段筛选控制成本：`model_flash` 粗筛，`model_screening_pro` 精筛。
+- 深度分析整合 PDF 文本、关键图像、历史笔记 RAG，输出可直接学习的技术报告。
+- 自动维护 Obsidian 知识库：日报、单篇笔记、主题页、回链、播客音频。
 
-*   **It Thinks**: Uses strong reasoning models for engineering-level analysis (method, math, evidence, limitations).
-*   **It Remembers**: Uses **Context-Aware RAG** to compare new papers with your existing notes.
-*   **It Speaks**: Generates a **~5-minute Deep Dive Podcast by default** (duration configurable via CLI).
-*   **It Organizes**: Writes structured Markdown notes, metadata, and graph-ready links into **Obsidian**.
+## 功能介绍
 
-### 🚀 Core Features
+### 1) 智能抓取与去重
+- 支持 arXiv 与 Hugging Face Daily Papers 双源抓取，可按日期批量运行，也可单篇 `--arxiv-url` 精准分析。
+- 抓取阶段自动做关键词过滤与标题去重，减少无关论文和重复条目。
+- 网络请求内置重试与退避策略，降低限流/抖动带来的任务失败概率。
 
-*   **Intelligent Screening**: Fast first-pass scoring on large daily paper sets.
-*   **Deep Analysis**: Detailed report for high-value papers (problem gap, method, formulas, evidence, critique).
-*   **Context-Aware RAG**: Differential analysis against your prior notes.
-*   **Strict Link Policy**: `[[Note]]` links are used **only** when a detailed note file exists; otherwise, it uses an ArXiv web link.
-*   **Visual Extraction**: Automatic architecture figure extraction from PDFs.
-*   **AI Podcast + Mobile Push**: Audio briefing generation and Bark notifications.
+### 2) 两阶段论文筛选
+- Stage-1 粗筛聚焦召回，快速筛出可能高价值论文，控制总体调用成本。
+- Stage-2 精筛做多维评分（relevance/novelty/rigor/evidence/reproducibility），形成更稳定的优先级排序。
+- 二阶段支持可配置 PDF 摘录注入（前 N 页 + 字符上限），避免只看摘要造成误判。
 
-### 🏁 Getting Started (Zero to Hero)
+### 3) 深度分析引擎
+- 自动下载 PDF，提取关键架构图，并结合历史笔记做 RAG 上下文增强。
+- 支持多轮分析生成“可学习型”报告，覆盖方法、公式、实验、局限与后续研究方向。
+- 具备视觉 fallback 路径：文本抽取失败时可回退到图像阅读流程。
 
-#### Prerequisites
-*   **OS**: Windows / macOS / Linux
-*   **Python**: 3.10+ (Conda recommended)
-*   **Obsidian**: For the best knowledge base experience.
+### 4) 知识库自动化沉淀
+- 自动生成 `Research_Notes` 单篇笔记与 `Daily_Papers` 日报，并维护 frontmatter 元数据。
+- 主题页增量更新：新笔记写入后自动刷新相关 `Research_Themes`，无需每次全量重建。
+- 知识园丁会尝试为已有笔记追加 related work 回链，持续增强笔记间连接密度。
 
-#### Step 1: Installation
-Clone the repository and set up the environment:
+### 5) 可配置提示词与主题系统
+- 筛选、分析、主题增强提示词统一在 `script/prompts.yaml` 管理，便于快速实验和版本演进。
+- 主题树定义位于 `script/themes.yaml`，支持按研究方向扩展或重构主题体系。
+- 标签体系由 `script/tags.yaml` 管理，利于后续统计、检索与主题归档。
+
+### 6) 播客与传播能力
+- 自动为高分论文生成播客文稿与音频，降低信息消费门槛。
+- 支持对指定笔记单独生成播客，适合对外分享和团队同步。
+
+## 核心流程
+
+```text
+arXiv + HuggingFace Daily Papers
+        │
+        ▼
+Stage-1 Coarse Screening (model_flash)
+        │
+        ▼
+Stage-2 Rigorous Screening (model_screening_pro)
+  └─ 可选注入 PDF 前几页文本作为额外证据
+        │
+        ▼
+Deep Analysis (model_pro)
+  └─ PDF文本 + 架构图 + RAG上下文 + 多轮分析
+        │
+        ▼
+Obsidian Outputs
+  ├─ Research_Notes
+  ├─ Research_Themes (增量更新)
+  ├─ Daily_Papers
+  ├─ Assets / PDFs
+  └─ Podcasts
+```
+
+## 项目结构
+
+```text
+PaperBrain/
+├── Daily_Papers/                  # 每日摘要
+├── Research_Notes/                # 单篇深度笔记
+├── Research_Themes/               # 主题母页 + Theme_Index
+├── PDFs/                          # 下载的论文 PDF
+├── Assets/                        # 提取的架构图
+├── Podcasts/                      # 生成的播客音频
+├── script/
+│   ├── main.py                    # 主流程入口
+│   ├── rebuild_theme_pages.py     # 全量重建主题页
+│   ├── enrich_empty_themes.py     # 仅补齐空 AI 区块
+│   ├── generate_podcast.py        # 指定笔记生成播客
+│   ├── config.yaml                # 运行配置
+│   ├── prompts.yaml               # 全量提示词配置
+│   ├── themes.yaml                # 主题定义配置
+│   ├── tags.yaml                  # 标准标签体系
+│   └── src/
+│       ├── scraper.py
+│       ├── analyser.py
+│       ├── knowledge_base.py
+│       ├── obsidian_writer.py
+│       ├── theme_manager.py
+│       ├── gardener.py
+│       ├── podcaster.py
+│       └── config_loader.py
+├── CLAUDE.md                      # 协作文档与变更日志
+└── README.md
+```
+
+## 快速开始
+
+### 1) 安装环境
 
 ```bash
-git clone https://github.com/YourUsername/PaperBrain.git
-cd PaperBrain/script
-
-# Create Conda environment
-conda create -n wd python=3.10
+cd script
+conda create -n wd python=3.10 -y
 conda activate wd
-
-# Install dependencies
 pip install -r requirements.txt
 ```
 
-#### Step 2: API Configuration
-PaperBrain uses **OpenRouter** (recommended) or Doubao for LLM inference.
+### 2) 配置密钥
 
-1.  Copy the example env file:
-    ```bash
-    cp .env.example .env
-    ```
-2.  Edit `.env` and fill in your keys:
-    ```ini
-    # Recommended: Use OpenRouter for access to Claude 3.7 / Gemini Pro
-    OPENROUTER_API_KEY=sk-or-v1-your-key-here
-    
-    # Optional: For Bark Mobile Notifications (iOS)
-    BARK_URL=https://api.day.app/your-token/
-    ```
+复制并填写环境变量：
 
-#### Step 3: Customize Your Research Interests
-Edit `config.yaml` to define what you care about:
-
-```yaml
-search:
-  keywords:
-    - "World Model"
-    - "Embodied AI"
-    - "Humanoid Robot"
-  arxiv_categories:
-    - "cs.RO"
-    - "cs.AI"
-```
-
-#### Step 4: Run It!
-
-**Option A: Run Immediately (Manual Mode)**
 ```bash
-# Default: Generates Podcast (~5 minutes)
-python main.py --run-now --provider openrouter
-
-# Skip Podcast (faster)
-python main.py --run-now --provider openrouter --no-podcast
-
-# Custom podcast duration (e.g., 10 minutes)
-python main.py --run-now --provider openrouter --podcast-minutes 10
+copy .env.example .env
 ```
 
-**Option B: Generate Podcast for Existing Note**
+`script/.env` 至少包含：
+
+```env
+DOUBAO_API_KEY=your_key
+OPENROUTER_API_KEY=your_key
+# 可选：BARK_URL=...
+```
+
+### 3) 运行主流程
+
+从仓库根目录执行：
+
 ```bash
-# Great for revisiting old papers!
-python generate_podcast.py "Solaris.md" --provider openrouter
+# 立即执行（默认抓取昨天）
+python script/main.py --run-now --provider openrouter
 
-# Custom duration for single-note podcast
-python generate_podcast.py "Solaris.md" --provider openrouter --minutes 12
+# 指定日期
+python script/main.py --run-now --date 2026-03-20 --provider openrouter
+
+# 单篇论文模式（URL 或 arXiv ID）
+python script/main.py --run-now --provider openrouter --arxiv-url https://arxiv.org/abs/2603.19199
 ```
 
-**Option C: Auto-Schedule (Windows)**
-Use **Task Scheduler** to run `script/run_daily.bat` every morning at 8:00 AM.
-*   *Action*: Start a program
-*   *Program*: `D:\PaperBrain\script\run_daily.bat`
-*   *Start in*: `D:\PaperBrain\script\` (Crucial!)
+## 配置说明（重点）
 
-### 🔒 Privacy & Security
+- `script/config.yaml`
+  - 模型与阈值：`doubao.*` / `openrouter.*`
+  - 筛选策略：`analysis.screening_second_stage_top_k`
+  - 二阶段 PDF 证据注入：
+    - `analysis.screening_second_stage_use_pdf_context`
+    - `analysis.screening_second_stage_pdf_context_pages`
+    - `analysis.screening_second_stage_pdf_context_max_chars`
+  - 输出目录：`obsidian.*`
+- `script/prompts.yaml`
+  - 粗筛、精筛、深度分析、别名生成等提示词统一管理。
+- `script/themes.yaml`
+  - 主题树定义（可直接扩展和重命名）。
 
-This tool processes data locally and interacts with third-party AI services.
-*   **API Keys**: Stored in `.env` (git-ignored). Never shared.
-*   **Data Transmission**: Paper content is sent to ArXiv (search), Hugging Face (metadata), OpenAI/Anthropic (analysis), and Microsoft (TTS).
-*   **See [SECURITY.md](SECURITY.md)** for full details.
+## 常用命令
 
----
-
-<a name="paperbrain---自动化科研情报中枢"></a>
-## 🇨🇳 PaperBrain - 自动化科研情报中枢
-
-**PaperBrain** 不只是“论文抓取器”，而是一个完整的**自动化科研工作流引擎**。  
-一次运行会自动完成：**抓取 → 筛选 → 深度分析 → 知识库关联 → 推送/播客**。
-
-它每天自动从 ArXiv 和 Hugging Face 抓取最新论文，利用 **快慢思考 (System 1 & 2)** 架构进行筛选和深度解读，并将结构化的知识（公式、图谱、代码审计）同步到您的 **Obsidian** 知识库中。
-
-### ✨ 核心亮点（清晰版）
-
-1.  **智能筛选 + 深度分析双层架构**：
-    *   第一层：快速筛选大批论文，给出相关性评分。
-    *   第二层：只对高价值论文生成深度报告，重点输出方法、公式、实验和局限。
-
-2.  **上下文感知 RAG 差异化分析**：
-    *   新论文分析前，先检索您已有笔记。
-    *   报告会明确写出“与既有工作相比，哪里变好、哪里仍不足”。
-
-3.  **严格链接策略（避免误跳转）**：
-    *   只有真正生成了深度笔记的论文，才使用 `[[内联链接]]`。
-    *   未生成深度笔记的论文，一律使用 ArXiv 网页链接。
-
-4.  **AI 播客与移动推送**：
-    *   默认生成约 5 分钟英文深度播客（可通过命令行参数调整时长）；
-    *   通过 Bark 推送摘要和播客就绪提醒。
-
-### 🏁 快速上手指南
-
-#### 准备工作
-*   推荐安装 **Anaconda** 或 Miniconda。
-*   推荐使用 **Obsidian** 作为知识库前端。
-
-#### 第一步：安装项目
 ```bash
-# 1. 克隆代码
-git clone https://github.com/YourUsername/PaperBrain.git
-cd PaperBrain/script
+# 全量重建主题母页
+python script/rebuild_theme_pages.py --provider openrouter
 
-# 2. 创建环境
-conda create -n wd python=3.10
-conda activate wd
+# 仅补全空 AI 区块
+python script/enrich_empty_themes.py --provider openrouter
 
-# 3. 安装依赖 (包含 PyTorch, Edge-TTS 等)
-pip install -r requirements.txt
+# 对指定笔记生成播客
+python script/generate_podcast.py "FASTER.md" --provider openrouter --minutes 6
 ```
 
-#### 第二步：配置密钥
-为了保护隐私，我们使用 `.env` 文件存储密钥。
+## 输出产物
 
-1.  复制模板：
-    ```bash
-    cp .env.example .env
-    ```
-2.  编辑 `.env` 文件（使用记事本或 VS Code）：
-    ```ini
-    # 推荐使用 OpenRouter (可访问 Claude 3.7, Gemini Pro 等 SOTA 模型)
-    OPENROUTER_API_KEY=sk-or-v1-your-key-here
-    
-    # 选填：Bark 推送链接 (iOS App Store 下载 Bark)
-    BARK_URL=https://api.day.app/your-token/
-    ```
+- `Research_Notes/*.md`：单篇技术深析（含摘要、方法拆解、证据、批判评估）。
+- `Research_Themes/*.md`：主题聚合页（增量更新）。
+- `Daily_Papers/*.md`：每日筛选摘要。
+- `Assets/*_arch.(png|jpeg)`：论文架构图。
+- `Podcasts/*.mp3`：Top 论文播客。
 
-#### 第三步：定义研究方向
-打开 `config.yaml`，修改您的关注领域：
+## 稳定性与容错
 
-```yaml
-search:
-  keywords:
-    - "World Model"
-    - "Embodied AI"
-    - "Humanoid Robot"
-  arxiv_categories:
-    - "cs.RO"  # 机器人
-    - "cs.CV"  # 计算机视觉
-```
+- arXiv 限流（429/503）内置指数退避。
+- OpenRouter 模型不可用（403/404/地区限制）自动 fallback。
+- JSON 脏输出有清洗与降级 payload。
+- PDF 文本抽取失败自动 fallback 到备用解析路径。
 
-#### 第四步：运行！
+## 安全
 
-**方式一：立即运行 (手动)**
-```bash
-# 默认模式：包含播客生成（默认约 5 分钟）
-python main.py --run-now --provider openrouter
+- API Key 仅本地 `.env` 使用，不入库。
+- 所有输出默认落地到本地 Obsidian Vault。
+- 详细策略见 [SECURITY.md](SECURITY.md)。
 
-# 纯文本模式：不生成播客 (速度更快)
-python main.py --run-now --provider openrouter --no-podcast
+## 协作开发
 
-# 自定义播客时长（示例：10分钟）
-python main.py --run-now --provider openrouter --podcast-minutes 10
-```
-
-**方式二：为特定笔记生成播客**
-想听听以前读过的某篇论文？
-```bash
-python generate_podcast.py "Solaris.md" --provider openrouter
-
-# 自定义该篇播客时长（示例：12分钟）
-python generate_podcast.py "Solaris.md" --provider openrouter --minutes 12
-```
-
-**方式三：每日自动运行 (Windows)**
-使用 Windows 自带的 **任务计划程序 (Task Scheduler)**：
-1.  创建基本任务 -> 每天上午 8:00。
-2.  操作：启动程序 -> 选择 `D:\PaperBrain\script\run_daily.bat`。
-3.  **关键点**：在“起始于 (Start in)”一栏中，**必须**填入脚本所在目录 `D:\PaperBrain\script\`，否则会报错。
-
-### 🔒 隐私与安全
-
-本项目注重您的数据隐私与密钥安全。
-*   **API 密钥**：仅存储在本地 `.env` 文件中（默认被 git 忽略），绝不上传。
-*   **数据传输**：论文内容仅发送至 ArXiv (搜索)、Hugging Face (元数据)、OpenAI/Anthropic (分析) 及 Microsoft (语音合成) 用于生成报告。
-*   **详见 [SECURITY.md](SECURITY.md)** 了解完整安全策略。
-
----
-*Powered by PaperBrain Team & LLMs*
+- 项目上下文、约束和变更历史见 [CLAUDE.md](./CLAUDE.md)。
+- 欢迎提交 Issue / PR，一起把研究工作流做成真正可复用的开源工具链。

@@ -142,6 +142,52 @@ graph LR
 *Analysis performed by PaperBrain-Doubao (Vision-Enabled)*
 
 
+## 🧩 Claim Cards
+
+### Claim-01
+- Claim: A hybrid 3D-aware hand conditioning approach that lifts 2D skeleton ControlNet signals with explicit 3D joint depth encoding outperforms all alternative hand conditioning strategies (TokenConcat, AdaLN, CrossAttention, TokenAddition, binary mask, pure 2D skeleton ControlNet) for fine-grained hand-object interaction video generation on the HOT3D dataset.
+- Evidence: Ablation study across six hand conditioning baselines using the same Wan2.2 14B backbone with identical LoRA fine-tuning (rank 32, 1k steps, 480x480 resolution) on the HOT3D held-out test split demonstrates that the proposed 3D-aware conditioning achieves the best quantitative scores across all evaluated metrics, with pure 2D skeleton ControlNet conditioning suffering from depth ambiguity and self-occlusion artifacts that the 3D-aware approach resolves.
+- Boundary/Failure: Performance degrades significantly for extreme out-of-distribution hand articulations involving full self-occlusion or very fast motion not represented in the HOT3D training distribution, where the 3D depth encoding provides insufficient disambiguation.
+- Compared Against: Six ablation baselines: TokenConcat, AdaLN, CrossAttention, TokenAddition, binary mask conditioning, and pure 2D skeleton ControlNet conditioning, all using the same Wan2.2 backbone and LoRA setup.
+- Confidence: 7
+- Links:
+  - same_problem:: [[Code2Worlds]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-02
+- Claim: Joint conditioning on both 6-DoF camera pose and 3D hand pose yields superior video generation quality compared to either single-modality control signal alone for human-centric hand-object interaction scenarios in XR.
+- Evidence: Controlled single-modality ablations on the HOT3D dataset compare: (1) camera-only control using CameraCtrl, (2) hand-only control using the best-performing hand conditioning variant from the ablation study, and (3) the proposed joint hand-and-camera conditioning model — all built on the identical Wan2.2 14B backbone with the same LoRA fine-tuning protocol — with the joint model achieving the best scores on held-out evaluation metrics, confirming that the two control modalities provide complementary and non-redundant conditioning information.
+- Boundary/Failure: The joint conditioning advantage is measured only on the HOT3D dataset; generalization to diverse real-world XR scenes with objects and environments outside HOT3D's distribution has not been verified.
+- Compared Against: CameraCtrl (camera-only baseline) and best single-modality hand-only control model, both on the same Wan2.2 backbone.
+- Confidence: 7
+- Links:
+  - same_problem:: [[Code2Worlds]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-03
+- Claim: The proposed system's autoregressive inference pipeline introduces irrecoverable temporal scene drift for interaction sessions exceeding approximately 60 seconds, making it unsuitable for long-horizon continuous XR experiences without explicit scene-state anchoring mechanisms.
+- Evidence: The hidden limitations analysis identifies temporal drift as a concrete failure mode: autoregressive generation accumulates errors over time, leading to inconsistent object appearance and scene layout degradation beyond the ~60-second interaction horizon. Additionally, the 11 FPS throughput on an H100 GPU and 1.4-second end-to-end latency further constrain real-time deployment, placing the system well above the <200ms latency threshold required for fast-paced embodied tasks such as surgical training or reaction games.
+- Boundary/Failure: The 60-second drift threshold is an empirically observed boundary; the exact degradation rate depends on scene complexity, object count, and interaction density, and may be shorter for highly dynamic scenes.
+- Compared Against: Implicit comparison against full bidirectional video diffusion models (noted as too computationally expensive) and the unconditioned Wan2.2 14B baseline.
+- Confidence: 6
+- Links:
+  - same_problem:: 待定
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-04
+- Claim: Fine-tuning a large-scale pre-trained video diffusion foundation model (Wan2.2 14B) with lightweight LoRA adapters is a viable and computationally tractable strategy for injecting fine-grained embodied control signals into video world models for XR, bridging the gap between generative video capabilities and human-centric immersive simulation requirements.
+- Evidence: The full system is trained using LoRA rank 32 for only 1,000 steps at 480x480 resolution on the HOT3D dataset, achieving 11 FPS interactive inference on a single H100 GPU — a substantially lower training cost than training a full bidirectional video diffusion model from scratch, while still outperforming the unconditioned Wan2.2 14B baseline and all single-modality control baselines on held-out HOT3D metrics.
+- Boundary/Failure: The LoRA fine-tuning approach is constrained to the HOT3D domain; deployment on consumer edge VR headsets is currently impossible due to H100-class GPU requirements, and the approach has not been validated on embodied manipulation tasks beyond hand-object interaction in the HOT3D distribution.
+- Compared Against: Unconditioned Wan2.2 14B baseline and the implicit alternative of full model fine-tuning or training bidirectional diffusion models from scratch.
+- Confidence: 7
+- Links:
+  - same_problem:: [[Code2Worlds]]
+  - improves_over:: [[GeneralVLA]]
+  - conflicts_with:: 待定
+
 ## 📂 Resources
 - **Local PDF**: [[Generated Reality Humancentric World Simulation using Interactive Video Generation with Hand and Cam.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2602.18422.pdf)

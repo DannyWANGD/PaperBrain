@@ -125,6 +125,52 @@ graph LR
 *Analysis performed by PaperBrain-Doubao (Vision-Enabled)*
 
 
+## 🧩 Claim Cards
+
+### Claim-01
+- Claim: A three-layer multi-scale motion decomposition for 3D Gaussians — separating scene-level rigid motion, object-level articulated motion, and local non-rigid deformation — achieves more accurate 4D reconstruction from monocular casual video than single-layer or implicit deformation field approaches.
+- Evidence: On the DyCheck (iPhone) benchmark, the proposed method outperforms all evaluated baselines including Shape-of-Motion, Deform-3DGS, Dynamic Marbles, HyperNeRF, and T-NeRF under covisibility-masked metrics in strictly monocular input settings. Ablation studies confirm that removing any single layer of the motion hierarchy degrades reconstruction fidelity, validating the contribution of each decomposition level.
+- Boundary/Failure: The three-layer decomposition adds approximately 15% rendering overhead per frame compared to static 3DGS, and the expressiveness of the local non-rigid layer is constrained by the assumption that Gaussian appearance (color, opacity) remains static over time, causing failure on scenes with dynamic illumination or reflectance changes.
+- Compared Against: Shape-of-Motion, Deform-3DGS, Dynamic Marbles, HyperNeRF, T-NeRF on DyCheck benchmark
+- Confidence: 8
+- Links:
+  - same_problem:: 待定
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-02
+- Claim: The proposed method achieves state-of-the-art novel view synthesis quality on the DyCheck (iPhone) benchmark under monocular input conditions, outperforming both NeRF-based and Gaussian-based dynamic reconstruction baselines on covisibility-masked evaluation metrics.
+- Evidence: Quantitative results on the DyCheck (iPhone) benchmark show the method surpasses HyperNeRF, T-NeRF, Deform-3DGS, Dynamic Marbles, and Shape-of-Motion across covisibility-masked PSNR, SSIM, and LPIPS metrics. Custom dataset experiments covering rigid, articulated, and deformable object categories further confirm consistent improvements, with ground truth captured by synchronized fixed test cameras independent of the training monocular view, ensuring unbiased evaluation.
+- Boundary/Failure: Performance degrades under severe occlusions or fast motion where foundation model point trackers produce noisy or missing correspondences, as the method depends on high-quality 2D point tracks for supervision. Evaluation is also limited to the DyCheck benchmark and custom datasets; generalization to other public benchmarks is not demonstrated.
+- Compared Against: HyperNeRF, T-NeRF, Deform-3DGS, Dynamic Marbles, Shape-of-Motion
+- Confidence: 8
+- Links:
+  - same_problem:: 待定
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-03
+- Claim: The method's reliance on foundation model point tracks as supervision introduces a critical failure mode: under severe occlusion or fast motion, tracker noise propagates into the Gaussian motion estimates, causing temporally unstable and geometrically inaccurate reconstructions.
+- Evidence: The paper explicitly identifies high-quality point tracks as a prerequisite for the method's motion supervision pipeline. The three-layer motion model is trained using tracked 2D correspondences from foundation model trackers; when these tracks are noisy or missing due to occlusion or fast motion, the motion decomposition loses its primary supervisory signal, leading to degraded reconstruction quality. No quantitative ablation on tracker quality degradation is reported, but this is acknowledged as a known limitation.
+- Boundary/Failure: This limitation is most severe in scenes with dense occlusion patterns, motion blur, or rapid non-rigid deformations that exceed the tracking capability of current foundation model trackers. The failure is not recoverable within the current framework without alternative supervision sources.
+- Compared Against: Static 3DGS (no motion tracking dependency) and implicit deformation methods such as HyperNeRF (which do not rely on explicit point tracks)
+- Confidence: 7
+- Links:
+  - same_problem:: 待定
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-04
+- Claim: Explicit multi-scale Gaussian motion decomposition provides a more generalizable framework for in-the-wild monocular 4D reconstruction than implicit neural deformation fields, because it avoids the over-smoothing inherent to MLP-based deformation while maintaining tractable degrees of freedom through hierarchical motion factorization.
+- Evidence: The paper demonstrates that implicit deformation field methods (HyperNeRF, T-NeRF) systematically oversmooth fine-grained motion details on the DyCheck benchmark, while purely explicit methods (Deform-3DGS) either overfit or lack expressiveness for non-rigid deformations. The proposed hierarchical explicit decomposition resolves this trade-off, achieving superior quantitative metrics across rigid, articulated, and deformable object categories on both the DyCheck benchmark and custom datasets captured under true monocular in-the-wild conditions.
+- Boundary/Failure: The explicit Gaussian representation assumes static appearance per Gaussian, so the framework cannot model scenes where surface appearance changes dynamically (e.g., varying illumination, transparency, or reflectance-altering deformations), a regime where implicit neural representations with time-conditioned appearance have a structural advantage.
+- Compared Against: HyperNeRF and T-NeRF (implicit deformation fields); Deform-3DGS (explicit but single-scale Gaussian deformation)
+- Confidence: 7
+- Links:
+  - same_problem:: 待定
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
 ## 📂 Resources
 - **Local PDF**: [[Gaussian Sequences with MultiScale Dynamics for 4D Reconstruction from Monocular Casual Videos.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2602.13806v1)

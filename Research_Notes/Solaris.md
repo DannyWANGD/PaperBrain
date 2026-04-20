@@ -153,6 +153,52 @@ graph LR
 *Analysis performed by PaperBrain-Doubao (Vision-Enabled)*
 
 
+## 🧩 Claim Cards
+
+### Claim-01
+- Claim: Solaris's interleaved multi-player token architecture with shared cross-player attention enables a single diffusion-based world model to jointly generate synchronized video observations for multiple agents while maintaining cross-agent view consistency, outperforming prior single-player and multi-agent video world models on a held-out multiplayer evaluation benchmark.
+- Evidence: Solaris is evaluated against CausVid, Matrix Game 2.0, and Multiverse across five task categories (movement, memory, grounding, building, and view consistency) on the same held-out multiplayer evaluation set with identical compute budgets. Ablated variants without shared cross-player attention show degraded view consistency, confirming the architectural contribution of the cross-player attention module.
+- Boundary/Failure: The claim holds only for 2-player scenarios; the interleaved token design incurs O((N*M)^2) self-attention complexity, making the architecture impractical for more than 2 players at current scale.
+- Compared Against: CausVid, Matrix Game 2.0 (single-player baselines), Multiverse (prior multi-agent video world model), and ablated Solaris variants without cross-player attention or staged training.
+- Confidence: 7
+- Links:
+  - same_problem:: [[Solaris Building a Multiplayer Video World Model in Minecraft/README]]
+  - improves_over:: [[2026-02-26-PaperDigest]]
+  - conflicts_with:: 待定
+
+### Claim-02
+- Claim: Staged training combined with a modified self-forcing inference strategy is necessary for stable autoregressive multi-player video generation in Solaris; removing either component causes measurable degradation in generation quality across the multiplayer evaluation suite.
+- Evidence: Ablation experiments compare full Solaris against variants trained without staged training and against vanilla self-forcing, both evaluated on the same held-out multiplayer benchmark covering movement, memory, grounding, building, and view consistency tasks. The staged training ablation and vanilla self-forcing ablation both underperform the full model, establishing the contribution of each component independently.
+- Boundary/Failure: The benefit of staged training is demonstrated only on pre-programmed bot interaction scenarios present in the training distribution; generalization to novel agent behaviors not seen during training is not established.
+- Compared Against: Ablated Solaris variants: (1) no staged training, (2) vanilla self-forcing without the modified inference strategy.
+- Confidence: 7
+- Links:
+  - same_problem:: [[Solaris]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-03
+- Claim: Solaris's autoregressive diffusion generation for 2 players requires approximately 4x more compute than equivalent single-player models, and the O((N*M)^2) self-attention complexity over interleaved player tokens makes real-time multi-agent simulation deployment impractical beyond 2 players with current hardware.
+- Evidence: The paper explicitly reports ~4x compute overhead relative to single-player equivalents for 2-player generation. The quadratic scaling of self-attention over N players and M tokens per video is identified as the primary bottleneck, and the current implementation is restricted to N=2 players.
+- Boundary/Failure: This limitation may be mitigated by future work employing sparse attention, linear attention approximations, or player-count-independent architectures, but no such solution is demonstrated in this paper.
+- Compared Against: Single-player video world models (CausVid, Matrix Game 2.0) used as the compute reference baseline.
+- Confidence: 8
+- Links:
+  - same_problem:: [[Solaris Building a Multiplayer Video World Model in Minecraft/README]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-04
+- Claim: The absence of a publicly available Minecraft framework supporting synchronized high-fidelity visual observations and low-level action capture for cooperative multiplayer gameplay at scale represents a critical infrastructure gap for multi-agent world model research, and Solaris addresses this by introducing such a data collection framework as a prerequisite contribution.
+- Evidence: The paper identifies this infrastructure gap as one of two core problems motivating the work, and the Solaris framework is presented as enabling large-scale synchronized multiplayer data collection necessary to train the multi-agent world model. No prior Minecraft AI framework is identified as supporting this combination of features at the required scale.
+- Boundary/Failure: The framework's coverage is limited to pre-programmed bot interaction scenarios, meaning the collected dataset does not capture the full diversity of human cooperative gameplay, which restricts the generalization of models trained on it to novel interaction patterns.
+- Compared Against: Existing Minecraft AI frameworks (implicitly, prior single-agent frameworks such as those underlying CausVid and Matrix Game 2.0) that lack synchronized multiplayer visual and action capture.
+- Confidence: 6
+- Links:
+  - same_problem:: [[2026-02-26-PaperDigest]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
 ## 📂 Resources
 - **Local PDF**: [[Solaris Building a Multiplayer Video World Model in Minecraft.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2602.22208v1)

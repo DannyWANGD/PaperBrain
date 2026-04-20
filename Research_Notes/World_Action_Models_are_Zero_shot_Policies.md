@@ -156,6 +156,52 @@ graph LR
 *Analysis performed by PaperBrain-Doubao (Vision-Enabled)*
 
 
+## 🧩 Claim Cards
+
+### Claim-01
+- Claim: A World Action Model (WAM) that grounds robot action prediction in a pretrained video diffusion backbone's spatiotemporal dynamics priors can serve as a zero-shot policy on unseen real-world tasks without any task-specific demonstration fine-tuning.
+- Evidence: WAM is evaluated zero-shot on unseen real-world manipulation tasks across multiple robot embodiments and environments, outperforming SOTA pretrained VLAs (RT-2, OpenVLA, Gemini Robotics VLA) on task progress and success metrics measured via human annotation and automatic state tracking, demonstrating that physical world-evolution alignment enables generalization beyond training task distributions.
+- Boundary/Failure: The zero-shot capability breaks down for long-horizon, memory-dependent tasks (>10 execution steps, e.g., multi-step assembly) because the architecture lacks explicit long-term state tracking modules; performance also degrades on highly deformable objects or unstructured dynamic outdoor scenes due to the video diffusion backbone's bias toward static indoor environments.
+- Compared Against: RT-2, OpenVLA, Gemini Robotics VLA, and prior WAM works evaluated on the same unseen task suite.
+- Confidence: 7
+- Links:
+  - same_problem:: [[GeneralVLA]]
+  - improves_over:: [[GeneralVLA]]
+  - conflicts_with:: [[QuantVLA]]
+
+### Claim-02
+- Claim: WAM achieves superior task success rates on unseen real-world robot manipulation benchmarks compared to SOTA VLA baselines (RT-2, OpenVLA, Gemini Robotics VLA) under identical evaluation conditions, demonstrating that spatiotemporal physical dynamics priors provide a measurable empirical advantage over purely semantic priors.
+- Evidence: All models are evaluated on the same set of unseen real-world tasks across multiple environments and robot embodiments, with consistent task progress and success metrics assessed via human annotation and automatic state tracking; WAM outperforms all listed VLA baselines under this fair experimental design, with the performance gap attributed to explicit alignment between predicted actions and physical world evolution rather than task-specific training data.
+- Boundary/Failure: The empirical advantage is demonstrated only on short-horizon tasks in controlled indoor settings; gains may not hold for tasks requiring fine-grained dexterous manipulation of deformable objects or for outdoor unstructured environments not represented in the video diffusion pretraining distribution.
+- Compared Against: RT-2, OpenVLA, Gemini Robotics VLA evaluated on identical unseen task sets with the same success metrics.
+- Confidence: 7
+- Links:
+  - same_problem:: [[GeneralVLA]]
+  - improves_over:: [[GeneralVLA]]
+  - conflicts_with:: [[QuantVLA]]
+
+### Claim-03
+- Claim: WAM's inference pipeline requires at least 2 high-end A100/H100 GPUs, making it infeasible for edge deployment on low-power mobile robot hardware without further model compression or optimization, which constitutes a critical practical limitation of the current approach.
+- Evidence: The paper's own hardware requirements specify 2 A100/H100 GPUs for low-latency inference; no quantization, distillation, or edge-optimization experiments are reported, and no latency benchmarks on embedded or mobile platforms are provided, confirming that the computational bottleneck is unaddressed in the current work.
+- Boundary/Failure: This limitation is specific to the current unoptimized implementation; applying post-training quantization, knowledge distillation, or model pruning (as explored in related work) could potentially reduce hardware requirements, but such results are not demonstrated in this paper.
+- Compared Against: Implicit comparison to lightweight VLA deployments and edge-deployable robot policies that operate on single consumer-grade GPUs or embedded accelerators.
+- Confidence: 8
+- Links:
+  - same_problem:: [[QuantVLA]]
+  - improves_over:: 待定
+  - conflicts_with:: [[QuantVLA]]
+
+### Claim-04
+- Claim: Grounding robot action models in pretrained video world models represents a scalable path toward cross-embodiment transfer, enabling policies to leverage video-only demonstration data from heterogeneous sources (other robots, humans) without paired action labels, thereby addressing a fundamental data bottleneck in VLA training.
+- Evidence: The WAM framework is evaluated across multiple robot embodiments under consistent metrics, and the architecture is designed to ingest video-only demonstrations by decoupling world-state prediction (from the video diffusion backbone) from action inference, circumventing the need for large volumes of repetitive task-specific action-labeled demonstrations that constrain RT-2 and OpenVLA.
+- Boundary/Failure: Cross-embodiment transfer efficacy is contingent on the video diffusion backbone having seen sufficiently diverse embodiment morphologies during pretraining; transfer to highly novel kinematic structures (e.g., soft robots, multi-fingered hands) not represented in pretraining video corpora is likely to fail, and no ablation quantifying the contribution of cross-embodiment video data is reported.
+- Compared Against: RT-2 and OpenVLA, which require large volumes of task-specific action-labeled demonstrations and cannot directly exploit video-only data from other embodiments.
+- Confidence: 6
+- Links:
+  - same_problem:: [[GeneralVLA]]
+  - improves_over:: [[GeneralVLA]]
+  - conflicts_with:: [[Code2Worlds]]
+
 ## 📂 Resources
 - **Local PDF**: [[World Action Models are Zeroshot Policies.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2602.15922.pdf)

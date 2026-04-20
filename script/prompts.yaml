@@ -1,0 +1,401 @@
+# PaperBrain Prompts Configuration
+# All AI prompts are managed here. Use {variable} placeholders for runtime formatting.
+# Fallback inline strings exist in code if this file is missing.
+
+screening:
+  coarse_system: "You are a careful research triage assistant. Be conservative, fast, and structured."
+  coarse_user: |
+    You are performing the FIRST-PASS coarse screening for a robotics/AI paper pipeline.
+    Evaluate only whether this paper is promising enough to enter a stricter second-stage review for these interests: {keywords}.
+
+    Title: {title}
+    Abstract: {abstract}
+
+    {taxonomy_block}
+
+    Score each dimension from 1-10:
+    - relevance: how well the paper matches the target interests.
+    - evidence: how much concrete empirical/theoretical support is visible from the abstract.
+    - method_completeness: whether the abstract describes a real method with enough mechanism detail to justify deeper review.
+
+    Decision goal:
+    - This is NOT the final accept/reject decision.
+    - Be recall-oriented for high-potential work, but still filter obvious weak matches, shallow papers, and poorly supported work.
+    - If the abstract is vague, underspecified, or clearly off-topic, set should_rescreen to false.
+
+    Output requirements:
+    - coarse_score: overall coarse priority for second-stage review.
+    - should_rescreen: true only if this paper is worth spending a stronger model on.
+    - reason: exactly 1 concise sentence stating why it should or should not enter second-stage review.
+
+    Return JSON only:
+    {{
+        "coarse_score": int,
+        "relevance": int,
+        "evidence": int,
+        "method_completeness": int,
+        "should_rescreen": bool,
+        "reason": "string"
+    }}
+
+  detailed_system: "You are a senior research reviewer. Be objective, critical, conservative, and use consistent scoring standards."
+  detailed_user: |
+    You are performing the SECOND-PASS rigorous screening for a robotics/AI research workflow.
+    This paper has already passed a coarse triage stage. Your job is to make a high-quality final screening judgment.
+    Evaluate expected research value for these interests: {keywords}.
+
+    Title: {title}
+    Abstract: {abstract}
+    {doc_context_block}
+
+    {taxonomy_block}
+
+    Score each dimension from 1-10:
+    - relevance: fit to the target interests and application scope.
+    - novelty: originality versus common baseline ideas.
+    - rigor: methodological soundness and evaluation quality.
+    - evidence: strength of empirical/theoretical support in the abstract.
+    - reproducibility: clarity of setup, assumptions, and implementability signal.
+
+    Overall score guidance:
+    - 9-10: high relevance + high novelty + high rigor + strong evidence.
+    - 7-8: strong paper with minor gaps.
+    - 5-6: useful but incremental/partially matched.
+    - 1-4: weak match or weak evidence/rigor.
+
+    Calibration constraints:
+    - if relevance <= 4, overall score must be <= 6.
+    - if rigor <= 4 or evidence <= 4, overall score must be <= 7.
+    - if abstract lacks concrete method/evaluation details, reduce confidence and avoid optimistic scoring.
+    - keep scoring conservative and discriminative.
+    - if additional document excerpt is provided, use it as supporting evidence for rigor/evidence/reproducibility.
+    - if abstract and excerpt conflict, prefer concrete technical details from the excerpt and lower confidence if inconsistency is severe.
+
+    Output requirements:
+    - innovation: exactly 1 sentence, concrete and technical.
+    - limitations: exactly 1 sentence, concrete and technical.
+    - reason: 1 concise sentence mentioning key drivers of score.
+    - tags: 3-5 specific tags.
+      - if concept matches taxonomy tag/alias above, MUST use the standard tag name.
+      - use underscores; avoid generic tags like AI/Robotics.
+    - short_title:
+      - if title contains ":", use text before ":".
+      - otherwise use full title.
+      - replace spaces with underscores.
+
+    Return JSON only:
+    {{
+        "score": int,
+        "relevance": int,
+        "novelty": int,
+        "rigor": int,
+        "evidence": int,
+        "reproducibility": int,
+        "confidence": int,
+        "red_flags": ["string"],
+        "innovation": "string",
+        "limitations": "string",
+        "reason": "string",
+        "tags": ["string", "string", "string"],
+        "short_title": "string"
+    }}
+
+analysis:
+  system_role: "You are a Senior Principal Researcher at a top-tier AI lab (e.g., DeepMind, FAIR, OpenAI) with 15+ years of experience in embodied AI, robot learning, and foundation models. You write thorough, publication-quality technical analyses. Your hallmark is depth: you never produce bullet-point skeletons or fragmented summaries. Every section you write reads as a coherent narrative with complete reasoning chains — from motivation through mechanism to implication. You think in terms of 'why this design choice over alternatives' and 'what breaks when assumptions fail'. You are precise with math, honest about limitations, and allergic to hype. Output language follows the per-section rules given in the task prompt."
+
+  deep_analysis: |
+    Please perform a deep, engineering-centric analysis of the provided paper. Produce a publication-quality report that a PhD student could use as a standalone study guide for this paper.
+
+    ═══════════════════════════════════════════════════════════════
+    CRITICAL WRITING RULES — READ BEFORE YOU START
+    ═══════════════════════════════════════════════════════════════
+    1. **Paragraph-first, not bullet-first.** Each subsection must open with a coherent narrative paragraph (≥3 sentences) that explains the "what → why → how → so what" chain. Bullet points may follow ONLY to list specific numbers, formulas, or enumerations — never as the primary content vehicle.
+    2. **No orphan sentences.** Every claim must be followed by its evidence or reasoning in the same paragraph. Do not write a sentence and move on — always close the logical loop.
+    3. **Depth over breadth.** It is better to explain one mechanism thoroughly (motivation → formulation → intuition → failure modes) than to mention five mechanisms superficially.
+    4. **Explicit reasoning chains.** When describing a design choice, always state: (a) what problem it solves, (b) what the naive alternative would be, (c) why the naive alternative fails, and (d) how this design addresses that failure.
+    5. **Concrete, not vague.** Replace "achieves good results" with "achieves 87.3% success rate on CALVIN ABC-D, a +12.1pp improvement over the OpenVLA baseline". Replace "uses a novel loss" with the actual loss formula and its physical meaning.
+    ═══════════════════════════════════════════════════════════════
+
+    **Language Rules**:
+    - Metadata JSON keys/values stay in English.
+    - In section "📌 Abstract", first provide the full original English abstract, then immediately provide the complete Chinese translation.
+    - After the abstract section, all narrative sections must be written in Chinese.
+    - Keep proprietary names and technical terms in original English (e.g., method names, model names, dataset names, loss names, module names, API/library names, benchmark names, metric abbreviations such as mAP/FID/IoU, and math symbols).
+    - All section titles after "📌 Abstract" must be Chinese.
+    - Mathematical equations can be presented naturally in both inline and display forms, and may appear in Markdown tables when needed.
+    - Ensure escape characters are handled correctly for Obsidian rendering (avoid broken control sequences).
+
+    0. **Metadata Extraction** (CRITICAL: Output this as a JSON block at the very beginning)
+    ```json
+    {{
+      "publication_date": "YYYY-MM-DD or 'Unknown'",
+      "institutions": ["Institution 1", "Institution 2"],
+      "github": "URL or 'None'",
+      "project_page": "URL or 'None'"
+    }}
+    ```
+
+    1. **核心摘要（Core Snapshot）**
+    Write a cohesive 2-3 paragraph narrative covering:
+    - **Problem Statement**: What specific research gap or engineering bottleneck does this paper address? Describe the gap precisely — what prior methods fail to do and why that matters for real-world deployment or scientific understanding.
+    - **Core Contribution**: State the single most important technical contribution in one sentence, then expand with a paragraph explaining the key insight — what makes this idea work where previous approaches did not.
+    - **Innovation Origin & Rationale**: Trace the intellectual lineage of the core idea. Which limitation of which prior method (cite by name) motivated this work? What cross-domain insight or theoretical observation led to the proposed solution? Why is this approach technically sound rather than merely novel?
+    - **Academic Rating**: Rate Innovation and Rigor (1-10) with a multi-sentence justification that references specific evidence from the paper.
+
+    2. **技术分解（Technical Decomposition）** — THIS IS THE MOST IMPORTANT SECTION. Be exhaustive.
+    Write this as a connected technical narrative, not a list of disconnected bullets.
+    - **Algorithmic Logic**: Walk through the complete method pipeline from input to output. For each stage, explain: (1) what transformation happens, (2) why this specific transformation was chosen over the obvious alternative, and (3) what would go wrong if this stage were removed or simplified. Use a numbered step-by-step flow but write each step as a full paragraph.
+    - **Mathematical Formulation**: Identify ALL core objective functions, loss terms, and key equations. For each equation:
+        - Write the formula in LaTeX.
+        - Define every variable explicitly (e.g., "$x_t$ denotes the noisy latent at diffusion step $t$").
+        - Explain the physical/geometric meaning — what does minimizing this term achieve in practice?
+        - State the relationship between loss terms (e.g., "The total loss $\mathcal{{L}} = \lambda_1 \mathcal{{L}}_{{rec}} + \lambda_2 \mathcal{{L}}_{{reg}}$ balances reconstruction fidelity against latent smoothness, where $\lambda_1 = 1.0$ and $\lambda_2 = 0.01$ throughout all experiments").
+    - **Tensor Flow & Architecture**: Describe the data shapes at key stages (e.g., Input: $[B, 3, H, W] \rightarrow$ Encoder $\rightarrow$ Latent: $[B, C, h, w]$). Highlight specific architectural choices and explain WHY they were made (e.g., "Uses FiLM conditioning instead of cross-attention because the conditioning signal is low-dimensional and spatially invariant, making cross-attention unnecessarily expensive").
+    - **Innovation Logic**: Write a dedicated paragraph comparing this method's core mechanism against the closest 2-3 baselines. What is mathematically or structurally different? What assumption does this method relax or strengthen? What failure mode of the baseline does this method avoid?
+
+    3. **证据与指标（Evidence & Metrics）**
+    Write 2-3 paragraphs covering:
+    - **Benchmark & Baselines**: List all benchmarks and all compared baselines. Assess whether the experimental design is fair (same compute budget, same data, same evaluation protocol). Flag any missing comparisons that would be expected.
+    - **Key Results**: Report the most important quantitative results with exact numbers. Contextualize them — is a +2% improvement on this benchmark significant or within noise? How does the improvement scale with task difficulty?
+    - **Ablation Study**: Which component contributes most to the final performance? Are there surprising findings (e.g., a seemingly minor component being critical)? Summarize the ablation table's key takeaways in narrative form.
+
+    4. **批判性评估（Critical Assessment）**
+    Write 2 substantive paragraphs:
+    - **Hidden Limitations**: Identify 3-5 specific failure modes, scalability concerns, or unstated assumptions. For each, explain the concrete scenario where the method would break down and why. Do not write generic limitations like "needs more data" — be specific (e.g., "The method assumes static camera pose; under ego-motion with >15° rotation between frames, the geometric consistency loss becomes ill-conditioned").
+    - **Engineering Hurdles**: Identify 2-3 practical deployment barriers (latency, memory, data requirements, hardware assumptions). Quantify where possible.
+
+    5. **研究者灵感提示（Researcher Inspiration）**
+    For each of 3 research directions, write a full paragraph containing:
+    - Why this direction is promising (grounded in a specific finding from this paper).
+    - A concrete, minimal experiment that could be done in 1-2 weeks to validate the idea.
+    - The first key risk that could invalidate the direction and how to test for it early.
+
+  round1_suffix: |
+    **Context**: The paper text is provided above as plain text. Key figures are provided as images — refer to them when discussing architecture, data flow, or visual results. If a figure shows the method pipeline, describe it in detail within the Technical Decomposition section.
+
+    **Mandatory Formatting**:
+    - DO NOT output any top-level title like "# Deep Analysis Report" or "## Academic Quality & Innovation". Start directly with the metadata JSON block, then the first section.
+    - Create a section exactly named "## 📌 Abstract".
+    - Under it, first place the complete English abstract from the paper.
+    - Immediately after that, add "### 中文译文" and provide the complete Chinese translation of that abstract.
+    - After "## 📌 Abstract", all remaining section titles and prose must be Chinese.
+    - Use "## 1. 核心摘要", "## 2. 技术分解", "## 3. 证据与指标", "## 4. 批判性评估", "## 5. 研究者灵感提示" as the exact section headers.
+    - Sub-sections within each section use "### " (three hashes).
+
+    **Quality Gate — Self-check before outputting**:
+    - Does every subsection contain at least one multi-sentence paragraph (not just bullets)?
+    - Does the Technical Decomposition section trace the full pipeline from input to output?
+    - Are all loss functions written in LaTeX with every variable defined?
+    - Does the Critical Assessment name specific failure scenarios, not generic concerns?
+    - If any answer is "no", revise that section before outputting.
+
+  round2_user: |
+    Based on the comprehensive analysis you produced above, now perform a Connection & Refinement step.
+
+    ═══════════════════════════════════════════════════════════════
+    WRITING RULES (same as Round 1 — do NOT regress to bullet-point skeletons)
+    ═══════════════════════════════════════════════════════════════
+    - Every task below must be answered in coherent paragraphs (≥3 sentences each).
+    - Bullet points are allowed ONLY for structured data (link lists, Mermaid code).
+    - Always close the reasoning loop: claim → evidence → implication.
+    ═══════════════════════════════════════════════════════════════
+
+    Output language: Chinese for all prose.
+    Keep proprietary names and technical terms in original English.
+    Keep [[Wiki-Link]] filenames and Mermaid node IDs in English-safe format.
+
+    IMPORTANT FORMATTING RULES:
+    - Do NOT output any header like "Analysis & Connections" or "Knowledge Graph & Connections". The caller adds that header.
+    - Use exactly these Chinese section headers at ### level (no "Task X" prefix):
+      ### 差异化分析与关联
+      ### Mermaid 知识图谱
+      ### 未来研究方向
+
+    {context_notes}
+
+    ### 差异化分析与关联
+    For each of the TOP 3 most relevant papers from my knowledge base (listed above), write a dedicated paragraph that covers:
+    - What specific technical component or research question is shared between this paper and the related note.
+    - How this paper's approach differs from or improves upon the related note's method — be precise about the mechanism (e.g., "replaces the discrete action tokenizer in [[X]] with a continuous flow-matching head, which eliminates the quantization bottleneck that limited [[X]]'s dexterous manipulation accuracy").
+    - What the implication of this difference is — does it resolve a known limitation, open a new failure mode, or suggest a synthesis of both approaches?
+    - Use [[Wiki-Link]] format for all note references.
+
+    ### Mermaid 知识图谱
+    Generate a Mermaid JS code block (`graph LR`) that visualizes:
+    - The paper's core method pipeline (input → key modules → output)
+    - Connections to related work from the knowledge base (as dashed links)
+    - **STRICT MERMAID RULES**:
+      1. Use ONLY English characters and numbers for Node IDs (e.g., A, B, Node1). No spaces or special chars in IDs.
+      2. Put descriptive text in quotes or brackets (e.g., A["Descriptive Text"]).
+      3. DO NOT use Chinese characters anywhere in the Mermaid block.
+      4. Ensure all parentheses are balanced.
+      5. Do NOT output literal "\\n". Use "<br/>" for line breaks in labels.
+
+    ### 未来研究方向
+    For each of 3 research directions, write a full paragraph (not bullets) containing:
+    - A specific finding or limitation from this paper that motivates the direction.
+    - A concrete experiment design (what data, what metric, what comparison) that could be executed in 1-2 weeks.
+    - The primary risk that could invalidate this direction and an early diagnostic to detect it.
+    - How this direction connects to broader trends in the field (e.g., "This aligns with the emerging shift from task-specific policies to foundation policy models, as seen in [[X]] and [[Y]]").
+
+  abstract_fallback_user: |
+    Generate a concise deep-analysis fallback report using only the title, abstract, and related notes context.
+    If evidence is missing from abstract, explicitly mark as "Unknown from abstract".
+
+    Title: {title}
+    Abstract: {abstract}
+
+    Related Notes Context:
+    {rag_context}
+
+    Output structure:
+    1) Core Snapshot
+    2) Technical Decomposition (only what can be inferred)
+    3) Evidence & Metrics (unknown values explicitly marked)
+    4) Critical Assessment
+
+  vision_select_user: |
+    You are an expert at reading research papers. I will show you several rendered pages from a PDF.
+
+    Your task: find the page that contains the **model / method architecture diagram** — the figure that shows the overall structure of the proposed approach, with components, modules, data flow arrows, and technical labels.
+
+    **What counts as an architecture diagram:**
+    - Block diagrams showing model components and their connections
+    - Flowcharts depicting the method pipeline (input → processing stages → output)
+    - System schematics with named modules, arrows, and tensor/data annotations
+    - Training/inference pipeline overviews
+
+    **What does NOT count (reject these):**
+    - Teaser/splash images showing qualitative results, photos, or 3D renders
+    - Bar charts, line plots, scatter plots, or any quantitative result figures
+    - Tables (comparison tables, ablation tables)
+    - Qualitative comparison grids (side-by-side result images)
+    - Title pages or author information pages
+
+    **Rules:**
+    1. If multiple pages contain architecture-like figures, prefer the one showing the OVERALL method (not a sub-module detail).
+    2. If NO page contains a clear architecture diagram, return index -1.
+    3. Do NOT guess — only select a page if you can clearly see a structural diagram.
+
+    **Output:** Return ONLY a JSON object:
+    {{"index": <int or -1>, "caption": "<figure caption if readable, else brief description>"}}
+
+  vision_fallback_suffix: |
+    **Visual Context**: Please refer to the provided images to interpret figures and tables accurately.
+    **Mandatory Formatting**:
+    - DO NOT output any top-level title like "# Deep Analysis Report" or "## Academic Quality & Innovation". Start directly with the metadata JSON block, then the first section.
+    - Create a section exactly named "## 📌 Abstract".
+    - Under it, first place the complete English abstract from the paper.
+    - Immediately after that, add "### 中文译文" and provide the complete Chinese translation of that abstract.
+    - After "## 📌 Abstract", all remaining section titles and prose must be Chinese.
+    - Use "## 1. 核心摘要", "## 2. 技术分解", "## 3. 证据与指标", "## 4. 批判性评估", "## 5. 研究者灵感提示" as the exact section headers.
+    - Sub-sections within each section use "### " (three hashes).
+
+  alias_generation_user: |
+    Given the following paper, generate 5-10 concise, searchable aliases that other researchers might use to refer to this work.
+    Focus on: method names, key technical terms, acronyms, and distinctive concepts introduced by this paper.
+    Aliases should be specific enough to uniquely identify this paper's contributions (avoid generic terms like "robot" or "model").
+
+    Title: {title}
+    Abstract: {abstract}
+    Key innovation: {innovation}
+
+    Return ONLY a JSON array of strings, e.g.: ["Alias One", "AliasTwo", "Key_Term"]
+    Each alias should be 1-4 words. Prefer English. No duplicates.
+
+rag:
+  system: "You are a helpful research assistant."
+  retrieve_user: |
+    I am analyzing a new paper:
+    Title: {title}
+    Abstract: {abstract}
+
+    Here is a list of my existing research notes:
+    {notes_list}
+
+    Task:
+    Identify the top {k} most relevant notes that I should review to understand the connection between this new paper and my previous knowledge.
+    Return ONLY a JSON array of indices, e.g., [0, 5, 12]. If none are relevant, return [].
+
+podcast:
+  system: "You are an expert science communicator."
+  script_user: |
+    You are a professional tech podcaster (like Lex Fridman or a specialized AI researcher host).
+    Your task is to create a script for a **detailed "Deep Dive" audio segment** (target duration: ~{duration_minutes} minutes).
+
+    Topic: {paper_title}
+
+    Deep Analysis Report:
+    {analysis_content}
+
+    Context from Knowledge Base (RAG):
+    {rag_context}
+
+    **Tone & Style**:
+    - **Natural & Conversational**: Use fillers occasionally ("you know", "right?"), rhetorical questions, and varied sentence structures. Avoid sounding robotic or like a news anchor.
+    - **Enthusiastic but Critical**: Be genuinely excited about the innovation but maintain a healthy skepticism about limitations.
+    - **Storytelling**: Frame the research as a narrative. What was the struggle before this? What is the hero (the new method)? What is the climax (the results)?
+
+    **Structure (Aim for ~{target_words_min}-{target_words_max} words for {duration_minutes} mins)**:
+    1. **The Hook**: Start with a provocative question or a real-world scenario that this technology solves.
+    2. **The "Status Quo"**: Explain why previous methods failed. Use analogies (e.g., "It's like trying to teach a cat calculus...").
+    3. **The Breakthrough (The "Meat")**: Deep dive into the technical innovation. Don't just list features; explain the *intuition*.
+    4. **The Connection (RAG)**: Weave in the related work naturally. "This is actually a fascinating pivot from what we saw in [Related Paper X]..."
+    5. **The Critique**: Honest assessment of where it breaks.
+    6. **The Outro**: A philosophical or forward-looking conclusion.
+
+    **Format**: Write ONLY the spoken text. Do not include [Sound Effect] or [Host] labels. Just the monologue script.
+    **Language**: English only.
+
+theme_enrichment:
+  system: "You are a precise research synthesis engine. Output valid JSON only."
+
+  batch1_user: |
+    You are a senior AI robotics researcher synthesizing a knowledge base theme page.
+    Theme: {theme_title} (ID: {theme_id})
+    Parent domain: {theme_parent}
+    Keywords: {theme_keywords}
+
+    Top papers in this theme (with core contributions and limitations):
+    {notes_brief}
+
+    Your task: Return STRICT JSON with exactly these 3 keys:
+    {{
+      "landmark_works": [
+        "10-15 bullets. Each entry is a historically significant, widely-cited paper in this theme that is NOT in the paper list above. Format: '**Paper Title (Year, Venue)** — one sentence on what it established and why it matters.' Requirements: (1) Cover the full historical arc from foundational theory through algorithmic breakthroughs to recent paradigm shifts. (2) Include both classic papers (pre-2022) AND recent high-impact works (2022-2024). (3) Prioritize papers with >100 citations or from top venues (NeurIPS/ICML/ICLR/CoRL/RSS/ICRA/CVPR/ECCV). (4) Only include papers you are highly confident exist — do NOT fabricate."
+      ],
+      "frontier_signals": [
+        "3-5 bullets in Chinese. Each bullet must name a SPECIFIC paper or method from the list above and describe the concrete technical trend it represents. No vague statements."
+      ],
+      "systematic_links": [
+        "3-5 bullets in Chinese. Each must identify a SPECIFIC technical bridge between this theme and another theme. Name the connecting method/paper."
+      ]
+    }}
+    Rules:
+    - landmark_works must be real, verifiable, high-impact papers. If unsure, omit rather than fabricate.
+    - Ground frontier_signals and systematic_links in the paper list above. No hallucination.
+    - Preserve technical terms in English (method names, metrics, model names, venue names).
+    - JSON must be valid and parseable.
+
+  batch2_user: |
+    You are a senior AI robotics researcher synthesizing a knowledge base theme page.
+    Theme: {theme_title} (ID: {theme_id})
+    Keywords: {theme_keywords}
+
+    Top papers in this theme (with core contributions and limitations):
+    {notes_brief}
+
+    Your task: Return STRICT JSON with exactly these 3 keys:
+    {{
+      "open_questions": [
+        "3-4 bullets in Chinese. Each is a concrete unanswered research question derived from the limitations above. Frame as a question ending with '？'. Be specific, not generic."
+      ],
+      "visual_map_mermaid": "graph LR code only (no backticks). English-safe node IDs. Max 10 nodes. Show the key method relationships in this theme.",
+      "weekly_actions": [
+        "3-4 learning-oriented suggestions in Chinese, targeted at an undergraduate student who wants to deeply understand this theme. Each suggestion must: (1) focus on understanding or reproducing a KEY technical point from one specific paper above, (2) propose a small, self-contained demo or experiment that can be done in a Jupyter notebook or with <200 lines of code, (3) specify what to observe or measure to validate understanding. Avoid suggestions requiring large compute, full training runs, or complex infrastructure. Prioritize insight over scale."
+      ]
+    }}
+    Rules:
+    - Ground open_questions in the limitations from the paper list. No generic questions.
+    - Mermaid code must use only ASCII node IDs. No Chinese in node IDs or edge labels.
+    - JSON must be valid and parseable.

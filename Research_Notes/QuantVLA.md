@@ -178,6 +178,41 @@ graph LR
 *Analysis performed by PaperBrain-Doubao (Vision-Enabled)*
 
 
+## 🧩 Claim Cards
+
+### Claim-01
+- Claim: QuantVLA achieves training-free post-training quantization for DiT-based VLA models by combining selective quantization layout, attention temperature matching, and output head balancing without modifying model architecture or inference operator schedule.
+- Evidence: The three-component framework is validated on OpenPI π0.5 and GROOT N1.5 across four LIBERO task suites, delivering up to 70% relative memory savings on quantized components while matching or exceeding FP16 task success rates.
+- Boundary/Failure: The approach is untested on autoregressive or discrete-token action head VLA architectures, limiting applicability beyond DiT-based designs.
+- Compared Against: FP16 full-precision baseline, DuQuant
+- Confidence: 7
+- Links:
+  - same_problem:: [[GeneralVLA]]
+  - improves_over:: [[2026-02-23-PaperDigest]]
+  - conflicts_with:: 待定
+
+### Claim-02
+- Claim: QuantVLA matches or exceeds FP16 task success rates on all four LIBERO suites for both tested VLA models while reducing memory on quantized components by up to 70%.
+- Evidence: Evaluated on LIBERO Spatial, Object, Goal, and Long suites using OpenPI π0.5 and GROOT N1.5, QuantVLA outperforms DuQuant (SOTA PTQ baseline) and meets FP16 performance under identical calibration buffer sizes and standard evaluation protocol.
+- Boundary/Failure: All results are simulation-only; real-robot sensor noise may amplify calibration drift since α/β scalars are estimated on noise-free calibration data.
+- Compared Against: FP16 full-precision baseline, DuQuant, layer selection ablation variants
+- Confidence: 7
+- Links:
+  - same_problem:: [[SPARR]]
+  - improves_over:: [[2026-02-23-PaperDigest]]
+  - conflicts_with:: 待定
+
+### Claim-03
+- Claim: The mixed-precision layout retaining floating-point attention projections may introduce type-conversion overhead on integer-only edge hardware, and simulation-only validation leaves real-robot generalization unconfirmed.
+- Evidence: No inference latency measurements are reported, and all evaluations use the LIBERO simulator; the impact of sensor noise on the calibration-derived α/β scalars is not assessed.
+- Boundary/Failure: On robotic NPUs requiring integer-only execution, the floating-point attention projection layers could negate the memory savings with latency penalties.
+- Compared Against: FP16 full-precision baseline
+- Confidence: 8
+- Links:
+  - same_problem:: [[Xiaomi-Robotics-0]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
 ## 📂 Resources
 - **Local PDF**: [[QuantVLA ScaleCalibrated PostTraining Quantization for VisionLanguageAction Models.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2602.20309v2)

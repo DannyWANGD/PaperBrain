@@ -407,6 +407,52 @@ graph LR
 *Analysis performed by PaperBrain-OpenRouter (anthropic/claude-4.6-sonnet) (Vision-Enabled)*
 
 
+## 🧩 Claim Cards
+
+### Claim-01
+- Claim: ULTRA's physics-aware retargeting pipeline produces significantly lower kinematic artifacts than prior MoCap retargeting methods, specifically reducing foot skating duration and penetration depth in contact-rich loco-manipulation demonstrations.
+- Evidence: Table II shows ULTRA's retargeting achieves lower penetration duration/depth, foot skating duration/velocity, and contact floating duration compared to PHC, GMR, and OmniRetarget on the same OMOMO subset. All methods are evaluated under identical preprocessing conditions, making the comparison fair and directly attributable to the retargeting design.
+- Boundary/Failure: The pipeline is evaluated only on the OMOMO dataset subset; generalization to MoCap sequences with highly dynamic throws, bimanual asymmetric loads, or non-rigid objects has not been demonstrated. Performance may degrade when ground-truth contact labels are unavailable for supervision.
+- Compared Against: PHC (kinematic retargeting), GMR (humanoid-only retargeting without objects), OmniRetarget (interaction-preserving kinematic retargeting with mesh augmentation)
+- Confidence: 8
+- Links:
+  - same_problem:: [[EmbodMocap]]
+  - improves_over:: [[EmbodMocap]]
+  - conflicts_with:: 待定
+
+### Claim-02
+- Claim: ULTRA's unified multimodal controller, trained via hierarchical distillation across tracking and goal-conditioned tasks, outperforms both single-task specialists and direct RL baselines on in-distribution and out-of-distribution whole-body loco-manipulation tracking benchmarks.
+- Evidence: Table I reports that the all-task unified ULTRA model achieves higher success rate (Succ) and lower humanoid MPJPE (E_g-mpjpe), upper-body MPJPE (E_mpjpe), jitter (E_jitter), and object position/rotation error (E_pos, E_rot) compared to OmniRetarget (original and retrained), HDMI, direct RL, and tracking-only distillation ablations, on both ID and OOD splits. The OOD improvement specifically validates generalization beyond training distribution.
+- Boundary/Failure: The unified controller is evaluated in MuJoCo simulation; real-world Table IV results cover only 2 trials per setting on a Unitree G1, which is insufficient to establish statistical significance. Performance on tasks requiring simultaneous bimanual manipulation with dynamic locomotion has not been isolated.
+- Compared Against: OmniRetarget (original data), OmniRetarget (retrained on augmented data), HDMI, direct RL baseline, tracking-only distillation ablation
+- Confidence: 8
+- Links:
+  - same_problem:: 待定
+  - improves_over:: [[EmbodMocap]]
+  - conflicts_with:: 待定
+
+### Claim-03
+- Claim: ULTRA's egocentric point-cloud-based goal-conditioned control is brittle to object occlusion and sensor noise because the perception pipeline relies on depth back-projection, ground-plane removal, and clustering without any explicit occlusion handling or tactile feedback.
+- Evidence: The hidden limitations section identifies friction gap failures as the primary real-world failure cause (Table IV, 2 trials per setting). The point cloud pipeline crops a forward ROI, removes the ground plane, and clusters depth pixels; the paper explicitly acknowledges failure when the object is partially occluded or when the robot's own body enters the camera FOV. No ablation systematically quantifies degradation under occlusion or varying lighting conditions.
+- Boundary/Failure: This limitation is most severe for objects with unusual weight distributions, low-friction surfaces, or when the robot's arm occludes the object during manipulation. Without tactile sensing, slip detection and corrective grasping are impossible, making the system unreliable in unstructured real-world deployments.
+- Compared Against: Goal-conditioned ablations using ground-truth object position (Table III, position vs. point-cloud modality comparison)
+- Confidence: 7
+- Links:
+  - same_problem:: 待定
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-04
+- Claim: Treating dense reference tracking and sparse goal-conditioned control as a unified continuum within a single policy architecture—rather than as separate system regimes—is a viable and superior design principle for autonomous humanoid whole-body loco-manipulation, enabling seamless switching between modalities at inference time.
+- Evidence: Table III ablations demonstrate that the unified all-task policy retains competitive goal-conditioned performance (evaluated on 20 selected motions per setting in MuJoCo, ID and OOD) without sacrificing tracking fidelity shown in Table I. The architecture accepts heterogeneous inputs (dense trajectories, point clouds, or sparse goal positions) under a single policy, and real-world Table IV validates this on a Unitree G1 for both dense reference replay and sparse goal following within the same deployed model.
+- Boundary/Failure: The continuum assumption breaks down when the two modalities require fundamentally conflicting motor behaviors (e.g., precise contact-rich assembly requiring dense reference vs. free-space navigation requiring only goal position). The current evaluation does not test mid-episode modality switching, leaving the robustness of online transitions unverified.
+- Compared Against: Tracking-only distillation ablation, goal-conditioned-only ablation (Table I and Table III), and the broader prior paradigm of separate dense-tracking vs. goal-conditioned controllers (OmniRetarget, HDMI)
+- Confidence: 7
+- Links:
+  - same_problem:: [[EmbodMocap]]
+  - improves_over:: [[EmbodMocap]]
+  - conflicts_with:: 待定
+
 ## 📂 Resources
 - **Local PDF**: [[ULTRA Unified Multimodal Control for Autonomous Humanoid WholeBody LocoManipulation.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2603.03279v1)

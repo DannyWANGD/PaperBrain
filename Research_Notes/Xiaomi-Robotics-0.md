@@ -144,6 +144,52 @@ graph LR
 *Analysis performed by PaperBrain-Doubao (Vision-Enabled)*
 
 
+## 🧩 Claim Cards
+
+### Claim-01
+- Claim: Xiaomi-Robotics-0 achieves real-time VLA inference at approximately 80ms latency, enabling smooth 30Hz robot control without jerky or out-of-distribution motions, by decoupling the vision-language reasoning backbone from a lightweight action generation head.
+- Evidence: The system achieves ~80ms inference latency on standard hardware, sufficient for 30Hz closed-loop control. Real-world bimanual manipulation tasks (Lego Disassembly and Towel Folding) demonstrate smooth, continuous motion execution, contrasting with the jerky behavior reported for large monolithic VLA models in prior deployments.
+- Boundary/Failure: The 80ms latency budget is insufficient for manipulation tasks requiring 100Hz+ control frequencies, such as catching fast-moving objects or reacting to rapid dynamic perturbations, where the model's reactivity would be inadequate.
+- Compared Against: OpenVLA, pi_0, and other large VLA models that suffer from high inference latency causing jerky real-world motions.
+- Confidence: 7
+- Links:
+  - same_problem:: [[README]]
+  - improves_over:: [[2026-02-16-PaperDigest]]
+  - conflicts_with:: 待定
+
+### Claim-02
+- Claim: Xiaomi-Robotics-0 achieves state-of-the-art or competitive performance across three standard simulation benchmarks (LIBERO, CALVIN, SimplerEnv) and two real-world bimanual manipulation tasks, outperforming 15+ prior VLA baselines including OpenVLA, FLOWER, EO-1, RoboFlamingo, GR-1, and UniVLA.
+- Evidence: Evaluations follow established standard protocols on LIBERO, CALVIN, and SimplerEnv benchmarks, with direct comparisons against 15+ SOTA VLA models. Real-world experiments on Lego Disassembly and Towel Folding use controlled hardware setups, demonstrating superior or competitive task success rates relative to all listed baselines including both open- and closed-source systems.
+- Boundary/Failure: Performance advantages are demonstrated only on fixed-base bimanual manipulation tasks; generalization to mobile manipulators, legged robots, or non-manipulation embodiments is not validated and may not hold.
+- Compared Against: OpenVLA, pi_0, FLOWER, EO-1, RoboFlamingo, GR-1, UniVLA, and 8+ additional SOTA VLA models across simulation and real-world settings.
+- Confidence: 8
+- Links:
+  - same_problem:: [[2026-02-26-PaperDigest]]
+  - improves_over:: [[2026-02-16-PaperDigest]]
+  - conflicts_with:: 待定
+
+### Claim-03
+- Claim: Fine-tuning pre-trained vision-language models for robot action generation causes catastrophic forgetting of general visual-semantic capabilities, and Xiaomi-Robotics-0 mitigates this by architectural or training design choices that preserve VLM performance on 7 standard VLM benchmarks.
+- Evidence: The model is evaluated on 7 standard VLM benchmarks in addition to robot manipulation benchmarks, demonstrating retention of general visual-semantic capabilities after robot post-training. This dual evaluation is used to verify that the proposed training strategy avoids the catastrophic forgetting observed in naive VLM fine-tuning approaches.
+- Boundary/Failure: Preservation of VLM capabilities is validated only on the 7 selected benchmarks; degradation on out-of-distribution visual-semantic tasks or highly specialized VLM capabilities not covered by these benchmarks cannot be ruled out.
+- Compared Against: Standard VLM fine-tuning baselines that exhibit catastrophic forgetting of general visual-semantic capabilities when adapted for robot action generation.
+- Confidence: 7
+- Links:
+  - same_problem:: [[SPARR]]
+  - improves_over:: [[2026-02-26-PaperDigest]]
+  - conflicts_with:: 待定
+
+### Claim-04
+- Claim: Asynchronous action chunking in VLA models reduces policy reactivity because models over-rely on past action prefixes rather than current visual and language inputs, and this represents a fundamental trade-off between execution smoothness and real-time responsiveness that is not fully resolved by existing chunking strategies.
+- Evidence: The paper identifies over-reliance on past action prefixes as a core failure mode of existing action chunking approaches, motivating the design of Xiaomi-Robotics-0's execution strategy. This is presented as a known limitation of prior systems such as pi_0 and similar chunk-based VLA models, and the paper's architecture is designed to improve reactivity to live visual/language context.
+- Boundary/Failure: Even with improved reactivity, the model's 80ms inference cycle still introduces a minimum latency floor; for tasks requiring sub-100ms reaction times to sudden environmental changes, no current chunking or non-chunking VLA strategy achieves fully reactive control.
+- Compared Against: pi_0 and other VLA models employing asynchronous action chunking strategies that buffer predicted action sequences for execution.
+- Confidence: 6
+- Links:
+  - same_problem:: [[Solaris]]
+  - improves_over:: [[2026-02-16-PaperDigest]]
+  - conflicts_with:: [[Physics Informed Viscous Value Representations]]
+
 ## 📂 Resources
 - **Local PDF**: [[XiaomiRobotics0 An OpenSourced VisionLanguageAction Model with RealTime Execution.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2602.12684.pdf)

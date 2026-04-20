@@ -131,6 +131,52 @@ graph LR
 *Analysis performed by PaperBrain-Doubao (Vision-Enabled)*
 
 
+## 🧩 Claim Cards
+
+### Claim-01
+- Claim: VisPhyWorld's code-driven video reconstruction protocol forces MLLMs to produce explicit, executable physical hypotheses rather than implicit pattern-matched answers, providing a verifiable evaluation mechanism that recognition-style benchmarks (VQA, Violation of Expectation) structurally cannot offer.
+- Evidence: The framework requires models to generate simulation code (e.g., specifying object masses, velocities, and collision parameters) that is executed in a physics engine and rendered into video, making the model's causal assumptions directly inspectable and falsifiable. This contrasts with VQA protocols where correct answers are indistinguishable from spurious visual correlations.
+- Boundary/Failure: The verifiability guarantee holds only for synthetic rigid-body scenes; for deformable objects, fluid dynamics, or real-world in-the-wild videos, the code-generation-to-simulation pipeline has no current support, so the protocol cannot be applied and its advantages do not transfer.
+- Compared Against: Recognition-style VQA benchmarks and Violation of Expectation protocols for physical reasoning evaluation.
+- Confidence: 8
+- Links:
+  - same_problem:: [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]
+  - improves_over:: [[Code2Worlds]]
+  - conflicts_with:: 待定
+
+### Claim-02
+- Claim: State-of-the-art closed-source MLLMs (GPT-5, GPT-4.1, Gemini 3 Pro, Claude 4.5 Sonnet, Qwen3-VL-Plus) all fall significantly short of accurate physical scene reconstruction under the VisPhyWorld protocol, revealing a systematic gap between surface-level visual recognition performance and genuine causal physical reasoning.
+- Evidence: All five SOTA closed-source MLLMs were evaluated under identical input prompts, key frames, and evaluation protocols on VisPhyBench. Pixel-space video generation baselines (Stable Video Diffusion img2vid, Google Veo-3.1) were also benchmarked, and none achieved high fidelity reconstruction, demonstrating that neither language-driven code generation nor direct pixel-space generation closes the physical reasoning gap.
+- Boundary/Failure: The benchmark covers only simple synthetic rigid-body 2D/3D scenes (the 3D subset contains only 90 scenes with fixed orthographic cameras), so the observed performance gap may not fully reflect model capabilities on more complex, unconstrained, or real-world physical scenarios.
+- Compared Against: Stable Video Diffusion (SVD) img2vid and Google Veo-3.1 as pixel-space video generation baselines; GPT-5, GPT-4.1, Gemini 3 Pro, Claude 4.5 Sonnet, Qwen3-VL-Plus as MLLM baselines.
+- Confidence: 8
+- Links:
+  - same_problem:: [[Physics Informed Viscous Value Representations]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-03
+- Claim: The code-driven simulation-and-rendering evaluation pipeline incurs an inference latency approximately 10–20x higher than recognition-based benchmarks, making VisPhyWorld unsuitable as a drop-in evaluation tool for large-scale pre-training pipelines.
+- Evidence: The paper explicitly identifies latency overhead as a hidden limitation: each sample requires sequential code generation, physics simulation execution, and video rendering, compounding per-sample cost relative to a single forward pass required by VQA-style evaluation. The 10–20x overhead figure is reported as a known constraint of the framework.
+- Boundary/Failure: This limitation is most severe in large-scale automated evaluation settings (e.g., continuous pre-training checkpointing). For targeted capability audits on small curated sets, the overhead may be acceptable and the claim's practical impact diminishes.
+- Compared Against: Recognition-based benchmarks (VQA, Violation of Expectation) that require only a single model forward pass per sample.
+- Confidence: 7
+- Links:
+  - same_problem:: [[SimToolReal]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-04
+- Claim: Code-driven physical world reconstruction represents a principled path toward world model evaluation, where a model's internal representation of scene dynamics can be externalized and tested for consistency, aligning with the broader goal of building general world models that maintain causal consistency across time.
+- Evidence: By requiring models to generate simulation code that reproduces observed video dynamics, VisPhyWorld operationalizes the idea that genuine physical understanding should be expressible as an explicit, executable causal model. This connects to the consistency principle for world models: a model that truly understands physics should produce reconstructions that are temporally and causally coherent, not just perceptually plausible.
+- Boundary/Failure: The implication holds only if the simulation engine faithfully captures the relevant physics; for phenomena outside the engine's scope (fluids, deformables, contact-rich manipulation), the externalized code cannot serve as a valid consistency test, and the broader claim about world model evaluation does not generalize.
+- Compared Against: Pixel-space video generation approaches (SVD img2vid, Veo-3.1) that produce perceptually plausible but causally unverifiable outputs.
+- Confidence: 7
+- Links:
+  - same_problem:: [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]
+  - improves_over:: [[World_Action_Models_are_Zero_shot_Policies]]
+  - conflicts_with:: 待定
+
 ## 📂 Resources
 - **Local PDF**: [[VisPhyWorld Probing Physical Reasoning via CodeDriven Video Reconstruction.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2602.13294.pdf)

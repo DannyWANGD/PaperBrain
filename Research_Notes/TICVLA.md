@@ -454,6 +454,52 @@ where $\mathcal{P}$ is a neighborhood around the nominal latency distribution. T
 *Analysis performed by PaperBrain-OpenRouter (anthropic/claude-4.6-sonnet) (Vision-Enabled)*
 
 
+## 🧩 Claim Cards
+
+### Claim-01
+- Claim: TIC-VLA's explicit latency-aware training — sampling semantic staleness offsets from Uniform[0, 10] seconds during imitation learning and compensating for ego-motion drift via a (Δx, Δy, Δθ) offset — enables a VLA policy to maintain effective navigation performance despite VLM inference delays that would degrade synchronous architectures.
+- Evidence: On the proprietary DynaNav benchmark (85 test cases, 4 scene types, Isaac Sim with dynamic pedestrians), TIC-VLA outperforms DualVLN — the closest prior dual-system baseline that decouples computation but does not model latency — across all scene categories including warehouse, hospital, office, and outdoor sidewalk environments with varying crowd densities.
+- Boundary/Failure: The training distribution assumes Uniform[0, 10] s latency, which does not reflect real hardware latency distributions that are hardware-specific, load-dependent, and often bimodal. The policy may remain fragile under unexpected tail latencies, multi-inference queuing effects, or latency spikes outside the training range.
+- Compared Against: DualVLN (dual-system VLN architecture without explicit latency modeling), Uni-NaVid, NaViLA — all fine-tuned on the same dataset split (SCAND + GND + DynaNav simulation).
+- Confidence: 7
+- Links:
+  - same_problem:: [[Xiaomi-Robotics-0]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-02
+- Claim: On the DynaNav simulation benchmark, TIC-VLA achieves higher navigation success rates than all language-guided VLA/VLN baselines (Uni-NaVid, NaViLA, DualVLN) fine-tuned on identical training data, demonstrating that the think-in-control paradigm provides a measurable empirical advantage over prior language-conditioned navigation methods in dynamic environments.
+- Evidence: Evaluation covers 85 test cases across 4 scene types (warehouse, hospital, office, outdoor sidewalk) with physics-accurate dynamic human pedestrians in Isaac Sim. All language-based baselines were fine-tuned on the same SCAND + GND + DynaNav simulation split, making the comparison fair. Point-goal methods (BC Policy, RL Policy, NavDP) serve as context upper bounds rather than direct comparisons.
+- Boundary/Failure: DynaNav is a proprietary benchmark designed by the paper's authors, introducing potential evaluation bias in scene selection, difficulty calibration, and metric design. Results may not generalize to independently constructed benchmarks or real-world deployment conditions not represented in the simulation.
+- Compared Against: Uni-NaVid, NaViLA, DualVLN (fair language-guided baselines); BC Policy, RL Policy, NavDP (point-goal context baselines).
+- Confidence: 6
+- Links:
+  - same_problem:: [[Xiaomi-Robotics-0]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-03
+- Claim: The ego-motion compensation mechanism in TIC-VLA is insufficient to fully resolve semantic staleness during the VLM latency window, because it corrects only for robot self-displacement (Δx, Δy, Δθ) while leaving dynamic scene changes — pedestrian movement, newly appearing obstacles, door state changes — unaddressed, creating a residual alignment error that grows with scene dynamism.
+- Evidence: The paper's own critical assessment acknowledges that the ego-motion offset captures where the robot has moved but not how the dynamic scene has changed during the latency window. Pedestrians move, doors open/close, and new obstacles appear within the 1–10+ second VLM inference window, none of which are compensated by the rigid-body ego-motion transform.
+- Boundary/Failure: This limitation is most severe in high-density dynamic environments (e.g., crowded hospital corridors) where multiple agents move simultaneously during the latency window. In quasi-static environments (e.g., empty warehouses), the ego-motion correction may be nearly sufficient and the residual error negligible.
+- Compared Against: The paper's own stated design goals of handling dynamic environments; implicitly compared against hypothetical full scene-state prediction approaches not implemented in TIC-VLA.
+- Confidence: 8
+- Links:
+  - same_problem:: [[Xiaomi-Robotics-0]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
+### Claim-04
+- Claim: The train-deploy distribution mismatch caused by VLM inference latency is a fundamental modeling problem — not merely an engineering overhead — for any VLA architecture deployed on edge hardware, implying that future VLA systems for real-world robotics must explicitly incorporate latency as a first-class training variable rather than assuming synchronous semantic-motor coupling.
+- Evidence: VLM inference on edge hardware takes 1–10+ seconds while low-level control loops require 10+ Hz operation, creating a temporal gap of 10–100× between semantic update rate and motor control rate. Prior architectures including DualVLN decouple computation but do not train against this latency gap, and TIC-VLA's empirical gains over DualVLN on DynaNav provide evidence that explicit latency modeling yields measurable improvements even when both systems use the same underlying VLM and control hardware.
+- Boundary/Failure: This implication assumes edge-deployed VLMs remain the bottleneck; if future hardware advances (e.g., dedicated NPUs, model distillation) reduce VLM inference to sub-100 ms, the latency gap shrinks below the control period and the synchronous assumption becomes approximately valid again, reducing the necessity of latency-aware training.
+- Compared Against: DualVLN and the broader class of dual-system VLA architectures that treat inference delay as negligible engineering overhead.
+- Confidence: 7
+- Links:
+  - same_problem:: [[Xiaomi-Robotics-0]]
+  - improves_over:: 待定
+  - conflicts_with:: 待定
+
 ## 📂 Resources
 - **Local PDF**: [[TICVLA A ThinkinControl VisionLanguageAction Model for Robot Navigation in Dynamic Environments.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2602.02459.pdf)
