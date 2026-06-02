@@ -2,7 +2,7 @@
 theme_id: Theme_World_Model_Dynamics
 theme_title: "World Models & Dynamics Prediction"
 parent_keyword: "Theme_Embodied_AI_System"
-updated_at: "2026-04-20"
+updated_at: "2026-04-24"
 ---
 
 # 🧭 World Models & Dynamics Prediction（Theme_World_Model_Dynamics）
@@ -13,8 +13,8 @@ updated_at: "2026-04-20"
 - 标准标签参考：#World_Model #Dynamics
 
 ## 📊 主题仪表盘
-- 总论文数：**43**
-- 平均分：**7.33**
+- 总论文数：**45**
+- 平均分：**7.36**
 - 高频标签：#Embodied_AI #World_Model #Robot_Manipulation #Foundation_Model #VLA #Diffusion_Model #Reinforcement_Learning #LLM #Sim2Real #Video_Diffusion_Model
 
 ## 🆕 最近新增

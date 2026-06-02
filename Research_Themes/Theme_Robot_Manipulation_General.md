@@ -2,7 +2,7 @@
 theme_id: Theme_Robot_Manipulation_General
 theme_title: "Robot Manipulation"
 parent_keyword: "Theme_Embodied_AI_System"
-updated_at: "2026-04-20"
+updated_at: "2026-04-24"
 ---
 
 # 🧭 Robot Manipulation（Theme_Robot_Manipulation_General）
@@ -13,8 +13,8 @@ updated_at: "2026-04-20"
 - 标准标签参考：#Robot_Manipulation #Grasping
 
 ## 📊 主题仪表盘
-- 总论文数：**45**
-- 平均分：**7.53**
+- 总论文数：**47**
+- 平均分：**7.55**
 - 高频标签：#Robot_Manipulation #Embodied_AI #VLA #Foundation_Model #World_Model #Reinforcement_Learning #Sim2Real #Diffusion_Model #LLM #3D_Gaussian_Splatting
 
 ## 🆕 最近新增

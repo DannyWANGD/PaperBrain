@@ -2,7 +2,7 @@
 theme_id: Theme_Embodied_AI_System
 theme_title: "Embodied AI Systems"
 parent_keyword: "Root"
-updated_at: "2026-04-20"
+updated_at: "2026-04-24"
 ---
 
 # 🧭 Embodied AI Systems（Theme_Embodied_AI_System）
@@ -13,9 +13,9 @@ updated_at: "2026-04-20"
 - 标准标签参考：#Embodied_AI #Robot_Learning
 
 ## 📊 主题仪表盘
-- 总论文数：**67**
-- 平均分：**7.51**
-- 高频标签：#Embodied_AI #Robot_Manipulation #Foundation_Model #VLA #World_Model #Reinforcement_Learning #Sim2Real #Diffusion_Model #LLM #3D_Gaussian_Splatting
+- 总论文数：**69**
+- 平均分：**7.52**
+- 高频标签：#Embodied_AI #Robot_Manipulation #Foundation_Model #VLA #World_Model #Reinforcement_Learning #Diffusion_Model #Sim2Real #LLM #3D_Gaussian_Splatting
 
 ## 🆕 最近新增
 - [[HiVLA]] | 2026-04-15 | HiVLA: A Visual-Grounded-Centric Hierarchical Embodied Manipulation System

@@ -2,7 +2,7 @@
 theme_id: Theme_Sim2Real
 theme_title: "Sim-to-Real Transfer"
 parent_keyword: "Theme_Embodied_AI_System"
-updated_at: "2026-04-20"
+updated_at: "2026-04-24"
 ---
 
 # 🧭 Sim-to-Real Transfer（Theme_Sim2Real）
@@ -13,9 +13,9 @@ updated_at: "2026-04-20"
 - 标准标签参考：#Sim2Real #Domain_Adaptation
 
 ## 📊 主题仪表盘
-- 总论文数：**23**
-- 平均分：**7.17**
-- 高频标签：#Embodied_AI #Robot_Manipulation #Sim2Real #World_Model #VLA #Foundation_Model #Reinforcement_Learning #LLM #Diffusion_Model #3D_Gaussian_Splatting
+- 总论文数：**25**
+- 平均分：**7.24**
+- 高频标签：#Embodied_AI #Robot_Manipulation #Sim2Real #World_Model #VLA #Foundation_Model #Reinforcement_Learning #Diffusion_Model #LLM #3D_Gaussian_Splatting
 
 ## 🆕 最近新增
 - [[HiVLA]] | 2026-04-15 | HiVLA: A Visual-Grounded-Centric Hierarchical Embodied Manipulation System
@@ -33,13 +33,13 @@ updated_at: "2026-04-20"
 - [[HydroShear]] | Score: 8/10 | 2026-02-28 | HydroShear: Hydroelastic Shear Simulation for Tactile Sim-to-Real Reinforcement Learning
 - [[Kinema4D]] | Score: 8/10 | 2026-03-17 | Kinema4D: Kinematic 4D World Modeling for Spatiotemporal Embodied Simulation
 - [[LoGeR]] | Score: 8/10 | 2026-03-03 | LoGeR: Long-Context Geometric Reconstruction with Hybrid Memory
+- [[LongHorizon_Manipulation_via_TraceConditioned_VLA_Planning]] | Score: 8/10 | Unknown | Long-Horizon Manipulation via Trace-Conditioned VLA Planning
 - [[ProbeFlow]] | Score: 8/10 | 2026-03-18 | ProbeFlow: Training-Free Adaptive Flow Matching for Vision-Language-Action Models
 - [[SIMART]] | Score: 8/10 | Unknown | SIMART: Decomposing Monolithic Meshes into Sim-ready Articulated Assets via MLLM
 - [[SoftMimicGen]] | Score: 8/10 | 2026-03-26 | SoftMimicGen: A Data Generation System for Scalable Robot Learning in Deformable Object Manipulation
 - [[TICVLA]] | Score: 8/10 | 2026-02-02 | TIC-VLA: A Think-in-Control Vision-Language-Action Model for Robot Navigation in Dynamic Environments
 - [[TiPToP]] | Score: 8/10 | 2026-03-10 | TiPToP: A Modular Open-Vocabulary Planning System for Robotic Manipulation
 - [[ULTRA]] | Score: 8/10 | 2026-03-03 | ULTRA: Unified Multimodal Control for Autonomous Humanoid Whole-Body Loco-Manipulation
-- [[World_Reasoning_Arena]] | Score: 8/10 | Unknown | World Reasoning Arena
 
 ## ✅ 核心贡献与共识
 - 暂无可提取的核心贡献，待深度分析笔记积累后自动汇总。

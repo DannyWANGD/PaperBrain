@@ -20,10 +20,32 @@ def _load_yaml_with_env(path):
         return os.getenv(match.group(1), match.group(0))
     return yaml.safe_load(pattern.sub(replace_env, content))
 
+def _normalize_paths(config, config_path):
+    """Normalize relative paths in config.yaml against the config file directory."""
+    if not isinstance(config, dict):
+        return config
+    obsidian_cfg = config.get("obsidian")
+    if not isinstance(obsidian_cfg, dict):
+        return config
+    vault_path = obsidian_cfg.get("vault_path")
+    if not isinstance(vault_path, str) or not vault_path.strip():
+        return config
+
+    if not os.path.isabs(vault_path):
+        config_dir = os.path.dirname(os.path.abspath(config_path))
+        # config.yaml lives in `script/`, so "../" correctly resolves to repo root
+        obsidian_cfg["vault_path"] = os.path.normpath(
+            os.path.abspath(os.path.join(config_dir, vault_path))
+        )
+    else:
+        obsidian_cfg["vault_path"] = os.path.normpath(vault_path)
+    return config
+
 def load_config(path=None):
     if path is None:
         path = os.path.join(_resolve_base_dir(), "config.yaml")
-    return _load_yaml_with_env(path)
+    config = _load_yaml_with_env(path)
+    return _normalize_paths(config, path)
 
 def load_prompts(path=None):
     """Load prompts.yaml. Returns empty dict if file not found (backward compatible)."""

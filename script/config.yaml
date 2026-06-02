@@ -9,8 +9,8 @@ doubao:
 openrouter:
   api_key: "${OPENROUTER_API_KEY}"
   model_flash: "qwen/qwen3.6-plus"
-  model_screening_pro: "qwen/qwen3.6-plus"
-  model_pro: "qwen/qwen3.6-plus"
+  model_screening_pro: "deepseek/deepseek-v4-pro"
+  model_pro: "deepseek/deepseek-v4-pro"
   threshold_score: 7
 
 
@@ -57,7 +57,7 @@ obsidian:
 
 theme_enrichment:
   enabled: true
-  openrouter_model: "qwen/qwen3.6-plus"
+  openrouter_model: "deepseek/deepseek-v4-pro"
   doubao_model: "ep-20260226105946-sgmhx"
   temperature: 0.2
   max_tokens: 4000

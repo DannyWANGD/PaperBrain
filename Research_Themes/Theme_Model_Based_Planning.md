@@ -2,7 +2,7 @@
 theme_id: Theme_Model_Based_Planning
 theme_title: "Model-Based Planning & Control"
 parent_keyword: "Theme_World_Model_Dynamics"
-updated_at: "2026-04-20"
+updated_at: "2026-04-24"
 ---
 
 # 🧭 Model-Based Planning & Control（Theme_Model_Based_Planning）
@@ -13,8 +13,8 @@ updated_at: "2026-04-20"
 - 标准标签参考：#Model_Based_RL #Planning
 
 ## 📊 主题仪表盘
-- 总论文数：**33**
-- 平均分：**7.36**
+- 总论文数：**34**
+- 平均分：**7.38**
 - 高频标签：#Embodied_AI #Robot_Manipulation #VLA #Foundation_Model #World_Model #LLM #Reinforcement_Learning #Diffusion_Model #Sim2Real #Video_Diffusion_Model
 
 ## 🆕 最近新增
@@ -37,9 +37,9 @@ updated_at: "2026-04-20"
 - [[HybridVLA]] | Score: 8/10 | 2025-06-23 | HybridVLA: Collaborative Diffusion and Autoregression in a Unified Vision-Language-Action Model
 - [[HydroShear]] | Score: 8/10 | 2026-02-28 | HydroShear: Hydroelastic Shear Simulation for Tactile Sim-to-Real Reinforcement Learning
 - [[Kinema4D]] | Score: 8/10 | 2026-03-17 | Kinema4D: Kinematic 4D World Modeling for Spatiotemporal Embodied Simulation
+- [[LongHorizon_Manipulation_via_TraceConditioned_VLA_Planning]] | Score: 8/10 | Unknown | Long-Horizon Manipulation via Trace-Conditioned VLA Planning
 - [[MetaWorldX]] | Score: 8/10 | 2026-03-09 | MetaWorld-X: Hierarchical World Modeling via VLM-Orchestrated Experts for Humanoid Loco-Manipulation
 - [[Planning in 8 Tokens]] | Score: 8/10 | 2026-03-05 | Planning in 8 Tokens: A Compact Discrete Tokenizer for Latent World Model
-- [[ProbeFlow]] | Score: 8/10 | 2026-03-18 | ProbeFlow: Training-Free Adaptive Flow Matching for Vision-Language-Action Models
 
 ## ✅ 核心贡献与共识
 - 暂无可提取的核心贡献，待深度分析笔记积累后自动汇总。

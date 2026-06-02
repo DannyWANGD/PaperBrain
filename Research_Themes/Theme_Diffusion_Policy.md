@@ -2,7 +2,7 @@
 theme_id: Theme_Diffusion_Policy
 theme_title: "Diffusion-Based Policies"
 parent_keyword: "Theme_Embodied_AI_System"
-updated_at: "2026-04-20"
+updated_at: "2026-04-24"
 ---
 
 # 🧭 Diffusion-Based Policies（Theme_Diffusion_Policy）
@@ -13,8 +13,8 @@ updated_at: "2026-04-20"
 - 标准标签参考：#Diffusion_Model #Policy
 
 ## 📊 主题仪表盘
-- 总论文数：**21**
-- 平均分：**7.67**
+- 总论文数：**22**
+- 平均分：**7.68**
 - 高频标签：#Embodied_AI #Diffusion_Model #Robot_Manipulation #World_Model #VLA #Foundation_Model #LLM #Reinforcement_Learning #Video_Diffusion_Model #Sim2Real
 
 ## 🆕 最近新增

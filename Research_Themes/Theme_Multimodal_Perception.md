@@ -2,7 +2,7 @@
 theme_id: Theme_Multimodal_Perception
 theme_title: "Multimodal Perception"
 parent_keyword: "Theme_Embodied_AI_System"
-updated_at: "2026-04-20"
+updated_at: "2026-04-24"
 ---
 
 # 🧭 Multimodal Perception（Theme_Multimodal_Perception）
@@ -13,8 +13,8 @@ updated_at: "2026-04-20"
 - 标准标签参考：#Multimodal #Sensor_Fusion
 
 ## 📊 主题仪表盘
-- 总论文数：**46**
-- 平均分：**7.61**
+- 总论文数：**47**
+- 平均分：**7.62**
 - 高频标签：#Embodied_AI #Robot_Manipulation #VLA #Foundation_Model #World_Model #LLM #Reinforcement_Learning #Diffusion_Model #Sim2Real #Foundation_Models
 
 ## 🆕 最近新增

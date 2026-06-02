@@ -2,7 +2,7 @@
 theme_id: Theme_VLA_Reasoning
 theme_title: "VLA Reasoning & Planning"
 parent_keyword: "Theme_VLA_Policy"
-updated_at: "2026-04-20"
+updated_at: "2026-04-24"
 ---
 
 # 🧭 VLA Reasoning & Planning（Theme_VLA_Reasoning）
@@ -13,8 +13,8 @@ updated_at: "2026-04-20"
 - 标准标签参考：#VLA #Planning
 
 ## 📊 主题仪表盘
-- 总论文数：**49**
-- 平均分：**7.45**
+- 总论文数：**50**
+- 平均分：**7.46**
 - 高频标签：#Embodied_AI #Robot_Manipulation #VLA #Foundation_Model #World_Model #LLM #Diffusion_Model #Reinforcement_Learning #Sim2Real #Foundation_Models
 
 ## 🆕 最近新增

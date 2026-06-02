@@ -2,7 +2,7 @@
 theme_id: Theme_VLA_Policy
 theme_title: "Vision-Language-Action Policies"
 parent_keyword: "Theme_Embodied_AI_System"
-updated_at: "2026-04-20"
+updated_at: "2026-04-24"
 ---
 
 # 🧭 Vision-Language-Action Policies（Theme_VLA_Policy）
@@ -13,9 +13,9 @@ updated_at: "2026-04-20"
 - 标准标签参考：#VLA #Multimodal_Policy
 
 ## 📊 主题仪表盘
-- 总论文数：**31**
-- 平均分：**7.58**
-- 高频标签：#VLA #Embodied_AI #Robot_Manipulation #Foundation_Model #LLM #World_Model #Diffusion_Model #Sim2Real #Reinforcement_Learning #Foundation_Models
+- 总论文数：**32**
+- 平均分：**7.59**
+- 高频标签：#VLA #Embodied_AI #Robot_Manipulation #Foundation_Model #World_Model #LLM #Diffusion_Model #Sim2Real #Reinforcement_Learning #Foundation_Models
 
 ## 🆕 最近新增
 - [[HiVLA]] | 2026-04-15 | HiVLA: A Visual-Grounded-Centric Hierarchical Embodied Manipulation System
@@ -37,9 +37,9 @@ updated_at: "2026-04-20"
 - [[FASTER]] | Score: 8/10 | 2026-03-19 | FASTER: Rethinking Real-Time Flow VLAs
 - [[FlowHOI]] | Score: 8/10 | 2026-02-13 | FlowHOI: Flow-based Semantics-Grounded Generation of Hand-Object Interactions for Dexterous Robot Manipulation
 - [[HybridVLA]] | Score: 8/10 | 2025-06-23 | HybridVLA: Collaborative Diffusion and Autoregression in a Unified Vision-Language-Action Model
+- [[LongHorizon_Manipulation_via_TraceConditioned_VLA_Planning]] | Score: 8/10 | Unknown | Long-Horizon Manipulation via Trace-Conditioned VLA Planning
 - [[OmniStream]] | Score: 8/10 | 2026-03-12 | OmniStream: Mastering Perception, Reconstruction and Action in Continuous Streams
 - [[ProbeFlow]] | Score: 8/10 | 2026-03-18 | ProbeFlow: Training-Free Adaptive Flow Matching for Vision-Language-Action Models
-- [[RoboMME]] | Score: 8/10 | 2026-03-04 | RoboMME: Benchmarking and Understanding Memory for Robotic Generalist Policies
 
 ## ✅ 核心贡献与共识
 - 暂无可提取的核心贡献，待深度分析笔记积累后自动汇总。

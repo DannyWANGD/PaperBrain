@@ -2,7 +2,7 @@
 theme_id: Theme_RL_Algorithms
 theme_title: "Reinforcement Learning Algorithms"
 parent_keyword: "Theme_Embodied_AI_System"
-updated_at: "2026-04-20"
+updated_at: "2026-04-24"
 ---
 
 # 🧭 Reinforcement Learning Algorithms（Theme_RL_Algorithms）
@@ -13,9 +13,9 @@ updated_at: "2026-04-20"
 - 标准标签参考：#Reinforcement_Learning #RL
 
 ## 📊 主题仪表盘
-- 总论文数：**60**
-- 平均分：**7.4**
-- 高频标签：#Embodied_AI #Robot_Manipulation #World_Model #Foundation_Model #VLA #Reinforcement_Learning #LLM #Sim2Real #Diffusion_Model #Foundation_Models
+- 总论文数：**62**
+- 平均分：**7.42**
+- 高频标签：#Embodied_AI #Robot_Manipulation #World_Model #Foundation_Model #VLA #Reinforcement_Learning #LLM #Diffusion_Model #Sim2Real #Foundation_Models
 
 ## 🆕 最近新增
 - [[HiVLA]] | 2026-04-15 | HiVLA: A Visual-Grounded-Centric Hierarchical Embodied Manipulation System
