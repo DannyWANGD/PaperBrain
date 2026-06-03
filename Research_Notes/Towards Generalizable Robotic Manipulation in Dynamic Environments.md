@@ -1,23 +1,58 @@
 ---
 tags:
-  - paper
-  - Robot_Manipulation
-  - VLA
-  - Embodied_AI
-  - Foundation_Model
-  - World_Model
+- paper
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- domain/vla
+- domain/world_model
+- impact/high_value
+- method/benchmark
+- method/foundation_model
+- method/planning
+- method/reinforcement_learning
+- review/auto_tagged
+- status/unread
+- task/manipulation
+- task/planning_reasoning
+- task/scene_understanding
+- type/benchmark
 aliases:
-  - "Towards Generalizable Robotic Manipulation in Dynamic Environments"
+- Towards Generalizable Robotic Manipulation in Dynamic Environments
 url: https://huggingface.co/papers/2603.15620
 pdf_url: https://arxiv.org/pdf/2603.15620.pdf
-local_pdf: "[[Towards Generalizable Robotic Manipulation in Dynamic Environments.pdf]]"
-github: "https://github.com/H-EmbodVis/DOMINO"
-project_page: "None"
+local_pdf: '[[Towards Generalizable Robotic Manipulation in Dynamic Environments.pdf]]'
+github: https://github.com/H-EmbodVis/DOMINO
+project_page: None
 institutions:
-  - "Huazhong University of Science and Technology"
-  - "Huawei Technologies Co. Ltd"
-publication_date: "2026-03-16"
-score: 8
+- Huazhong University of Science and Technology
+- Huawei Technologies Co. Ltd
+publication_date: '2026-03-16'
+score: '8.0'
+domains:
+- embodied_ai
+- multimodal_perception
+- reinforcement_learning
+- robot_manipulation
+- vla
+methods:
+- benchmark
+- planning
+- reinforcement_learning
+tasks:
+- manipulation
+- planning_reasoning
+- scene_understanding
+paper_type: benchmark
+impact_band: high_value
+reading_status: unread
+year: 2026
+priority_score: 103
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2603.15620'
+paper_id: arxiv:2603.15620
 ---
 
 # Towards Generalizable Robotic Manipulation in Dynamic Environments
@@ -332,3 +367,6 @@ graph LR
 - **Local PDF**: [[Towards Generalizable Robotic Manipulation in Dynamic Environments.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2603.15620.pdf)
 - [ArXiv Link](https://huggingface.co/papers/2603.15620)
+
+## Related Work Updates
+- [ ] **2026-06-03**: New paper [[QwenVLA Unified VLA for Manipulation and Navigation]] discusses *towards generalizable robotic manipulation in dynamic environments*. Innovation: "Unifies manipulation, navigation, and trajectory prediction into a single VLA model using embodiment-aware prompts and a DiT-based action decoder."

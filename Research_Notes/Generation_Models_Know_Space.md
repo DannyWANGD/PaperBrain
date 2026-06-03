@@ -1,23 +1,65 @@
 ---
 tags:
-  - paper
-  - World_Model
-  - Diffusion_Model
-  - Embodied_AI
-  - Foundation_Model
-  - Robot_Manipulation
+- paper
+- domain/3d_perception
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- domain/world_model
+- impact/high_value
+- method/benchmark
+- method/diffusion_policy
+- method/foundation_model
+- method/planning
+- method/reinforcement_learning
+- method/simulation
+- review/auto_tagged
+- status/unread
+- task/manipulation
+- task/planning_reasoning
+- task/scene_understanding
+- task/video_prediction
+- type/benchmark
 aliases:
-  - "Generation Models Know Space: Unleashing Implicit 3D Priors for Scene Understanding"
+- 'Generation Models Know Space: Unleashing Implicit 3D Priors for Scene Understanding'
 url: https://huggingface.co/papers/2603.19235
 pdf_url: https://arxiv.org/pdf/2603.19235.pdf
-local_pdf: "[[Generation Models Know Space Unleashing Implicit 3D Priors for Scene Understanding.pdf]]"
-github: "https://github.com/H-EmbodVis/VEGA-3D"
-project_page: "None"
+local_pdf: '[[Generation Models Know Space Unleashing Implicit 3D Priors for Scene
+  Understanding.pdf]]'
+github: https://github.com/H-EmbodVis/VEGA-3D
+project_page: None
 institutions:
-  - "Huazhong University of Science and Technology"
-  - "Baidu Inc."
-publication_date: "2026-03-19"
-score: 8
+- Huazhong University of Science and Technology
+- Baidu Inc.
+publication_date: '2026-03-19'
+score: '8.0'
+domains:
+- 3d_perception
+- embodied_ai
+- multimodal_perception
+- reinforcement_learning
+- robot_manipulation
+methods:
+- benchmark
+- foundation_model
+- planning
+- reinforcement_learning
+- simulation
+tasks:
+- manipulation
+- planning_reasoning
+- scene_understanding
+- video_prediction
+paper_type: benchmark
+impact_band: high_value
+reading_status: unread
+year: 2026
+priority_score: 103
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2603.19235'
+paper_id: arxiv:2603.19235
 ---
 
 # Generation Models Know Space: Unleashing Implicit 3D Priors for Scene Understanding

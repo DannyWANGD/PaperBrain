@@ -1,19 +1,53 @@
 ---
 tags:
-  - paper
-  - Embodied_AI
-  - Foundation_Model
-  - VLA
-  - Robot_Manipulation
+- paper
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/robot_manipulation
+- domain/vla
+- impact/solid
+- method/foundation_model
+- method/planning
+- review/auto_tagged
+- status/unread
+- task/loco_manipulation
+- task/manipulation
+- task/navigation
+- task/planning_reasoning
+- task/scene_understanding
+- type/system
 aliases:
-  - "ROSClaw: An OpenClaw ROS 2 Framework for Agentic Robot Control and Interaction"
+- 'ROSClaw: An OpenClaw ROS 2 Framework for Agentic Robot Control and Interaction'
 url: http://arxiv.org/abs/2603.26997v1
 pdf_url: https://arxiv.org/pdf/2603.26997v1
-local_pdf: "[[ROSClaw An OpenClaw ROS 2 Framework for Agentic Robot Control and Interaction.pdf]]"
-github: "None"
-project_page: "None"
-publication_date: "Unknown"
-score: 7
+local_pdf: '[[ROSClaw An OpenClaw ROS 2 Framework for Agentic Robot Control and Interaction.pdf]]'
+github: None
+project_page: None
+publication_date: Unknown
+score: '7.0'
+domains:
+- embodied_ai
+- multimodal_perception
+- robot_manipulation
+- vla
+methods:
+- foundation_model
+- planning
+tasks:
+- loco_manipulation
+- manipulation
+- navigation
+- planning_reasoning
+- scene_understanding
+paper_type: system
+impact_band: solid
+reading_status: unread
+year: null
+priority_score: 78
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2603.26997'
+paper_id: arxiv:2603.26997
 ---
 
 # ROSClaw: An OpenClaw ROS 2 Framework for Agentic Robot Control and Interaction

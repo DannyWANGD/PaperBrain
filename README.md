@@ -1,205 +1,289 @@
-<p align="center">
-  <img src="https://img.shields.io/badge/Python-3.10+-blue?logo=python&logoColor=white" />
-  <img src="https://img.shields.io/badge/Obsidian-Vault-7C3AED?logo=obsidian&logoColor=white" />
-  <img src="https://img.shields.io/badge/LLM-OpenRouter%20%7C%20Doubao-FF6600" />
-  <img src="https://img.shields.io/badge/Workflow-Auto%20Research-00A86B" />
-</p>
+# PaperBrain 2.0
 
-# PaperBrain
-
-> From paper stream to knowledge graph.  
-> 自动抓取、分层筛选、深度分析、主题聚合、播客生成，一站式沉淀到 Obsidian。
+![PaperBrain architecture](paperbrain_arch.png)
 
 <p align="center">
-  <img src="./paperbrain_arch.png" alt="PaperBrain Architecture" width="900" />
+  <img alt="Python 3.10" src="https://img.shields.io/badge/Python-3.10-3776AB?logo=python&logoColor=white">
+  <img alt="Obsidian first" src="https://img.shields.io/badge/Obsidian-first-7C3AED?logo=obsidian&logoColor=white">
+  <img alt="OpenRouter" src="https://img.shields.io/badge/OpenRouter-ready-111827">
+  <img alt="arXiv" src="https://img.shields.io/badge/arXiv-tracking-B31B1B?logo=arxiv&logoColor=white">
+  <img alt="Tests" src="https://img.shields.io/badge/tests-unittest-0F766E">
 </p>
 
-## 为什么是 PaperBrain
-- 面向 Embodied AI / Robotics / VLA / World Model 的研究自动化流水线。
-- 两阶段筛选控制成本：`model_flash` 粗筛，`model_screening_pro` 精筛。
-- 深度分析整合 PDF 文本、关键图像、历史笔记 RAG，输出可直接学习的技术报告。
-- 自动维护 Obsidian 知识库：日报、单篇笔记、主题页、回链、播客音频。
+PaperBrain 2.0 is an Obsidian-first research assistant for tracking frontier papers in robotics, embodied AI, VLA, world models, reinforcement learning, and robot manipulation.
 
-## 功能介绍
+It turns a noisy daily paper stream into a durable local knowledge base: scored paper digests, deep reading notes, PDFs, architecture figures, searchable Obsidian properties, research queues, open questions, weekly/monthly briefs, and optional podcast summaries.
 
-### 1) 智能抓取与去重
-- 支持 arXiv 与 Hugging Face Daily Papers 双源抓取，可按日期批量运行，也可单篇 `--arxiv-url` 精准分析。
-- 抓取阶段自动做关键词过滤与标题去重，减少无关论文和重复条目。
-- 网络请求内置重试与退避策略，降低限流/抖动带来的任务失败概率。
+`arXiv` / `Hugging Face` / `OpenRouter` / `Obsidian` / `Research Notes` / `Weekly Briefs`
 
-### 2) 两阶段论文筛选
-- Stage-1 粗筛聚焦召回，快速筛出可能高价值论文，控制总体调用成本。
-- Stage-2 精筛做多维评分（relevance/novelty/rigor/evidence/reproducibility），形成更稳定的优先级排序。
-- 二阶段支持可配置 PDF 摘录注入（前 N 页 + 字符上限），避免只看摘要造成误判。
+## 📚 Contents
 
-### 3) 深度分析引擎
-- 自动下载 PDF，提取关键架构图，并结合历史笔记做 RAG 上下文增强。
-- 支持多轮分析生成“可学习型”报告，覆盖方法、公式、实验、局限与后续研究方向。
-- 具备视觉 fallback 路径：文本抽取失败时可回退到图像阅读流程。
+- [Why PaperBrain](#why-paperbrain)
+- [Core Workflow](#core-workflow)
+- [Quick Start](#quick-start)
+- [Daily Usage](#daily-usage)
+- [Research Index And Briefs](#research-index-and-briefs)
+- [Vault Structure](#vault-structure)
+- [Key Concepts](#key-concepts)
+- [Configuration](#configuration)
+- [Maintenance Commands](#maintenance-commands)
+- [Development Checks](#development-checks)
 
-### 4) 知识库自动化沉淀
-- 自动生成 `Research_Notes` 单篇笔记与 `Daily_Papers` 日报，并维护 frontmatter 元数据。
-- 主题页增量更新：新笔记写入后自动刷新相关 `Research_Themes`，无需每次全量重建。
-- 知识园丁会尝试为已有笔记追加 related work 回链，持续增强笔记间连接密度。
+## <a id="why-paperbrain"></a> 🧭 Why PaperBrain
 
-### 5) 可配置提示词与主题系统
-- 筛选、分析、主题增强提示词统一在 `script/prompts.yaml` 管理，便于快速实验和版本演进。
-- 主题树定义位于 `script/themes.yaml`，支持按研究方向扩展或重构主题体系。
-- 标签体系由 `script/tags.yaml` 管理，利于后续统计、检索与主题归档。
+Research tracking usually fails in two places: too many papers arrive every day, and even useful papers become hard to retrieve after the first reading. PaperBrain is built to keep the daily workflow small while preserving the evidence behind every decision.
 
-### 6) 播客与传播能力
-- 自动为高分论文生成播客文稿与音频，降低信息消费门槛。
-- 支持对指定笔记单独生成播客，适合对外分享和团队同步。
+It is designed for a researcher who wants to:
 
-## 核心流程
+- 🔎 **Monitor** arXiv and Hugging Face papers in a focused research area.
+- 🧪 **Screen** many papers but deeply read only the strongest ones.
+- 🧾 **Audit** every scoring decision and rerun interrupted jobs.
+- 📖 **Study** with Obsidian notes that preserve IDs, tags, formulas, links, and follow-up questions.
+- 🧠 **Synthesize** a week or month as a coherent research trend rather than disconnected summaries.
 
-```text
-arXiv + HuggingFace Daily Papers
-        │
-        ▼
-Stage-1 Coarse Screening (model_flash)
-        │
-        ▼
-Stage-2 Rigorous Screening (model_screening_pro)
-  └─ 可选注入 PDF 前几页文本作为额外证据
-        │
-        ▼
-Deep Analysis (model_pro)
-  └─ PDF文本 + 架构图 + RAG上下文 + 多轮分析
-        │
-        ▼
-Obsidian Outputs
-  ├─ Research_Notes
-  ├─ Research_Themes (增量更新)
-  ├─ Daily_Papers
-  ├─ Assets / PDFs
-  └─ Podcasts
-```
+| Signal | What PaperBrain Gives You |
+| --- | --- |
+| 🔎 Search | Date-based arXiv and Hugging Face paper collection |
+| 🧪 Triage | Two-stage scoring with full screening records |
+| 📖 Reading | Deep Obsidian notes with formulas, links, figures, and questions |
+| 🧠 Memory | Stable `paper_id`, normalized tags, queues, and Bases views |
+| 🗓️ Synthesis | Daily digests plus weekly, monthly, and range-based research briefs |
 
-## 项目结构
+## <a id="core-workflow"></a> 🧬 Core Workflow
 
 ```text
-PaperBrain/
-├── Daily_Papers/                  # 每日摘要
-├── Research_Notes/                # 单篇深度笔记
-├── Research_Themes/               # 主题母页 + Theme_Index
-├── PDFs/                          # 下载的论文 PDF
-├── Assets/                        # 提取的架构图
-├── Podcasts/                      # 生成的播客音频
-├── script/
-│   ├── main.py                    # 主流程入口
-│   ├── rebuild_theme_pages.py     # 全量重建主题页
-│   ├── enrich_empty_themes.py     # 仅补齐空 AI 区块
-│   ├── generate_podcast.py        # 指定笔记生成播客
-│   ├── config.yaml                # 运行配置
-│   ├── prompts.yaml               # 全量提示词配置
-│   ├── themes.yaml                # 主题定义配置
-│   ├── tags.yaml                  # 标准标签体系
-│   └── src/
-│       ├── scraper.py
-│       ├── analyser.py
-│       ├── knowledge_base.py
-│       ├── obsidian_writer.py
-│       ├── theme_manager.py
-│       ├── gardener.py
-│       ├── podcaster.py
-│       └── config_loader.py
-├── CLAUDE.md                      # 协作文档与变更日志
-└── README.md
+arXiv + Hugging Face Daily Papers
+  -> canonical paper identity
+  -> two-stage screening
+  -> full screening record
+  -> daily digest
+  -> selected deep analysis notes
+  -> Research_Index + Obsidian tags/Bases
+  -> Research_Briefs + open questions
+  -> backlinks + optional podcast
 ```
 
-## 快速开始
+The daily digest is broad: by default, it includes every paper with `score >= 7.0`. Deep analysis is stricter: PaperBrain selects the strongest 1-2 papers above the lower threshold, then adds any extra papers above the upper threshold.
 
-### 1) 安装环境
+## <a id="quick-start"></a> ⚡ Quick Start
 
 ```bash
-cd script
+cd D:\PaperBrain
 conda create -n wd python=3.10 -y
 conda activate wd
-pip install -r requirements.txt
+pip install -r script/requirements.txt
 ```
 
-### 2) 配置密钥
-
-复制并填写环境变量：
+Create an environment file from the example:
 
 ```bash
-copy .env.example .env
+copy script\config\.env.example script\.env
 ```
 
-`script/.env` 至少包含：
+Then fill in the keys:
 
 ```env
-DOUBAO_API_KEY=your_key
-OPENROUTER_API_KEY=your_key
-# 可选：BARK_URL=...
+DOUBAO_API_KEY=your_doubao_api_key_here
+OPENROUTER_API_KEY=your_openrouter_api_key_here
 ```
 
-### 3) 运行主流程
-
-从仓库根目录执行：
+Run today's pipeline:
 
 ```bash
-# 立即执行（默认抓取昨天）
 python script/main.py --run-now --provider openrouter
-
-# 指定日期
-python script/main.py --run-now --date 2026-03-20 --provider openrouter
-
-# 单篇论文模式（URL 或 arXiv ID）
-python script/main.py --run-now --provider openrouter --arxiv-url https://arxiv.org/abs/2603.19199
 ```
 
-## 配置说明（重点）
-
-- `script/config.yaml`
-  - 模型与阈值：`doubao.*` / `openrouter.*`
-  - 筛选策略：`analysis.screening_second_stage_top_k`
-  - 二阶段 PDF 证据注入：
-    - `analysis.screening_second_stage_use_pdf_context`
-    - `analysis.screening_second_stage_pdf_context_pages`
-    - `analysis.screening_second_stage_pdf_context_max_chars`
-  - 输出目录：`obsidian.*`
-- `script/prompts.yaml`
-  - 粗筛、精筛、深度分析、别名生成等提示词统一管理。
-- `script/themes.yaml`
-  - 主题树定义（可直接扩展和重命名）。
-
-## 常用命令
+Run a known date:
 
 ```bash
-# 全量重建主题母页
-python script/rebuild_theme_pages.py --provider openrouter
-
-# 仅补全空 AI 区块
-python script/enrich_empty_themes.py --provider openrouter
-
-# 对指定笔记生成播客
-python script/generate_podcast.py "FASTER.md" --provider openrouter --minutes 6
+python script/main.py --run-now --date 2026-06-01 --provider openrouter
 ```
 
-## 输出产物
+## <a id="daily-usage"></a> 🗓️ Daily Usage
 
-- `Research_Notes/*.md`：单篇技术深析（含摘要、方法拆解、证据、批判评估）。
-- `Research_Themes/*.md`：主题聚合页（增量更新）。
-- `Daily_Papers/*.md`：每日筛选摘要。
-- `Assets/*_arch.(png|jpeg)`：论文架构图。
-- `Podcasts/*.mp3`：Top 论文播客。
+### 🚀 Run Modes
 
-## 稳定性与容错
+| Mode | Goal | Command |
+| --- | --- |
+| 🗓️ Daily | Today | `python script/main.py --run-now --provider openrouter` |
+| 📅 Calendar | Specific date | `python script/main.py --run-now --date 2026-06-01 --provider openrouter` |
+| 🧰 Debug | Fetch only | `python script/main.py --run-now --date 2026-06-01 --provider openrouter --stop-after fetch` |
+| 🧪 Debug | Screening only | `python script/main.py --run-now --date 2026-06-01 --provider openrouter --stop-after screen` |
+| 🔁 Resume | Continue previous run | `python script/main.py --run-now --date 2026-06-01 --provider openrouter` |
+| ♻️ Reset | Clean rerun | `python script/main.py --run-now --date 2026-06-01 --provider openrouter --force` |
+| 🎧 Audio | Skip podcast | `python script/main.py --run-now --provider openrouter --no-podcast` |
+| 🎯 Focus | Single paper | `python script/main.py --run-now --provider openrouter --arxiv-url https://arxiv.org/abs/2606.02486` |
 
-- arXiv 限流（429/503）内置指数退避。
-- OpenRouter 模型不可用（403/404/地区限制）自动 fallback。
-- JSON 脏输出有清洗与降级 payload。
-- PDF 文本抽取失败自动 fallback 到备用解析路径。
+### 📌 What To Check After A Run
 
-## 安全
+| Type | Output | Purpose |
+| --- | --- |
+| 📰 Digest | `Daily_Papers/YYYY-MM-DD-PaperDigest.md` | Daily map of all papers above the digest threshold |
+| 🧾 Audit | `Run_Records/YYYY-MM-DD-openrouter-screening-results.md` | Human-readable screening audit |
+| 💾 State | `Run_Records/YYYY-MM-DD-openrouter-run-state.json` | Resume state and machine-readable screening data |
+| 📖 Notes | `Research_Notes/*.md` | Deep analysis notes for selected papers |
+| 🧭 Index | `Research_Index/Research_Index.md` | Obsidian research dashboard |
+| 📊 Base | `Research_Index/Paper_Library.base` | Obsidian Bases table view |
 
-- API Key 仅本地 `.env` 使用，不入库。
-- 所有输出默认落地到本地 Obsidian Vault。
-- 详细策略见 [SECURITY.md](SECURITY.md)。
+Each digest entry includes score, innovation, limitations, note/web link, authors, institutions, and tags/source when available.
 
-## 协作开发
+## <a id="research-index-and-briefs"></a> 🧭 Research Index And Briefs
 
-- 项目上下文、约束和变更历史见 [CLAUDE.md](./CLAUDE.md)。
-- 欢迎提交 Issue / PR，一起把研究工作流做成真正可复用的开源工具链。
+Rebuild the Obsidian index and normalize note frontmatter:
+
+```bash
+python script/build_research_index.py
+```
+
+Regenerate index files without rewriting notes:
+
+```bash
+python script/build_research_index.py --no-update-notes
+```
+
+Generate a weekly brief:
+
+```bash
+python script/generate_research_brief.py --week 2026-W23
+```
+
+Generate a monthly brief:
+
+```bash
+python script/generate_research_brief.py --month 2026-06
+```
+
+Generate a custom or rolling range:
+
+```bash
+python script/generate_research_brief.py --from-date 2026-06-01 --to-date 2026-06-07
+python script/generate_research_brief.py --last-days 14 --date 2026-06-03
+```
+
+Briefs are written to `Research_Briefs/` and use this structure:
+
+```text
+1. Executive Summary
+2. Top Papers This Week
+3. Research Trend Map
+4. Novel Signals
+5. Repeated Patterns And Saturation
+6. Evidence Quality
+7. Reading Plan For Next Week
+8. Open Research Questions
+```
+
+## <a id="vault-structure"></a> 🗂️ Vault Structure
+
+```text
+Daily_Papers/       daily paper digests
+Research_Notes/     deep paper notes
+Research_Index/     library index, queues, Bases view, tag guide
+Research_Briefs/    weekly, monthly, and custom-range synthesis briefs
+Run_Records/        full run state and screening reports
+PDFs/               downloaded papers
+Assets/             extracted figures and architecture images
+Podcasts/           optional audio summaries
+script/             pipeline code
+```
+
+## <a id="key-concepts"></a> 🔑 Key Concepts
+
+### 🪪 Paper Identity
+
+Each paper is tracked by a stable `paper_id`, usually in the form `arxiv:2606.02486`. File names, short titles, and aliases can change; `paper_id` is the identity anchor.
+
+### 📅 Date Semantics
+
+`publication_date` means the authoritative published/listed date from arXiv or Hugging Face. It is the date used for daily digests and time-range briefs.
+
+If the AI metadata extractor sees a different date in the paper PDF or project page, PaperBrain stores it separately as `metadata_publication_date`.
+
+### 🏷️ Obsidian Tags And Properties
+
+The indexer maintains Obsidian-native properties:
+
+```text
+paper_id, arxiv_id, score, domains, methods, tasks,
+paper_type, impact_band, reading_status, review_status,
+priority_score, next_action
+```
+
+It also generates nested tags such as:
+
+```text
+domain/vla
+domain/world_model
+method/latent_world_model
+method/diffusion_policy
+task/manipulation
+impact/high_value
+status/unread
+```
+
+## <a id="configuration"></a> ⚙️ Configuration
+
+Main configuration files:
+
+| File | Purpose |
+| --- | --- |
+| `script/config/config.yaml` | Model routing, thresholds, search scope, Obsidian paths |
+| `script/config/prompts.yaml` | Screening, deep analysis, refinement, vision, and alias prompts |
+| `script/config/tags.yaml` | Research taxonomy and tag behavior |
+| `script/config/.env.example` | API key template |
+
+Important analysis knobs:
+
+```yaml
+analysis:
+  daily_digest_min_score: 7.0
+  deep_analysis_lower_threshold: 7.5
+  deep_analysis_extra_threshold: 8.8
+  daily_deep_analysis_base_max: 2
+  screening_second_stage_ratio: 0.25
+  screening_second_stage_max_k: 20
+```
+
+OpenRouter is configured to avoid Claude, OpenAI, and Gemini when they are region-restricted. The current fallback chain uses compatible DeepSeek, Qwen, Z.ai, xAI, MiniMax, StepFun, and related models.
+
+## <a id="maintenance-commands"></a> 🛠️ Maintenance Commands
+
+Repair note dates from saved run records if older notes used model-extracted dates:
+
+```bash
+python script/fix_publication_dates.py 2026-05-29 2026-06-01 2026-06-02
+```
+
+Generate a podcast for an existing note:
+
+```bash
+python script/generate_podcast.py "AHEAD for Dynamic VLA Manipulation.md" --provider openrouter --minutes 6
+```
+
+Primary command entry points:
+
+```text
+script/main.py
+script/build_research_index.py
+script/generate_research_brief.py
+script/generate_podcast.py
+script/fix_publication_dates.py
+```
+
+Organized implementations live in `script/tools/`. The top-level `script/*.py` commands are kept as stable wrappers.
+
+## <a id="development-checks"></a> ✅ Development Checks
+
+```bash
+python -m py_compile script/main.py script/src/*.py script/tools/*.py
+python -m unittest discover -s script/tests -p test_*.py
+python script/build_research_index.py --no-update-notes
+```
+
+## 🧩 Operational Notes
+
+- `Run_Records/` makes every screening decision auditable and resumable.
+- `paper_id` prevents aliases and title changes from breaking deduplication.
+- Daily digests are broad maps; deep analyses are high-confidence selections.
+- The Research Index relies on Obsidian tags, properties, and Bases rather than fixed theme pages.
+- If arXiv rate limits the API, rerun the same command later. The run state will preserve completed stages when possible.

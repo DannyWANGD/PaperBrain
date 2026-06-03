@@ -1,23 +1,63 @@
 ---
 tags:
-  - paper
-  - World_Model
-  - Diffusion_Model
-  - Embodied_AI
-  - Robot_Manipulation
-  - Sim2Real
+- paper
+- domain/3d_perception
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- domain/sim2real
+- domain/world_model
+- impact/high_value
+- method/benchmark
+- method/diffusion_policy
+- method/reinforcement_learning
+- method/simulation
+- review/needs_review
+- status/unread
+- task/manipulation
+- task/navigation
+- task/scene_understanding
+- task/video_prediction
+- type/benchmark
 aliases:
-  - "Kinema4D: Kinematic 4D World Modeling for Spatiotemporal Embodied Simulation"
+- 'Kinema4D: Kinematic 4D World Modeling for Spatiotemporal Embodied Simulation'
 url: https://huggingface.co/papers/2603.16669
 pdf_url: https://arxiv.org/pdf/2603.16669.pdf
-local_pdf: "[[Kinema4D Kinematic 4D World Modeling for Spatiotemporal Embodied Simulation.pdf]]"
-github: "None"
-project_page: "mutianxu.github.io/Kinema4D-project-page"
+local_pdf: '[[Kinema4D Kinematic 4D World Modeling for Spatiotemporal Embodied Simulation.pdf]]'
+github: None
+project_page: mutianxu.github.io/Kinema4D-project-page
 institutions:
-  - "S-Lab, Nanyang Technological University"
-  - "SSE, CUHKSZ"
-publication_date: "2026-03-17"
-score: 8
+- S-Lab, Nanyang Technological University
+- SSE, CUHKSZ
+publication_date: '2026-03-17'
+score: '8.0'
+domains:
+- 3d_perception
+- embodied_ai
+- multimodal_perception
+- reinforcement_learning
+- robot_manipulation
+- sim2real
+- world_model
+methods:
+- benchmark
+- reinforcement_learning
+- simulation
+tasks:
+- manipulation
+- navigation
+- scene_understanding
+- video_prediction
+paper_type: benchmark
+impact_band: high_value
+reading_status: unread
+year: 2026
+priority_score: 99
+review_status: needs_review
+next_action: review_tags
+arxiv_id: '2603.16669'
+paper_id: arxiv:2603.16669
 ---
 
 # Kinema4D: Kinematic 4D World Modeling for Spatiotemporal Embodied Simulation

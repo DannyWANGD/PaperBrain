@@ -1,0 +1,132 @@
+doubao:
+  api_key: "${DOUBAO_API_KEY}"
+  # You can use doubao-seed-2-0-lite-260215 for cheaper screening
+  model_flash: "ep-20260226105946-sgmhx"
+  # Use the powerful Pro model for detailed analysis
+  model_pro: "ep-20260226105946-sgmhx"
+  threshold_score: 7
+
+openrouter:
+  api_key: "${OPENROUTER_API_KEY}"
+  model_flash: "deepseek/deepseek-v4-flash"
+  model_flash_fallbacks:
+    - "stepfun/step-3.7-flash"
+    - "qwen/qwen3.6-flash"
+    - "z-ai/glm-4.7-flash"
+    - "deepseek/deepseek-v3.2"
+  model_screening_pro: "deepseek/deepseek-v4-pro"
+  model_screening_pro_fallbacks:
+    - "x-ai/grok-4.3"
+    - "qwen/qwen3.7-max"
+    - "minimax/minimax-m3"
+    - "qwen/qwen3-max-thinking"
+    - "z-ai/glm-5.1"
+    - "moonshotai/kimi-k2.6"
+  model_pro: "deepseek/deepseek-v4-pro"
+  model_pro_fallbacks:
+    - "x-ai/grok-4.3"
+    - "qwen/qwen3.7-max"
+    - "minimax/minimax-m3"
+    - "z-ai/glm-5.1"
+    - "moonshotai/kimi-k2.6"
+    - "qwen/qwen3-max-thinking"
+  model_podcast: "moonshotai/kimi-k2.6"
+  model_podcast_fallbacks:
+    - "x-ai/grok-4.3"
+    - "qwen/qwen3.7-max"
+    - "minimax/minimax-m3"
+    - "deepseek/deepseek-v4-pro"
+    - "z-ai/glm-5.1"
+  model_vision: "qwen/qwen3-vl-30b-a3b-thinking"
+  model_vision_fallbacks:
+    - "perceptron/perceptron-mk1"
+    - "minimax/minimax-m3"
+    - "stepfun/step-3.7-flash"
+    - "qwen/qwen3.5-plus-20260420"
+    - "z-ai/glm-5v-turbo"
+    - "moonshotai/kimi-k2.5"
+  routing_sort: "throughput"
+  routing_partition: "none"
+  reasoning_effort_screening: "medium"
+  reasoning_effort_analysis: "high"
+  reasoning_effort_vision: "medium"
+  threshold_score: 7
+
+
+
+analysis:
+  max_iterations: 2
+  refinement_pass_enabled: true
+  refinement_max_chars: 45000
+  refinement_paper_excerpt_chars: 12000
+  max_papers_per_day: 2
+  daily_deep_analysis_min: 1
+  daily_deep_analysis_base_max: 2
+  daily_digest_min_score: 7.0
+  deep_analysis_lower_threshold: 7.5
+  deep_analysis_extra_threshold: 8.8
+  deep_analysis_quality_gate:
+    relevance: 6.0
+    rigor: 6.0
+    evidence: 6.0
+    confidence: 4.0
+    red_flags_max: 2
+  screening_second_stage_top_k: 10
+  screening_second_stage_ratio: 0.25
+  screening_second_stage_max_k: 20
+  screening_second_stage_use_pdf_context: true
+  screening_second_stage_pdf_context_pages: 3
+  screening_second_stage_pdf_context_max_chars: 5000
+  screening_weights:
+    relevance: 0.30
+    novelty: 0.23
+    rigor: 0.22
+    evidence: 0.15
+    reproducibility: 0.10
+  depth_level: "Deep"
+  focus_areas:
+    - "Academic Quality Assessment"
+    - "Relevance & Contribution"
+    - "Methodology Rigor"
+  citation_style: "APA"
+  scoring_rubric:
+    venue_weight: 0.3
+    methodology_weight: 0.4
+    innovation_weight: 0.3
+  # Prompts have been moved to script/config/prompts.yaml
+  # analysis.prompts is kept as an empty placeholder for backward compatibility
+
+obsidian:
+  vault_path: "../../"  # Path to your Obsidian Vault root from script/config/
+  daily_digest_folder: "Daily_Papers"
+  detailed_notes_folder: "Research_Notes"
+  research_index_folder: "Research_Index"
+  research_brief_folder: "Research_Briefs"
+  pdf_storage_folder: "PDFs"  # New folder for storing PDFs
+  daily_digest_template: |
+    # 📅 {{date}} - Paper Digest
+    ## Summary
+    Total Papers: {{total_count}} | High Impact: {{high_impact_count}}
+    
+    ## 📝 Papers List
+    {{content}}
+
+search:
+  keywords:
+    - "Robot Manipulation"
+    - "VLA"
+    - "World Model"
+    - "Reinforcement Learning"
+    - "Diffusion model"
+    - "Embodied AI"
+    - "Foundation Models"
+    - "LLM"
+  max_results: 50
+  arxiv_categories:
+    - "cs.RO"
+    - "cs.AI"
+    - "cs.LG"
+    - "cs.CV"
+
+schedule:
+  time: "12:00"  # 24-hour format

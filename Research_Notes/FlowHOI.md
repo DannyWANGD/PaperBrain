@@ -1,24 +1,62 @@
 ---
 tags:
-  - paper
-  - VLA
-  - Robot_Manipulation
-  - Embodied_AI
-  - 3D_Gaussian_Splatting
+- paper
+- domain/3d_perception
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- domain/vla
+- impact/high_value
+- method/benchmark
+- method/reinforcement_learning
+- method/simulation
+- review/auto_tagged
+- status/unread
+- task/dexterous_contact
+- task/manipulation
+- task/scene_understanding
+- type/benchmark
 aliases:
-  - "FlowHOI: Flow-based Semantics-Grounded Generation of Hand-Object Interactions for Dexterous Robot Manipulation"
+- 'FlowHOI: Flow-based Semantics-Grounded Generation of Hand-Object Interactions for
+  Dexterous Robot Manipulation'
 url: http://arxiv.org/abs/2602.13444v1
 pdf_url: https://arxiv.org/pdf/2602.13444v1
-local_pdf: "[[FlowHOI Flowbased SemanticsGrounded Generation of HandObject Interactions for Dexterous Robot Manipu.pdf]]"
-github: "None"
-project_page: "https://huajian-zeng.github.io/projects/flowhoi"
+local_pdf: '[[FlowHOI Flowbased SemanticsGrounded Generation of HandObject Interactions
+  for Dexterous Robot Manipu.pdf]]'
+github: None
+project_page: https://huajian-zeng.github.io/projects/flowhoi
 institutions:
-  - "Mohamed bin Zayed University of Artificial Intelligence (MBZUAI)"
-  - "Technical University of Munich (TUM)"
-  - "National University of Singapore (NUS)"
-  - "Westlake University"
-publication_date: "2026-02-13"
-score: 8
+- Mohamed bin Zayed University of Artificial Intelligence (MBZUAI)
+- Technical University of Munich (TUM)
+- National University of Singapore (NUS)
+- Westlake University
+publication_date: '2026-02-13'
+score: '8.0'
+domains:
+- 3d_perception
+- embodied_ai
+- multimodal_perception
+- reinforcement_learning
+- robot_manipulation
+- vla
+methods:
+- benchmark
+- reinforcement_learning
+- simulation
+tasks:
+- dexterous_contact
+- manipulation
+- scene_understanding
+paper_type: benchmark
+impact_band: high_value
+reading_status: unread
+year: 2026
+priority_score: 99
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2602.13444'
+paper_id: arxiv:2602.13444
 ---
 
 # FlowHOI: Flow-based Semantics-Grounded Generation of Hand-Object Interactions for Dexterous Robot Manipulation

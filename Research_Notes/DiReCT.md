@@ -1,19 +1,48 @@
 ---
 tags:
-  - paper
-  - World_Model
-  - Diffusion_Model
-  - Foundation_Model
-  - LLM
+- paper
+- domain/reinforcement_learning
+- domain/world_model
+- impact/high_value
+- method/diffusion_policy
+- method/foundation_model
+- method/reinforcement_learning
+- review/auto_tagged
+- status/unread
+- task/navigation
+- task/scene_understanding
+- task/video_prediction
+- type/system
 aliases:
-  - "DiReCT: Disentangled Regularization of Contrastive Trajectories for Physics-Refined Video Generation"
+- 'DiReCT: Disentangled Regularization of Contrastive Trajectories for Physics-Refined
+  Video Generation'
 url: http://arxiv.org/abs/2603.25931v1
 pdf_url: https://arxiv.org/pdf/2603.25931v1
-local_pdf: "[[DiReCT Disentangled Regularization of Contrastive Trajectories for PhysicsRefined Video Generation.pdf]]"
-github: "None"
-project_page: "None"
-publication_date: "Unknown"
-score: 8
+local_pdf: '[[DiReCT Disentangled Regularization of Contrastive Trajectories for PhysicsRefined
+  Video Generation.pdf]]'
+github: None
+project_page: None
+publication_date: Unknown
+score: '8.0'
+domains:
+- reinforcement_learning
+methods:
+- diffusion_policy
+- foundation_model
+- reinforcement_learning
+tasks:
+- navigation
+- scene_understanding
+- video_prediction
+paper_type: system
+impact_band: high_value
+reading_status: unread
+year: null
+priority_score: 95
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2603.25931'
+paper_id: arxiv:2603.25931
 ---
 
 # DiReCT: Disentangled Regularization of Contrastive Trajectories for Physics-Refined Video Generation

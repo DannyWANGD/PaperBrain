@@ -1,23 +1,63 @@
 ---
 tags:
-  - paper
-  - World_Model
-  - Embodied_AI
-  - Sim2Real
-  - Robot_Manipulation
-  - Foundation_Model
+- paper
+- domain/3d_perception
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- domain/sim2real
+- domain/world_model
+- impact/high_value
+- method/benchmark
+- method/foundation_model
+- method/memory
+- method/planning
+- method/reinforcement_learning
+- review/auto_tagged
+- status/unread
+- task/manipulation
+- task/planning_reasoning
+- task/scene_understanding
+- type/benchmark
 aliases:
-  - "LoGeR: Long-Context Geometric Reconstruction with Hybrid Memory"
+- 'LoGeR: Long-Context Geometric Reconstruction with Hybrid Memory'
 url: http://arxiv.org/abs/2603.03269v1
 pdf_url: https://arxiv.org/pdf/2603.03269v1
-local_pdf: "[[LoGeR LongContext Geometric Reconstruction with Hybrid Memory.pdf]]"
-github: "https://LogeR-project.github.io/"
-project_page: "https://LogeR-project.github.io/"
+local_pdf: '[[LoGeR LongContext Geometric Reconstruction with Hybrid Memory.pdf]]'
+github: https://LogeR-project.github.io/
+project_page: https://LogeR-project.github.io/
 institutions:
-  - "Google DeepMind"
-  - "UC Berkeley"
-publication_date: "2026-03-03"
-score: 8
+- Google DeepMind
+- UC Berkeley
+publication_date: '2026-03-03'
+score: '8.0'
+domains:
+- 3d_perception
+- embodied_ai
+- multimodal_perception
+- reinforcement_learning
+- robot_manipulation
+- sim2real
+methods:
+- benchmark
+- foundation_model
+- memory
+- planning
+- reinforcement_learning
+tasks:
+- manipulation
+- planning_reasoning
+- scene_understanding
+paper_type: benchmark
+impact_band: high_value
+reading_status: unread
+year: 2026
+priority_score: 103
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2603.03269'
+paper_id: arxiv:2603.03269
 ---
 
 # LoGeR: Long-Context Geometric Reconstruction with Hybrid Memory

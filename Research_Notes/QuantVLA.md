@@ -1,27 +1,57 @@
 ---
 tags:
-  - paper
-  - VLA
-  - Post_Training_Quantization
-  - Diffusion_Transformer
-  - Embodied_AI
-  - Foundation_Models
-  - 2026-02-27
+- paper
+- '2026-02-27'
+- Diffusion_Transformer
+- Foundation_Models
+- Post_Training_Quantization
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- domain/vla
+- impact/solid
+- method/memory
+- method/reinforcement_learning
+- review/auto_tagged
+- status/unread
+- task/scene_understanding
+- type/system
 aliases:
-  - "QuantVLA: Scale-Calibrated Post-Training Quantization for Vision-Language-Action Models"
+- 'QuantVLA: Scale-Calibrated Post-Training Quantization for Vision-Language-Action
+  Models'
 url: http://arxiv.org/abs/2602.20309v2
 pdf_url: https://arxiv.org/pdf/2602.20309v2
-local_pdf: "[[QuantVLA ScaleCalibrated PostTraining Quantization for VisionLanguageAction Models.pdf]]"
+local_pdf: '[[QuantVLA ScaleCalibrated PostTraining Quantization for VisionLanguageAction
+  Models.pdf]]'
 github: None
 project_page: None
 institutions:
-  - The Ohio State University
-  - Indiana University
-  - University of Michigan
-  - City University of Hong Kong
+- The Ohio State University
+- Indiana University
+- University of Michigan
+- City University of Hong Kong
 publication_date: 2026-02-25
-score: 7
-Reading?:
+score: '7.0'
+Reading?: null
+domains:
+- embodied_ai
+- multimodal_perception
+- reinforcement_learning
+- vla
+methods:
+- memory
+- reinforcement_learning
+tasks:
+- scene_understanding
+paper_type: system
+impact_band: solid
+reading_status: unread
+year: 2026
+priority_score: 70
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2602.20309'
+paper_id: arxiv:2602.20309
 ---
 
 # QuantVLA: Scale-Calibrated Post-Training Quantization for Vision-Language-Action Models

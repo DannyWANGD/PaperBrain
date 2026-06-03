@@ -1,24 +1,56 @@
 ---
 tags:
-  - paper
-  - World_Action_Model
-  - Video_Diffusion_Model
-  - VLA
-  - Cross_Embodiment_Transfer
-  - Robot_Manipulation
-  - 2026-02-28
+- paper
+- '2026-02-28'
+- Cross_Embodiment_Transfer
+- Video_Diffusion_Model
+- World_Action_Model
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- domain/vla
+- impact/must_read
+- method/foundation_model
+- method/imitation_learning
+- method/reinforcement_learning
+- review/auto_tagged
+- status/unread
+- task/manipulation
+- task/scene_understanding
+- type/system
 aliases:
-  - World Action Models are Zero-shot Policies
+- World Action Models are Zero-shot Policies
 url: https://huggingface.co/papers/2602.15922
 pdf_url: https://arxiv.org/pdf/2602.15922.pdf
-local_pdf: "[[World Action Models are Zeroshot Policies.pdf]]"
+local_pdf: '[[World Action Models are Zeroshot Policies.pdf]]'
 github: https://github.com/dreamzero0/dreamzero
 project_page: https://dreamzero0.github.io
 institutions:
-  - NVIDIA
+- NVIDIA
 publication_date: 2026-02-19
-score: 9
-Reading?:
+score: '9.0'
+Reading?: null
+domains:
+- multimodal_perception
+- reinforcement_learning
+- robot_manipulation
+- vla
+methods:
+- foundation_model
+- imitation_learning
+- reinforcement_learning
+tasks:
+- manipulation
+- scene_understanding
+paper_type: system
+impact_band: must_read
+reading_status: unread
+year: 2026
+priority_score: 119
+review_status: auto_tagged
+next_action: deep_read
+arxiv_id: '2602.15922'
+paper_id: arxiv:2602.15922
 ---
 
 # World Action Models are Zero-shot Policies
@@ -206,3 +238,6 @@ graph LR
 - **Local PDF**: [[World Action Models are Zeroshot Policies.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2602.15922.pdf)
 - [ArXiv Link](https://huggingface.co/papers/2602.15922)
+
+## Related Work Updates
+- [ ] **2026-06-03**: New paper [[QwenVLA Unified VLA for Manipulation and Navigation]] discusses *world_action_models_are_zero_shot_policies*. Innovation: "Unifies manipulation, navigation, and trajectory prediction into a single VLA model using embodiment-aware prompts and a DiT-based action decoder."

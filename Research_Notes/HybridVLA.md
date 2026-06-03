@@ -1,32 +1,66 @@
 ---
 tags:
-  - paper
-  - VLA
-  - Diffusion_Model
-  - Robot_Manipulation
-  - LLM
-  - Embodied_AI
+- paper
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/robot_manipulation
+- domain/vla
+- impact/high_value
+- method/diffusion_policy
+- method/foundation_model
+- method/imitation_learning
+- method/planning
+- review/auto_tagged
+- status/unread
+- task/manipulation
+- task/planning_reasoning
+- task/scene_understanding
+- type/system
 aliases:
-  - "HybridVLA: Collaborative Diffusion and Autoregression in a Unified Vision-Language-Action Model"
-  - "HybridVLA"
-  - "Diffusion Autoregressive VLA"
-  - "Collaborative Diffusion Autoregression"
-  - "Adaptive Ensemble VLA"
-  - "Next-Token Diffusion Hybrid"
-  - "Discrete-Continuous Action Policy"
-  - "Hybrid VLA Architecture"
-arxiv_id: "2503.10631"
+- 'HybridVLA: Collaborative Diffusion and Autoregression in a Unified Vision-Language-Action
+  Model'
+- HybridVLA
+- Diffusion Autoregressive VLA
+- Collaborative Diffusion Autoregression
+- Adaptive Ensemble VLA
+- Next-Token Diffusion Hybrid
+- Discrete-Continuous Action Policy
+- Hybrid VLA Architecture
+arxiv_id: '2503.10631'
 url: http://arxiv.org/abs/2503.10631v3
 pdf_url: https://arxiv.org/pdf/2503.10631v3
-local_pdf: "[[HybridVLA Collaborative Diffusion and Autoregression in a Unified VisionLanguageAction Model.pdf]]"
-github: "hybrid-vla.github.io"
-project_page: "hybrid-vla.github.io"
+local_pdf: '[[HybridVLA Collaborative Diffusion and Autoregression in a Unified VisionLanguageAction
+  Model.pdf]]'
+github: hybrid-vla.github.io
+project_page: hybrid-vla.github.io
 institutions:
-  - "Peking University"
-  - "Beijing Academy of Artificial Intelligence"
-  - "The Chinese University of Hong Kong"
-publication_date: "2025-06-23"
-score: 8
+- Peking University
+- Beijing Academy of Artificial Intelligence
+- The Chinese University of Hong Kong
+publication_date: '2025-06-23'
+score: '8.0'
+domains:
+- embodied_ai
+- multimodal_perception
+- robot_manipulation
+- vla
+methods:
+- diffusion_policy
+- foundation_model
+- imitation_learning
+- planning
+tasks:
+- manipulation
+- planning_reasoning
+- scene_understanding
+paper_type: system
+impact_band: high_value
+reading_status: unread
+year: 2025
+priority_score: 103
+review_status: auto_tagged
+next_action: inspect_protocol
+paper_id: arxiv:2503.10631
 ---
 
 # HybridVLA: Collaborative Diffusion and Autoregression in a Unified Vision-Language-Action Model

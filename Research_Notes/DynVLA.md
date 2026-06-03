@@ -1,23 +1,56 @@
 ---
 tags:
-  - paper
-  - VLA
-  - World_Model
-  - Embodied_AI
-  - Foundation_Model
-  - LLM
+- paper
+- domain/embodied_ai
+- domain/reinforcement_learning
+- domain/vla
+- domain/world_model
+- impact/solid
+- method/benchmark
+- method/foundation_model
+- method/latent_world_model
+- method/planning
+- method/reinforcement_learning
+- review/auto_tagged
+- status/unread
+- task/navigation
+- task/planning_reasoning
+- type/benchmark
 aliases:
-  - "DynVLA: Learning World Dynamics for Action Reasoning in Autonomous Driving"
+- 'DynVLA: Learning World Dynamics for Action Reasoning in Autonomous Driving'
 url: http://arxiv.org/abs/2603.11041v1
 pdf_url: https://arxiv.org/pdf/2603.11041v1
-local_pdf: "[[DynVLA Learning World Dynamics for Action Reasoning in Autonomous Driving.pdf]]"
-github: "None"
-project_page: "None"
+local_pdf: '[[DynVLA Learning World Dynamics for Action Reasoning in Autonomous Driving.pdf]]'
+github: None
+project_page: None
 institutions:
-  - "NLPR, Institute of Automation, Chinese Academy of Sciences (CASIA)"
-  - "Yinwang Intelligent Technology Co. Ltd."
-publication_date: "2026-03-11"
-score: 7
+- NLPR, Institute of Automation, Chinese Academy of Sciences (CASIA)
+- Yinwang Intelligent Technology Co. Ltd.
+publication_date: '2026-03-11'
+score: '7.0'
+domains:
+- embodied_ai
+- reinforcement_learning
+- vla
+- world_model
+methods:
+- benchmark
+- foundation_model
+- latent_world_model
+- planning
+- reinforcement_learning
+tasks:
+- navigation
+- planning_reasoning
+paper_type: benchmark
+impact_band: solid
+reading_status: unread
+year: 2026
+priority_score: 82
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2603.11041'
+paper_id: arxiv:2603.11041
 ---
 
 # DynVLA: Learning World Dynamics for Action Reasoning in Autonomous Driving

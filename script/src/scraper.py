@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 import logging
 import time
 import random
+from src.paper_identity import canonical_arxiv_id, identity_key, normalize_paper_identity
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -29,14 +30,7 @@ class PaperScraper:
         return BeautifulSoup(text, "html.parser").get_text()
 
     def _extract_arxiv_id(self, url_or_id):
-        if not url_or_id:
-            return ""
-        value = str(url_or_id).strip()
-        if "arxiv.org" in value:
-            value = value.split("/")[-1]
-        value = value.replace(".pdf", "")
-        value = value.split("?")[0]
-        return value
+        return canonical_arxiv_id(url_or_id)
 
     def _build_arxiv_query(self, target_date=None):
         cat_query = " OR ".join([f"cat:{cat}" for cat in self.categories])
@@ -123,7 +117,7 @@ class PaperScraper:
             if name:
                 authors.append(name)
 
-        return {
+        return normalize_paper_identity({
             'title': self._clean_html(entry.get("title", "")).strip(),
             'abstract': self._clean_html(entry.get("summary", "")).strip(),
             'url': entry_id,
@@ -131,7 +125,7 @@ class PaperScraper:
             'published': published,
             'source': source,
             'authors': authors
-        }
+        })
 
     def fetch_arxiv_papers(self, target_date=None):
         """Fetches papers from arXiv based on keywords and categories."""
@@ -207,7 +201,7 @@ class PaperScraper:
                     # Filter by keywords
                     text_content = (title + " " + summary).lower()
                     if any(k.lower() in text_content for k in self.keywords):
-                        papers.append({
+                        papers.append(normalize_paper_identity({
                             'title': title,
                             'abstract': summary,
                             'url': f"https://huggingface.co/papers/{paper_id}",
@@ -215,7 +209,7 @@ class PaperScraper:
                             'published': target_date, # Since we queried by date
                             'source': 'HuggingFace',
                             'authors': [a.get('name') for a in paper_info.get('authors', [])]
-                        })
+                        }))
             else:
                 logger.warning(f"Failed to fetch HF papers: {response.status_code}")
                 
@@ -237,15 +231,15 @@ class PaperScraper:
             logger.error(f"[ERR] Failed to fetch Hugging Face papers. {e}")
             hf_papers = []
         
-        # Deduplicate by title
-        seen_titles = set()
+        # Deduplicate by canonical paper identity, falling back to normalized title.
+        seen_keys = set()
         unique_papers = []
         
         for p in arxiv_papers + hf_papers:
-            # Normalize title
-            norm_title = p['title'].lower().strip()
-            if norm_title not in seen_titles:
-                seen_titles.add(norm_title)
+            p = normalize_paper_identity(p)
+            key = identity_key(p)
+            if key not in seen_keys:
+                seen_keys.add(key)
                 unique_papers.append(p)
                 
         return unique_papers

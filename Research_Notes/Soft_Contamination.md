@@ -1,24 +1,44 @@
 ---
 tags:
-  - paper
-  - LLM
-  - Foundation_Model
-  - VLA
-  - Embodied_AI
+- paper
+- domain/embodied_ai
+- domain/vla
+- impact/solid
+- method/benchmark
+- method/foundation_model
+- review/needs_review
+- status/unread
+- type/benchmark
 aliases:
-  - "Soft Contamination Means Benchmarks Test Shallow Generalization"
+- Soft Contamination Means Benchmarks Test Shallow Generalization
 url: http://arxiv.org/abs/2602.12413v1
 pdf_url: https://arxiv.org/pdf/2602.12413v1
-local_pdf: "[[Soft Contamination Means Benchmarks Test Shallow Generalization.pdf]]"
-github: "https://github.com/AriSpiesberger/Soft-Contamination-Prevelance"
-project_page: "None"
+local_pdf: '[[Soft Contamination Means Benchmarks Test Shallow Generalization.pdf]]'
+github: https://github.com/AriSpiesberger/Soft-Contamination-Prevelance
+project_page: None
 institutions:
-  - "Arb Research"
-  - "Charles University, Prague"
-  - "University of Cambridge"
-  - "University of Oxford"
-publication_date: "2026-02-12"
-score: 7
+- Arb Research
+- Charles University, Prague
+- University of Cambridge
+- University of Oxford
+publication_date: '2026-02-12'
+score: '7.0'
+domains:
+- embodied_ai
+- vla
+methods:
+- benchmark
+- foundation_model
+tasks: []
+paper_type: benchmark
+impact_band: solid
+reading_status: unread
+year: 2026
+priority_score: 70
+review_status: needs_review
+next_action: review_tags
+arxiv_id: '2602.12413'
+paper_id: arxiv:2602.12413
 ---
 
 # Soft Contamination Means Benchmarks Test Shallow Generalization

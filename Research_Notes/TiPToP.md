@@ -1,23 +1,62 @@
 ---
 tags:
-  - paper
-  - Robot_Manipulation
-  - Embodied_AI
-  - Foundation_Model
-  - LLM
-  - Sim2Real
+- paper
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- domain/sim2real
+- domain/vla
+- impact/high_value
+- method/foundation_model
+- method/imitation_learning
+- method/planning
+- method/reinforcement_learning
+- method/simulation
+- review/auto_tagged
+- status/unread
+- task/manipulation
+- task/planning_reasoning
+- task/scene_understanding
+- type/system
 aliases:
-  - "TiPToP: A Modular Open-Vocabulary Planning System for Robotic Manipulation"
+- 'TiPToP: A Modular Open-Vocabulary Planning System for Robotic Manipulation'
 url: http://arxiv.org/abs/2603.09971v1
 pdf_url: https://arxiv.org/pdf/2603.09971v1
-local_pdf: "[[TiPToP A Modular OpenVocabulary Planning System for Robotic Manipulation.pdf]]"
-github: "https://tiptop-robot.github.io"
-project_page: "https://tiptop-robot.github.io"
+local_pdf: '[[TiPToP A Modular OpenVocabulary Planning System for Robotic Manipulation.pdf]]'
+github: https://tiptop-robot.github.io
+project_page: https://tiptop-robot.github.io
 institutions:
-  - "MIT CSAIL"
-  - "University of Pennsylvania"
-publication_date: "2026-03-10"
-score: 8
+- MIT CSAIL
+- University of Pennsylvania
+publication_date: '2026-03-10'
+score: '8.0'
+domains:
+- embodied_ai
+- multimodal_perception
+- reinforcement_learning
+- robot_manipulation
+- sim2real
+- vla
+methods:
+- foundation_model
+- imitation_learning
+- planning
+- reinforcement_learning
+- simulation
+tasks:
+- manipulation
+- planning_reasoning
+- scene_understanding
+paper_type: system
+impact_band: high_value
+reading_status: unread
+year: 2026
+priority_score: 103
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2603.09971'
+paper_id: arxiv:2603.09971
 ---
 
 # TiPToP: A Modular Open-Vocabulary Planning System for Robotic Manipulation

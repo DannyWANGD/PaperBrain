@@ -1,27 +1,60 @@
 ---
 tags:
-  - paper
-  - Robot_Manipulation
-  - Reinforcement_Learning
-  - Embodied_AI
-  - LLM
-  - Foundation_Model
+- paper
+- domain/embodied_ai
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- impact/high_value
+- method/benchmark
+- method/foundation_model
+- method/planning
+- method/reinforcement_learning
+- review/auto_tagged
+- status/unread
+- task/loco_manipulation
+- task/manipulation
+- task/planning_reasoning
+- type/benchmark
 aliases:
-  - "From Passive Observer to Active Critic: Reinforcement Learning Elicits Process Reasoning for Robotic Manipulation"
+- 'From Passive Observer to Active Critic: Reinforcement Learning Elicits Process
+  Reasoning for Robotic Manipulation'
 url: http://arxiv.org/abs/2603.15600v1
 pdf_url: https://arxiv.org/pdf/2603.15600v1
-local_pdf: "[[From Passive Observer to Active Critic Reinforcement Learning Elicits Process Reasoning for Robotic .pdf]]"
-github: "None"
-project_page: "None"
+local_pdf: '[[From Passive Observer to Active Critic Reinforcement Learning Elicits
+  Process Reasoning for Robotic .pdf]]'
+github: None
+project_page: None
 institutions:
-  - "Shanghai Jiao Tong University"
-  - "Northeastern University"
-  - "Xiamen University Malaysia"
-  - "The University of Hong Kong"
-  - "The Chinese University of Hong Kong"
-  - "Xspark AI"
-publication_date: "2026-03-16"
-score: 8
+- Shanghai Jiao Tong University
+- Northeastern University
+- Xiamen University Malaysia
+- The University of Hong Kong
+- The Chinese University of Hong Kong
+- Xspark AI
+publication_date: '2026-03-16'
+score: '8.0'
+domains:
+- embodied_ai
+- reinforcement_learning
+- robot_manipulation
+methods:
+- benchmark
+- foundation_model
+- planning
+- reinforcement_learning
+tasks:
+- loco_manipulation
+- manipulation
+- planning_reasoning
+paper_type: benchmark
+impact_band: high_value
+reading_status: unread
+year: 2026
+priority_score: 103
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2603.15600'
+paper_id: arxiv:2603.15600
 ---
 
 # From Passive Observer to Active Critic: Reinforcement Learning Elicits Process Reasoning for Robotic Manipulation

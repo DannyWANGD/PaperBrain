@@ -1,23 +1,54 @@
 ---
 tags:
-  - paper
-  - Robot_Manipulation
-  - VLA
-  - Embodied_AI
-  - Foundation_Model
+- paper
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/robot_manipulation
+- domain/vla
+- impact/high_value
+- method/benchmark
+- method/foundation_model
+- review/auto_tagged
+- status/unread
+- task/manipulation
+- task/navigation
+- task/scene_understanding
+- type/benchmark
 aliases:
-  - "TAG: Target-Agnostic Guidance for Stable Object-Centric Inference in Vision-Language-Action Models"
+- 'TAG: Target-Agnostic Guidance for Stable Object-Centric Inference in Vision-Language-Action
+  Models'
 url: http://arxiv.org/abs/2603.24584v1
 pdf_url: https://arxiv.org/pdf/2603.24584v1
-local_pdf: "[[TAG TargetAgnostic Guidance for Stable ObjectCentric Inference in VisionLanguageAction Models.pdf]]"
-github: "None"
-project_page: "None"
+local_pdf: '[[TAG TargetAgnostic Guidance for Stable ObjectCentric Inference in VisionLanguageAction
+  Models.pdf]]'
+github: None
+project_page: None
 institutions:
-  - "Sun Yat-sen University"
-  - "Guangdong Key Lab of Big Data Analysis & Processing"
-  - "X-Era AI Lab"
-publication_date: "2026-03-25"
-score: 8
+- Sun Yat-sen University
+- Guangdong Key Lab of Big Data Analysis & Processing
+- X-Era AI Lab
+publication_date: '2026-03-25'
+score: '8.0'
+domains:
+- embodied_ai
+- multimodal_perception
+- robot_manipulation
+- vla
+methods:
+- benchmark
+tasks:
+- manipulation
+- navigation
+- scene_understanding
+paper_type: benchmark
+impact_band: high_value
+reading_status: unread
+year: 2026
+priority_score: 99
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2603.24584'
+paper_id: arxiv:2603.24584
 ---
 
 # TAG: Target-Agnostic Guidance for Stable Object-Centric Inference in Vision-Language-Action Models

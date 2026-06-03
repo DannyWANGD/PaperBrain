@@ -1,26 +1,66 @@
 ---
 tags:
-  - paper
-  - World_Model
-  - Diffusion_Transformer
-  - Video_Diffusion_Model
-  - Embodied_AI
-  - Interactive_Video_Generation
-  - 2026-02-27
+- paper
+- '2026-02-27'
+- Diffusion_Transformer
+- Interactive_Video_Generation
+- Video_Diffusion_Model
+- domain/3d_perception
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- domain/world_model
+- impact/solid
+- method/reinforcement_learning
+- method/simulation
+- review/auto_tagged
+- status/read
+- task/dexterous_contact
+- task/manipulation
+- task/scene_understanding
+- task/video_prediction
+- type/system
 aliases:
-  - "Generated Reality: Human-centric World Simulation using Interactive Video Generation with Hand and Camera Control"
+- 'Generated Reality: Human-centric World Simulation using Interactive Video Generation
+  with Hand and Camera Control'
 url: https://huggingface.co/papers/2602.18422
 pdf_url: https://arxiv.org/pdf/2602.18422.pdf
-local_pdf: "[[Generated Reality Humancentric World Simulation using Interactive Video Generation with Hand and Cam.pdf]]"
+local_pdf: '[[Generated Reality Humancentric World Simulation using Interactive Video
+  Generation with Hand and Cam.pdf]]'
 github: None
 project_page: https://codeysun.github.io/generated-reality/
 institutions:
-  - Stanford University
-  - NYU Shanghai
-  - UNC Chapel Hill
+- Stanford University
+- NYU Shanghai
+- UNC Chapel Hill
 publication_date: 2026-02-20
-score: 7
+score: '7.0'
 Reading?: true
+domains:
+- 3d_perception
+- embodied_ai
+- multimodal_perception
+- reinforcement_learning
+- robot_manipulation
+- world_model
+methods:
+- reinforcement_learning
+- simulation
+tasks:
+- dexterous_contact
+- manipulation
+- scene_understanding
+- video_prediction
+paper_type: system
+impact_band: solid
+reading_status: read
+year: 2026
+priority_score: 54
+review_status: auto_tagged
+next_action: connect_or_summarize
+arxiv_id: '2602.18422'
+paper_id: arxiv:2602.18422
 ---
 
 # Generated Reality: Human-centric World Simulation using Interactive Video Generation with Hand and Camera Control
@@ -192,3 +232,6 @@ graph LR
 - **Local PDF**: [[Generated Reality Humancentric World Simulation using Interactive Video Generation with Hand and Cam.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2602.18422.pdf)
 - [ArXiv Link](https://huggingface.co/papers/2602.18422)
+
+## Related Work Updates
+- [ ] **2026-06-03**: New paper [[GEM Generative Supervision for Embodied VLM]] discusses *generated_reality*. Innovation: "Integrating depth map generation as an auxiliary generative supervision task during VLM pre-training to enhance spatial and physical reasoning for embodied tasks."

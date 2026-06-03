@@ -1,23 +1,62 @@
 ---
 tags:
-  - paper
-  - Embodied_AI
-  - Robot_Manipulation
-  - Foundation_Model
-  - VLA
+- paper
+- domain/3d_perception
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- domain/vla
+- impact/high_value
+- method/benchmark
+- method/foundation_model
+- method/planning
+- method/reinforcement_learning
+- review/auto_tagged
+- status/unread
+- task/manipulation
+- task/planning_reasoning
+- task/scene_understanding
+- type/benchmark
 aliases:
-  - "OmniStream: Mastering Perception, Reconstruction and Action in Continuous Streams"
+- 'OmniStream: Mastering Perception, Reconstruction and Action in Continuous Streams'
 url: https://huggingface.co/papers/2603.12265
 pdf_url: https://arxiv.org/pdf/2603.12265.pdf
-local_pdf: "[[OmniStream Mastering Perception Reconstruction and Action in Continuous Streams.pdf]]"
-github: "https://github.com/Go2Heart/OmniStream"
-project_page: "https://go2heart.github.io/omnistream"
+local_pdf: '[[OmniStream Mastering Perception Reconstruction and Action in Continuous
+  Streams.pdf]]'
+github: https://github.com/Go2Heart/OmniStream
+project_page: https://go2heart.github.io/omnistream
 institutions:
-  - "School of Artificial Intelligence, SJTU"
-  - "Shanghai Innovation Institute"
-  - "VGG, Oxford"
-publication_date: "2026-03-12"
-score: 8
+- School of Artificial Intelligence, SJTU
+- Shanghai Innovation Institute
+- VGG, Oxford
+publication_date: '2026-03-12'
+score: '8.0'
+domains:
+- 3d_perception
+- embodied_ai
+- multimodal_perception
+- reinforcement_learning
+- robot_manipulation
+- vla
+methods:
+- benchmark
+- foundation_model
+- planning
+- reinforcement_learning
+tasks:
+- manipulation
+- planning_reasoning
+- scene_understanding
+paper_type: benchmark
+impact_band: high_value
+reading_status: unread
+year: 2026
+priority_score: 103
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2603.12265'
+paper_id: arxiv:2603.12265
 ---
 
 # OmniStream: Mastering Perception, Reconstruction and Action in Continuous Streams

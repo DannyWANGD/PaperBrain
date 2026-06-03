@@ -1,25 +1,53 @@
 ---
 aliases:
-  - "SPARR: Simulation-based Policies with Asymmetric Real-world Residuals for Assembly"
+- 'SPARR: Simulation-based Policies with Asymmetric Real-world Residuals for Assembly'
 github: None
 institutions:
-  - Nvidia
-  - University of Washington
-local_pdf: "[[SPARR Simulationbased Policies with Asymmetric Realworld Residuals for Assembly.pdf]]"
+- Nvidia
+- University of Washington
+local_pdf: '[[SPARR Simulationbased Policies with Asymmetric Realworld Residuals for
+  Assembly.pdf]]'
 pdf_url: https://arxiv.org/pdf/2602.23253v1
 project_page: https://research.nvidia.com/labs/srl/projects/sparr/
 publication_date: 2026-02-26
 tags:
-  - paper
-  - Sim2Real
-  - Reinforcement_Learning
-  - Robot_Manipulation
-  - Residual_Policy_Learning
-  - Robotic_Assembly
-  - 2026-02-27
+- paper
+- '2026-02-27'
+- Residual_Policy_Learning
+- Robotic_Assembly
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- domain/sim2real
+- impact/watch
+- method/reinforcement_learning
+- method/simulation
+- review/auto_tagged
+- status/unread
+- task/dexterous_contact
+- task/manipulation
+- type/system
 url: http://arxiv.org/abs/2602.23253v1
-score: 6
-Reading?:
+score: '6.0'
+Reading?: null
+domains:
+- reinforcement_learning
+- robot_manipulation
+- sim2real
+methods:
+- reinforcement_learning
+- simulation
+tasks:
+- dexterous_contact
+- manipulation
+paper_type: system
+impact_band: watch
+reading_status: unread
+year: 2026
+priority_score: 64
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2602.23253'
+paper_id: arxiv:2602.23253
 ---
 
 # SPARR: Simulation-based Policies with Asymmetric Real-world Residuals for Assembly

@@ -1,20 +1,55 @@
 ---
 tags:
-  - paper
-  - Embodied_AI
-  - Foundation_Model
-  - VLA
+- paper
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- domain/vla
+- impact/high_value
+- method/benchmark
+- method/foundation_model
+- method/planning
+- method/reinforcement_learning
+- review/auto_tagged
+- status/unread
+- task/navigation
+- task/planning_reasoning
+- task/scene_understanding
+- type/benchmark
 aliases:
-  - "RynnBrain: Open Embodied Foundation Models"
+- 'RynnBrain: Open Embodied Foundation Models'
 url: http://arxiv.org/abs/2602.14979v1
 pdf_url: https://arxiv.org/pdf/2602.14979v1
-local_pdf: "[[RynnBrain Open Embodied Foundation Models.pdf]]"
-github: "https://github.com/alibaba-damo-academy/RynnBrain"
-project_page: "https://alibaba-damo-academy.github.io/RynnBrain.github.io"
+local_pdf: '[[RynnBrain Open Embodied Foundation Models.pdf]]'
+github: https://github.com/alibaba-damo-academy/RynnBrain
+project_page: https://alibaba-damo-academy.github.io/RynnBrain.github.io
 institutions:
-  - "DAMO Academy, Alibaba Group"
-publication_date: "2026-02-17"
-score: 8
+- DAMO Academy, Alibaba Group
+publication_date: '2026-02-17'
+score: '8.0'
+domains:
+- embodied_ai
+- multimodal_perception
+- reinforcement_learning
+- vla
+methods:
+- benchmark
+- foundation_model
+- planning
+- reinforcement_learning
+tasks:
+- navigation
+- planning_reasoning
+- scene_understanding
+paper_type: benchmark
+impact_band: high_value
+reading_status: unread
+year: 2026
+priority_score: 99
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2602.14979'
+paper_id: arxiv:2602.14979
 ---
 
 # RynnBrain: Open Embodied Foundation Models
@@ -205,3 +240,7 @@ graph LR
 - **Local PDF**: [[RynnBrain Open Embodied Foundation Models.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2602.14979v1)
 - [ArXiv Link](http://arxiv.org/abs/2602.14979v1)
+
+## Related Work Updates
+- [ ] **2026-06-02**: New paper [[AFUN Affordance Foundation Model]] discusses *rynnbrain: open embodied foundation models*. Innovation: "Unified affordance foundation model predicting task-conditional functional masks and 3D post-contact motion curves from RGB-D and language, trained on a large-scale heterogeneous dataset."
+- [ ] **2026-06-03**: New paper [[Target Viewpoint Reproduction TVR Benchmark]] discusses *rynnbrain: open embodied foundation models*. Innovation: "Introduces Target Viewpoint Reproduction (TVR), an active 3D exploration task that requires closing the perception‑action loop to match a target viewpoint, revealing fundamental bottlenecks in foundation models' spatial reasoning."

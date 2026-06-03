@@ -1,22 +1,50 @@
 ---
 tags:
-  - paper
-  - Embodied_AI
-  - Foundation_Model
-  - World_Model
+- paper
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- domain/world_model
+- impact/high_value
+- method/foundation_model
+- method/memory
+- method/reinforcement_learning
+- review/auto_tagged
+- status/unread
+- task/scene_understanding
+- type/system
 aliases:
-  - "CanViT: Toward Active-Vision Foundation Models"
+- 'CanViT: Toward Active-Vision Foundation Models'
 url: http://arxiv.org/abs/2603.22570v1
 pdf_url: https://arxiv.org/pdf/2603.22570v1
-local_pdf: "[[CanViT Toward ActiveVision Foundation Models.pdf]]"
-github: "None"
-project_page: "None"
+local_pdf: '[[CanViT Toward ActiveVision Foundation Models.pdf]]'
+github: None
+project_page: None
 institutions:
-  - "McGill University"
-  - "Mila - Quebec AI Institute"
-  - "Université Laval"
-publication_date: "Unknown"
-score: 8
+- McGill University
+- Mila - Quebec AI Institute
+- Université Laval
+publication_date: Unknown
+score: '8.0'
+domains:
+- embodied_ai
+- multimodal_perception
+- reinforcement_learning
+methods:
+- foundation_model
+- memory
+- reinforcement_learning
+tasks:
+- scene_understanding
+paper_type: system
+impact_band: high_value
+reading_status: unread
+year: null
+priority_score: 95
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2603.22570'
+paper_id: arxiv:2603.22570
 ---
 
 # CanViT: Toward Active-Vision Foundation Models

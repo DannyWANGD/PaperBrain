@@ -1,0 +1,122 @@
+# PaperBrain tag taxonomy
+#
+# Obsidian supports nested tags such as domain/vla and method/world_model.
+# The analyser uses this taxonomy during screening; ResearchIndexer also
+# derives the same facets from note content when rebuilding Research_Index.
+
+taxonomy:
+  # Domains
+  - name: "domain/vla"
+    aliases: ["VLA", "Vision-Language-Action", "Vision Language Action", "OpenVLA", "RT-2", "Pi0"]
+    description: "Vision-language-action policies or models that map multimodal observations/instructions to actions."
+  - name: "domain/world_model"
+    aliases: ["World_Model", "World Models", "World Modeling", "Latent Dynamics", "Predictive Model"]
+    description: "Models that predict future states, dynamics, or environment evolution."
+  - name: "domain/robot_manipulation"
+    aliases: ["Robot_Manipulation", "Robotic Manipulation", "Grasping", "Dexterous Manipulation", "Mobile Manipulation"]
+    description: "Robots interacting with objects using hands, grippers, arms, or end-effectors."
+  - name: "domain/embodied_ai"
+    aliases: ["Embodied_AI", "Embodied Artificial Intelligence", "Robot Learning", "Humanoid", "Whole-body Control"]
+    description: "Embodied agents that perceive, reason, and act in physical or simulated worlds."
+  - name: "domain/reinforcement_learning"
+    aliases: ["Reinforcement_Learning", "RL", "Deep RL", "PPO", "SAC", "GRPO"]
+    description: "Learning policies through reward, value functions, or interaction feedback."
+  - name: "domain/sim2real"
+    aliases: ["Sim2Real", "Simulation to Real", "Sim-to-Real Transfer", "Domain Randomization"]
+    description: "Transferring models or policies from simulation/synthetic data to real-world deployment."
+  - name: "domain/3d_perception"
+    aliases: ["3D_Gaussian_Splatting", "3DGS", "Gaussian Splatting", "NeRF", "Point Cloud", "4D Reconstruction"]
+    description: "3D/4D scene representation, reconstruction, geometry, and perception."
+  - name: "domain/multimodal_perception"
+    aliases: ["Multimodal", "VLM", "Vision-Language", "Video-Language", "Audio-Visual"]
+    description: "Multimodal perception, representation learning, and sensor fusion."
+
+  # Methods
+  - name: "method/diffusion_policy"
+    aliases: ["Diffusion_Model", "Diffusion Policy", "Action Diffusion", "Flow Matching", "DDPM", "DiT"]
+    description: "Diffusion or flow-based action generation and denoising policies."
+  - name: "method/world_model"
+    aliases: ["Latent World Model", "RSSM", "Dynamics Tokenizer", "Action-conditioned Video"]
+    description: "Learned transition, rollout, or predictive model used for reasoning/planning/control."
+  - name: "method/planning"
+    aliases: ["Planning", "MPC", "Tree Search", "Trajectory Optimization", "Task Planning"]
+    description: "Explicit planning, search, rollout, or optimization over actions/states."
+  - name: "method/reinforcement_learning"
+    aliases: ["RL", "Reward Model", "Policy Gradient", "Actor-Critic", "Preference Learning"]
+    description: "Reward-driven optimization and value/policy learning methods."
+  - name: "method/imitation_learning"
+    aliases: ["Imitation Learning", "Behavior Cloning", "Demonstration", "Offline Data"]
+    description: "Learning from demonstrations, logs, or offline trajectories."
+  - name: "method/foundation_model"
+    aliases: ["Foundation_Model", "Foundation Models", "LLM", "VLM", "Pre-trained Model"]
+    description: "Large pretrained foundation models used as policy, planner, perception backbone, or critic."
+  - name: "method/benchmark"
+    aliases: ["Benchmark", "Dataset", "Evaluation Suite", "Leaderboard"]
+    description: "Benchmark, dataset, evaluation protocol, or diagnostic suite."
+  - name: "method/simulation"
+    aliases: ["Simulation", "Simulator", "Synthetic Data", "MuJoCo", "Isaac"]
+    description: "Simulation, synthetic data, physical modeling, or generated environments."
+  - name: "method/memory"
+    aliases: ["Memory", "Retrieval", "Experience Memory", "Long Horizon Memory"]
+    description: "Memory, retrieval, indexing, or long-context experience reuse."
+
+  # Tasks
+  - name: "task/manipulation"
+    aliases: ["Manipulation", "Pick-and-place", "Grasp", "Assembly", "Tool Use"]
+    description: "Object manipulation tasks."
+  - name: "task/dexterous_contact"
+    aliases: ["Dexterous", "Contact-rich", "Tactile", "In-hand", "Deformable"]
+    description: "Dexterous, tactile, contact-rich, or deformable-object interactions."
+  - name: "task/navigation"
+    aliases: ["Navigation", "Autonomous Driving", "Trajectory", "Path Planning"]
+    description: "Navigation, driving, trajectory prediction, or mobile decision making."
+  - name: "task/loco_manipulation"
+    aliases: ["Locomotion", "Loco-manipulation", "Humanoid Whole-body", "Whole-body Loco-manipulation"]
+    description: "Whole-body locomotion and manipulation for humanoids or mobile robots."
+  - name: "task/scene_understanding"
+    aliases: ["Scene Understanding", "Reconstruction", "3D Scene", "4D Scene"]
+    description: "Scene perception, reconstruction, spatial understanding, and geometry."
+  - name: "task/video_prediction"
+    aliases: ["Video Prediction", "Video Generation", "Future Frame", "World Video"]
+    description: "Video generation, video prediction, or action-conditioned future modeling."
+  - name: "task/planning_reasoning"
+    aliases: ["Reasoning", "Chain-of-Thought", "Task Planning", "Affordance"]
+    description: "Reasoning, affordance, planning, and decision traces."
+
+  # Paper types and workflow labels
+  - name: "type/method"
+    aliases: ["Method", "Algorithm", "Model"]
+    description: "A paper whose main contribution is a method, architecture, or algorithm."
+  - name: "type/benchmark"
+    aliases: ["Benchmark", "Evaluation"]
+    description: "A paper whose main contribution is evaluation or benchmark design."
+  - name: "type/dataset"
+    aliases: ["Dataset", "Data"]
+    description: "A paper whose main contribution is data collection or data generation."
+  - name: "type/system"
+    aliases: ["System", "Framework", "Platform", "Infrastructure"]
+    description: "A system, platform, framework, or infrastructure paper."
+  - name: "type/analysis"
+    aliases: ["Analysis", "Mechanistic Study", "Probe"]
+    description: "A diagnostic, interpretability, or analysis paper."
+  - name: "impact/must_read"
+    aliases: ["Score_9", "Must Read"]
+    description: "Highest priority papers, usually score >= 9."
+  - name: "impact/high_value"
+    aliases: ["Score_8", "High Value"]
+    description: "Strong papers, usually score >= 8."
+  - name: "impact/solid"
+    aliases: ["Score_7", "Solid"]
+    description: "Useful papers worth retaining."
+  - name: "status/unread"
+    aliases: ["Unread", "Reading? false"]
+    description: "Not read yet."
+  - name: "status/read"
+    aliases: ["Read", "Reading? true"]
+    description: "Already read."
+  - name: "review/auto_tagged"
+    aliases: ["Auto Tagged", "Verified Enough"]
+    description: "Automatically generated tags look complete enough for ordinary browsing."
+  - name: "review/needs_review"
+    aliases: ["Needs Review", "Tag Review"]
+    description: "Tags or properties should be checked manually before relying on them."

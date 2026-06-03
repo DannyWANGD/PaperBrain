@@ -1,23 +1,55 @@
 ---
 tags:
-  - paper
-  - Robot_Manipulation
-  - VLA
-  - Embodied_AI
-  - Foundation_Model
+- paper
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/robot_manipulation
+- domain/vla
+- impact/high_value
+- method/benchmark
+- method/foundation_model
+- method/imitation_learning
+- method/memory
+- review/auto_tagged
+- status/unread
+- task/manipulation
+- task/scene_understanding
+- type/benchmark
 aliases:
-  - "RoboMME: Benchmarking and Understanding Memory for Robotic Generalist Policies"
+- 'RoboMME: Benchmarking and Understanding Memory for Robotic Generalist Policies'
 url: https://huggingface.co/papers/2603.04639
 pdf_url: https://arxiv.org/pdf/2603.04639.pdf
-local_pdf: "[[RoboMME Benchmarking and Understanding Memory for Robotic Generalist Policies.pdf]]"
-github: "https://robomme.github.io/"
-project_page: "https://robomme.github.io/"
+local_pdf: '[[RoboMME Benchmarking and Understanding Memory for Robotic Generalist
+  Policies.pdf]]'
+github: https://robomme.github.io/
+project_page: https://robomme.github.io/
 institutions:
-  - "University of Michigan"
-  - "Stanford University"
-  - "Figure AI"
-publication_date: "2026-03-04"
-score: 8
+- University of Michigan
+- Stanford University
+- Figure AI
+publication_date: '2026-03-04'
+score: '8.0'
+domains:
+- embodied_ai
+- multimodal_perception
+- robot_manipulation
+- vla
+methods:
+- benchmark
+- imitation_learning
+- memory
+tasks:
+- manipulation
+- scene_understanding
+paper_type: benchmark
+impact_band: high_value
+reading_status: unread
+year: 2026
+priority_score: 99
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2603.04639'
+paper_id: arxiv:2603.04639
 ---
 
 # RoboMME: Benchmarking and Understanding Memory for Robotic Generalist Policies

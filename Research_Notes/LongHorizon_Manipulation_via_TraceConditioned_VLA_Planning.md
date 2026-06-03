@@ -1,27 +1,67 @@
 ---
 tags:
-  - paper
-  - Robot_Manipulation
-  - VLA
-  - Embodied_AI
-  - World_Model
+- paper
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- domain/vla
+- domain/world_model
+- impact/high_value
+- method/foundation_model
+- method/memory
+- method/planning
+- method/reinforcement_learning
+- method/simulation
+- review/auto_tagged
+- status/unread
+- task/manipulation
+- task/navigation
+- task/planning_reasoning
+- task/scene_understanding
+- type/system
 aliases:
-  - "Long-Horizon Manipulation via Trace-Conditioned VLA Planning"
-  - "LoHo-Manip"
-  - "Trace-Conditioned VLA"
-  - "Progress-Aware Visual Trace"
-  - "Long-Horizon VLA Planning"
-  - "Modular VLA Framework"
-  - "Trace-Conditioned Planning"
-  - "Decoupled VLA Execution"
-arxiv_id: "2604.21924"
+- Long-Horizon Manipulation via Trace-Conditioned VLA Planning
+- LoHo-Manip
+- Trace-Conditioned VLA
+- Progress-Aware Visual Trace
+- Long-Horizon VLA Planning
+- Modular VLA Framework
+- Trace-Conditioned Planning
+- Decoupled VLA Execution
+arxiv_id: '2604.21924'
 url: http://arxiv.org/abs/2604.21924v1
 pdf_url: https://arxiv.org/pdf/2604.21924v1
-local_pdf: "[[LongHorizon Manipulation via TraceConditioned VLA Planning.pdf]]"
-github: "None"
-project_page: "None"
-publication_date: "Unknown"
-score: 8
+local_pdf: '[[LongHorizon Manipulation via TraceConditioned VLA Planning.pdf]]'
+github: None
+project_page: None
+publication_date: Unknown
+score: '8.0'
+domains:
+- embodied_ai
+- multimodal_perception
+- reinforcement_learning
+- robot_manipulation
+- vla
+methods:
+- foundation_model
+- memory
+- planning
+- reinforcement_learning
+- simulation
+tasks:
+- manipulation
+- navigation
+- planning_reasoning
+- scene_understanding
+paper_type: system
+impact_band: high_value
+reading_status: unread
+year: null
+priority_score: 103
+review_status: auto_tagged
+next_action: inspect_protocol
+paper_id: arxiv:2604.21924
 ---
 
 # Long-Horizon Manipulation via Trace-Conditioned VLA Planning

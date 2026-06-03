@@ -1,20 +1,52 @@
 ---
 tags:
-  - paper
-  - 3D_Gaussian_Splatting
-  - Embodied_AI
-  - Foundation_Model
+- paper
+- domain/3d_perception
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- impact/solid
+- method/benchmark
+- method/foundation_model
+- method/memory
+- method/reinforcement_learning
+- review/auto_tagged
+- status/unread
+- task/scene_understanding
+- type/benchmark
 aliases:
-  - "OnlineX: Unified Online 3D Reconstruction and Understanding with Active-to-Stable State Evolution"
+- 'OnlineX: Unified Online 3D Reconstruction and Understanding with Active-to-Stable
+  State Evolution'
 url: http://arxiv.org/abs/2603.02134v1
 pdf_url: https://arxiv.org/pdf/2603.02134v1
-local_pdf: "[[OnlineX Unified Online 3D Reconstruction and Understanding with ActivetoStable State Evolution.pdf]]"
-github: "None"
-project_page: "https://xiac20.github.io/OnlineX/"
+local_pdf: '[[OnlineX Unified Online 3D Reconstruction and Understanding with ActivetoStable
+  State Evolution.pdf]]'
+github: None
+project_page: https://xiac20.github.io/OnlineX/
 institutions:
-  - "Tsinghua University"
-publication_date: "2026-03-02"
-score: 7
+- Tsinghua University
+publication_date: '2026-03-02'
+score: '7.0'
+domains:
+- 3d_perception
+- embodied_ai
+- multimodal_perception
+- reinforcement_learning
+methods:
+- benchmark
+- memory
+- reinforcement_learning
+tasks:
+- scene_understanding
+paper_type: benchmark
+impact_band: solid
+reading_status: unread
+year: 2026
+priority_score: 70
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2603.02134'
+paper_id: arxiv:2603.02134
 ---
 
 # OnlineX: Unified Online 3D Reconstruction and Understanding with Active-to-Stable State Evolution

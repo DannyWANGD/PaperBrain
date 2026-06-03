@@ -1,20 +1,49 @@
 ---
 tags:
-  - paper
-  - LLM
-  - Foundation_Model
-  - Reinforcement_Learning
+- paper
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- impact/solid
+- method/foundation_model
+- method/memory
+- method/planning
+- method/reinforcement_learning
+- review/auto_tagged
+- status/unread
+- task/manipulation
+- task/planning_reasoning
+- type/system
 aliases:
-  - "Memex(RL): Scaling Long-Horizon LLM Agents via Indexed Experience Memory"
+- 'Memex(RL): Scaling Long-Horizon LLM Agents via Indexed Experience Memory'
 url: https://huggingface.co/papers/2603.04257
 pdf_url: https://arxiv.org/pdf/2603.04257.pdf
-local_pdf: "[[MemexRL Scaling LongHorizon LLM Agents via Indexed Experience Memory.pdf]]"
-github: "None"
-project_page: "None"
+local_pdf: '[[MemexRL Scaling LongHorizon LLM Agents via Indexed Experience Memory.pdf]]'
+github: None
+project_page: None
 institutions:
-  - "Center for Advanced AI, Accenture"
-publication_date: "2026-03-04"
-score: 7
+- Center for Advanced AI, Accenture
+publication_date: '2026-03-04'
+score: '7.0'
+domains:
+- reinforcement_learning
+- robot_manipulation
+methods:
+- foundation_model
+- memory
+- planning
+- reinforcement_learning
+tasks:
+- manipulation
+- planning_reasoning
+paper_type: system
+impact_band: solid
+reading_status: unread
+year: 2026
+priority_score: 78
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2603.04257'
+paper_id: arxiv:2603.04257
 ---
 
 # Memex(RL): Scaling Long-Horizon LLM Agents via Indexed Experience Memory

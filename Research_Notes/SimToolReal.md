@@ -1,23 +1,51 @@
 ---
 tags:
-  - paper
-  - Sim2Real
-  - Reinforcement_Learning
-  - Robot_Manipulation
-  - Embodied_AI
+- paper
+- domain/embodied_ai
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- domain/sim2real
+- impact/solid
+- method/reinforcement_learning
+- method/simulation
+- review/auto_tagged
+- status/unread
+- task/dexterous_contact
+- task/manipulation
+- type/system
 aliases:
-  - "SimToolReal: An Object-Centric Policy for Zero-Shot Dexterous Tool Manipulation"
+- 'SimToolReal: An Object-Centric Policy for Zero-Shot Dexterous Tool Manipulation'
 url: http://arxiv.org/abs/2602.16863v2
 pdf_url: https://arxiv.org/pdf/2602.16863v2
-local_pdf: "[[SimToolReal An ObjectCentric Policy for ZeroShot Dexterous Tool Manipulation.pdf]]"
+local_pdf: '[[SimToolReal An ObjectCentric Policy for ZeroShot Dexterous Tool Manipulation.pdf]]'
 github: https://simtoolreal.github.io
 project_page: https://simtoolreal.github.io
 institutions:
-  - Cornell University
-  - Stanford University
+- Cornell University
+- Stanford University
 publication_date: 2026-02-24
-score: 7
-Reading?:
+score: '7.0'
+Reading?: null
+domains:
+- embodied_ai
+- reinforcement_learning
+- robot_manipulation
+- sim2real
+methods:
+- reinforcement_learning
+- simulation
+tasks:
+- dexterous_contact
+- manipulation
+paper_type: system
+impact_band: solid
+reading_status: unread
+year: 2026
+priority_score: 74
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2602.16863'
+paper_id: arxiv:2602.16863
 ---
 
 # SimToolReal: An Object-Centric Policy for Zero-Shot Dexterous Tool Manipulation

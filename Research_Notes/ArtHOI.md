@@ -1,25 +1,57 @@
 ---
 tags:
-  - paper
-  - Diffusion_Model
-  - Embodied_AI
-  - Robot_Manipulation
+- paper
+- domain/3d_perception
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/robot_manipulation
+- impact/solid
+- method/diffusion_policy
+- method/planning
+- review/auto_tagged
+- status/read
+- task/manipulation
+- task/planning_reasoning
+- task/scene_understanding
+- type/system
 aliases:
-  - "ArtHOI: Articulated Human-Object Interaction Synthesis by 4D Reconstruction from Video Priors"
+- 'ArtHOI: Articulated Human-Object Interaction Synthesis by 4D Reconstruction from
+  Video Priors'
 url: https://huggingface.co/papers/2603.04338
 pdf_url: https://arxiv.org/pdf/2603.04338.pdf
-local_pdf: "[[ArtHOI Articulated HumanObject Interaction Synthesis by 4D Reconstruction from Video Priors.pdf]]"
+local_pdf: '[[ArtHOI Articulated HumanObject Interaction Synthesis by 4D Reconstruction
+  from Video Priors.pdf]]'
 github: None
 project_page: https://arthoi.github.io/
 institutions:
-  - Huazhong University of Science and Technology
-  - Nanyang Technological University
-  - Beijing Academy of Artificial Intelligence
-  - Zhejiang University
-  - Tsinghua University
+- Huazhong University of Science and Technology
+- Nanyang Technological University
+- Beijing Academy of Artificial Intelligence
+- Zhejiang University
+- Tsinghua University
 publication_date: 2026-03-04
-score: 7
+score: '7.0'
 Reading?: true
+domains:
+- 3d_perception
+- embodied_ai
+- multimodal_perception
+- robot_manipulation
+methods:
+- planning
+tasks:
+- manipulation
+- planning_reasoning
+- scene_understanding
+paper_type: system
+impact_band: solid
+reading_status: read
+year: 2026
+priority_score: 58
+review_status: auto_tagged
+next_action: connect_or_summarize
+arxiv_id: '2603.04338'
+paper_id: arxiv:2603.04338
 ---
 
 # ArtHOI: Articulated Human-Object Interaction Synthesis by 4D Reconstruction from Video Priors

@@ -1,24 +1,54 @@
 ---
 tags:
-  - paper
-  - World_Model
-  - Embodied_AI
+- paper
+- domain/3d_perception
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- domain/world_model
+- impact/high_value
+- method/memory
+- method/reinforcement_learning
+- review/auto_tagged
+- status/read
+- task/scene_understanding
+- type/system
 aliases:
-  - Geometry-Aware Rotary Position Embedding for Consistent Video World Model
+- Geometry-Aware Rotary Position Embedding for Consistent Video World Model
 url: https://huggingface.co/papers/2602.07854
 pdf_url: https://arxiv.org/pdf/2602.07854.pdf
-local_pdf: "[[GeometryAware Rotary Position Embedding for Consistent Video World Model.pdf]]"
+local_pdf: '[[GeometryAware Rotary Position Embedding for Consistent Video World Model.pdf]]'
 github: None
 project_page: None
 institutions:
-  - Tsinghua University
-  - Renmin University of China
-  - National University of Singapore
-  - Peking University
-  - Shanghai Jiao Tong University
+- Tsinghua University
+- Renmin University of China
+- National University of Singapore
+- Peking University
+- Shanghai Jiao Tong University
 publication_date: 2026-02-24
-score: 8
+score: '8.0'
 Reading?: true
+domains:
+- 3d_perception
+- embodied_ai
+- multimodal_perception
+- reinforcement_learning
+- world_model
+methods:
+- memory
+- reinforcement_learning
+tasks:
+- scene_understanding
+paper_type: system
+impact_band: high_value
+reading_status: read
+year: 2026
+priority_score: 75
+review_status: auto_tagged
+next_action: connect_or_summarize
+arxiv_id: '2602.07854'
+paper_id: arxiv:2602.07854
 ---
 
 # Geometry-Aware Rotary Position Embedding for Consistent Video World Model

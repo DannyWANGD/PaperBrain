@@ -30,7 +30,7 @@ class Podcaster:
         if provider == 'openrouter':
             self.api_key = config['openrouter']['api_key']
             self.base_url = "https://openrouter.ai/api/v1"
-            self.model_pro = config['openrouter'].get('model_pro', 'anthropic/claude-3.5-sonnet')
+            self.model_pro = config['openrouter'].get('model_podcast', config['openrouter'].get('model_pro', 'moonshotai/kimi-k2.6'))
         else:
             self.api_key = config['doubao']['api_key']
             self.base_url = "https://ark.cn-beijing.volces.com/api/v3"
@@ -47,14 +47,17 @@ class Podcaster:
             return [primary_model]
 
         cfg = self.config.get('openrouter', {})
-        fallbacks = cfg.get('model_pro_fallbacks', [])
+        fallbacks = cfg.get('model_podcast_fallbacks', cfg.get('model_pro_fallbacks', []))
         if not isinstance(fallbacks, list):
             fallbacks = []
 
         defaults = [
-            "openai/gpt-4o-mini",
-            "google/gemini-2.0-flash-001",
-            "deepseek/deepseek-chat",
+            "moonshotai/kimi-k2.6",
+            "x-ai/grok-4.3",
+            "qwen/qwen3.7-max",
+            "minimax/minimax-m3",
+            "deepseek/deepseek-v4-pro",
+            "z-ai/glm-5.1",
         ]
 
         candidates = []
@@ -114,6 +117,18 @@ class Podcaster:
                     "HTTP-Referer": "https://paperbrain.ai",
                     "X-Title": "PaperBrain"
                  }
+                 extra_body = {
+                    "provider": {
+                        "sort": self.config.get('openrouter', {}).get("routing_sort", "throughput"),
+                        "data_collection": self.config.get('openrouter', {}).get("routing_data_collection", "deny"),
+                        "allow_fallbacks": True,
+                        "require_parameters": False,
+                    }
+                 }
+                 effort = self.config.get('openrouter', {}).get("reasoning_effort_analysis")
+                 if effort:
+                    extra_body['reasoning'] = {"effort": effort}
+                 extra_params['extra_body'] = extra_body
 
             models = self._openrouter_model_candidates(self.model_pro)
             last_err = None

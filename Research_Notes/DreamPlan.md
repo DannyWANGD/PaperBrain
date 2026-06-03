@@ -1,23 +1,62 @@
 ---
 tags:
-  - paper
-  - Robot_Manipulation
-  - World_Model
-  - Reinforcement_Learning
-  - Embodied_AI
-  - Foundation_Model
+- paper
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- domain/world_model
+- impact/high_value
+- method/foundation_model
+- method/planning
+- method/reinforcement_learning
+- review/auto_tagged
+- status/unread
+- task/dexterous_contact
+- task/manipulation
+- task/planning_reasoning
+- task/scene_understanding
+- task/video_prediction
+- type/system
 aliases:
-  - "DreamPlan: Efficient Reinforcement Fine-Tuning of Vision-Language Planners via Video World Models"
+- 'DreamPlan: Efficient Reinforcement Fine-Tuning of Vision-Language Planners via
+  Video World Models'
 url: http://arxiv.org/abs/2603.16860v1
 pdf_url: https://arxiv.org/pdf/2603.16860v1
-local_pdf: "[[DreamPlan Efficient Reinforcement FineTuning of VisionLanguage Planners via Video World Models.pdf]]"
-github: "None"
-project_page: "https://psi-lab.ai/DreamPlan/"
+local_pdf: '[[DreamPlan Efficient Reinforcement FineTuning of VisionLanguage Planners
+  via Video World Models.pdf]]'
+github: None
+project_page: https://psi-lab.ai/DreamPlan/
 institutions:
-  - "USC Physical Superintelligence Lab"
-  - "Toyota Research Institute"
-publication_date: "2026-03-17"
-score: 8
+- USC Physical Superintelligence Lab
+- Toyota Research Institute
+publication_date: '2026-03-17'
+score: '8.0'
+domains:
+- embodied_ai
+- multimodal_perception
+- reinforcement_learning
+- robot_manipulation
+- world_model
+methods:
+- foundation_model
+- planning
+- reinforcement_learning
+tasks:
+- dexterous_contact
+- manipulation
+- planning_reasoning
+- scene_understanding
+- video_prediction
+paper_type: system
+impact_band: high_value
+reading_status: unread
+year: 2026
+priority_score: 103
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2603.16860'
+paper_id: arxiv:2603.16860
 ---
 
 # DreamPlan: Efficient Reinforcement Fine-Tuning of Vision-Language Planners via Video World Models

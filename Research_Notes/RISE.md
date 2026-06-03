@@ -1,27 +1,58 @@
 ---
 tags:
-  - paper
-  - World_Model
-  - Embodied_AI
-  - Reinforcement_Learning
-  - Robot_Manipulation
-  - VLA
+- paper
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- domain/vla
+- domain/world_model
+- impact/must_read
+- method/reinforcement_learning
+- review/auto_tagged
+- status/unread
+- task/dexterous_contact
+- task/manipulation
+- task/scene_understanding
+- type/system
 aliases:
-  - "RISE: Self-Improving Robot Policy with Compositional World Model"
+- 'RISE: Self-Improving Robot Policy with Compositional World Model'
 url: https://huggingface.co/papers/2602.11075
 pdf_url: https://arxiv.org/pdf/2602.11075.pdf
-local_pdf: "[[RISE SelfImproving Robot Policy with Compositional World Model.pdf]]"
-github: "None"
-project_page: "https://opendrivelab.com/kai0-rl"
+local_pdf: '[[RISE SelfImproving Robot Policy with Compositional World Model.pdf]]'
+github: None
+project_page: https://opendrivelab.com/kai0-rl
 institutions:
-  - "The Chinese University of Hong Kong"
-  - "Kinetix AI"
-  - "The University of Hong Kong"
-  - "Shanghai Innovation Institute"
-  - "Horizon Robotics"
-  - "Tsinghua University"
-publication_date: "2026-02-11"
-score: 9
+- The Chinese University of Hong Kong
+- Kinetix AI
+- The University of Hong Kong
+- Shanghai Innovation Institute
+- Horizon Robotics
+- Tsinghua University
+publication_date: '2026-02-11'
+score: '9.0'
+domains:
+- embodied_ai
+- multimodal_perception
+- reinforcement_learning
+- robot_manipulation
+- vla
+- world_model
+methods:
+- reinforcement_learning
+tasks:
+- dexterous_contact
+- manipulation
+- scene_understanding
+paper_type: system
+impact_band: must_read
+reading_status: unread
+year: 2026
+priority_score: 127
+review_status: auto_tagged
+next_action: deep_read
+arxiv_id: '2602.11075'
+paper_id: arxiv:2602.11075
 ---
 
 # RISE: Self-Improving Robot Policy with Compositional World Model

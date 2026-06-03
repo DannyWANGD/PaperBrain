@@ -1,22 +1,59 @@
 ---
 tags:
-  - paper
-  - Embodied_AI
-  - Sim2Real
-  - Reinforcement_Learning
-  - Robot_Manipulation
+- paper
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- domain/sim2real
+- impact/high_value
+- method/imitation_learning
+- method/reinforcement_learning
+- method/simulation
+- review/auto_tagged
+- status/unread
+- task/dexterous_contact
+- task/loco_manipulation
+- task/manipulation
+- task/scene_understanding
+- type/system
 aliases:
-  - "ULTRA: Unified Multimodal Control for Autonomous Humanoid Whole-Body Loco-Manipulation"
+- 'ULTRA: Unified Multimodal Control for Autonomous Humanoid Whole-Body Loco-Manipulation'
 url: http://arxiv.org/abs/2603.03279v1
 pdf_url: https://arxiv.org/pdf/2603.03279v1
-local_pdf: "[[ULTRA Unified Multimodal Control for Autonomous Humanoid WholeBody LocoManipulation.pdf]]"
-github: "None"
-project_page: "https://ultra-humanoid.github.io/"
+local_pdf: '[[ULTRA Unified Multimodal Control for Autonomous Humanoid WholeBody LocoManipulation.pdf]]'
+github: None
+project_page: https://ultra-humanoid.github.io/
 institutions:
-  - "University of Illinois Urbana-Champaign"
-publication_date: "2026-03-03"
-score: 8
+- University of Illinois Urbana-Champaign
+publication_date: '2026-03-03'
+score: '8.0'
+domains:
+- embodied_ai
+- multimodal_perception
+- reinforcement_learning
+- robot_manipulation
+- sim2real
+methods:
+- imitation_learning
+- reinforcement_learning
+- simulation
+tasks:
+- dexterous_contact
+- loco_manipulation
+- manipulation
+- scene_understanding
+paper_type: system
+impact_band: high_value
+reading_status: unread
+year: 2026
+priority_score: 99
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2603.03279'
+paper_id: arxiv:2603.03279
 ---
+
 **English Podcast：**![[ULTRA Unified Multimodal Control for Autonomous Hu_Podcast.mp3]]
 # ULTRA: Unified Multimodal Control for Autonomous Humanoid Whole-Body Loco-Manipulation
 

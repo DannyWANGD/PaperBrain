@@ -1,20 +1,57 @@
 ---
 tags:
-  - paper
-  - World_Model
-  - Embodied_AI
-  - VLA
-  - LLM
-  - Foundation_Model
+- paper
+- domain/embodied_ai
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- domain/vla
+- domain/world_model
+- impact/high_value
+- method/benchmark
+- method/foundation_model
+- method/planning
+- method/reinforcement_learning
+- method/simulation
+- review/auto_tagged
+- status/unread
+- task/manipulation
+- task/navigation
+- task/planning_reasoning
+- type/benchmark
 aliases:
-  - "World Reasoning Arena"
+- World Reasoning Arena
 url: http://arxiv.org/abs/2603.25887v1
 pdf_url: https://arxiv.org/pdf/2603.25887v1
-local_pdf: "[[World Reasoning Arena.pdf]]"
-github: "None"
-project_page: "None"
-publication_date: "Unknown"
-score: 8
+local_pdf: '[[World Reasoning Arena.pdf]]'
+github: None
+project_page: None
+publication_date: Unknown
+score: '8.0'
+domains:
+- embodied_ai
+- reinforcement_learning
+- robot_manipulation
+- vla
+- world_model
+methods:
+- benchmark
+- foundation_model
+- planning
+- reinforcement_learning
+- simulation
+tasks:
+- manipulation
+- navigation
+- planning_reasoning
+paper_type: benchmark
+impact_band: high_value
+reading_status: unread
+year: null
+priority_score: 111
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2603.25887'
+paper_id: arxiv:2603.25887
 ---
 
 # World Reasoning Arena

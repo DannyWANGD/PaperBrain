@@ -1,0 +1,107 @@
+views:
+  - type: table
+    name: All Papers
+    filters:
+      and:
+        - file.inFolder("Research_Notes")
+    order:
+      - file.name
+      - priority_score
+      - score
+      - impact_band
+      - reading_status
+      - next_action
+      - review_status
+      - domains
+      - methods
+      - tasks
+      - paper_type
+      - publication_date
+      - institutions
+      - github
+      - project_page
+      - local_pdf
+    sort:
+      - property: priority_score
+        direction: DESC
+      - property: score
+        direction: DESC
+      - property: publication_date
+        direction: DESC
+  - type: cards
+    name: Reading Queue
+    filters:
+      and:
+        - file.inFolder("Research_Notes")
+        - note.reading_status != "read"
+        - note.score >= 7
+    order:
+      - file.name
+      - priority_score
+      - score
+      - impact_band
+      - next_action
+      - domains
+      - methods
+      - tasks
+      - publication_date
+    sort:
+      - property: priority_score
+        direction: DESC
+      - property: score
+        direction: DESC
+    cardSize: 300
+  - type: table
+    name: Must Read
+    filters:
+      and:
+        - file.inFolder("Research_Notes")
+        - note.impact_band == "must_read"
+    order:
+      - file.name
+      - priority_score
+      - score
+      - next_action
+      - domains
+      - methods
+      - tasks
+      - publication_date
+    sort:
+      - property: publication_date
+        direction: DESC
+  - type: table
+    name: Reproduction
+    filters:
+      and:
+        - file.inFolder("Research_Notes")
+        - note.score >= 7
+    order:
+      - file.name
+      - priority_score
+      - score
+      - paper_type
+      - next_action
+      - github
+      - project_page
+      - domains
+      - methods
+      - tasks
+    sort:
+      - property: priority_score
+        direction: DESC
+  - type: table
+    name: Needs Review
+    filters:
+      and:
+        - file.inFolder("Research_Notes")
+        - note.review_status == "needs_review"
+    order:
+      - file.name
+      - score
+      - domains
+      - methods
+      - tasks
+      - next_action
+    sort:
+      - property: score
+        direction: DESC

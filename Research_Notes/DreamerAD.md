@@ -1,24 +1,59 @@
 ---
 tags:
-  - paper
-  - World_Model
-  - Diffusion_Model
-  - Reinforcement_Learning
-  - Embodied_AI
+- paper
+- domain/3d_perception
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- domain/world_model
+- impact/high_value
+- method/diffusion_policy
+- method/latent_world_model
+- method/reinforcement_learning
+- review/auto_tagged
+- status/unread
+- task/navigation
+- task/scene_understanding
+- task/video_prediction
+- type/system
 aliases:
-  - "DreamerAD: Efficient Reinforcement Learning via Latent World Model for Autonomous Driving"
+- 'DreamerAD: Efficient Reinforcement Learning via Latent World Model for Autonomous
+  Driving'
 url: http://arxiv.org/abs/2603.24587v1
 pdf_url: https://arxiv.org/pdf/2603.24587v1
-local_pdf: "[[DreamerAD Efficient Reinforcement Learning via Latent World Model for Autonomous Driving.pdf]]"
-github: "None"
-project_page: "None"
+local_pdf: '[[DreamerAD Efficient Reinforcement Learning via Latent World Model for
+  Autonomous Driving.pdf]]'
+github: None
+project_page: None
 institutions:
-  - "Institute of Automation, CAS"
-  - "Chongqing Chang'an Technology Co., Ltd"
-  - "School of Advanced Interdisciplinary Sciences, UCAS"
-  - "School of Artificial Intelligence, UCAS"
-publication_date: "2026-03-25"
-score: 8
+- Institute of Automation, CAS
+- Chongqing Chang'an Technology Co., Ltd
+- School of Advanced Interdisciplinary Sciences, UCAS
+- School of Artificial Intelligence, UCAS
+publication_date: '2026-03-25'
+score: '8.0'
+domains:
+- 3d_perception
+- embodied_ai
+- multimodal_perception
+- reinforcement_learning
+- world_model
+methods:
+- latent_world_model
+- reinforcement_learning
+tasks:
+- navigation
+- scene_understanding
+- video_prediction
+paper_type: system
+impact_band: high_value
+reading_status: unread
+year: 2026
+priority_score: 99
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2603.24587'
+paper_id: arxiv:2603.24587
 ---
 
 # DreamerAD: Efficient Reinforcement Learning via Latent World Model for Autonomous Driving

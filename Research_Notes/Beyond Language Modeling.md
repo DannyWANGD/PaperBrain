@@ -1,23 +1,51 @@
 ---
 tags:
-  - paper
-  - World_Model
-  - Diffusion_Model
-  - Foundation_Model
-  - LLM
-  - VLA
+- paper
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- domain/vla
+- domain/world_model
+- impact/high_value
+- method/diffusion_policy
+- method/foundation_model
+- method/reinforcement_learning
+- review/auto_tagged
+- status/unread
+- task/scene_understanding
+- task/video_prediction
+- type/system
 aliases:
-  - "Beyond Language Modeling: An Exploration of Multimodal Pretraining"
+- 'Beyond Language Modeling: An Exploration of Multimodal Pretraining'
 url: https://huggingface.co/papers/2603.03276
 pdf_url: https://arxiv.org/pdf/2603.03276.pdf
-local_pdf: "[[Beyond Language Modeling An Exploration of Multimodal Pretraining.pdf]]"
-github: "None"
-project_page: "https://beyond-llms.github.io/"
+local_pdf: '[[Beyond Language Modeling An Exploration of Multimodal Pretraining.pdf]]'
+github: None
+project_page: https://beyond-llms.github.io/
 institutions:
-  - "FAIR, Meta"
-  - "New York University"
-publication_date: "2026-03-03"
-score: 8
+- FAIR, Meta
+- New York University
+publication_date: '2026-03-03'
+score: '8.0'
+domains:
+- multimodal_perception
+- reinforcement_learning
+- vla
+- world_model
+methods:
+- foundation_model
+- reinforcement_learning
+tasks:
+- scene_understanding
+- video_prediction
+paper_type: system
+impact_band: high_value
+reading_status: unread
+year: 2026
+priority_score: 103
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2603.03276'
+paper_id: arxiv:2603.03276
 ---
 
 # Beyond Language Modeling: An Exploration of Multimodal Pretraining

@@ -1,22 +1,57 @@
 ---
 tags:
-  - paper
-  - VLA
-  - Embodied_AI
-  - Robot_Manipulation
-  - Foundation_Model
-  - LLM
+- paper
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- domain/vla
+- impact/must_read
+- method/benchmark
+- method/foundation_model
+- method/reinforcement_learning
+- review/auto_tagged
+- status/unread
+- task/manipulation
+- task/navigation
+- task/scene_understanding
+- type/benchmark
 aliases:
-  - "Not All Features Are Created Equal: A Mechanistic Study of Vision-Language-Action Models"
+- 'Not All Features Are Created Equal: A Mechanistic Study of Vision-Language-Action
+  Models'
 url: http://arxiv.org/abs/2603.19233v1
 pdf_url: https://arxiv.org/pdf/2603.19233v1
-local_pdf: "[[Not All Features Are Created Equal A Mechanistic Study of VisionLanguageAction Models.pdf]]"
-github: "None"
-project_page: "https://cwru-aism.github.io/vla-interp-page/"
+local_pdf: '[[Not All Features Are Created Equal A Mechanistic Study of VisionLanguageAction
+  Models.pdf]]'
+github: None
+project_page: https://cwru-aism.github.io/vla-interp-page/
 institutions:
-  - "Case Western Reserve University"
-publication_date: "2026-03-19"
-score: 9
+- Case Western Reserve University
+publication_date: '2026-03-19'
+score: '9.0'
+domains:
+- embodied_ai
+- multimodal_perception
+- reinforcement_learning
+- robot_manipulation
+- vla
+methods:
+- benchmark
+- foundation_model
+- reinforcement_learning
+tasks:
+- manipulation
+- navigation
+- scene_understanding
+paper_type: benchmark
+impact_band: must_read
+reading_status: unread
+year: 2026
+priority_score: 119
+review_status: auto_tagged
+next_action: deep_read
+arxiv_id: '2603.19233'
+paper_id: arxiv:2603.19233
 ---
 
 # Not All Features Are Created Equal: A Mechanistic Study of Vision-Language-Action Models

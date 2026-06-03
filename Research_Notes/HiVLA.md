@@ -1,33 +1,69 @@
 ---
 tags:
-  - paper
-  - VLA
-  - Robot_Manipulation
-  - Diffusion_Model
-  - Embodied_AI
+- paper
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- domain/vla
+- impact/solid
+- method/diffusion_policy
+- method/foundation_model
+- method/planning
+- method/reinforcement_learning
+- method/simulation
+- review/auto_tagged
+- status/unread
+- task/manipulation
+- task/planning_reasoning
+- task/scene_understanding
+- type/system
 aliases:
-  - "HiVLA: A Visual-Grounded-Centric Hierarchical Embodied Manipulation System"
-  - "HiVLA"
-  - "Hierarchical VLA"
-  - "Cascaded Cross-Attention DiT"
-  - "Flow-Matching DiT"
-  - "Visual-Grounded VLA"
-  - "Skill-Semantics Fusion"
-  - "HiVLA Framework"
-  - "BBox-Guided Motor Control"
-arxiv_id: "2604.14125"
+- 'HiVLA: A Visual-Grounded-Centric Hierarchical Embodied Manipulation System'
+- HiVLA
+- Hierarchical VLA
+- Cascaded Cross-Attention DiT
+- Flow-Matching DiT
+- Visual-Grounded VLA
+- Skill-Semantics Fusion
+- HiVLA Framework
+- BBox-Guided Motor Control
+arxiv_id: '2604.14125'
 url: https://huggingface.co/papers/2604.14125
 pdf_url: https://arxiv.org/pdf/2604.14125.pdf
-local_pdf: "[[HiVLA A VisualGroundedCentric Hierarchical Embodied Manipulation System.pdf]]"
-github: "None"
-project_page: "https://tianshuoy.github.io/HiVLA-page/"
+local_pdf: '[[HiVLA A VisualGroundedCentric Hierarchical Embodied Manipulation System.pdf]]'
+github: None
+project_page: https://tianshuoy.github.io/HiVLA-page/
 institutions:
-  - "The University of Hong Kong"
-  - "Shanghai AI Laboratory"
-  - "Shanghai Jiao Tong University"
-  - "The Chinese University of Hong Kong"
-publication_date: "2026-04-15"
-score: 7
+- The University of Hong Kong
+- Shanghai AI Laboratory
+- Shanghai Jiao Tong University
+- The Chinese University of Hong Kong
+publication_date: '2026-04-15'
+score: '7.0'
+domains:
+- embodied_ai
+- multimodal_perception
+- reinforcement_learning
+- robot_manipulation
+- vla
+methods:
+- foundation_model
+- planning
+- reinforcement_learning
+- simulation
+tasks:
+- manipulation
+- planning_reasoning
+- scene_understanding
+paper_type: system
+impact_band: solid
+reading_status: unread
+year: 2026
+priority_score: 78
+review_status: auto_tagged
+next_action: inspect_protocol
+paper_id: arxiv:2604.14125
 ---
 
 # HiVLA: A Visual-Grounded-Centric Hierarchical Embodied Manipulation System

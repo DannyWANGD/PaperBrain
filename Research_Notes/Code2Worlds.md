@@ -1,23 +1,57 @@
 ---
 aliases:
-  - "Code2Worlds: Empowering Coding LLMs for 4D World Generation"
+- 'Code2Worlds: Empowering Coding LLMs for 4D World Generation'
 github: https://github.com/AIGeeksGroup/Code2Worlds
 institutions:
-  - School of Computer Science, Peking University
-local_pdf: "[[Code2Worlds Empowering Coding LLMs for 4D World Generation.pdf]]"
+- School of Computer Science, Peking University
+local_pdf: '[[Code2Worlds Empowering Coding LLMs for 4D World Generation.pdf]]'
 pdf_url: https://arxiv.org/pdf/2602.11757.pdf
 project_page: https://aigeeksgroup.github.io/Code2Worlds
 publication_date: 2026-02-12
 tags:
-  - paper
-  - LLM
-  - World_Model
-  - 4D_World_Generation
-  - Retrieval_Augmented_Generation
-  - Physics_Aware_Simulation
-  - 2026-02-27
+- paper
+- '2026-02-27'
+- 4D_World_Generation
+- Physics_Aware_Simulation
+- Retrieval_Augmented_Generation
+- domain/3d_perception
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- domain/world_model
+- impact/archive
+- method/benchmark
+- method/foundation_model
+- method/memory
+- method/reinforcement_learning
+- method/simulation
+- review/auto_tagged
+- status/unread
+- task/scene_understanding
+- type/benchmark
 url: https://huggingface.co/papers/2602.11757
-Reading?:
+Reading?: null
+domains:
+- 3d_perception
+- multimodal_perception
+- reinforcement_learning
+methods:
+- benchmark
+- foundation_model
+- memory
+- reinforcement_learning
+- simulation
+tasks:
+- scene_understanding
+paper_type: benchmark
+impact_band: archive
+reading_status: unread
+year: 2026
+priority_score: 0
+review_status: auto_tagged
+next_action: inspect_protocol
+score: '0.0'
+arxiv_id: '2602.11757'
+paper_id: arxiv:2602.11757
 ---
 
 # Code2Worlds: Empowering Coding LLMs for 4D World Generation

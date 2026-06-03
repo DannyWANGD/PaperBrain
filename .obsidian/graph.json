@@ -1,51 +1,22 @@
 {
-  "collapse-filter": true,
+  "collapse-filter": false,
   "search": "",
   "showTags": false,
   "showAttachments": true,
   "hideUnresolved": false,
   "showOrphans": true,
-  "collapse-color-groups": true,
-  "colorGroups": [
-    {
-      "query": "path:Daily_Papers  ",
-      "color": {
-        "a": 1,
-        "rgb": 14701138
-      }
-    },
-    {
-      "query": "path:Research_Notes  ",
-      "color": {
-        "a": 1,
-        "rgb": 14725458
-      }
-    },
-    {
-      "query": "path:PDFs  ",
-      "color": {
-        "a": 1,
-        "rgb": 6545709
-      }
-    },
-    {
-      "query": "path:Research_Themes  ",
-      "color": {
-        "a": 1,
-        "rgb": 5419488
-      }
-    }
-  ],
-  "collapse-display": true,
+  "collapse-color-groups": false,
+  "colorGroups": [],
+  "collapse-display": false,
   "showArrow": false,
   "textFadeMultiplier": 0,
-  "nodeSizeMultiplier": 1,
-  "lineSizeMultiplier": 1,
-  "collapse-forces": true,
-  "centerStrength": 0.638200649878148,
-  "repelStrength": 12.2874356891416,
-  "linkStrength": 0.300264012997563,
-  "linkDistance": 268,
-  "scale": 0.39681210740036593,
-  "close": true
+  "nodeSizeMultiplier": 1.57478199562136,
+  "lineSizeMultiplier": 0.853300679060447,
+  "collapse-forces": false,
+  "centerStrength": 0.581208950239341,
+  "repelStrength": 10.959219266021,
+  "linkStrength": 0.566959812980074,
+  "linkDistance": 147,
+  "scale": 0.3968121074003662,
+  "close": false
 }

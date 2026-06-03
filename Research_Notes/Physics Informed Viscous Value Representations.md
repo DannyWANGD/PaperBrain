@@ -1,26 +1,55 @@
 ---
 aliases:
-  - Physics Informed Viscous Value Representations
+- Physics Informed Viscous Value Representations
 github: https://github.com/HrishikeshVish/phys-fk-value-GCRL
 institutions:
-  - Department of Computer Science, Purdue University, USA
-  - College of Engineering, Purdue University, USA
-  - DEVCOM Army Research Laboratory, USA
-local_pdf: "[[Physics Informed Viscous Value Representations.pdf]]"
+- Department of Computer Science, Purdue University, USA
+- College of Engineering, Purdue University, USA
+- DEVCOM Army Research Laboratory, USA
+local_pdf: '[[Physics Informed Viscous Value Representations.pdf]]'
 pdf_url: https://arxiv.org/pdf/2602.23280v1
 project_page: None
 publication_date: 2026-02-26
 tags:
-  - paper
-  - Offline_Reinforcement_Learning
-  - Goal_Conditional_Reinforcement_Learning
-  - Physics_Informed_RL
-  - Robot_Manipulation
-  - Optimal_Control
-  - 2026-02-27
+- paper
+- '2026-02-27'
+- Goal_Conditional_Reinforcement_Learning
+- Offline_Reinforcement_Learning
+- Optimal_Control
+- Physics_Informed_RL
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- impact/watch
+- method/benchmark
+- method/foundation_model
+- method/reinforcement_learning
+- review/auto_tagged
+- status/unread
+- task/manipulation
+- task/navigation
+- type/benchmark
 url: http://arxiv.org/abs/2602.23280v1
-score: 6
-Reading?:
+score: '6.0'
+Reading?: null
+domains:
+- reinforcement_learning
+- robot_manipulation
+methods:
+- benchmark
+- foundation_model
+- reinforcement_learning
+tasks:
+- manipulation
+- navigation
+paper_type: benchmark
+impact_band: watch
+reading_status: unread
+year: 2026
+priority_score: 64
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2602.23280'
+paper_id: arxiv:2602.23280
 ---
 
 # Physics Informed Viscous Value Representations

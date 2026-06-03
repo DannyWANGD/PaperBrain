@@ -1,25 +1,58 @@
 ---
 tags:
-  - paper
-  - VLA
-  - Reinforcement_Learning
-  - Embodied_AI
-  - Foundation_Model
-  - Robot_Manipulation
+- paper
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- domain/vla
+- impact/must_read
+- method/benchmark
+- method/foundation_model
+- method/reinforcement_learning
+- review/auto_tagged
+- status/unread
+- task/manipulation
+- task/scene_understanding
+- type/benchmark
 aliases:
-  - "Simple Recipe Works: Vision-Language-Action Models are Natural Continual Learners with Reinforcement Learning"
+- 'Simple Recipe Works: Vision-Language-Action Models are Natural Continual Learners
+  with Reinforcement Learning'
 url: https://huggingface.co/papers/2603.11653
 pdf_url: https://arxiv.org/pdf/2603.11653.pdf
-local_pdf: "[[Simple Recipe Works VisionLanguageAction Models are Natural Continual Learners with Reinforcement Le.pdf]]"
-github: "https://github.com/UT-Austin-RobIn/continual-vla-rl"
-project_page: "None"
+local_pdf: '[[Simple Recipe Works VisionLanguageAction Models are Natural Continual
+  Learners with Reinforcement Le.pdf]]'
+github: https://github.com/UT-Austin-RobIn/continual-vla-rl
+project_page: None
 institutions:
-  - "University of Texas at Austin"
-  - "UCLA"
-  - "NTU"
-  - "Sony AI"
-publication_date: "2026-03-12"
-score: 9
+- University of Texas at Austin
+- UCLA
+- NTU
+- Sony AI
+publication_date: '2026-03-12'
+score: '9.0'
+domains:
+- embodied_ai
+- multimodal_perception
+- reinforcement_learning
+- robot_manipulation
+- vla
+methods:
+- benchmark
+- foundation_model
+- reinforcement_learning
+tasks:
+- manipulation
+- scene_understanding
+paper_type: benchmark
+impact_band: must_read
+reading_status: unread
+year: 2026
+priority_score: 119
+review_status: auto_tagged
+next_action: deep_read
+arxiv_id: '2603.11653'
+paper_id: arxiv:2603.11653
 ---
 
 # Simple Recipe Works: Vision-Language-Action Models are Natural Continual Learners with Reinforcement Learning

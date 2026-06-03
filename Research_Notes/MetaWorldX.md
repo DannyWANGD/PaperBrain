@@ -1,25 +1,60 @@
 ---
 tags:
-  - paper
-  - Embodied_AI
-  - Reinforcement_Learning
-  - Robot_Manipulation
-  - World_Model
-  - LLM
+- paper
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- domain/world_model
+- impact/high_value
+- method/foundation_model
+- method/imitation_learning
+- method/reinforcement_learning
+- review/auto_tagged
+- status/unread
+- task/loco_manipulation
+- task/manipulation
+- task/scene_understanding
+- type/system
 aliases:
-  - "MetaWorld-X: Hierarchical World Modeling via VLM-Orchestrated Experts for Humanoid Loco-Manipulation"
+- 'MetaWorld-X: Hierarchical World Modeling via VLM-Orchestrated Experts for Humanoid
+  Loco-Manipulation'
 url: http://arxiv.org/abs/2603.08572v1
 pdf_url: https://arxiv.org/pdf/2603.08572v1
-local_pdf: "[[MetaWorldX Hierarchical World Modeling via VLMOrchestrated Experts for Humanoid LocoManipulation.pdf]]"
-github: "None"
-project_page: "https://syt2004.github.io/metaworldX/"
+local_pdf: '[[MetaWorldX Hierarchical World Modeling via VLMOrchestrated Experts for
+  Humanoid LocoManipulation.pdf]]'
+github: None
+project_page: https://syt2004.github.io/metaworldX/
 institutions:
-  - "University of Hamburg, Hamburg, Germany"
-  - "Beijing University of Technology, Beijing, China"
-  - "Fudan University, Shanghai, China"
-  - "University of Alberta, Canada"
-publication_date: "2026-03-09"
-score: 8
+- University of Hamburg, Hamburg, Germany
+- Beijing University of Technology, Beijing, China
+- Fudan University, Shanghai, China
+- University of Alberta, Canada
+publication_date: '2026-03-09'
+score: '8.0'
+domains:
+- embodied_ai
+- multimodal_perception
+- reinforcement_learning
+- robot_manipulation
+- world_model
+methods:
+- foundation_model
+- imitation_learning
+- reinforcement_learning
+tasks:
+- loco_manipulation
+- manipulation
+- scene_understanding
+paper_type: system
+impact_band: high_value
+reading_status: unread
+year: 2026
+priority_score: 99
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2603.08572'
+paper_id: arxiv:2603.08572
 ---
 
 # MetaWorld-X: Hierarchical World Modeling via VLM-Orchestrated Experts for Humanoid Loco-Manipulation

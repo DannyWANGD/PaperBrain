@@ -1,22 +1,60 @@
 ---
 tags:
-  - paper
-  - Foundation_Model
-  - Embodied_AI
-  - Robot_Manipulation
-  - VLA
+- paper
+- domain/3d_perception
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- domain/vla
+- impact/solid
+- method/foundation_model
+- method/planning
+- method/reinforcement_learning
+- review/auto_tagged
+- status/unread
+- task/manipulation
+- task/navigation
+- task/planning_reasoning
+- task/scene_understanding
+- type/system
 aliases:
-  - "Utonia: Toward One Encoder for All Point Clouds"
+- 'Utonia: Toward One Encoder for All Point Clouds'
 url: http://arxiv.org/abs/2603.03283v1
 pdf_url: https://arxiv.org/pdf/2603.03283v1
-local_pdf: "[[Utonia Toward One Encoder for All Point Clouds.pdf]]"
-github: "None"
-project_page: "https://pointcept.github.io/Utonia"
+local_pdf: '[[Utonia Toward One Encoder for All Point Clouds.pdf]]'
+github: None
+project_page: https://pointcept.github.io/Utonia
 institutions:
-  - "The University of Hong Kong"
-  - "Xiaomi"
-publication_date: "2026-03-03"
-score: 7
+- The University of Hong Kong
+- Xiaomi
+publication_date: '2026-03-03'
+score: '7.0'
+domains:
+- 3d_perception
+- embodied_ai
+- multimodal_perception
+- reinforcement_learning
+- robot_manipulation
+- vla
+methods:
+- foundation_model
+- planning
+- reinforcement_learning
+tasks:
+- manipulation
+- navigation
+- planning_reasoning
+- scene_understanding
+paper_type: system
+impact_band: solid
+reading_status: unread
+year: 2026
+priority_score: 78
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2603.03283'
+paper_id: arxiv:2603.03283
 ---
 
 # Utonia: Toward One Encoder for All Point Clouds

@@ -1,24 +1,64 @@
 ---
 aliases:
-  - "Xiaomi-Robotics-0: An Open-Sourced Vision-Language-Action Model with Real-Time Execution"
+- 'Xiaomi-Robotics-0: An Open-Sourced Vision-Language-Action Model with Real-Time
+  Execution'
 github: https://xiaomi-robotics-0.github.io
 institutions:
-  - Xiaomi Robotics
-local_pdf: "[[XiaomiRobotics0 An OpenSourced VisionLanguageAction Model with RealTime Execution.pdf]]"
+- Xiaomi Robotics
+local_pdf: '[[XiaomiRobotics0 An OpenSourced VisionLanguageAction Model with RealTime
+  Execution.pdf]]'
 pdf_url: https://arxiv.org/pdf/2602.12684.pdf
 project_page: https://xiaomi-robotics-0.github.io
 publication_date: 2026-02-13
 tags:
-  - paper
-  - VLA
-  - Foundation_Models
-  - Robot_Manipulation
-  - Embodied_AI
-  - Sim2Real
-  - 2026-02-27
+- paper
+- '2026-02-27'
+- Foundation_Models
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- domain/sim2real
+- domain/vla
+- impact/high_value
+- method/benchmark
+- method/foundation_model
+- method/reinforcement_learning
+- method/simulation
+- review/auto_tagged
+- status/read
+- task/dexterous_contact
+- task/manipulation
+- task/scene_understanding
+- type/benchmark
 url: https://huggingface.co/papers/2602.12684
-score: 8
+score: '8.0'
 Reading?: true
+domains:
+- embodied_ai
+- multimodal_perception
+- reinforcement_learning
+- robot_manipulation
+- sim2real
+- vla
+methods:
+- benchmark
+- foundation_model
+- reinforcement_learning
+- simulation
+tasks:
+- dexterous_contact
+- manipulation
+- scene_understanding
+paper_type: benchmark
+impact_band: high_value
+reading_status: read
+year: 2026
+priority_score: 79
+review_status: auto_tagged
+next_action: connect_or_summarize
+arxiv_id: '2602.12684'
+paper_id: arxiv:2602.12684
 ---
 
 # Xiaomi-Robotics-0: An Open-Sourced Vision-Language-Action Model with Real-Time Execution

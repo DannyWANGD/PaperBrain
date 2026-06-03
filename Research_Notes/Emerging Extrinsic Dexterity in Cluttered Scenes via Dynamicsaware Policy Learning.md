@@ -1,26 +1,56 @@
 ---
 tags:
-  - paper
-  - Robot_Manipulation
-  - World_Model
-  - Reinforcement_Learning
-  - Embodied_AI
-  - Sim2Real
+- paper
+- domain/embodied_ai
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- domain/sim2real
+- domain/world_model
+- impact/solid
+- method/imitation_learning
+- method/reinforcement_learning
+- method/simulation
+- review/auto_tagged
+- status/unread
+- task/manipulation
+- type/system
 aliases:
-  - "Emerging Extrinsic Dexterity in Cluttered Scenes via Dynamics-aware Policy Learning"
+- Emerging Extrinsic Dexterity in Cluttered Scenes via Dynamics-aware Policy Learning
 url: http://arxiv.org/abs/2603.09882v1
 pdf_url: https://arxiv.org/pdf/2603.09882v1
-local_pdf: "[[Emerging Extrinsic Dexterity in Cluttered Scenes via Dynamicsaware Policy Learning.pdf]]"
-github: "None"
-project_page: "https://pku-epic.github.io/DAPL"
+local_pdf: '[[Emerging Extrinsic Dexterity in Cluttered Scenes via Dynamicsaware Policy
+  Learning.pdf]]'
+github: None
+project_page: https://pku-epic.github.io/DAPL
 institutions:
-  - "Institute of Automation, Chinese Academy of Sciences"
-  - "Beijing Academy of Artificial Intelligence"
-  - "Galbot"
-  - "Peking University"
-  - "Shanghai Jiao Tong University"
-publication_date: "2026-03-10"
-score: 7
+- Institute of Automation, Chinese Academy of Sciences
+- Beijing Academy of Artificial Intelligence
+- Galbot
+- Peking University
+- Shanghai Jiao Tong University
+publication_date: '2026-03-10'
+score: '7.0'
+domains:
+- embodied_ai
+- reinforcement_learning
+- robot_manipulation
+- sim2real
+- world_model
+methods:
+- imitation_learning
+- reinforcement_learning
+- simulation
+tasks:
+- manipulation
+paper_type: system
+impact_band: solid
+reading_status: unread
+year: 2026
+priority_score: 74
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2603.09882'
+paper_id: arxiv:2603.09882
 ---
 
 # Emerging Extrinsic Dexterity in Cluttered Scenes via Dynamics-aware Policy Learning

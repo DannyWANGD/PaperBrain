@@ -1,22 +1,55 @@
 ---
 tags:
-  - paper
-  - World_Model
-  - Embodied_AI
-  - Robot_Manipulation
+- paper
+- domain/embodied_ai
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- domain/world_model
+- impact/high_value
+- method/latent_world_model
+- method/planning
+- method/reinforcement_learning
+- method/simulation
+- review/auto_tagged
+- status/unread
+- task/manipulation
+- task/planning_reasoning
+- type/system
 aliases:
-  - "Planning in 8 Tokens: A Compact Discrete Tokenizer for Latent World Model"
+- 'Planning in 8 Tokens: A Compact Discrete Tokenizer for Latent World Model'
 url: https://huggingface.co/papers/2603.05438
 pdf_url: https://arxiv.org/pdf/2603.05438.pdf
-local_pdf: "[[Planning in 8 Tokens A Compact Discrete Tokenizer for Latent World Model.pdf]]"
-github: "None"
-project_page: "https://kdwonn.github.io/CompACT"
+local_pdf: '[[Planning in 8 Tokens A Compact Discrete Tokenizer for Latent World Model.pdf]]'
+github: None
+project_page: https://kdwonn.github.io/CompACT
 institutions:
-  - "KAIST"
-  - "POSTECH"
-  - "RLWRLD"
-publication_date: "2026-03-05"
-score: 8
+- KAIST
+- POSTECH
+- RLWRLD
+publication_date: '2026-03-05'
+score: '8.0'
+domains:
+- embodied_ai
+- reinforcement_learning
+- robot_manipulation
+- world_model
+methods:
+- latent_world_model
+- planning
+- reinforcement_learning
+- simulation
+tasks:
+- manipulation
+- planning_reasoning
+paper_type: system
+impact_band: high_value
+reading_status: unread
+year: 2026
+priority_score: 103
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2603.05438'
+paper_id: arxiv:2603.05438
 ---
 
 # Planning in 8 Tokens: A Compact Discrete Tokenizer for Latent World Model

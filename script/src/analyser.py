@@ -15,6 +15,12 @@ logger = logging.getLogger(__name__)
 import base64
 
 import yaml # Ensure yaml is imported
+from src.scoring import (
+    calibrated_screening_score,
+    clamp_score,
+    coarse_screening_score,
+    normalize_red_flags,
+)
 
 class PaperAnalyser:
     def __init__(self, config, provider='doubao', prompts=None):
@@ -26,10 +32,11 @@ class PaperAnalyser:
         if provider == 'openrouter':
             self.api_key = config['openrouter']['api_key']
             self.base_url = "https://openrouter.ai/api/v1"
-            self.model_flash = config['openrouter'].get('model_flash', 'google/gemini-2.0-flash-001')
+            self.model_flash = config['openrouter'].get('model_flash', 'deepseek/deepseek-v4-flash')
             self.model_screening_pro = config['openrouter'].get('model_screening_pro', self.model_flash)
-            self.model_pro = config['openrouter'].get('model_pro', 'anthropic/claude-3.5-sonnet')
-            logger.info(f"Using OpenRouter Provider. Flash: {self.model_flash}, Screening-Pro: {self.model_screening_pro}, Pro: {self.model_pro}")
+            self.model_pro = config['openrouter'].get('model_pro', 'deepseek/deepseek-v4-pro')
+            self.model_vision = config['openrouter'].get('model_vision', 'qwen/qwen3-vl-30b-a3b-thinking')
+            logger.info(f"Using OpenRouter Provider. Flash: {self.model_flash}, Screening-Pro: {self.model_screening_pro}, Pro: {self.model_pro}, Vision: {self.model_vision}")
         else:
             self.api_key = config['doubao']['api_key']
             self.base_url = "https://ark.cn-beijing.volces.com/api/v3"
@@ -46,7 +53,12 @@ class PaperAnalyser:
         # Load Tag Taxonomy
         self.tags_taxonomy = []
         try:
-            tags_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "tags.yaml")
+            script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            candidate_paths = [
+                os.path.join(script_dir, "config", "tags.yaml"),
+                os.path.join(script_dir, "tags.yaml"),
+            ]
+            tags_path = next((p for p in candidate_paths if os.path.exists(p)), candidate_paths[0])
             with open(tags_path, "r", encoding="utf-8") as f:
                 data = yaml.safe_load(f)
                 self.tags_taxonomy = data.get('taxonomy', [])
@@ -66,22 +78,41 @@ class PaperAnalyser:
         defaults = []
         if kind == "model_flash":
             defaults = [
-                "deepseek/deepseek-chat",
-                "google/gemini-2.0-flash-001",
-                "openai/gpt-4o-mini",
+                "deepseek/deepseek-v4-flash",
+                "stepfun/step-3.7-flash",
+                "qwen/qwen3.6-flash",
+                "z-ai/glm-4.7-flash",
+                "deepseek/deepseek-v3.2",
             ]
         elif kind == "model_screening_pro":
             defaults = [
-                "anthropic/claude-3.5-sonnet",
-                "deepseek/deepseek-chat",
-                "openai/gpt-4o-mini",
+                "deepseek/deepseek-v4-pro",
+                "x-ai/grok-4.3",
+                "qwen/qwen3.7-max",
+                "minimax/minimax-m3",
+                "qwen/qwen3-max-thinking",
+                "z-ai/glm-5.1",
+                "moonshotai/kimi-k2.6",
             ]
         elif kind == "model_pro":
             defaults = [
-                "anthropic/claude-3.5-sonnet",
-                "deepseek/deepseek-chat",
-                "openai/gpt-4o",
-                "openai/gpt-4o-mini",
+                "deepseek/deepseek-v4-pro",
+                "x-ai/grok-4.3",
+                "qwen/qwen3.7-max",
+                "minimax/minimax-m3",
+                "z-ai/glm-5.1",
+                "moonshotai/kimi-k2.6",
+                "qwen/qwen3-max-thinking",
+            ]
+        elif kind == "model_vision":
+            defaults = [
+                "qwen/qwen3-vl-30b-a3b-thinking",
+                "perceptron/perceptron-mk1",
+                "minimax/minimax-m3",
+                "stepfun/step-3.7-flash",
+                "qwen/qwen3.5-plus-20260420",
+                "z-ai/glm-5v-turbo",
+                "moonshotai/kimi-k2.5",
             ]
 
         candidates = []
@@ -179,12 +210,8 @@ class PaperAnalyser:
         # 4. Return original stripped text as last resort
         return text.strip()
 
-    def _clamp_score(self, value, default=5):
-        try:
-            n = int(round(float(value)))
-        except Exception:
-            n = default
-        return max(1, min(10, n))
+    def _clamp_score(self, value, default=5.0):
+        return clamp_score(value, default=default)
 
     def _short_title_from_title(self, title):
         title = title or ""
@@ -200,24 +227,177 @@ class PaperAnalyser:
         return taxonomy_str
 
     def _screening_extra_params(self):
-        extra_params = {}
-        if self.provider == 'openrouter':
-            extra_params['extra_headers'] = {
+        return self._openrouter_extra_params("screening")
+
+    def _openrouter_quality_params(self, stage="analysis"):
+        if self.provider != 'openrouter':
+            return {}
+        cfg = self.config.get('openrouter', {})
+        effort_key = {
+            "screening": "reasoning_effort_screening",
+            "vision": "reasoning_effort_vision",
+        }.get(stage, "reasoning_effort_analysis")
+        body = {
+            "provider": {
+                "sort": cfg.get("routing_sort", "throughput"),
+                "data_collection": cfg.get("routing_data_collection", "deny"),
+                "allow_fallbacks": True,
+                "require_parameters": False,
+            }
+        }
+        partition = cfg.get("routing_partition")
+        if partition and str(partition).lower() != "none":
+            body["provider"]["quantizations"] = [partition]
+        effort = cfg.get(effort_key)
+        if effort:
+            body["reasoning"] = {"effort": effort}
+        return {"extra_body": body}
+
+    def _openrouter_extra_params(self, stage="analysis"):
+        if self.provider != 'openrouter':
+            return {}
+        extra_params = {
+            "extra_headers": {
                 "HTTP-Referer": "https://paperbrain.ai",
                 "X-Title": "PaperBrain"
             }
+        }
+        extra_params.update(self._openrouter_quality_params(stage))
         return extra_params
+
+    def _run_with_model_fallback(self, label, models, messages, extra_params=None, **kwargs):
+        call_kwargs = {}
+        call_kwargs.update(extra_params or {})
+        call_kwargs.update(kwargs)
+        try:
+            response, used_model = self._chat_with_fallback(
+                models=models,
+                messages=messages,
+                **call_kwargs
+            )
+            logger.info(f"  [{label}] Used model: {used_model}")
+            return response, used_model
+        except Exception as e:
+            logger.error(f"[{label}] All candidate models failed: {e}")
+            return None, None
+
+    def _message_content_text(self, response):
+        """Return assistant content as plain text across OpenAI/OpenRouter response variants."""
+        try:
+            content = response.choices[0].message.content
+        except Exception:
+            return ""
+        return self._content_to_text(content)
+
+    def _content_to_text(self, content):
+        """Normalize raw message content variants into plain text."""
+        if content is None:
+            return ""
+        if isinstance(content, str):
+            return content
+        if isinstance(content, list):
+            parts = []
+            for item in content:
+                if isinstance(item, str):
+                    parts.append(item)
+                elif isinstance(item, dict):
+                    text = item.get("text")
+                    if text is None and isinstance(item.get("content"), str):
+                        text = item.get("content")
+                    if text is not None:
+                        parts.append(str(text))
+                else:
+                    text = getattr(item, "text", None)
+                    if text is not None:
+                        parts.append(str(text))
+            return "\n".join([p for p in parts if p]).strip()
+        if isinstance(content, dict):
+            for key in ("text", "content", "output_text"):
+                if content.get(key) is not None:
+                    return str(content.get(key))
+            return json.dumps(content, ensure_ascii=False)
+        return str(content)
+
+    def _clean_generated_note(self, content, prefer_abstract_start=False):
+        content = self._message_content_text(content) if hasattr(content, "choices") else self._content_to_text(content)
+        content = re.sub(r'^\s*```(?:markdown|md)?\s*\n', '', content)
+        content = re.sub(r'\n```\s*$', '', content.strip())
+        content = re.sub(r"```json\s*(\{[\s\S]*?\"project_page\"[\s\S]*?\})\s*```", "", content, flags=re.DOTALL)
+        content = re.sub(r"^\s*(\{[\s\S]*?\"project_page\"[\s\S]*?\})\s*", "", content, flags=re.MULTILINE)
+        content = re.sub(r'^0\.\s*\*\*Metadata Extraction\*\*[^\n]*\n+', '', content, flags=re.MULTILINE)
+        content = re.sub(r'^#\s+.*Deep Analysis Report:.*?\n+', '', content, flags=re.MULTILINE)
+        content = re.sub(r'^##\s+.*Academic Quality & Innovation\s*\n+', '', content, flags=re.MULTILINE)
+        if prefer_abstract_start:
+            abstract_idx = content.find("## Abstract")
+            if abstract_idx > 0:
+                content = content[abstract_idx:]
+        return re.sub(r'\n{3,}', '\n\n', content).strip()
+
+    def _maybe_refine_analysis_note(self, paper, draft_note, paper_text, models_to_try, extra_params):
+        analysis_cfg = self.config.get('analysis', {})
+        if not analysis_cfg.get('refinement_pass_enabled', True):
+            return draft_note, None
+
+        refinement_template = self.prompts.get('analysis', {}).get('refinement_user')
+        if not refinement_template:
+            return draft_note, None
+
+        max_draft_chars = int(analysis_cfg.get('refinement_max_chars', 45000))
+        max_excerpt_chars = int(analysis_cfg.get('refinement_paper_excerpt_chars', 12000))
+        draft_for_review = draft_note[:max_draft_chars]
+        paper_excerpt = paper_text[:max_excerpt_chars]
+
+        try:
+            refinement_prompt = refinement_template.format(
+                paper_title=paper.get('title', ''),
+                paper_excerpt=paper_excerpt,
+                draft_note=draft_for_review,
+            )
+        except Exception as e:
+            logger.warning(f"[Refinement] Prompt formatting failed, keeping Round 1 draft: {e}")
+            return draft_note, None
+
+        logger.info("  [Refinement] Improving note structure, formulas, and readability...")
+        messages_refine = [
+            {
+                "role": "system",
+                "content": (
+                    "You are a meticulous research-note editor. Improve clarity, factual caution, "
+                    "Obsidian readability, and mathematical explanation without inventing unsupported facts."
+                )
+            },
+            {"role": "user", "content": refinement_prompt}
+        ]
+        response_refine, used_model = self._run_with_model_fallback(
+            label="Refinement",
+            models=models_to_try,
+            messages=messages_refine,
+            extra_params=extra_params,
+        )
+        if response_refine is None:
+            logger.warning("[Refinement] Keeping Round 1 draft because refinement failed.")
+            return draft_note, None
+
+        refined = self._clean_generated_note(
+            self._message_content_text(response_refine),
+            prefer_abstract_start=True,
+        )
+        if not refined or len(refined) < max(800, len(draft_note) * 0.35):
+            logger.warning("[Refinement] Output looked incomplete, keeping Round 1 draft.")
+            return draft_note, used_model
+
+        return refined, used_model
 
     def _screening_fallback_payload(self, paper, reason, stage="detailed"):
         short_title_fallback = self._short_title_from_title(paper.get('title', ''))
         base = {
-            "score": 0,
-            "relevance": 0,
-            "novelty": 0,
-            "rigor": 0,
-            "evidence": 0,
-            "reproducibility": 0,
-            "confidence": 0,
+            "score": 0.0,
+            "relevance": 0.0,
+            "novelty": 0.0,
+            "rigor": 0.0,
+            "evidence": 0.0,
+            "reproducibility": 0.0,
+            "confidence": 0.0,
             "red_flags": [],
             "innovation": "Analysis failed",
             "limitations": "Analysis failed",
@@ -228,8 +408,8 @@ class PaperAnalyser:
         }
         if stage == "coarse":
             base.update({
-                "coarse_score": 0,
-                "method_completeness": 0,
+                "coarse_score": 0.0,
+                "method_completeness": 0.0,
                 "should_rescreen": False,
             })
         return base
@@ -250,7 +430,7 @@ class PaperAnalyser:
 
         {taxonomy_block}
 
-        Score each dimension from 1-10:
+        Score each dimension from 1.0-10.0 using one decimal place:
         - relevance: how well the paper matches the target interests.
         - evidence: how much concrete empirical/theoretical support is visible from the abstract.
         - method_completeness: whether the abstract describes a real method with enough mechanism detail to justify deeper review.
@@ -267,10 +447,10 @@ class PaperAnalyser:
 
         Return JSON only:
         {{
-            "coarse_score": int,
-            "relevance": int,
-            "evidence": int,
-            "method_completeness": int,
+            "coarse_score": number,
+            "relevance": number,
+            "evidence": number,
+            "method_completeness": number,
             "should_rescreen": bool,
             "reason": "string"
         }}
@@ -295,17 +475,11 @@ class PaperAnalyser:
                 **self._screening_extra_params()
             )
 
-            data = json.loads(self._sanitize_json(response.choices[0].message.content), strict=False)
+            data = json.loads(self._sanitize_json(self._message_content_text(response)), strict=False)
             relevance = self._clamp_score(data.get("relevance", data.get("coarse_score", 5)))
             evidence = self._clamp_score(data.get("evidence", data.get("coarse_score", 5)))
             method_completeness = self._clamp_score(data.get("method_completeness", data.get("coarse_score", 5)))
-            coarse_score = self._clamp_score(
-                0.45 * relevance + 0.35 * evidence + 0.20 * method_completeness
-            )
-            if relevance <= 4:
-                coarse_score = min(coarse_score, 5)
-            if evidence <= 4 and method_completeness <= 4:
-                coarse_score = min(coarse_score, 5)
+            coarse_score = coarse_screening_score(relevance, evidence, method_completeness)
             should_rescreen = data.get("should_rescreen")
             if not isinstance(should_rescreen, bool):
                 should_rescreen = coarse_score >= 6 and relevance >= 6 and (evidence >= 5 or method_completeness >= 6)
@@ -350,7 +524,7 @@ class PaperAnalyser:
 
         {taxonomy_block}
 
-        Score each dimension from 1-10:
+        Score each dimension from 1.0-10.0 using one decimal place:
         - relevance: fit to the target interests and application scope.
         - novelty: originality versus common baseline ideas.
         - rigor: methodological soundness and evaluation quality.
@@ -364,11 +538,15 @@ class PaperAnalyser:
         - 1-4: weak match or weak evidence/rigor.
 
         Calibration constraints:
+        - treat the final score as a research-priority score, not as a paper-acceptance score.
+        - do not let novelty alone compensate for poor relevance, weak evidence, or unclear methodology.
         - if relevance <= 4, overall score must be <= 6.
         - if rigor <= 4 or evidence <= 4, overall score must be <= 7.
+        - if confidence <= 4, overall score must be <= 7.
         - if abstract lacks concrete method/evaluation details, reduce confidence and avoid optimistic scoring.
         - keep scoring conservative and discriminative.
         - if additional document excerpt is provided, use it as supporting evidence for rigor/evidence/reproducibility.
+        - use red_flags for concrete risks only: missing baselines, vague evaluation, data leakage risk, unsupported claims, unclear task setup, weak reproducibility, or mismatch with the target research interests.
         - if abstract and excerpt conflict, prefer concrete technical details from the excerpt and lower confidence if inconsistency is severe.
 
         Output requirements:
@@ -385,13 +563,13 @@ class PaperAnalyser:
 
         Return JSON only:
         {{
-            "score": int,
-            "relevance": int,
-            "novelty": int,
-            "rigor": int,
-            "evidence": int,
-            "reproducibility": int,
-            "confidence": int,
+            "score": number,
+            "relevance": number,
+            "novelty": number,
+            "rigor": number,
+            "evidence": number,
+            "reproducibility": number,
+            "confidence": number,
             "red_flags": ["string"],
             "innovation": "string",
             "limitations": "string",
@@ -421,7 +599,7 @@ class PaperAnalyser:
                 **self._screening_extra_params()
             )
 
-            content = response.choices[0].message.content
+            content = self._message_content_text(response)
             cleaned_content = self._sanitize_json(content)
             data = json.loads(cleaned_content, strict=False)
 
@@ -431,30 +609,19 @@ class PaperAnalyser:
             evidence = self._clamp_score(data.get("evidence", data.get("score", 5)))
             reproducibility = self._clamp_score(data.get("reproducibility", data.get("score", 5)))
             confidence = self._clamp_score(data.get("confidence", 6))
+            red_flags = normalize_red_flags(data.get("red_flags", []))
 
             weights = self.config.get("analysis", {}).get("screening_weights", {})
-            w_rel = float(weights.get("relevance", 0.30))
-            w_nov = float(weights.get("novelty", 0.23))
-            w_rig = float(weights.get("rigor", 0.22))
-            w_evd = float(weights.get("evidence", 0.15))
-            w_rep = float(weights.get("reproducibility", 0.10))
-            total_w = w_rel + w_nov + w_rig + w_evd + w_rep
-            if total_w <= 0:
-                total_w = 1.0
-            weighted = (
-                w_rel * relevance +
-                w_nov * novelty +
-                w_rig * rigor +
-                w_evd * evidence +
-                w_rep * reproducibility
-            ) / total_w
-            calibrated_score = self._clamp_score(weighted)
-            if relevance <= 4:
-                calibrated_score = min(calibrated_score, 6)
-            if rigor <= 4 or evidence <= 4:
-                calibrated_score = min(calibrated_score, 7)
-            if confidence <= 4:
-                calibrated_score = min(calibrated_score, 7)
+            calibrated_score = calibrated_screening_score(
+                relevance=relevance,
+                novelty=novelty,
+                rigor=rigor,
+                evidence=evidence,
+                reproducibility=reproducibility,
+                confidence=confidence,
+                red_flags=red_flags,
+                weights=weights,
+            )
 
             data["score"] = calibrated_score
             data["relevance"] = relevance
@@ -463,8 +630,7 @@ class PaperAnalyser:
             data["evidence"] = evidence
             data["reproducibility"] = reproducibility
             data["confidence"] = confidence
-            if "red_flags" not in data or not isinstance(data.get("red_flags"), list):
-                data["red_flags"] = []
+            data["red_flags"] = red_flags
             data["short_title"] = data.get("short_title") or self._short_title_from_title(paper.get('title', ''))
             data["screening_stage"] = "detailed"
             data["used_model"] = used_model
@@ -499,12 +665,7 @@ class PaperAnalyser:
             rag_context=rag_context
         )
 
-        extra_params = {}
-        if self.provider == 'openrouter':
-            extra_params['extra_headers'] = {
-                "HTTP-Referer": "https://paperbrain.ai",
-                "X-Title": "PaperBrain"
-            }
+        extra_params = self._openrouter_extra_params("analysis")
 
         models = [self.model_pro]
         if self.provider == 'openrouter':
@@ -518,8 +679,8 @@ class PaperAnalyser:
             ],
             **extra_params
         )
-        content = response.choices[0].message.content
-        return f"# 🚀 Deep Analysis Report: {paper.get('title','')}\n\n{content}\n\n---\n*Generated from abstract fallback (model: {used_model})*"
+        content = self._clean_generated_note(self._message_content_text(response))
+        return f"{content}\n\n---\n*Generated from abstract fallback (model: {used_model})*"
 
     def extract_text_from_pdf(self, pdf_path):
         """Extracts text from a PDF file."""
@@ -692,36 +853,27 @@ Your task: find the page that contains the **model / method architecture diagram
                 })
 
             try:
-                extra_params = {}
-                if self.provider == 'openrouter':
-                    extra_params['extra_headers'] = {
-                        "HTTP-Referer": "https://paperbrain.ai",
-                        "X-Title": "PaperBrain"
-                    }
+                extra_params = self._openrouter_extra_params("vision")
 
-                # Try primary model, then fallbacks
-                response = None
-                models_to_try = [self.model_pro, "google/gemini-2.0-flash-001", "openai/gpt-4o-mini"]
-                for model in models_to_try:
-                    try:
-                        response = self.client.chat.completions.create(
-                            model=model,
-                            messages=vision_messages,
-                            max_tokens=200,
-                            **extra_params
-                        )
-                        break
-                    except Exception as e:
-                        err_str = str(e)
-                        if "404" in err_str or "403" in err_str:
-                            logger.warning(f"Vision model {model} unavailable: {err_str}")
-                            continue
-                        raise
+                # Try dedicated non-OpenAI/Claude/Gemini vision models.
+                models_to_try = [self.model_pro]
+                if self.provider == 'openrouter':
+                    models_to_try = self._openrouter_model_candidates(
+                        getattr(self, "model_vision", self.model_pro),
+                        "model_vision"
+                    )
+                response, _ = self._run_with_model_fallback(
+                    label="Vision Select",
+                    models=models_to_try,
+                    messages=vision_messages,
+                    extra_params=extra_params,
+                    max_tokens=200,
+                )
 
                 if response is None:
                     raise RuntimeError("All vision models failed")
 
-                choice_text = response.choices[0].message.content.strip()
+                choice_text = self._message_content_text(response).strip()
                 cleaned_json = self._sanitize_json(choice_text)
                 data = json.loads(cleaned_json, strict=False)
 
@@ -878,8 +1030,8 @@ Your task: find the page that contains the **model / method architecture diagram
         **Mandatory Formatting**:
         - Create a section exactly named "## 📌 Abstract".
         - Under it, first place the complete English abstract from the paper.
-        - Immediately after that, add "### 中文译文" and provide the complete Chinese translation of that abstract.
-        - After "## 📌 Abstract", all remaining section titles and prose must be Chinese.
+        - After the abstract, add one short paragraph that explains the abstract in simpler English.
+        - All section titles and prose must be in English.
 
         **Quality Gate — Self-check before outputting**:
         - Does every subsection contain at least one multi-sentence paragraph (not just bullets)?
@@ -895,38 +1047,26 @@ Your task: find the page that contains the **model / method architecture diagram
             {"role": "user", "content": round1_prompt}
         ]
 
-        extra_params = {}
-        if self.provider == 'openrouter':
-            extra_params['extra_headers'] = {
-                "HTTP-Referer": "https://paperbrain.ai",
-                "X-Title": "PaperBrain"
-            }
+        extra_params = self._openrouter_extra_params("analysis")
 
         response_r1 = None
+        used_model_round1 = self.model_pro
         models_to_try = [self.model_pro]
         if self.provider == 'openrouter':
             models_to_try = self._openrouter_model_candidates(self.model_pro, "model_pro")
 
-        for model in models_to_try:
-            try:
-                response_r1 = self.client.chat.completions.create(
-                    model=model,
-                    messages=messages_r1,
-                    **extra_params
-                )
-                break
-            except Exception as e:
-                err_str = str(e)
-                if "404" in err_str or "403" in err_str:
-                    logger.warning(f"[Round 1] Model {model} unavailable: {err_str}")
-                    continue
-                raise
+        response_r1, used_model_round1 = self._run_with_model_fallback(
+            label="Round 1",
+            models=models_to_try,
+            messages=messages_r1,
+            extra_params=extra_params,
+        )
 
         if response_r1 is None:
             logger.error("[Round 1] All models failed. Aborting.")
             return "Analysis Failed: All models unavailable."
 
-        r1_content = response_r1.choices[0].message.content
+        r1_content = self._message_content_text(response_r1)
 
         # Extract Metadata JSON (robust matching for various malformed formats)
         metadata = {}
@@ -975,6 +1115,14 @@ Your task: find the page that contains the **model / method architecture diagram
         # Collapse excessive blank lines
         r1_content = re.sub(r'\n{3,}', '\n\n', r1_content).strip()
 
+        r1_content, refinement_model = self._maybe_refine_analysis_note(
+            paper=paper,
+            draft_note=r1_content,
+            paper_text=paper_text,
+            models_to_try=models_to_try,
+            extra_params=extra_params,
+        )
+
         max_iterations = int(self.config.get('analysis', {}).get('max_iterations', 2))
         max_iterations = max(1, max_iterations)
 
@@ -995,7 +1143,7 @@ Your task: find the page that contains the **model / method architecture diagram
             - Always close the reasoning loop: claim → evidence → implication.
             ═══════════════════════════════════════════════════════════════
 
-            Output language: Chinese for all prose.
+            Output language: English for all prose.
             Keep proprietary names and technical terms in original English (method/model/dataset/loss/module/API/benchmark names, metric abbreviations like mAP/FID/IoU, and math symbols).
             Keep [[Wiki-Link]] filenames and Mermaid node IDs in English-safe format.
 
@@ -1028,32 +1176,24 @@ Your task: find the page that contains the **model / method architecture diagram
             """)
             round2_prompt = round2_template.format(context_notes=context_notes)
 
-            # Round 2 does NOT need images again — text context from R1 is sufficient
-            messages_r2 = messages_r1 + [
-                {"role": "assistant", "content": r1_content},
+            # Round 2 only needs the refined note and knowledge-base context.
+            messages_r2 = [
+                {"role": "system", "content": system_role},
+                {"role": "user", "content": f"Here is the refined reading note:\n\n{r1_content}"},
                 {"role": "user", "content": round2_prompt}
             ]
 
-            response_r2 = None
-            for model in models_to_try:
-                try:
-                    response_r2 = self.client.chat.completions.create(
-                        model=model,
-                        messages=messages_r2,
-                        **extra_params
-                    )
-                    break
-                except Exception as e:
-                    err_str = str(e)
-                    if "404" in err_str or "403" in err_str:
-                        logger.warning(f"[Round 2] Model {model} unavailable: {err_str}")
-                        continue
-                    raise
+            response_r2, used_model_round2 = self._run_with_model_fallback(
+                label="Round 2",
+                models=models_to_try,
+                messages=messages_r2,
+                extra_params=extra_params,
+            )
 
             if response_r2 is None:
                 logger.error("[Round 2] All models failed.")
             else:
-                r2_content = response_r2.choices[0].message.content
+                r2_content = self._message_content_text(response_r2)
                 # Strip any stray section headers the model may have added
                 r2_content = re.sub(r'^##\s+🔗\s+Knowledge Graph[^\n]*\n+', '', r2_content, flags=re.MULTILINE)
                 r2_content = re.sub(r'^Analysis\s*&\s*Connections\s*\n+', '', r2_content, flags=re.MULTILINE)
@@ -1064,9 +1204,10 @@ Your task: find the page that contains the **model / method architecture diagram
         # --- Final Compilation ---
         connections_section = ""
         if r2_content:
-            connections_section = f"\n\n## 🔗 Knowledge Graph & Connections\n\n{r2_content.strip()}"
+            connections_section = f"\n\n## Knowledge Graph & Connections\n\n{r2_content.strip()}"
 
-        final_report = f"{r1_content.strip()}{connections_section}\n\n---\n*Analysis by PaperBrain ({self.model_pro})*"
+        refinement_note = f"; refinement: {refinement_model}" if refinement_model else ""
+        final_report = f"{r1_content.strip()}{connections_section}\n\n---\n*Analysis by PaperBrain ({used_model_round1}{refinement_note})*"
         return final_report
 
     def generate_paper_aliases(self, paper, analysis_text=""):
@@ -1112,7 +1253,7 @@ Your task: find the page that contains the **model / method architecture diagram
                 **self._screening_extra_params()
             )
 
-            content = response.choices[0].message.content or ""
+            content = self._message_content_text(response) or ""
             # Extract JSON array
             match = re.search(r'\[.*?\]', content, re.DOTALL)
             if match:
@@ -1153,8 +1294,8 @@ Your task: find the page that contains the **model / method architecture diagram
         **Mandatory Formatting**:
         - Create a section exactly named "## 📌 Abstract".
         - Under it, first place the complete English abstract from the paper.
-        - Immediately after that, add "### 中文译文" and provide the complete Chinese translation of that abstract.
-        - After "## 📌 Abstract", all remaining section titles and prose must be Chinese.
+        - After the abstract, add one short paragraph that explains the abstract in simpler English.
+        - All section titles and prose must be in English.
         """)
         round1_prompt = f"{deep_analysis_prompt}\n\n{vision_suffix}"
 
@@ -1162,35 +1303,23 @@ Your task: find the page that contains the **model / method architecture diagram
             {"role": "user", "content": round1_prompt}
         ]
 
-        extra_params = {}
-        if self.provider == 'openrouter':
-            extra_params['extra_headers'] = {
-                "HTTP-Referer": "https://paperbrain.ai",
-                "X-Title": "PaperBrain"
-            }
+        extra_params = self._openrouter_extra_params("vision")
 
         models_to_try = [self.model_pro]
         if self.provider == 'openrouter':
             models_to_try = self._openrouter_model_candidates(self.model_pro, "model_pro")
 
-        response_r1 = None
-        for model in models_to_try:
-            try:
-                response_r1 = self.client.chat.completions.create(
-                    model=model, messages=messages_r1, **extra_params
-                )
-                break
-            except Exception as e:
-                err_str = str(e)
-                if "404" in err_str or "403" in err_str:
-                    logger.warning(f"[Fallback R1] Model {model} unavailable: {err_str}")
-                    continue
-                raise
+        response_r1, used_model = self._run_with_model_fallback(
+            label="Vision Fallback R1",
+            models=models_to_try,
+            messages=messages_r1,
+            extra_params=extra_params,
+        )
 
         if response_r1 is None:
             return "Analysis Failed: All models unavailable."
 
-        r1_content = response_r1.choices[0].message.content
+        r1_content = self._message_content_text(response_r1)
 
         metadata = {}
         try:
@@ -1219,12 +1348,15 @@ Your task: find the page that contains the **model / method architecture diagram
         except Exception:
             pass
 
-        r1_content = re.sub(r'^#\s+🚀\s+Deep Analysis Report:.*?\n+', '', r1_content, flags=re.MULTILINE)
-        r1_content = re.sub(r'^##\s+📊\s+Academic Quality & Innovation\s*\n+', '', r1_content, flags=re.MULTILINE)
-        r1_content = re.sub(r'\n{3,}', '\n\n', r1_content).strip()
+        r1_content = self._clean_generated_note(r1_content, prefer_abstract_start=True)
 
-        # Remove any stray wrapper headers
-        r1_content = re.sub(r'^#\s+🚀\s+Deep Analysis Report:.*?\n+', '', r1_content, flags=re.MULTILINE)
-        r1_content = re.sub(r'^##\s+📊\s+Academic Quality & Innovation\s*\n+', '', r1_content, flags=re.MULTILINE)
+        r1_content, refinement_model = self._maybe_refine_analysis_note(
+            paper=paper,
+            draft_note=r1_content,
+            paper_text="Vision fallback mode. Full reliable text excerpt is not available.",
+            models_to_try=models_to_try,
+            extra_params=self._openrouter_extra_params("analysis"),
+        )
 
-        return f"{r1_content.strip()}\n\n---\n*Analysis by PaperBrain ({self.model_pro}) — Vision Fallback Mode*"
+        refinement_note = f"; refinement: {refinement_model}" if refinement_model else ""
+        return f"{r1_content.strip()}\n\n---\n*Analysis by PaperBrain ({used_model or self.model_pro}{refinement_note}) - Vision Fallback Mode*"

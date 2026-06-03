@@ -1,32 +1,67 @@
 ---
 tags:
-  - paper
-  - Embodied_AI
-  - Foundation_Model
-  - LLM
-  - Reinforcement_Learning
-  - Robot_Manipulation
+- paper
+- domain/3d_perception
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- impact/high_value
+- method/foundation_model
+- method/planning
+- method/reinforcement_learning
+- review/auto_tagged
+- status/unread
+- task/manipulation
+- task/navigation
+- task/planning_reasoning
+- task/scene_understanding
+- type/system
 aliases:
-  - "ACE-Brain-0: Spatial Intelligence as a Shared Scaffold for Universal Embodiments"
+- 'ACE-Brain-0: Spatial Intelligence as a Shared Scaffold for Universal Embodiments'
 url: http://arxiv.org/abs/2603.03198v1
 pdf_url: https://arxiv.org/pdf/2603.03198v1
-local_pdf: "[[ACEBrain0 Spatial Intelligence as a Shared Scaffold for Universal Embodiments.pdf]]"
-github: "https://github.com/ACE-BRAIN-Team/ACE-Brain-0"
-project_page: "https://ace-brain-team.github.io/ACE-Brain-0/"
+local_pdf: '[[ACEBrain0 Spatial Intelligence as a Shared Scaffold for Universal Embodiments.pdf]]'
+github: https://github.com/ACE-BRAIN-Team/ACE-Brain-0
+project_page: https://ace-brain-team.github.io/ACE-Brain-0/
 institutions:
-  - "ACE Robotics"
-  - "Shanghai Jiao Tong University"
-  - "Nanyang Technological University"
-  - "The Chinese University of Hong Kong"
-  - "The University of Hong Kong"
-  - "University of Science and Technology of China"
-  - "Fudan University"
-  - "Xiamen University"
-  - "East China Normal University"
-  - "Wuhan University"
-  - "Sun Yat-sen University"
-publication_date: "2026-03-04"
-score: 8
+- ACE Robotics
+- Shanghai Jiao Tong University
+- Nanyang Technological University
+- The Chinese University of Hong Kong
+- The University of Hong Kong
+- University of Science and Technology of China
+- Fudan University
+- Xiamen University
+- East China Normal University
+- Wuhan University
+- Sun Yat-sen University
+publication_date: '2026-03-04'
+score: '8.0'
+domains:
+- 3d_perception
+- embodied_ai
+- multimodal_perception
+- reinforcement_learning
+- robot_manipulation
+methods:
+- foundation_model
+- planning
+- reinforcement_learning
+tasks:
+- manipulation
+- navigation
+- planning_reasoning
+- scene_understanding
+paper_type: system
+impact_band: high_value
+reading_status: unread
+year: 2026
+priority_score: 103
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2603.03198'
+paper_id: arxiv:2603.03198
 ---
 
 # ACE-Brain-0: Spatial Intelligence as a Shared Scaffold for Universal Embodiments

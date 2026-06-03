@@ -1,24 +1,67 @@
 ---
 tags:
-  - paper
-  - Robot_Manipulation
-  - VLA
-  - Embodied_AI
-  - Sim2Real
-  - Foundation_Model
+- paper
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- domain/sim2real
+- domain/vla
+- impact/high_value
+- method/benchmark
+- method/diffusion_policy
+- method/foundation_model
+- method/planning
+- method/reinforcement_learning
+- review/auto_tagged
+- status/unread
+- task/manipulation
+- task/navigation
+- task/planning_reasoning
+- task/scene_understanding
+- type/benchmark
 aliases:
-  - "ProbeFlow: Training-Free Adaptive Flow Matching for Vision-Language-Action Models"
+- 'ProbeFlow: Training-Free Adaptive Flow Matching for Vision-Language-Action Models'
 url: http://arxiv.org/abs/2603.17850v1
 pdf_url: https://arxiv.org/pdf/2603.17850v1
-local_pdf: "[[ProbeFlow TrainingFree Adaptive Flow Matching for VisionLanguageAction Models.pdf]]"
-github: "None"
-project_page: "None"
+local_pdf: '[[ProbeFlow TrainingFree Adaptive Flow Matching for VisionLanguageAction
+  Models.pdf]]'
+github: None
+project_page: None
 institutions:
-  - "School of Computer Science and Engineering, Southeast University, China"
-  - "Key Laboratory of New Generation Artificial Intelligence Technology and Its Interdisciplinary Applications, Ministry of Education, China"
-  - "School of Electronic Science & Engineering, Southeast University, China"
-publication_date: "2026-03-18"
-score: 8
+- School of Computer Science and Engineering, Southeast University, China
+- Key Laboratory of New Generation Artificial Intelligence Technology and Its Interdisciplinary
+  Applications, Ministry of Education, China
+- School of Electronic Science & Engineering, Southeast University, China
+publication_date: '2026-03-18'
+score: '8.0'
+domains:
+- embodied_ai
+- multimodal_perception
+- reinforcement_learning
+- robot_manipulation
+- sim2real
+- vla
+methods:
+- benchmark
+- diffusion_policy
+- foundation_model
+- planning
+- reinforcement_learning
+tasks:
+- manipulation
+- navigation
+- planning_reasoning
+- scene_understanding
+paper_type: benchmark
+impact_band: high_value
+reading_status: unread
+year: 2026
+priority_score: 103
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2603.17850'
+paper_id: arxiv:2603.17850
 ---
 
 # ProbeFlow: Training-Free Adaptive Flow Matching for Vision-Language-Action Models

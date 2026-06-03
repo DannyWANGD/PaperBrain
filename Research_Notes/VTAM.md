@@ -1,23 +1,62 @@
 ---
 tags:
-  - paper
-  - Robot_Manipulation
-  - VLA
-  - World_Model
-  - Embodied_AI
+- paper
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- domain/vla
+- domain/world_model
+- impact/high_value
+- method/foundation_model
+- method/planning
+- method/reinforcement_learning
+- review/auto_tagged
+- status/unread
+- task/dexterous_contact
+- task/manipulation
+- task/planning_reasoning
+- task/scene_understanding
+- type/system
 aliases:
-  - "VTAM: Video-Tactile-Action Models for Complex Physical Interaction Beyond VLAs"
+- 'VTAM: Video-Tactile-Action Models for Complex Physical Interaction Beyond VLAs'
 url: https://huggingface.co/papers/2603.23481
 pdf_url: https://arxiv.org/pdf/2603.23481.pdf
-local_pdf: "[[VTAM VideoTactileAction Models for Complex Physical Interaction Beyond VLAs.pdf]]"
-github: "None"
-project_page: "https://plan-lab.github.io/vtam"
+local_pdf: '[[VTAM VideoTactileAction Models for Complex Physical Interaction Beyond
+  VLAs.pdf]]'
+github: None
+project_page: https://plan-lab.github.io/vtam
 institutions:
-  - "University of Illinois Urbana-Champaign"
-  - "Stanford University"
-  - "Shanghai Jiao Tong University"
-publication_date: "2026-03-24"
-score: 8
+- University of Illinois Urbana-Champaign
+- Stanford University
+- Shanghai Jiao Tong University
+publication_date: '2026-03-24'
+score: '8.0'
+domains:
+- embodied_ai
+- multimodal_perception
+- reinforcement_learning
+- robot_manipulation
+- vla
+- world_model
+methods:
+- foundation_model
+- planning
+- reinforcement_learning
+tasks:
+- dexterous_contact
+- manipulation
+- planning_reasoning
+- scene_understanding
+paper_type: system
+impact_band: high_value
+reading_status: unread
+year: 2026
+priority_score: 111
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2603.23481'
+paper_id: arxiv:2603.23481
 ---
 
 # VTAM: Video-Tactile-Action Models for Complex Physical Interaction Beyond VLAs

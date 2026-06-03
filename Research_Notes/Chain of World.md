@@ -1,27 +1,70 @@
 ---
 tags:
-  - paper
-  - World_Model
-  - Embodied_AI
-  - Robot_Manipulation
-  - VLA
-  - Foundation_Model
+- paper
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- domain/vla
+- domain/world_model
+- impact/high_value
+- method/benchmark
+- method/foundation_model
+- method/imitation_learning
+- method/planning
+- method/reinforcement_learning
+- method/simulation
+- review/auto_tagged
+- status/unread
+- task/manipulation
+- task/planning_reasoning
+- task/scene_understanding
+- task/video_prediction
+- type/benchmark
 aliases:
-  - "Chain of World: World Model Thinking in Latent Motion"
+- 'Chain of World: World Model Thinking in Latent Motion'
 url: https://huggingface.co/papers/2603.03195
 pdf_url: https://arxiv.org/pdf/2603.03195.pdf
-local_pdf: "[[Chain of World World Model Thinking in Latent Motion.pdf]]"
-github: "None"
-project_page: "https://fx-hit.github.io/cowvla-io"
+local_pdf: '[[Chain of World World Model Thinking in Latent Motion.pdf]]'
+github: None
+project_page: https://fx-hit.github.io/cowvla-io
 institutions:
-  - "Harbin Institute of Technology"
-  - "Li Auto"
-  - "Beijing Academy of Artificial Intelligence (BAAI)"
-  - "University of New South Wales"
-  - "Chongqing Research Institute of HIT"
-  - "Peking University"
-publication_date: "2026-03-03"
-score: 8
+- Harbin Institute of Technology
+- Li Auto
+- Beijing Academy of Artificial Intelligence (BAAI)
+- University of New South Wales
+- Chongqing Research Institute of HIT
+- Peking University
+publication_date: '2026-03-03'
+score: '8.0'
+domains:
+- embodied_ai
+- multimodal_perception
+- reinforcement_learning
+- robot_manipulation
+- vla
+- world_model
+methods:
+- benchmark
+- foundation_model
+- imitation_learning
+- planning
+- reinforcement_learning
+- simulation
+tasks:
+- manipulation
+- planning_reasoning
+- scene_understanding
+- video_prediction
+paper_type: benchmark
+impact_band: high_value
+reading_status: unread
+year: 2026
+priority_score: 111
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2603.03195'
+paper_id: arxiv:2603.03195
 ---
 
 # Chain of World: World Model Thinking in Latent Motion

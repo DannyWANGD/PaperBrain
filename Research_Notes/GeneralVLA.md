@@ -1,24 +1,67 @@
 ---
 aliases:
-  - "GeneralVLA: Generalizable Vision-Language-Action Models with Knowledge-Guided Trajectory Planning"
+- 'GeneralVLA: Generalizable Vision-Language-Action Models with Knowledge-Guided Trajectory
+  Planning'
 github: https://github.com/AIGeeksGroup/GeneralVLA
 institutions:
-  - CASIA
-  - Peking University
-local_pdf: "[[GeneralVLA Generalizable VisionLanguageAction Models with KnowledgeGuided Trajectory Planning.pdf]]"
+- CASIA
+- Peking University
+local_pdf: '[[GeneralVLA Generalizable VisionLanguageAction Models with KnowledgeGuided
+  Trajectory Planning.pdf]]'
 pdf_url: https://arxiv.org/pdf/2602.04315.pdf
 project_page: https://aigeeksgroup.github.io/GeneralVLA
 publication_date: 2026-02-04
 tags:
-  - paper
-  - VLA
-  - Foundation_Models
-  - Robot_Manipulation
-  - Zero_Shot_Manipulation
-  - Knowledge_Guided_Trajectory_Planning
-  - 2026-02-27
+- paper
+- '2026-02-27'
+- Foundation_Models
+- Knowledge_Guided_Trajectory_Planning
+- Zero_Shot_Manipulation
+- domain/3d_perception
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- domain/vla
+- impact/archive
+- method/foundation_model
+- method/imitation_learning
+- method/planning
+- method/reinforcement_learning
+- review/auto_tagged
+- status/unread
+- task/manipulation
+- task/navigation
+- task/planning_reasoning
+- task/scene_understanding
+- type/analysis
 url: https://huggingface.co/papers/2602.04315
-Reading?:
+Reading?: null
+domains:
+- 3d_perception
+- multimodal_perception
+- reinforcement_learning
+- robot_manipulation
+- vla
+methods:
+- foundation_model
+- imitation_learning
+- planning
+- reinforcement_learning
+tasks:
+- manipulation
+- navigation
+- planning_reasoning
+- scene_understanding
+paper_type: analysis
+impact_band: archive
+reading_status: unread
+year: 2026
+priority_score: 8
+review_status: auto_tagged
+next_action: archive
+score: '0.0'
+arxiv_id: '2602.04315'
+paper_id: arxiv:2602.04315
 ---
 
 # GeneralVLA: Generalizable Vision-Language-Action Models with Knowledge-Guided Trajectory Planning

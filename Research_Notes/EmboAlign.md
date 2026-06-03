@@ -1,23 +1,57 @@
 ---
 tags:
-  - paper
-  - Robot_Manipulation
-  - Diffusion_Model
-  - Embodied_AI
-  - Foundation_Model
-  - LLM
+- paper
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/robot_manipulation
+- impact/high_value
+- method/diffusion_policy
+- method/foundation_model
+- method/planning
+- review/auto_tagged
+- status/unread
+- task/manipulation
+- task/navigation
+- task/planning_reasoning
+- task/scene_understanding
+- task/video_prediction
+- type/system
 aliases:
-  - "EmboAlign: Aligning Video Generation with Compositional Constraints for Zero-Shot Manipulation"
+- 'EmboAlign: Aligning Video Generation with Compositional Constraints for Zero-Shot
+  Manipulation'
 url: https://huggingface.co/papers/2603.05757
 pdf_url: https://arxiv.org/pdf/2603.05757.pdf
-local_pdf: "[[EmboAlign Aligning Video Generation with Compositional Constraints for ZeroShot Manipulation.pdf]]"
-github: "None"
-project_page: "None"
+local_pdf: '[[EmboAlign Aligning Video Generation with Compositional Constraints for
+  ZeroShot Manipulation.pdf]]'
+github: None
+project_page: None
 institutions:
-  - "Northwestern University"
-  - "Stanford University"
-publication_date: "2026-03-05"
-score: 8
+- Northwestern University
+- Stanford University
+publication_date: '2026-03-05'
+score: '8.0'
+domains:
+- embodied_ai
+- multimodal_perception
+- robot_manipulation
+methods:
+- foundation_model
+- planning
+tasks:
+- manipulation
+- navigation
+- planning_reasoning
+- scene_understanding
+- video_prediction
+paper_type: system
+impact_band: high_value
+reading_status: unread
+year: 2026
+priority_score: 103
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2603.05757'
+paper_id: arxiv:2603.05757
 ---
 
 # EmboAlign: Aligning Video Generation with Compositional Constraints for Zero-Shot Manipulation

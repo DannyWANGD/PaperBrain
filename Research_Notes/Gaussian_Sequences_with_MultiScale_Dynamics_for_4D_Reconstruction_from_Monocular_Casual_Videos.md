@@ -1,23 +1,59 @@
 ---
 tags:
-  - paper
-  - 3D_Gaussian_Splatting
-  - Foundation_Model
-  - Embodied_AI
-  - Robot_Manipulation
+- paper
+- domain/3d_perception
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- domain/world_model
+- impact/solid
+- method/benchmark
+- method/foundation_model
+- method/reinforcement_learning
+- review/auto_tagged
+- status/unread
+- task/manipulation
+- task/scene_understanding
+- type/benchmark
 aliases:
-  - Gaussian Sequences with Multi-Scale Dynamics for 4D Reconstruction from Monocular Casual Videos
+- Gaussian Sequences with Multi-Scale Dynamics for 4D Reconstruction from Monocular
+  Casual Videos
 url: http://arxiv.org/abs/2602.13806v1
 pdf_url: https://arxiv.org/pdf/2602.13806v1
-local_pdf: "[[Gaussian Sequences with MultiScale Dynamics for 4D Reconstruction from Monocular Casual Videos.pdf]]"
+local_pdf: '[[Gaussian Sequences with MultiScale Dynamics for 4D Reconstruction from
+  Monocular Casual Videos.pdf]]'
 github: None
 project_page: None
 institutions:
-  - Nankai University, Tianjin, China
-  - Rightly Robotics, Hangzhou, China
+- Nankai University, Tianjin, China
+- Rightly Robotics, Hangzhou, China
 publication_date: 2026-02-14
-score: 7
-Reading?:
+score: '7.0'
+Reading?: null
+domains:
+- 3d_perception
+- embodied_ai
+- multimodal_perception
+- reinforcement_learning
+- robot_manipulation
+- world_model
+methods:
+- benchmark
+- foundation_model
+- reinforcement_learning
+tasks:
+- manipulation
+- scene_understanding
+paper_type: benchmark
+impact_band: solid
+reading_status: unread
+year: 2026
+priority_score: 74
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2602.13806'
+paper_id: arxiv:2602.13806
 ---
 
 # Gaussian Sequences with Multi-Scale Dynamics for 4D Reconstruction from Monocular Casual Videos

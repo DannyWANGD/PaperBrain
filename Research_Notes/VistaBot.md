@@ -1,27 +1,67 @@
 ---
 tags:
-  - paper
-  - Robot_Manipulation
-  - Diffusion_Model
-  - Embodied_AI
-  - World_Model
+- paper
+- domain/3d_perception
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- domain/world_model
+- impact/high_value
+- method/benchmark
+- method/diffusion_policy
+- method/planning
+- method/reinforcement_learning
+- method/simulation
+- review/auto_tagged
+- status/unread
+- task/manipulation
+- task/navigation
+- task/planning_reasoning
+- task/scene_understanding
+- type/benchmark
 aliases:
-  - "VistaBot: View-Robust Robot Manipulation via Spatiotemporal-Aware View Synthesis"
-  - "VistaBot"
-  - "Spatiotemporal View Synthesis"
-  - "View-Robust Manipulation"
-  - "Calibration-Free Manipulation"
-  - "Video Diffusion Robotics"
-  - "Geometric Video Diffusion"
-  - "Closed-Loop View Synthesis"
-arxiv_id: "2604.21914"
+- 'VistaBot: View-Robust Robot Manipulation via Spatiotemporal-Aware View Synthesis'
+- VistaBot
+- Spatiotemporal View Synthesis
+- View-Robust Manipulation
+- Calibration-Free Manipulation
+- Video Diffusion Robotics
+- Geometric Video Diffusion
+- Closed-Loop View Synthesis
+arxiv_id: '2604.21914'
 url: http://arxiv.org/abs/2604.21914v1
 pdf_url: https://arxiv.org/pdf/2604.21914v1
-local_pdf: "[[VistaBot ViewRobust Robot Manipulation via SpatiotemporalAware View Synthesis.pdf]]"
-github: "None"
-project_page: "None"
-publication_date: "Unknown"
-score: 8
+local_pdf: '[[VistaBot ViewRobust Robot Manipulation via SpatiotemporalAware View
+  Synthesis.pdf]]'
+github: None
+project_page: None
+publication_date: Unknown
+score: '8.0'
+domains:
+- 3d_perception
+- embodied_ai
+- multimodal_perception
+- reinforcement_learning
+- robot_manipulation
+methods:
+- benchmark
+- planning
+- reinforcement_learning
+- simulation
+tasks:
+- manipulation
+- navigation
+- planning_reasoning
+- scene_understanding
+paper_type: benchmark
+impact_band: high_value
+reading_status: unread
+year: null
+priority_score: 103
+review_status: auto_tagged
+next_action: inspect_protocol
+paper_id: arxiv:2604.21914
 ---
 
 # VistaBot: View-Robust Robot Manipulation via Spatiotemporal-Aware View Synthesis

@@ -1,24 +1,57 @@
 ---
 tags:
-  - paper
-  - World_Model
-  - Embodied_AI
-  - Robot_Manipulation
+- paper
+- domain/embodied_ai
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- domain/world_model
+- impact/high_value
+- method/benchmark
+- method/imitation_learning
+- method/reinforcement_learning
+- method/simulation
+- review/auto_tagged
+- status/unread
+- task/manipulation
+- type/benchmark
 aliases:
-  - "Latent Particle World Models: Self-supervised Object-centric Stochastic Dynamics Modeling"
+- 'Latent Particle World Models: Self-supervised Object-centric Stochastic Dynamics
+  Modeling'
 url: https://huggingface.co/papers/2603.04553
 pdf_url: https://arxiv.org/pdf/2603.04553.pdf
-local_pdf: "[[Latent Particle World Models Selfsupervised Objectcentric Stochastic Dynamics Modeling.pdf]]"
-github: "https://github.com/taldatech/lpwm"
-project_page: "https://taldatech.github.io/lpwm-web"
+local_pdf: '[[Latent Particle World Models Selfsupervised Objectcentric Stochastic
+  Dynamics Modeling.pdf]]'
+github: https://github.com/taldatech/lpwm
+project_page: https://taldatech.github.io/lpwm-web
 institutions:
-  - "Carnegie Mellon University"
-  - "UT Austin"
-  - "Brown University"
-  - "Lambda"
-  - "Technion"
-publication_date: "2026-03-04"
-score: 8
+- Carnegie Mellon University
+- UT Austin
+- Brown University
+- Lambda
+- Technion
+publication_date: '2026-03-04'
+score: '8.0'
+domains:
+- embodied_ai
+- reinforcement_learning
+- robot_manipulation
+- world_model
+methods:
+- benchmark
+- imitation_learning
+- reinforcement_learning
+- simulation
+tasks:
+- manipulation
+paper_type: benchmark
+impact_band: high_value
+reading_status: unread
+year: 2026
+priority_score: 99
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2603.04553'
+paper_id: arxiv:2603.04553
 ---
 
 # Latent Particle World Models: Self-supervised Object-centric Stochastic Dynamics Modeling
@@ -471,3 +504,8 @@ graph LR
 - **Local PDF**: [[Latent Particle World Models Selfsupervised Objectcentric Stochastic Dynamics Modeling.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2603.04553.pdf)
 - [ArXiv Link](https://huggingface.co/papers/2603.04553)
+
+## Related Work Updates
+- [ ] **2026-06-02**: New paper [[AHEAD for Dynamic VLA Manipulation]] discusses *latent particle world models*. Innovation: "Augments a frozen VLA with a lightweight motion-aware latent world model that selectively predicts task-relevant future tokens using adaptive spatial masking and uncertainty-driven temporal rollouts."
+- [ ] **2026-06-02**: New paper [[AHEAD Latent World Model for Dynamic VLA]] discusses *latent particle world models*. Innovation: "A predict-then-act wrapper that augments a frozen VLA with a motion-aware latent world model using language-and-motion saliency and adaptive uncertainty-driven horizon."
+- [ ] **2026-06-03**: New paper [[AHEAD Latent World Model for Dynamic VLA Manipulation]] discusses *latent particle world models*. Innovation: "A predict-then-act wrapper that augments a frozen VLA with a motion-aware latent world model, using per-token velocity/acceleration conditioning and adaptive spatial-temporal allocation to handle dynamic objects."

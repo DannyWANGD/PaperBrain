@@ -1,23 +1,67 @@
 ---
 tags:
-  - paper
-  - Diffusion_Model
-  - Embodied_AI
-  - Sim2Real
-  - Robot_Manipulation
+- paper
+- domain/3d_perception
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- domain/sim2real
+- domain/vla
+- impact/solid
+- method/diffusion_policy
+- method/planning
+- method/reinforcement_learning
+- method/simulation
+- review/needs_review
+- status/unread
+- task/dexterous_contact
+- task/manipulation
+- task/planning_reasoning
+- task/scene_understanding
+- type/system
 aliases:
-  - "Semantic-Contact Fields for Category-Level Generalizable Tactile Tool Manipulation"
+- Semantic-Contact Fields for Category-Level Generalizable Tactile Tool Manipulation
 url: http://arxiv.org/abs/2602.13833v1
 pdf_url: https://arxiv.org/pdf/2602.13833v1
-local_pdf: "[[SemanticContact Fields for CategoryLevel Generalizable Tactile Tool Manipulation.pdf]]"
-github: "None"
-project_page: "https://kevinskwk.github.io/SCFields"
+local_pdf: '[[SemanticContact Fields for CategoryLevel Generalizable Tactile Tool
+  Manipulation.pdf]]'
+github: None
+project_page: https://kevinskwk.github.io/SCFields
 institutions:
-  - "Robotics & Autonomous Systems Division, Institute for Infocomm Research, A*STAR, Singapore"
-  - "Show Lab, National University of Singapore, Singapore"
-  - "College of Computing and Data Science, Nanyang Technological University, Singapore"
-publication_date: "2026-02-14"
-score: 7
+- Robotics & Autonomous Systems Division, Institute for Infocomm Research, A*STAR,
+  Singapore
+- Show Lab, National University of Singapore, Singapore
+- College of Computing and Data Science, Nanyang Technological University, Singapore
+publication_date: '2026-02-14'
+score: '7.0'
+domains:
+- 3d_perception
+- embodied_ai
+- multimodal_perception
+- reinforcement_learning
+- robot_manipulation
+- sim2real
+- vla
+methods:
+- diffusion_policy
+- planning
+- reinforcement_learning
+- simulation
+tasks:
+- dexterous_contact
+- manipulation
+- planning_reasoning
+- scene_understanding
+paper_type: system
+impact_band: solid
+reading_status: unread
+year: 2026
+priority_score: 78
+review_status: needs_review
+next_action: review_tags
+arxiv_id: '2602.13833'
+paper_id: arxiv:2602.13833
 ---
 
 # Semantic-Contact Fields for Category-Level Generalizable Tactile Tool Manipulation

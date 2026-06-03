@@ -1,28 +1,61 @@
 ---
 tags:
-  - paper
-  - Multimodal_Foundation_Models
-  - Embodied_AI
-  - Egocentric_Spatial_Reasoning
-  - Situated_Awareness_Benchmark
-  - 2026-02-28
+- paper
+- '2026-02-28'
+- Egocentric_Spatial_Reasoning
+- Multimodal_Foundation_Models
+- Situated_Awareness_Benchmark
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- impact/solid
+- method/benchmark
+- method/foundation_model
+- method/planning
+- method/reinforcement_learning
+- review/auto_tagged
+- status/unread
+- task/planning_reasoning
+- task/scene_understanding
+- type/benchmark
 aliases:
-  - Learning Situated Awareness in the Real World
+- Learning Situated Awareness in the Real World
 url: https://huggingface.co/papers/2602.16682
 pdf_url: https://arxiv.org/pdf/2602.16682.pdf
-local_pdf: "[[Learning Situated Awareness in the Real World.pdf]]"
+local_pdf: '[[Learning Situated Awareness in the Real World.pdf]]'
 github: None
 project_page: https://sawbench.github.io
 institutions:
-  - University of California, Santa Barbara
-  - Yale University
-  - Stanford University
-  - University of Maryland, College Park
-  - Amazon
-  - University of California, Merced
+- University of California, Santa Barbara
+- Yale University
+- Stanford University
+- University of Maryland, College Park
+- Amazon
+- University of California, Merced
 publication_date: 2026-02-18
-score: 7
-Reading?:
+score: '7.0'
+Reading?: null
+domains:
+- embodied_ai
+- multimodal_perception
+- reinforcement_learning
+methods:
+- benchmark
+- foundation_model
+- planning
+- reinforcement_learning
+tasks:
+- planning_reasoning
+- scene_understanding
+paper_type: benchmark
+impact_band: solid
+reading_status: unread
+year: 2026
+priority_score: 74
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2602.16682'
+paper_id: arxiv:2602.16682
 ---
 
 # Learning Situated Awareness in the Real World
@@ -210,3 +243,6 @@ graph LR
 - **Local PDF**: [[Learning Situated Awareness in the Real World.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2602.16682.pdf)
 - [ArXiv Link](https://huggingface.co/papers/2602.16682)
+
+## Related Work Updates
+- [ ] **2026-06-03**: New paper [[DynaFLIP DynamicsAware Visual Pretraining]] discusses *learning situated awareness in the real world*. Innovation: "Introduces tri-modal (image, language, 3D flow) alignment via simplex volume minimization on a hypersphere to inject dynamics awareness into an image-only encoder."

@@ -1,35 +1,74 @@
 ---
 tags:
-  - paper
-  - Embodied_AI
-  - Robot_Manipulation
-  - Foundation_Model
-  - VLA
+- paper
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- domain/vla
+- impact/solid
+- method/benchmark
+- method/foundation_model
+- method/planning
+- method/reinforcement_learning
+- review/auto_tagged
+- status/unread
+- task/dexterous_contact
+- task/manipulation
+- task/planning_reasoning
+- task/scene_understanding
+- type/benchmark
 aliases:
-  - "ManipulationNet: An Infrastructure for Benchmarking Real-World Robot Manipulation with Physical Skill Challenges and Embodied Multimodal Reasoning"
+- 'ManipulationNet: An Infrastructure for Benchmarking Real-World Robot Manipulation
+  with Physical Skill Challenges and Embodied Multimodal Reasoning'
 url: http://arxiv.org/abs/2603.04363v1
 pdf_url: https://arxiv.org/pdf/2603.04363v1
-local_pdf: "[[ManipulationNet An Infrastructure for Benchmarking RealWorld Robot Manipulation with Physical Skill .pdf]]"
-github: "None"
-project_page: "https://manipulation-net.org"
+local_pdf: '[[ManipulationNet An Infrastructure for Benchmarking RealWorld Robot Manipulation
+  with Physical Skill .pdf]]'
+github: None
+project_page: https://manipulation-net.org
 institutions:
-  - "Rice University"
-  - "U.S. National Institute of Standards and Technology"
-  - "Massachusetts Institute of Technology"
-  - "Karlsruhe Institute of Technology"
-  - "Autodesk Research"
-  - "University of California, Berkeley"
-  - "KTH Royal Institute of Technology"
-  - "Tsinghua University"
-  - "Columbia University"
-  - "ASTM International"
-  - "Carnegie Mellon University"
-  - "German Aerospace Center (DLR)"
-  - "University of Texas at Dallas"
-  - "University of Texas at Austin"
-  - "NVIDIA Research"
-publication_date: "2026-03-04"
-score: 7
+- Rice University
+- U.S. National Institute of Standards and Technology
+- Massachusetts Institute of Technology
+- Karlsruhe Institute of Technology
+- Autodesk Research
+- University of California, Berkeley
+- KTH Royal Institute of Technology
+- Tsinghua University
+- Columbia University
+- ASTM International
+- Carnegie Mellon University
+- German Aerospace Center (DLR)
+- University of Texas at Dallas
+- University of Texas at Austin
+- NVIDIA Research
+publication_date: '2026-03-04'
+score: '7.0'
+domains:
+- embodied_ai
+- multimodal_perception
+- reinforcement_learning
+- robot_manipulation
+- vla
+methods:
+- benchmark
+- planning
+- reinforcement_learning
+tasks:
+- dexterous_contact
+- manipulation
+- planning_reasoning
+- scene_understanding
+paper_type: benchmark
+impact_band: solid
+reading_status: unread
+year: 2026
+priority_score: 78
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2603.04363'
+paper_id: arxiv:2603.04363
 ---
 
 # ManipulationNet: An Infrastructure for Benchmarking Real-World Robot Manipulation with Physical Skill Challenges and Embodied Multimodal Reasoning

@@ -1,24 +1,56 @@
 ---
 tags:
-  - paper
-  - Reinforcement_Learning
-  - Foundation_Model
-  - Embodied_AI
-  - LLM
+- paper
+- domain/3d_perception
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- impact/solid
+- method/benchmark
+- method/foundation_model
+- method/planning
+- method/reinforcement_learning
+- review/auto_tagged
+- status/unread
+- task/planning_reasoning
+- task/scene_understanding
+- type/benchmark
 aliases:
-  - "MoRL: Reinforced Reasoning for Unified Motion Understanding and Generation"
+- 'MoRL: Reinforced Reasoning for Unified Motion Understanding and Generation'
 url: https://huggingface.co/papers/2602.14534
 pdf_url: https://arxiv.org/pdf/2602.14534.pdf
-local_pdf: "[[MoRL Reinforced Reasoning for Unified Motion Understanding and Generation.pdf]]"
+local_pdf: '[[MoRL Reinforced Reasoning for Unified Motion Understanding and Generation.pdf]]'
 github: https://github.com/AIGeeksGroup/MoRL
 project_page: https://aigeeksgroup.github.io/MoRL
 institutions:
-  - The University of Sydney
-  - Peking University
-  - Nanyang Technological University
+- The University of Sydney
+- Peking University
+- Nanyang Technological University
 publication_date: 2026-02-16
-score: 7
-Reading?:
+score: '7.0'
+Reading?: null
+domains:
+- 3d_perception
+- embodied_ai
+- multimodal_perception
+- reinforcement_learning
+methods:
+- benchmark
+- foundation_model
+- planning
+- reinforcement_learning
+tasks:
+- planning_reasoning
+- scene_understanding
+paper_type: benchmark
+impact_band: solid
+reading_status: unread
+year: 2026
+priority_score: 74
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2602.14534'
+paper_id: arxiv:2602.14534
 ---
 
 # MoRL: Reinforced Reasoning for Unified Motion Understanding and Generation

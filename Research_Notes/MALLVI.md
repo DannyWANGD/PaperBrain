@@ -1,23 +1,60 @@
 ---
 tags:
-  - paper
-  - LLM
-  - Robot_Manipulation
-  - Embodied_AI
-  - Foundation_Model
-  - VLA
+- paper
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- domain/vla
+- impact/solid
+- method/foundation_model
+- method/memory
+- method/planning
+- method/reinforcement_learning
+- method/simulation
+- review/auto_tagged
+- status/unread
+- task/manipulation
+- task/planning_reasoning
+- task/scene_understanding
+- type/system
 aliases:
-  - "MALLVI: A Multi-Agent Framework for Integrated Generalized Robotics Manipulation"
+- 'MALLVI: A Multi-Agent Framework for Integrated Generalized Robotics Manipulation'
 url: http://arxiv.org/abs/2602.16898v3
 pdf_url: https://arxiv.org/pdf/2602.16898v3
-local_pdf: "[[MALLVI A MultiAgent Framework for Integrated Generalized Robotics Manipulation.pdf]]"
+local_pdf: '[[MALLVI A MultiAgent Framework for Integrated Generalized Robotics Manipulation.pdf]]'
 github: https://github.com/iman1234ahmadi/MALLVI
 project_page: None
 institutions:
-  - Sharif University of Technology
+- Sharif University of Technology
 publication_date: 2026-02-25
-score: 7
-Reading?:
+score: '7.0'
+Reading?: null
+domains:
+- embodied_ai
+- multimodal_perception
+- reinforcement_learning
+- robot_manipulation
+- vla
+methods:
+- foundation_model
+- memory
+- planning
+- reinforcement_learning
+- simulation
+tasks:
+- manipulation
+- planning_reasoning
+- scene_understanding
+paper_type: system
+impact_band: solid
+reading_status: unread
+year: 2026
+priority_score: 78
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2602.16898'
+paper_id: arxiv:2602.16898
 ---
 
 # MALLVI: A Multi-Agent Framework for Integrated Generalized Robotics Manipulation

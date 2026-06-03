@@ -1,24 +1,51 @@
 ---
 tags:
-  - paper
-  - World_Model
-  - Embodied_AI
-  - Reinforcement_Learning
+- paper
+- domain/embodied_ai
+- domain/reinforcement_learning
+- domain/world_model
+- impact/high_value
+- method/benchmark
+- method/reinforcement_learning
+- review/auto_tagged
+- status/unread
+- task/video_prediction
+- type/benchmark
 aliases:
-  - "WildWorld: A Large-Scale Dataset for Dynamic World Modeling with Actions and Explicit State toward Generative ARPG"
+- 'WildWorld: A Large-Scale Dataset for Dynamic World Modeling with Actions and Explicit
+  State toward Generative ARPG'
 url: http://arxiv.org/abs/2603.23497v1
 pdf_url: https://arxiv.org/pdf/2603.23497v1
-local_pdf: "[[WildWorld A LargeScale Dataset for Dynamic World Modeling with Actions and Explicit State toward Gen.pdf]]"
-github: "https://github.com/ShandaAI/WildWorld"
-project_page: "https://shandaai.github.io/wildworld-project/"
+local_pdf: '[[WildWorld A LargeScale Dataset for Dynamic World Modeling with Actions
+  and Explicit State toward Gen.pdf]]'
+github: https://github.com/ShandaAI/WildWorld
+project_page: https://shandaai.github.io/wildworld-project/
 institutions:
-  - "Alaya Studio, Shanda AI Research Tokyo"
-  - "Beijing Institute of Technology"
-  - "Shanghai Innovation Institute"
-  - "Shenzhen MSU-BIT University"
-  - "Tsinghua University"
-publication_date: "2026-03-24"
-score: 8
+- Alaya Studio, Shanda AI Research Tokyo
+- Beijing Institute of Technology
+- Shanghai Innovation Institute
+- Shenzhen MSU-BIT University
+- Tsinghua University
+publication_date: '2026-03-24'
+score: '8.0'
+domains:
+- embodied_ai
+- reinforcement_learning
+- world_model
+methods:
+- benchmark
+- reinforcement_learning
+tasks:
+- video_prediction
+paper_type: benchmark
+impact_band: high_value
+reading_status: unread
+year: 2026
+priority_score: 95
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2603.23497'
+paper_id: arxiv:2603.23497
 ---
 
 # WildWorld: A Large-Scale Dataset for Dynamic World Modeling with Actions and Explicit State toward Generative ARPG

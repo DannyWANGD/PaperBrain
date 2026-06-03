@@ -1,24 +1,57 @@
 ---
 tags:
-  - paper
-  - World_Model
-  - Foundation_Model
-  - LLM
-  - Embodied_AI
+- paper
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- domain/world_model
+- impact/solid
+- method/benchmark
+- method/foundation_model
+- method/planning
+- method/reinforcement_learning
+- method/simulation
+- review/auto_tagged
+- status/unread
+- task/planning_reasoning
+- task/scene_understanding
+- type/benchmark
 aliases:
-  - "VisPhyWorld: Probing Physical Reasoning via Code-Driven Video Reconstruction"
+- 'VisPhyWorld: Probing Physical Reasoning via Code-Driven Video Reconstruction'
 url: https://huggingface.co/papers/2602.13294
 pdf_url: https://arxiv.org/pdf/2602.13294.pdf
-local_pdf: "[[VisPhyWorld Probing Physical Reasoning via CodeDriven Video Reconstruction.pdf]]"
+local_pdf: '[[VisPhyWorld Probing Physical Reasoning via CodeDriven Video Reconstruction.pdf]]'
 github: None
 project_page: https://tiger-ai-lab.github.io/VisPhyWorld/
 institutions:
-  - University of Waterloo
-  - Autodesk AI Lab
-  - Independent
+- University of Waterloo
+- Autodesk AI Lab
+- Independent
 publication_date: 2026-02-20
-score: 7
-Reading?:
+score: '7.0'
+Reading?: null
+domains:
+- embodied_ai
+- multimodal_perception
+- reinforcement_learning
+methods:
+- benchmark
+- foundation_model
+- planning
+- reinforcement_learning
+- simulation
+tasks:
+- planning_reasoning
+- scene_understanding
+paper_type: benchmark
+impact_band: solid
+reading_status: unread
+year: 2026
+priority_score: 74
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2602.13294'
+paper_id: arxiv:2602.13294
 ---
 
 # VisPhyWorld: Probing Physical Reasoning via Code-Driven Video Reconstruction

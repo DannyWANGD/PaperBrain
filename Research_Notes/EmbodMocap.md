@@ -1,27 +1,60 @@
 ---
 tags:
-  - paper
-  - Embodied_AI
-  - Sim2Real
-  - Reinforcement_Learning
-  - Human_Scene_Reconstruction
-  - Robot_Motion_Control
-  - 2026-02-28
+- paper
+- '2026-02-28'
+- Human_Scene_Reconstruction
+- Robot_Motion_Control
+- domain/3d_perception
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- domain/sim2real
+- impact/solid
+- method/reinforcement_learning
+- review/auto_tagged
+- status/unread
+- task/loco_manipulation
+- task/manipulation
+- task/scene_understanding
+- type/system
 aliases:
-  - "EmbodMocap: In-the-Wild 4D Human-Scene Reconstruction for Embodied Agents"
+- 'EmbodMocap: In-the-Wild 4D Human-Scene Reconstruction for Embodied Agents'
 url: https://huggingface.co/papers/2602.23205
 pdf_url: https://arxiv.org/pdf/2602.23205.pdf
-local_pdf: "[[EmbodMocap IntheWild 4D HumanScene Reconstruction for Embodied Agents.pdf]]"
+local_pdf: '[[EmbodMocap IntheWild 4D HumanScene Reconstruction for Embodied Agents.pdf]]'
 github: None
 project_page: None
 institutions:
-  - The University of Hong Kong
-  - Tampere University
-  - The Chinese University of Hong Kong
-  - Max-Planck Institute for Informatics
+- The University of Hong Kong
+- Tampere University
+- The Chinese University of Hong Kong
+- Max-Planck Institute for Informatics
 publication_date: 2026-02-26
-score: 7
-Reading?:
+score: '7.0'
+Reading?: null
+domains:
+- 3d_perception
+- embodied_ai
+- multimodal_perception
+- reinforcement_learning
+- robot_manipulation
+- sim2real
+methods:
+- reinforcement_learning
+tasks:
+- loco_manipulation
+- manipulation
+- scene_understanding
+paper_type: system
+impact_band: solid
+reading_status: unread
+year: 2026
+priority_score: 74
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2602.23205'
+paper_id: arxiv:2602.23205
 ---
 
 # EmbodMocap: In-the-Wild 4D Human-Scene Reconstruction for Embodied Agents

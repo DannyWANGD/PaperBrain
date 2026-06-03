@@ -24,7 +24,7 @@ class KnowledgeBase:
         if provider == 'openrouter':
             self.api_key = config['openrouter']['api_key']
             self.base_url = "https://openrouter.ai/api/v1"
-            self.model_flash = config['openrouter'].get('model_flash', 'google/gemini-2.0-flash-001')
+            self.model_flash = config['openrouter'].get('model_flash', 'deepseek/deepseek-v4-flash')
         else:
             self.api_key = config['doubao']['api_key']
             self.base_url = "https://ark.cn-beijing.volces.com/api/v3"
@@ -45,9 +45,11 @@ class KnowledgeBase:
             fallbacks = []
 
         defaults = [
-            "google/gemini-2.0-flash-001",
-            "openai/gpt-4o-mini",
-            "deepseek/deepseek-chat",
+            "deepseek/deepseek-v4-flash",
+            "stepfun/step-3.7-flash",
+            "qwen/qwen3.6-flash",
+            "z-ai/glm-4.7-flash",
+            "deepseek/deepseek-v3.2",
         ]
 
         candidates = []
@@ -149,6 +151,14 @@ class KnowledgeBase:
                  extra_params['extra_headers'] = {
                     "HTTP-Referer": "https://paperbrain.ai",
                     "X-Title": "PaperBrain"
+                 }
+                 extra_params['extra_body'] = {
+                    "provider": {
+                        "sort": self.config.get('openrouter', {}).get("routing_sort", "throughput"),
+                        "data_collection": self.config.get('openrouter', {}).get("routing_data_collection", "deny"),
+                        "allow_fallbacks": True,
+                        "require_parameters": False,
+                    }
                  }
 
             models = self._openrouter_model_candidates(self.model_flash)

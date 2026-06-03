@@ -1,24 +1,64 @@
 ---
 tags:
-  - paper
-  - World_Model
-  - Foundation_Models
-  - Unified_Multimodal_Model
-  - Multimodal_Evaluation_Benchmark
-  - 2026-02-28
+- paper
+- '2026-02-28'
+- Foundation_Models
+- Multimodal_Evaluation_Benchmark
+- Unified_Multimodal_Model
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- domain/world_model
+- impact/high_value
+- method/benchmark
+- method/imitation_learning
+- method/planning
+- method/reinforcement_learning
+- method/simulation
+- review/auto_tagged
+- status/read
+- task/navigation
+- task/planning_reasoning
+- task/scene_understanding
+- task/video_prediction
+- type/benchmark
 aliases:
-  - The Trinity of Consistency as a Defining Principle for General World Models
+- The Trinity of Consistency as a Defining Principle for General World Models
 url: https://huggingface.co/papers/2602.23152
 pdf_url: https://arxiv.org/pdf/2602.23152.pdf
-local_pdf: "[[The Trinity of Consistency as a Defining Principle for General World Models.pdf]]"
+local_pdf: '[[The Trinity of Consistency as a Defining Principle for General World
+  Models.pdf]]'
 github: None
 project_page: None
 institutions:
-  - OpenDataLab
-  - Shanghai Artificial Intelligence Laboratory
+- OpenDataLab
+- Shanghai Artificial Intelligence Laboratory
 publication_date: 2026-02-26
-score: 8
+score: '8.0'
 Reading?: true
+domains:
+- multimodal_perception
+- reinforcement_learning
+- world_model
+methods:
+- benchmark
+- imitation_learning
+- planning
+- reinforcement_learning
+- simulation
+tasks:
+- navigation
+- planning_reasoning
+- scene_understanding
+- video_prediction
+paper_type: benchmark
+impact_band: high_value
+reading_status: read
+year: 2026
+priority_score: 79
+review_status: auto_tagged
+next_action: connect_or_summarize
+arxiv_id: '2602.23152'
+paper_id: arxiv:2602.23152
 ---
 
 # The Trinity of Consistency as a Defining Principle for General World Models

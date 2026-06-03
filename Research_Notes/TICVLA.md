@@ -1,22 +1,60 @@
 ---
 tags:
-  - paper
-  - VLA
-  - Embodied_AI
-  - Reinforcement_Learning
-  - Sim2Real
-  - Foundation_Model
+- paper
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- domain/sim2real
+- domain/vla
+- impact/high_value
+- method/foundation_model
+- method/imitation_learning
+- method/planning
+- method/reinforcement_learning
+- method/simulation
+- review/auto_tagged
+- status/unread
+- task/navigation
+- task/planning_reasoning
+- task/scene_understanding
+- type/system
 aliases:
-  - "TIC-VLA: A Think-in-Control Vision-Language-Action Model for Robot Navigation in Dynamic Environments"
+- 'TIC-VLA: A Think-in-Control Vision-Language-Action Model for Robot Navigation in
+  Dynamic Environments'
 url: https://huggingface.co/papers/2602.02459
 pdf_url: https://arxiv.org/pdf/2602.02459.pdf
-local_pdf: "[[TICVLA A ThinkinControl VisionLanguageAction Model for Robot Navigation in Dynamic Environments.pdf]]"
-github: "None"
-project_page: "https://ucla-mobility.github.io/TIC-VLA/"
+local_pdf: '[[TICVLA A ThinkinControl VisionLanguageAction Model for Robot Navigation
+  in Dynamic Environments.pdf]]'
+github: None
+project_page: https://ucla-mobility.github.io/TIC-VLA/
 institutions:
-  - "University of California, Los Angeles"
-publication_date: "2026-02-02"
-score: 8
+- University of California, Los Angeles
+publication_date: '2026-02-02'
+score: '8.0'
+domains:
+- embodied_ai
+- multimodal_perception
+- reinforcement_learning
+- sim2real
+- vla
+methods:
+- imitation_learning
+- planning
+- reinforcement_learning
+- simulation
+tasks:
+- navigation
+- planning_reasoning
+- scene_understanding
+paper_type: system
+impact_band: high_value
+reading_status: unread
+year: 2026
+priority_score: 99
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2602.02459'
+paper_id: arxiv:2602.02459
 ---
 
 # TIC-VLA: A Think-in-Control Vision-Language-Action Model for Robot Navigation in Dynamic Environments

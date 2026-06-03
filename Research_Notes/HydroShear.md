@@ -1,22 +1,52 @@
 ---
 tags:
-  - paper
-  - Robot_Manipulation
-  - Sim2Real
-  - Reinforcement_Learning
-  - Embodied_AI
+- paper
+- domain/embodied_ai
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- domain/sim2real
+- impact/high_value
+- method/reinforcement_learning
+- method/simulation
+- review/auto_tagged
+- status/unread
+- task/dexterous_contact
+- task/manipulation
+- type/system
 aliases:
-  - "HydroShear: Hydroelastic Shear Simulation for Tactile Sim-to-Real Reinforcement Learning"
+- 'HydroShear: Hydroelastic Shear Simulation for Tactile Sim-to-Real Reinforcement
+  Learning'
 url: https://huggingface.co/papers/2603.00446
 pdf_url: https://arxiv.org/pdf/2603.00446.pdf
-local_pdf: "[[HydroShear Hydroelastic Shear Simulation for Tactile SimtoReal Reinforcement Learning.pdf]]"
-github: "None"
-project_page: "https://hydroshear.github.io"
+local_pdf: '[[HydroShear Hydroelastic Shear Simulation for Tactile SimtoReal Reinforcement
+  Learning.pdf]]'
+github: None
+project_page: https://hydroshear.github.io
 institutions:
-  - "University of Michigan, Robotics Department"
-  - "Amazon Industrial Robotics (AIR)"
-publication_date: "2026-02-28"
-score: 8
+- University of Michigan, Robotics Department
+- Amazon Industrial Robotics (AIR)
+publication_date: '2026-02-28'
+score: '8.0'
+domains:
+- embodied_ai
+- reinforcement_learning
+- robot_manipulation
+- sim2real
+methods:
+- reinforcement_learning
+- simulation
+tasks:
+- dexterous_contact
+- manipulation
+paper_type: system
+impact_band: high_value
+reading_status: unread
+year: 2026
+priority_score: 99
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2603.00446'
+paper_id: arxiv:2603.00446
 ---
 
 # HydroShear: Hydroelastic Shear Simulation for Tactile Sim-to-Real Reinforcement Learning

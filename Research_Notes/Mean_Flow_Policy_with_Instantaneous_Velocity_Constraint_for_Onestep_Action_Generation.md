@@ -1,21 +1,45 @@
 ---
 tags:
-  - paper
-  - Reinforcement_Learning
-  - Robot_Manipulation
-  - Embodied_AI
+- paper
+- domain/embodied_ai
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- impact/solid
+- method/reinforcement_learning
+- review/auto_tagged
+- status/unread
+- task/manipulation
+- type/system
 aliases:
-  - "Mean Flow Policy with Instantaneous Velocity Constraint for One-step Action Generation"
+- Mean Flow Policy with Instantaneous Velocity Constraint for One-step Action Generation
 url: http://arxiv.org/abs/2602.13810v1
 pdf_url: https://arxiv.org/pdf/2602.13810v1
-local_pdf: "[[Mean Flow Policy with Instantaneous Velocity Constraint for Onestep Action Generation.pdf]]"
-github: "None"
-project_page: "None"
+local_pdf: '[[Mean Flow Policy with Instantaneous Velocity Constraint for Onestep
+  Action Generation.pdf]]'
+github: None
+project_page: None
 institutions:
-  - "Tsinghua University (School of Vehicle and Mobility & College of AI)"
-  - "Berkeley AI Research (BAIR), UC Berkeley"
-publication_date: "2026-02-14"
-score: 7
+- Tsinghua University (School of Vehicle and Mobility & College of AI)
+- Berkeley AI Research (BAIR), UC Berkeley
+publication_date: '2026-02-14'
+score: '7.0'
+domains:
+- embodied_ai
+- reinforcement_learning
+- robot_manipulation
+methods:
+- reinforcement_learning
+tasks:
+- manipulation
+paper_type: system
+impact_band: solid
+reading_status: unread
+year: 2026
+priority_score: 74
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2602.13810'
+paper_id: arxiv:2602.13810
 ---
 
 # Mean Flow Policy with Instantaneous Velocity Constraint for One-step Action Generation

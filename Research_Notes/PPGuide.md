@@ -1,21 +1,52 @@
 ---
 tags:
-  - paper
-  - Robot_Manipulation
-  - Diffusion_Model
-  - Embodied_AI
+- paper
+- domain/embodied_ai
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- domain/world_model
+- impact/solid
+- method/benchmark
+- method/diffusion_policy
+- method/imitation_learning
+- method/reinforcement_learning
+- review/auto_tagged
+- status/unread
+- task/manipulation
+- type/benchmark
 aliases:
-  - "PPGuide: Steering Diffusion Policies with Performance Predictive Guidance"
+- 'PPGuide: Steering Diffusion Policies with Performance Predictive Guidance'
 url: http://arxiv.org/abs/2603.10980v1
 pdf_url: https://arxiv.org/pdf/2603.10980v1
-local_pdf: "[[PPGuide Steering Diffusion Policies with Performance Predictive Guidance.pdf]]"
-github: "None"
-project_page: "None"
+local_pdf: '[[PPGuide Steering Diffusion Policies with Performance Predictive Guidance.pdf]]'
+github: None
+project_page: None
 institutions:
-  - "Purdue University"
-  - "Mitsubishi Electric Research Laboratories"
-publication_date: "2026-03-11"
-score: 7
+- Purdue University
+- Mitsubishi Electric Research Laboratories
+publication_date: '2026-03-11'
+score: '7.0'
+domains:
+- embodied_ai
+- reinforcement_learning
+- robot_manipulation
+- world_model
+methods:
+- benchmark
+- diffusion_policy
+- imitation_learning
+- reinforcement_learning
+tasks:
+- manipulation
+paper_type: benchmark
+impact_band: solid
+reading_status: unread
+year: 2026
+priority_score: 74
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2603.10980'
+paper_id: arxiv:2603.10980
 ---
 
 # PPGuide: Steering Diffusion Policies with Performance Predictive Guidance

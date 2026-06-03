@@ -1,21 +1,52 @@
 ---
 tags:
-  - paper
-  - World_Model
-  - Reinforcement_Learning
-  - Embodied_AI
+- paper
+- domain/embodied_ai
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- domain/world_model
+- impact/solid
+- method/reinforcement_learning
+- method/simulation
+- review/auto_tagged
+- status/unread
+- task/loco_manipulation
+- task/manipulation
+- type/system
 aliases:
-  - "WIMLE: Uncertainty-Aware World Models with IMLE for Sample-Efficient Continuous Control"
+- 'WIMLE: Uncertainty-Aware World Models with IMLE for Sample-Efficient Continuous
+  Control'
 url: http://arxiv.org/abs/2602.14351v1
 pdf_url: https://arxiv.org/pdf/2602.14351v1
-local_pdf: "[[WIMLE UncertaintyAware World Models with IMLE for SampleEfficient Continuous Control.pdf]]"
+local_pdf: '[[WIMLE UncertaintyAware World Models with IMLE for SampleEfficient Continuous
+  Control.pdf]]'
 github: None
 project_page: None
 institutions:
-  - Apex Lab, School of Computing Science, Simon Fraser University
+- Apex Lab, School of Computing Science, Simon Fraser University
 publication_date: 2026-02-15
-score: 7
-Reading?:
+score: '7.0'
+Reading?: null
+domains:
+- embodied_ai
+- reinforcement_learning
+- robot_manipulation
+- world_model
+methods:
+- reinforcement_learning
+- simulation
+tasks:
+- loco_manipulation
+- manipulation
+paper_type: system
+impact_band: solid
+reading_status: unread
+year: 2026
+priority_score: 74
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2602.14351'
+paper_id: arxiv:2602.14351
 ---
 
 # WIMLE: Uncertainty-Aware World Models with IMLE for Sample-Efficient Continuous Control

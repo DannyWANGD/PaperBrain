@@ -1,22 +1,59 @@
 ---
 tags:
-  - paper
-  - Robot_Manipulation
-  - Embodied_AI
-  - Sim2Real
+- paper
+- domain/embodied_ai
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- domain/sim2real
+- impact/high_value
+- method/benchmark
+- method/imitation_learning
+- method/reinforcement_learning
+- method/simulation
+- review/auto_tagged
+- status/unread
+- task/dexterous_contact
+- task/loco_manipulation
+- task/manipulation
+- type/benchmark
 aliases:
-  - "SoftMimicGen: A Data Generation System for Scalable Robot Learning in Deformable Object Manipulation"
+- 'SoftMimicGen: A Data Generation System for Scalable Robot Learning in Deformable
+  Object Manipulation'
 url: http://arxiv.org/abs/2603.25725v1
 pdf_url: https://arxiv.org/pdf/2603.25725v1
-local_pdf: "[[SoftMimicGen A Data Generation System for Scalable Robot Learning in Deformable Object Manipulation.pdf]]"
-github: "None"
-project_page: "https://softmimicgen.github.io"
+local_pdf: '[[SoftMimicGen A Data Generation System for Scalable Robot Learning in
+  Deformable Object Manipulation.pdf]]'
+github: None
+project_page: https://softmimicgen.github.io
 institutions:
-  - "NVIDIA"
-  - "University of Toronto"
-  - "Georgia Institute of Technology"
-publication_date: "2026-03-26"
-score: 8
+- NVIDIA
+- University of Toronto
+- Georgia Institute of Technology
+publication_date: '2026-03-26'
+score: '8.0'
+domains:
+- embodied_ai
+- reinforcement_learning
+- robot_manipulation
+- sim2real
+methods:
+- benchmark
+- imitation_learning
+- reinforcement_learning
+- simulation
+tasks:
+- dexterous_contact
+- loco_manipulation
+- manipulation
+paper_type: benchmark
+impact_band: high_value
+reading_status: unread
+year: 2026
+priority_score: 99
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2603.25725'
+paper_id: arxiv:2603.25725
 ---
 
 # SoftMimicGen: A Data Generation System for Scalable Robot Learning in Deformable Object Manipulation

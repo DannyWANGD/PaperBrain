@@ -1,21 +1,51 @@
 ---
 tags:
-  - paper
-  - World_Model
-  - Diffusion_Model
-  - Embodied_AI
-  - Robot_Manipulation
+- paper
+- domain/embodied_ai
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- domain/world_model
+- impact/solid
+- method/diffusion_policy
+- method/planning
+- method/reinforcement_learning
+- review/auto_tagged
+- status/unread
+- task/manipulation
+- task/planning_reasoning
+- type/system
 aliases:
-  - "Visual Foresight for Robotic Stow: A Diffusion-Based World Model from Sparse Snapshots"
+- 'Visual Foresight for Robotic Stow: A Diffusion-Based World Model from Sparse Snapshots'
 url: http://arxiv.org/abs/2602.13347v1
 pdf_url: https://arxiv.org/pdf/2602.13347v1
-local_pdf: "[[Visual Foresight for Robotic Stow A DiffusionBased World Model from Sparse Snapshots.pdf]]"
-github: "None"
-project_page: "None"
+local_pdf: '[[Visual Foresight for Robotic Stow A DiffusionBased World Model from
+  Sparse Snapshots.pdf]]'
+github: None
+project_page: None
 institutions:
-  - "Amazon, Seattle, US"
-publication_date: "2026-02-12"
-score: 7
+- Amazon, Seattle, US
+publication_date: '2026-02-12'
+score: '7.0'
+domains:
+- embodied_ai
+- reinforcement_learning
+- robot_manipulation
+- world_model
+methods:
+- planning
+- reinforcement_learning
+tasks:
+- manipulation
+- planning_reasoning
+paper_type: system
+impact_band: solid
+reading_status: unread
+year: 2026
+priority_score: 78
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2602.13347'
+paper_id: arxiv:2602.13347
 ---
 
 # Visual Foresight for Robotic Stow: A Diffusion-Based World Model from Sparse Snapshots

@@ -1,22 +1,54 @@
 ---
 tags:
-  - paper
-  - VLA
-  - Diffusion_Model
-  - Robot_Manipulation
-  - Embodied_AI
+- paper
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/reinforcement_learning
+- domain/robot_manipulation
+- domain/vla
+- impact/high_value
+- method/diffusion_policy
+- method/reinforcement_learning
+- review/auto_tagged
+- status/unread
+- task/manipulation
+- task/navigation
+- task/scene_understanding
+- type/system
 aliases:
-  - "FASTER: Rethinking Real-Time Flow VLAs"
+- 'FASTER: Rethinking Real-Time Flow VLAs'
 url: https://huggingface.co/papers/2603.19199
 pdf_url: https://arxiv.org/pdf/2603.19199.pdf
-local_pdf: "[[FASTER Rethinking RealTime Flow VLAs.pdf]]"
-github: "None"
-project_page: "https://innovator-zero.github.io/FASTER"
+local_pdf: '[[FASTER Rethinking RealTime Flow VLAs.pdf]]'
+github: None
+project_page: https://innovator-zero.github.io/FASTER
 institutions:
-  - "The University of Hong Kong"
-  - "ACE Robotics"
-publication_date: "2026-03-19"
-score: 8
+- The University of Hong Kong
+- ACE Robotics
+publication_date: '2026-03-19'
+score: '8.0'
+domains:
+- embodied_ai
+- multimodal_perception
+- reinforcement_learning
+- robot_manipulation
+- vla
+methods:
+- diffusion_policy
+- reinforcement_learning
+tasks:
+- manipulation
+- navigation
+- scene_understanding
+paper_type: system
+impact_band: high_value
+reading_status: unread
+year: 2026
+priority_score: 99
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2603.19199'
+paper_id: arxiv:2603.19199
 ---
 
 # FASTER: Rethinking Real-Time Flow VLAs

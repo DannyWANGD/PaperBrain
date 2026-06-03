@@ -1,21 +1,47 @@
 ---
 tags:
-  - paper
-  - World_Model
-  - Diffusion_Model
-  - Embodied_AI
+- paper
+- domain/embodied_ai
+- domain/reinforcement_learning
+- domain/world_model
+- impact/high_value
+- method/diffusion_policy
+- method/reinforcement_learning
+- method/simulation
+- review/auto_tagged
+- status/unread
+- task/navigation
+- type/analysis
 aliases:
-  - "EgoForge: Goal-Directed Egocentric World Simulator"
+- 'EgoForge: Goal-Directed Egocentric World Simulator'
 url: https://huggingface.co/papers/2603.20169
 pdf_url: https://arxiv.org/pdf/2603.20169.pdf
-local_pdf: "[[EgoForge GoalDirected Egocentric World Simulator.pdf]]"
-github: "None"
-project_page: "https://plan-lab.github.io/egoforge"
+local_pdf: '[[EgoForge GoalDirected Egocentric World Simulator.pdf]]'
+github: None
+project_page: https://plan-lab.github.io/egoforge
 institutions:
-  - "University of Illinois Urbana-Champaign"
-  - "University of California San Diego"
-publication_date: "2026-03-20"
-score: 8
+- University of Illinois Urbana-Champaign
+- University of California San Diego
+publication_date: '2026-03-20'
+score: '8.0'
+domains:
+- embodied_ai
+- reinforcement_learning
+- world_model
+methods:
+- reinforcement_learning
+- simulation
+tasks:
+- navigation
+paper_type: analysis
+impact_band: high_value
+reading_status: unread
+year: 2026
+priority_score: 95
+review_status: auto_tagged
+next_action: skim_then_decide
+arxiv_id: '2603.20169'
+paper_id: arxiv:2603.20169
 ---
 
 # EgoForge: Goal-Directed Egocentric World Simulator

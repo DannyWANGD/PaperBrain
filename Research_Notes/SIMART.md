@@ -1,19 +1,50 @@
 ---
 tags:
-  - paper
-  - Embodied_AI
-  - Sim2Real
-  - Foundation_Model
-  - 3D_Gaussian_Splatting
+- paper
+- domain/3d_perception
+- domain/embodied_ai
+- domain/multimodal_perception
+- domain/sim2real
+- impact/high_value
+- method/benchmark
+- method/foundation_model
+- method/memory
+- method/simulation
+- review/auto_tagged
+- status/unread
+- task/scene_understanding
+- type/benchmark
 aliases:
-  - "SIMART: Decomposing Monolithic Meshes into Sim-ready Articulated Assets via MLLM"
+- 'SIMART: Decomposing Monolithic Meshes into Sim-ready Articulated Assets via MLLM'
 url: http://arxiv.org/abs/2603.23386v1
 pdf_url: https://arxiv.org/pdf/2603.23386v1
-local_pdf: "[[SIMART Decomposing Monolithic Meshes into Simready Articulated Assets via MLLM.pdf]]"
-github: "None"
-project_page: "None"
-publication_date: "Unknown"
-score: 8
+local_pdf: '[[SIMART Decomposing Monolithic Meshes into Simready Articulated Assets
+  via MLLM.pdf]]'
+github: None
+project_page: None
+publication_date: Unknown
+score: '8.0'
+domains:
+- 3d_perception
+- embodied_ai
+- multimodal_perception
+- sim2real
+methods:
+- benchmark
+- foundation_model
+- memory
+- simulation
+tasks:
+- scene_understanding
+paper_type: benchmark
+impact_band: high_value
+reading_status: unread
+year: null
+priority_score: 95
+review_status: auto_tagged
+next_action: inspect_protocol
+arxiv_id: '2603.23386'
+paper_id: arxiv:2603.23386
 ---
 
 # SIMART: Decomposing Monolithic Meshes into Sim-ready Articulated Assets via MLLM
