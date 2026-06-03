@@ -6,7 +6,7 @@ Total Papers: 16 | High Impact: 2
 ### 🔥 The Trinity of Consistency as a Defining Principle for General World Models (Score: 8/10)
 - **💡 Innovation**: The key novelty is proposing the Trinity of Consistency (including Modal, Spatial, and Temporal Consistency) as a principled theoretical framework defining core required properties of general world models, paired with the introduction of CoW-Bench, a unified benchmark for evaluating video generation models and unified multimodal models on multi-frame reasoning and generation tasks.
 - **⚠️ Limitations**: This work only provides a conceptual framework and benchmark design without concrete implementation of a world model built on the proposed consistency principles, lacks validation on downstream application scenarios such as embodied AI or robot manipulation, and does not discuss integration with state-of-the-art techniques like diffusion models or 3D/4D Gaussian splatting.
-- **🔗 Link**: [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]
+- **🔗 Link**: [[The Trinity of Consistency as a Defining Principle for General World Models]]
 - **👥 Authors**: Jingxuan Wei, Siyuan Li, Yuhang Xu, Zheng Sun, Junjie Jiang, Hexuan Jin, Caijun Jia, Honghao He, Xinglong Xu, Xi bai, Chang Yu, Yumou Liu, Junnan Zhu, Xuanhe Zhou, Jintao Chen, Xiaobin Hu, Shancheng Pang, Bihui Yu, Ran He, Zhen Lei, Stan Z. Li, Conghui He, Shuicheng Yan, Cheng Tan
 - **🏷️ Tags**: #World_Model #Foundation_Models #Unified_Multimodal_Model #Multimodal_Evaluation_Benchmark
 

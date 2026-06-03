@@ -144,8 +144,8 @@ The full Scaffold-Specialize-Reconcile paradigm is the most critical component: 
 1. [[GeneralVLA]]: ACE-Brain-0 extends the generalist vision-language-action (VLA) paradigm formalized in GeneralVLA by introducing a domain-agnostic shared spatial scaffold and the Scaffold-Specialize-Reconcile (SSR) training pipeline, resolving the core limitation of cross-domain gradient interference and catastrophic forgetting that limited scaling of earlier generalist VLA systems to heterogeneous embodiment families.
 2. [[Xiaomi-Robotics-0]] (baseline Vlaser): Xiaomi-Robotics-0 is a direct competitive baseline evaluated in ACE-Brain-0's benchmarking suite, with ACE-Brain-0 outperforming Vlaser across 18 of 24 evaluated tasks. The key differentiator is ACE-Brain-0's data-free expert merging step, which retains higher domain-specialized performance relative to Xiaomi-Robotics-0's joint multi-domain training approach.
 3. [[RynnBrain]]: RynnBrain is a prior unified embodied foundation model that relies on standard multi-task training on heterogeneous embodied datasets. ACE-Brain-0's SSR paradigm directly addresses the catastrophic forgetting and gradient interference issues observed in RynnBrain's training pipeline, delivering an average 7% performance gain across shared spatial and embodied benchmarks.
-4. [[World_Action_Models_are_Zero_shot_Policies]]: The core insight of this work (that spatial world modeling acts as a zero-shot transfer foundation for embodied policies) forms the theoretical basis for ACE-Brain-0's shared spatial scaffold hypothesis, validating that 3D geometric priors learned in the spatial foundation stage transfer directly to unseen embodied domains without additional fine-tuning.
-5. [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]: The trinity of spatial, temporal, and causal consistency outlined in this work is encoded into ACE-Brain-0's shared spatial scaffold during the initial pre-training stage, enabling consistent cross-domain reasoning across disparate embodiment morphologies with divergent observation and action spaces.
+4. [[World Action Models are Zero shot Policies]]: The core insight of this work (that spatial world modeling acts as a zero-shot transfer foundation for embodied policies) forms the theoretical basis for ACE-Brain-0's shared spatial scaffold hypothesis, validating that 3D geometric priors learned in the spatial foundation stage transfer directly to unseen embodied domains without additional fine-tuning.
+5. [[The Trinity of Consistency as a Defining Principle for General World Models]]: The trinity of spatial, temporal, and causal consistency outlined in this work is encoded into ACE-Brain-0's shared spatial scaffold during the initial pre-training stage, enabling consistent cross-domain reasoning across disparate embodiment morphologies with divergent observation and action spaces.
 
 ---
 ### Task 2: Mermaid Knowledge Graph
@@ -221,7 +221,7 @@ graph LR
 - Compared Against: Task-specific embodied models optimized for low-latency edge deployment.
 - Confidence: 6
 - Links:
-  - same_problem:: [[World_Action_Models_are_Zero_shot_Policies]]
+  - same_problem:: [[World Action Models are Zero shot Policies]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 
@@ -232,7 +232,7 @@ graph LR
 - Compared Against: Domain-specific models and generalist baselines (VeBrain, RoboBrain2.5) that do not explicitly leverage spatial intelligence as a shared scaffold.
 - Confidence: 6
 - Links:
-  - same_problem:: [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]
+  - same_problem:: [[The Trinity of Consistency as a Defining Principle for General World Models]]
   - improves_over:: [[RynnBrain]]
   - conflicts_with:: 待定
 

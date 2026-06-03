@@ -308,9 +308,9 @@ DreamerAD在NavSim v2上达到**87.7 EPDMS**，建立新的state-of-the-art。�
 
 ---
 
-**联接三：与 [[World_Action_Models_are_Zero_shot_Policies]] 的比较**
+**联接三：与 [[World Action Models are Zero shot Policies]] 的比较**
 
-两篇工作都基于预训练视频扩散模型构建action-conditioned世界模型，并追求实时闭环控制。[[World_Action_Models_are_Zero_shot_Policies]]（DreamZero）构建了一个14B参数的自回归视频扩散模型，通过联合建模video和action实现7Hz的机器人控制，其核心是**zero-shot跨实体迁移**；DreamerAD则专注于自动驾驶领域，其目标是支持**高频RL训练**而非直接部署。
+两篇工作都基于预训练视频扩散模型构建action-conditioned世界模型，并追求实时闭环控制。[[World Action Models are Zero shot Policies]]（DreamZero）构建了一个14B参数的自回归视频扩散模型，通过联合建模video和action实现7Hz的机器人控制，其核心是**zero-shot跨实体迁移**；DreamerAD则专注于自动驾驶领域，其目标是支持**高频RL训练**而非直接部署。
 
 **关键差异**：DreamZero追求的是单步推理下的实时控制（7Hz），其加速手段是模型与系统层面的工程优化（quantization、speculative decoding等）；DreamerAD追求的是RL训练阶段的高吞吐量（需要对256条候选轨迹并行评估），其加速手段是算法层面的蒸馏（SF-WM）。更本质的区别在于**奖励信号来源**：DreamZero在真实机器人上执行rollout获取环境反馈，而DreamerAD将奖励建模（AD-RM）完全内化在隐空间中，无需任何环境交互——这是DreamerAD架构上更激进的设计选择，但也带来了更强的奖励信号与真实物理之间的语义对齐挑战。
 
@@ -448,7 +448,7 @@ graph LR
 
 ### 研究方向三：多模态条件下的跨场景词汇泛化
 
-**具体构想**：DreamerAD的轨迹词汇库 $\Gamma$（$K=256$）是静态构建的，其过滤阈值（$\Delta y \leq 5\text{m}$, $\Delta\theta \leq 20°$）为全局固定值，无法适应不同驾驶场景的动态约束——例如，高速公路并道允许更大横向偏移，而停车场倒车则需要更大航向角变化。未来工作可设计**场景自适应动态词汇生成器**：以地图元素（车道线拓扑、交叉口类型）、交通参与者密度和当前车速为条件，通过轻量级条件扩散模型（借鉴[[World_Action_Models_are_Zero_shot_Policies]]中跨实体视频条件建模的思路）动态生成场景特化的轨迹词汇库，使词汇覆盖范围随情境自适应扩张或收缩。这不仅能在复杂拓扑场景下提升规划质量，还能通过动态OOD边界防止SF-WM在罕见场景下的幻觉退化。
+**具体构想**：DreamerAD的轨迹词汇库 $\Gamma$（$K=256$）是静态构建的，其过滤阈值（$\Delta y \leq 5\text{m}$, $\Delta\theta \leq 20°$）为全局固定值，无法适应不同驾驶场景的动态约束——例如，高速公路并道允许更大横向偏移，而停车场倒车则需要更大航向角变化。未来工作可设计**场景自适应动态词汇生成器**：以地图元素（车道线拓扑、交叉口类型）、交通参与者密度和当前车速为条件，通过轻量级条件扩散模型（借鉴[[World Action Models are Zero shot Policies]]中跨实体视频条件建模的思路）动态生成场景特化的轨迹词汇库，使词汇覆盖范围随情境自适应扩张或收缩。这不仅能在复杂拓扑场景下提升规划质量，还能通过动态OOD边界防止SF-WM在罕见场景下的幻觉退化。
 
 
 ---
@@ -465,7 +465,7 @@ graph LR
 - Confidence: 7
 - Links:
   - same_problem:: [[DreamPlan]]
-  - improves_over:: [[World_Action_Models_are_Zero_shot_Policies]]
+  - improves_over:: [[World Action Models are Zero shot Policies]]
   - conflicts_with:: 待定
 
 ### Claim-02
@@ -497,7 +497,7 @@ graph LR
 - Compared Against: Epona (pixel-level video diffusion world model with multi-step denoising objective)
 - Confidence: 6
 - Links:
-  - same_problem:: [[World_Action_Models_are_Zero_shot_Policies]]
+  - same_problem:: [[World Action Models are Zero shot Policies]]
   - improves_over:: [[DreamPlan]]
   - conflicts_with:: 待定
 

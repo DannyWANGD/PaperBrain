@@ -6,7 +6,7 @@ Total Papers: 35 | High Impact: 5
 ### 🔥 Geometry-Aware Rotary Position Embedding for Consistent Video World Model (Score: 8/10)
 - **💡 Innovation**: The key novelty is the proposal of ViewRope, a geometry-aware rotary position embedding that encodes camera-ray directions instead of screen-space pixel positions in video transformer self-attention, paired with a geometry-aware frame-sparse attention mechanism and the ViewBench diagnostic suite to reduce geometric drift and boost efficiency of video world models.
 - **⚠️ Limitations**: The work does not evaluate the integration of the proposed consistent video world model with downstream embodied AI, reinforcement learning, or robot manipulation pipelines, nor does it test performance on real-world dynamic or unconstrained scene data.
-- **🔗 Link**: [[GeometryAware_Rotary_Position_Embedding_for_Consistent_Video_World_Model]]
+- **🔗 Link**: [[GeometryAware Rotary Position Embedding for Consistent Video World Model]]
 - **👥 Authors**: Chendong Xiang, Jiajun Liu, Jintao Zhang, Xiao Yang, Zhengwei Fang, Shizun Wang, Zijun Wang, Yingtian Zou, Hang Su, Jun Zhu
 - **🏷️ Tags**: #World_Model #Embodied_AI
 

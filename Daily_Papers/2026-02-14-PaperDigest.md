@@ -6,7 +6,7 @@ Total Papers: 18 | High Impact: 3
 ### ✨ Semantic-Contact Fields for Category-Level Generalizable Tactile Tool Manipulation (Score: 7/10)
 - **💡 Innovation**: The key novelty is the proposed Semantic-Contact Fields (SCFields), a unified 3D representation fusing visual semantics and dense contact estimates, paired with a two-stage sim-to-real contact learning pipeline that aligns simulation pre-trained contact physics with real sensor characteristics using small pseudo-labeled real data, enabling robust diffusion policy execution for category-level generalizable contact-rich tactile tool manipulation.
 - **⚠️ Limitations**: The work does not explicitly integrate or evaluate compatibility with generalist VLA/foundation models, only tests on three narrow tool manipulation tasks, and does not explore advanced 3D representations like 3D Gaussian Splatting or reinforcement learning to further boost performance and cross-task generalization.
-- **🔗 Link**: [[SemanticContact_Fields_for_CategoryLevel_Generalizable_Tactile_Tool_Manipulation]]
+- **🔗 Link**: [[SemanticContact Fields for CategoryLevel Generalizable Tactile Tool Manipulation]]
 - **👥 Authors**: Kevin Yuchen Ma, Heng Zhang, Weisi Lin, Mike Zheng Shou, Yan Wu
 - **🏷️ Tags**: #Diffusion_Model #Embodied_AI #Sim2Real #Robot_Manipulation
 
@@ -15,7 +15,7 @@ Total Papers: 18 | High Impact: 3
 ### ✨ Mean Flow Policy with Instantaneous Velocity Constraint for One-step Action Generation (Score: 7/10)
 - **💡 Innovation**: The key novelty is the proposed Mean Velocity Policy (MVP), a one-step generative policy that leverages an instantaneous velocity constraint during training to retain high expressiveness while enabling fast one-step action generation, addressing the expressiveness-computational burden tradeoff of existing flow-based policies.
 - **⚠️ Limitations**: The work does not evaluate real-world robot deployment performance, explore integration with foundation models or vision-language-action models, or validate generalization to unstructured embodied tasks beyond the controlled benchmark robotic manipulation tasks tested.
-- **🔗 Link**: [[Mean_Flow_Policy_with_Instantaneous_Velocity_Constraint_for_Onestep_Action_Generation]]
+- **🔗 Link**: [[Mean Flow Policy with Instantaneous Velocity Constraint for Onestep Action Generation]]
 - **👥 Authors**: Guojian Zhan, Letian Tao, Pengcheng Wang, Yixiao Wang, Yiheng Li, Yuxin Chen, Masayoshi Tomizuka, Shengbo Eben Li
 - **🏷️ Tags**: #Reinforcement_Learning #Robot_Manipulation #Embodied_AI
 
@@ -24,7 +24,7 @@ Total Papers: 18 | High Impact: 3
 ### ✨ Gaussian Sequences with Multi-Scale Dynamics for 4D Reconstruction from Monocular Casual Videos (Score: 7/10)
 - **💡 Innovation**: The key novelty is a layered Gaussian sequence representation with multi-scale motion factorization across object to particle levels, paired with complementary supervision from vision foundation models to reduce reconstruction ambiguity for monocular casual video 4D reconstruction.
 - **⚠️ Limitations**: The work does not validate the direct utility of its reconstructed 4D scenes for downstream embodied AI tasks such as robot manipulation policy learning, reinforcement learning, or sim2real transfer.
-- **🔗 Link**: [[Gaussian_Sequences_with_MultiScale_Dynamics_for_4D_Reconstruction_from_Monocular_Casual_Videos]]
+- **🔗 Link**: [[Gaussian Sequences with MultiScale Dynamics for 4D Reconstruction from Monocular Casual Videos]]
 - **👥 Authors**: Can Li, Jie Gu, Jingmin Chen, Fangzhou Qiu, Lei Sun
 - **🏷️ Tags**: #3D_Gaussian_Splatting #Foundation_Model #Embodied_AI #Robot_Manipulation
 

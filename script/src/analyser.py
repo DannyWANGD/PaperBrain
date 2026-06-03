@@ -216,7 +216,7 @@ class PaperAnalyser:
     def _short_title_from_title(self, title):
         title = title or ""
         short_title = title.split(':')[0].strip() if ':' in title else title.strip()
-        return short_title.replace(' ', '_')
+        return re.sub(r"\s+", " ", short_title).strip() or "Untitled"
 
     def _taxonomy_prompt(self):
         taxonomy_str = ""

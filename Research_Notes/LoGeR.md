@@ -130,7 +130,7 @@ Key objectives include:
 
 2. [[MALLVI]] - Both works address long-context visual understanding, but from different angles. MALLVI focuses on video language understanding while LoGeR targets geometric reconstruction. Their memory management strategies could be complementary.
 
-3. [[World_Action_Models_are_Zero_shot_Policies]] - Similar to LoGeR's Test-Time Training component, this work demonstrates how learned representations can adapt to new contexts without full retraining.
+3. [[World Action Models are Zero shot Policies]] - Similar to LoGeR's Test-Time Training component, this work demonstrates how learned representations can adapt to new contexts without full retraining.
 
 **Task 2: Mermaid Knowledge Graph**
 

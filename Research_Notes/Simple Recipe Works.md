@@ -247,7 +247,7 @@ The finding is that each of the three components independently reduces forgettin
 
 ---
 
-### Connection 3: [[World_Action_Models_are_Zero_shot_Policies]]
+### Connection 3: [[World Action Models are Zero shot Policies]]
 
 **Relevance:** DreamZero and this paper both report strong zero-shot generalization results and both challenge the assumption that standard VLA fine-tuning degrades pretrained capabilities.
 

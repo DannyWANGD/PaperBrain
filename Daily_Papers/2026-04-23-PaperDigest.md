@@ -6,7 +6,7 @@ Total Papers: 9 | High Impact: 9
 ### 🔥 Long-Horizon Manipulation via Trace-Conditioned VLA Planning (Score: 8/10)
 - **💡 Innovation**: Introduces a modular framework for long-horizon manipulation by decoupling task management from execution using a progress-aware visual trace and lightweight language memory.
 - **⚠️ Limitations**: The approach relies heavily on the accuracy of the visual trace prediction, which may fail in highly dynamic or occluded environments.
-- **🔗 Link**: [[LongHorizon_Manipulation_via_TraceConditioned_VLA_Planning]]
+- **🔗 Link**: [[LongHorizon Manipulation via TraceConditioned VLA Planning]]
 - **👥 Authors**: Isabella Liu, An-Chieh Cheng, Rui Yan, Geng Chen, Ri-Zhao Qiu, Xueyan Zou, Sha Yi, Hongxu Yin, Xiaolong Wang, Sifei Liu
 - **🏷️ Tags**: #Robot_Manipulation #VLA #Embodied_AI #World_Model
 

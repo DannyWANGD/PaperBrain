@@ -252,7 +252,7 @@ The most critical components identified:
 ## 🔗 Knowledge Graph & Connections
 ## Task 1: Differential Analysis & Connections
 
-### Connection 1: HydroShear vs. [[SemanticContact_Fields_for_CategoryLevel_Generalizable_Tactile_Tool_Manipulation]]
+### Connection 1: HydroShear vs. [[SemanticContact Fields for CategoryLevel Generalizable Tactile Tool Manipulation]]
 
 Both papers directly attack the same core bottleneck: **the sim-to-real gap in tactile sensing for contact-rich manipulation**. However, their approaches are structurally orthogonal. SCFields addresses the problem from the *representation* side — it fuses visual semantics with dense contact estimates via a learned 3D neural field, enabling category-level generalization across tool geometries. HydroShear addresses it from the *physics simulation* side — it constructs a physically grounded, analytical shear model that does not require real-world tactile data at scale for pre-training. The key differential: SCFields requires a two-stage sim-to-real contact learning pipeline with large-scale simulated pre-training and real-world fine-tuning to handle diverse geometries, whereas HydroShear calibrates only 4 scalar parameters from 40 real samples and generalizes to arbitrary watertight SDF geometries analytically. SCFields is stronger on geometric generalization across tool categories; HydroShear is stronger on physical fidelity of shear dynamics (stick-slip, hysteresis) for a fixed sensor type. A critical limitation SCFields identifies — that "direct zero-shot sim-to-real transfer is challenging due to the complex dynamics of nonlinear deformation of soft sensors" — is precisely the problem HydroShear claims to solve for the GelSight class of sensors. The two approaches are potentially complementary: HydroShear's physics model could serve as the simulation backbone within SCFields' pre-training pipeline, replacing less physically accurate contact models.
 
@@ -365,7 +365,7 @@ The current calibration pipeline is offline, requires dedicated robot time and a
 - Compared Against: TacSL Gray, TacSL Shear, FOTS (Original), FOTS (Reimplemented)
 - Confidence: 8
 - Links:
-  - same_problem:: [[SemanticContact_Fields_for_CategoryLevel_Generalizable_Tactile_Tool_Manipulation]]
+  - same_problem:: [[SemanticContact Fields for CategoryLevel Generalizable Tactile Tool Manipulation]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 
@@ -387,7 +387,7 @@ The current calibration pipeline is offline, requires dedicated robot time and a
 - Compared Against: Vision-based tactile simulators with higher-dimensional learned appearance models (TacSL Gray, TacSL Shear)
 - Confidence: 7
 - Links:
-  - same_problem:: [[SemanticContact_Fields_for_CategoryLevel_Generalizable_Tactile_Tool_Manipulation]]
+  - same_problem:: [[SemanticContact Fields for CategoryLevel Generalizable Tactile Tool Manipulation]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 
@@ -398,7 +398,7 @@ The current calibration pipeline is offline, requires dedicated robot time and a
 - Compared Against: TacSL Gray, TacSL Shear
 - Confidence: 8
 - Links:
-  - same_problem:: [[SemanticContact_Fields_for_CategoryLevel_Generalizable_Tactile_Tool_Manipulation]]
+  - same_problem:: [[SemanticContact Fields for CategoryLevel Generalizable Tactile Tool Manipulation]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 

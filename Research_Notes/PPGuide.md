@@ -299,9 +299,9 @@ PPGuide faces an analogous multi-modality problem: diffusion policies generate m
 
 ---
 
-### Connection 3: PPGuide vs. [[World_Action_Models_are_Zero_shot_Policies]]
+### Connection 3: PPGuide vs. [[World Action Models are Zero shot Policies]]
 
-[[World_Action_Models_are_Zero_shot_Policies]] (DreamZero) jointly models video futures and actions through a video diffusion backbone, enabling zero-shot generalization to novel tasks by learning physical dynamics as a world representation. Its core claim is that **video as a world state representation** captures enough physical dynamics to generalize beyond the training distribution.
+[[World Action Models are Zero shot Policies]] (DreamZero) jointly models video futures and actions through a video diffusion backbone, enabling zero-shot generalization to novel tasks by learning physical dynamics as a world representation. Its core claim is that **video as a world state representation** captures enough physical dynamics to generalize beyond the training distribution.
 
 PPGuide uses no video prediction and no future state modeling. Its classifier operates on **current observation-action pairs** and is entirely retrospective — it classifies the present chunk based on learned associations from historical rollouts. DreamZero can generalize to new tasks and environments (cross-embodiment transfer from human demos), while PPGuide is explicitly trained on rollouts of a *specific* policy on a *specific* task and has no mechanism for zero-shot transfer.
 

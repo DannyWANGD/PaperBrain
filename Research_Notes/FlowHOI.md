@@ -139,9 +139,9 @@ Pretraining on large-scale reconstructed egocentric HOI data is the most critica
 ## 🔗 Knowledge Graph & Connections
 ### Task 1: Knowledge Connections
 1.  [[GeneralVLA]]: FlowHOI directly resolves a core limitation of general vision-language-action (VLA) models, which consistently fail at contact-rich dexterous tasks due to lack of explicit hand-object interaction (HOI) structural modeling. FlowHOI's semantically grounded, embodiment-agnostic HOI sequence representation can be integrated as a structured intermediate action space for GeneralVLA frameworks, improving their performance on long-horizon manipulation tasks without sacrificing cross-embodiment transfer capability.
-2.  [[Mean_Flow_Policy_with_Instantaneous_Velocity_Constraint_for_Onestep_Action_Generation]]: Both works build on conditional flow matching as a core generative paradigm for robot action, sharing the key theoretical benefit of drastically faster inference relative to diffusion-based generative models. While the Mean Flow Policy work targets single-step, velocity-constrained action generation, FlowHOI extends flow matching to sequential HOI trajectory generation with explicit semantic alignment and physical contact constraints. The instantaneous velocity constraint from the Mean Flow Policy work can be integrated into FlowHOI's ODE integration step to further improve the physical plausibility of generated motions.
-3.  [[SemanticContact_Fields_for_CategoryLevel_Generalizable_Tactile_Tool_Manipulation]]: Both works prioritize semantic alignment of contact-rich manipulation behaviors with task instructions, with complementary scope: Semantic Contact Fields model fine-grained local contact dynamics for tactile closed-loop control, while FlowHOI generates global, long-horizon HOI motion plans. FlowHOI's generated pre-grasp and manipulation trajectories can serve as high-level priors for Semantic Contact Field pipelines, reducing the low-level control search space and improving cross-category generalization for tactile manipulation tasks.
-4.  [[Gaussian_Sequences_with_MultiScale_Dynamics_for_4D_Reconstruction_from_Monocular_Casual_Videos]]: Both works leverage Gaussian scene representations as a core input, with the baseline FlowHOI using static 3D Gaussian Splatting (3DGS) scene reconstructions for static scene conditioning. The 4D dynamic Gaussian sequence reconstruction method provides a direct path to extend FlowHOI to dynamic scene settings, enabling generation of HOI sequences for manipulation of moving objects or operation in cluttered environments with dynamic perturbations.
+2.  [[Mean Flow Policy with Instantaneous Velocity Constraint for Onestep Action Generation]]: Both works build on conditional flow matching as a core generative paradigm for robot action, sharing the key theoretical benefit of drastically faster inference relative to diffusion-based generative models. While the Mean Flow Policy work targets single-step, velocity-constrained action generation, FlowHOI extends flow matching to sequential HOI trajectory generation with explicit semantic alignment and physical contact constraints. The instantaneous velocity constraint from the Mean Flow Policy work can be integrated into FlowHOI's ODE integration step to further improve the physical plausibility of generated motions.
+3.  [[SemanticContact Fields for CategoryLevel Generalizable Tactile Tool Manipulation]]: Both works prioritize semantic alignment of contact-rich manipulation behaviors with task instructions, with complementary scope: Semantic Contact Fields model fine-grained local contact dynamics for tactile closed-loop control, while FlowHOI generates global, long-horizon HOI motion plans. FlowHOI's generated pre-grasp and manipulation trajectories can serve as high-level priors for Semantic Contact Field pipelines, reducing the low-level control search space and improving cross-category generalization for tactile manipulation tasks.
+4.  [[Gaussian Sequences with MultiScale Dynamics for 4D Reconstruction from Monocular Casual Videos]]: Both works leverage Gaussian scene representations as a core input, with the baseline FlowHOI using static 3D Gaussian Splatting (3DGS) scene reconstructions for static scene conditioning. The 4D dynamic Gaussian sequence reconstruction method provides a direct path to extend FlowHOI to dynamic scene settings, enabling generation of HOI sequences for manipulation of moving objects or operation in cluttered environments with dynamic perturbations.
 
 ---
 
@@ -203,7 +203,7 @@ graph LR
 - Confidence: 7
 - Links:
   - same_problem:: [[GeneralVLA]]
-  - improves_over:: [[Mean_Flow_Policy_with_Instantaneous_Velocity_Constraint_for_Onestep_Action_Generation]]
+  - improves_over:: [[Mean Flow Policy with Instantaneous Velocity Constraint for Onestep Action Generation]]
   - conflicts_with:: 待定
 
 ### Claim-02
@@ -213,7 +213,7 @@ graph LR
 - Compared Against: DiffH2O (diffusion-based) and LatentHOI (latent-based), both using the same T5 text encoder and identical data splits.
 - Confidence: 8
 - Links:
-  - same_problem:: [[SemanticContact_Fields_for_CategoryLevel_Generalizable_Tactile_Tool_Manipulation]]
+  - same_problem:: [[SemanticContact Fields for CategoryLevel Generalizable Tactile Tool Manipulation]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 
@@ -224,7 +224,7 @@ graph LR
 - Compared Against: No direct baseline comparison exists for this failure mode; the limitation is self-reported relative to the broader dexterous manipulation literature.
 - Confidence: 8
 - Links:
-  - same_problem:: [[SemanticContact_Fields_for_CategoryLevel_Generalizable_Tactile_Tool_Manipulation]]
+  - same_problem:: [[SemanticContact Fields for CategoryLevel Generalizable Tactile Tool Manipulation]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 
@@ -237,7 +237,7 @@ graph LR
 - Links:
   - same_problem:: [[GeneralVLA]]
   - improves_over:: [[GeneralVLA]]
-  - conflicts_with:: [[Gaussian_Sequences_with_MultiScale_Dynamics_for_4D_Reconstruction_from_Monocular_Casual_Videos]]
+  - conflicts_with:: [[Gaussian Sequences with MultiScale Dynamics for 4D Reconstruction from Monocular Casual Videos]]
 
 ## 📂 Resources
 - **Local PDF**: [[FlowHOI Flowbased SemanticsGrounded Generation of HandObject Interactions for Dexterous Robot Manipu.pdf]]

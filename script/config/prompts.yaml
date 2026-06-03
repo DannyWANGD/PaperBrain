@@ -76,7 +76,7 @@ screening:
       "limitations": "one concrete technical sentence",
       "reason": "one concise sentence mentioning key drivers of score",
       "tags": ["specific_tag", "specific_tag", "specific_tag"],
-      "short_title": "English_safe_short_title"
+      "short_title": "Use the paper acronym directly if it has one; otherwise use a concise English title with spaces between words, not underscores"
     }}
 
 analysis:

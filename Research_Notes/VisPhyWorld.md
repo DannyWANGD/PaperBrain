@@ -132,8 +132,8 @@ The choice of physics-aware rendering backend is the most critical component: no
 1.  [[Code2Worlds]]: Direct method alignment: both works prioritize converting visual observations into structured, executable code as an interpretable intermediate representation of physical scenes, rather than relying on implicit pixel-space latent representations. VisPhyWorld extends Code2Worlds' core code-generation paradigm to create a diagnostic evaluation framework for physical reasoning, rather than only focusing on scene reconstruction.
 2.  [[Physics Informed Viscous Value Representations]]: Shared foundational objective: both works address the critical gap of separating spurious visual correlation from genuine physical reasoning in multimodal models. While the target use case differs (value function learning for robotics vs. MLLM evaluation), both enforce physical plausibility as a hard constraint rather than an optional secondary metric.
 3.  [[SimToolReal]]: Overlapping core mechanism: both leverage validated, physics-native simulation engines as a ground-truth validation layer to test model alignment with real-world physical dynamics. VisPhyWorld's use of Three.js/P5.js as execution backends directly builds on SimToolReal's insight that simulation tools can act as a trusted oracle to avoid annotation bias in physical reasoning benchmarks.
-4.  [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]: Theoretical alignment: VisPhyWorld's 5-dimensional multi-metric evaluation (perceptual, semantic, text-aligned, physical, holistic) directly operationalizes the trinity of consistency (perceptual, causal, cross-modal) proposed as a requirement for valid general world models, addressing the paper's critique of single-metric evaluation for world understanding tasks.
-5.  [[World_Action_Models_are_Zero_shot_Policies]]: Downstream use case alignment: VisPhyWorld's executable code-based physical scene representations are directly compatible with the world action model paradigm, as the generated simulation code can be modified and queried to plan actions for robotic control, rather than only being used for passive evaluation.
+4.  [[The Trinity of Consistency as a Defining Principle for General World Models]]: Theoretical alignment: VisPhyWorld's 5-dimensional multi-metric evaluation (perceptual, semantic, text-aligned, physical, holistic) directly operationalizes the trinity of consistency (perceptual, causal, cross-modal) proposed as a requirement for valid general world models, addressing the paper's critique of single-metric evaluation for world understanding tasks.
+5.  [[World Action Models are Zero shot Policies]]: Downstream use case alignment: VisPhyWorld's executable code-based physical scene representations are directly compatible with the world action model paradigm, as the generated simulation code can be modified and queried to plan actions for robotic control, rather than only being used for passive evaluation.
 
 ---
 ### Task 2: Mermaid Knowledge Graph
@@ -173,7 +173,7 @@ graph LR
 - Compared Against: Recognition-style VQA benchmarks and Violation of Expectation protocols for physical reasoning evaluation.
 - Confidence: 8
 - Links:
-  - same_problem:: [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]
+  - same_problem:: [[The Trinity of Consistency as a Defining Principle for General World Models]]
   - improves_over:: [[Code2Worlds]]
   - conflicts_with:: 待定
 
@@ -206,8 +206,8 @@ graph LR
 - Compared Against: Pixel-space video generation approaches (SVD img2vid, Veo-3.1) that produce perceptually plausible but causally unverifiable outputs.
 - Confidence: 7
 - Links:
-  - same_problem:: [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]
-  - improves_over:: [[World_Action_Models_are_Zero_shot_Policies]]
+  - same_problem:: [[The Trinity of Consistency as a Defining Principle for General World Models]]
+  - improves_over:: [[World Action Models are Zero shot Policies]]
   - conflicts_with:: 待定
 
 ## 📂 Resources

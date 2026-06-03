@@ -15,7 +15,7 @@ Total Papers: 23 | High Impact: 2
 ### ✨ Generated Reality: Human-centric World Simulation using Interactive Video Generation with Hand and Camera Control (Score: 7/10)
 - **💡 Innovation**: The key novelty is a human-centric video world model conditioned on tracked 3D head pose and joint-level hand poses, paired with an optimized diffusion transformer conditioning mechanism that is distilled into a low-latency causal interactive system for generating controllable egocentric virtual environments.
 - **⚠️ Limitations**: The work does not evaluate applicability to robotics use cases such as sim2real transfer or robot manipulation, lacks integration with 3D/4D Gaussian Splatting for improved 3D consistency, and does not leverage foundation models like LLMs or VLAs for semantic action control.
-- **🔗 Link**: [[Generated_Reality]]
+- **🔗 Link**: [[Generated Reality]]
 - **👥 Authors**: Linxi Xie, Lisong C. Sun, Ashley Neall, Tong Wu, Shengqu Cai, Gordon Wetzstein
 - **🏷️ Tags**: #World_Model #Diffusion_Transformer #Video_Diffusion_Model #Embodied_AI #Interactive_Video_Generation
 

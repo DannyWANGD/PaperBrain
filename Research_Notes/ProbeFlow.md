@@ -330,7 +330,7 @@ Baselines include: Fixed-Euler (N ∈ {3, 10, 20, 50}), RK45 (adaptive, classic)
 ## 🔗 Knowledge Graph & Connections
 ## Task 1: Differential Analysis & Connections
 
-### Connection 1: [[Mean_Flow_Policy_with_Instantaneous_Velocity_Constraint_for_Onestep_Action_Generation]]
+### Connection 1: [[Mean Flow Policy with Instantaneous Velocity Constraint for Onestep Action Generation]]
 
 **Relationship**: Both papers attack the same fundamental problem—reducing the number of ODE function evaluations in flow-based robotic policies—but from diametrically opposite philosophical positions.
 
@@ -434,7 +434,7 @@ graph LR
 
 **Motivation**: ProbeFlow currently treats the FM model as a black box and adapts the solver around its imperfections. However, the curvature profile revealed by the probe (high S in transit phases, low S in precision phases) is a structured signal about where the learned vector field deviates most from the ideal straight-path objective. This geometric signal could be fed back into the training process to explicitly regularize the velocity field toward straighter paths in high-curvature regions.
 
-**Concrete Idea**: Augment the standard FM training loss with a **probe-guided straightness regularizer**: during training, for each trajectory sample, compute the cosine similarity S between v(x_t, t) and v(x_{t+Δt}, t+Δt) at multiple t values. Add a penalty term λ · (1 - S)² to the training loss, weighted by the local task complexity (e.g., higher weight near contact-rich trajectory segments identified by privileged simulator state information). This is conceptually related to Rectified Flow's straightness objective but is **local and adaptive** rather than globally uniform, concentrating the straightening pressure at the trajectory segments where curvature is most costly. The IVC mechanism from [[Mean_Flow_Policy_with_Instantaneous_Velocity_Constraint_for_Onestep_Action_Generation]] provides a theoretical boundary condition that could be extended to this multi-point curvature regularization framework, creating a unified training objective that simultaneously improves expressiveness and deployability.
+**Concrete Idea**: Augment the standard FM training loss with a **probe-guided straightness regularizer**: during training, for each trajectory sample, compute the cosine similarity S between v(x_t, t) and v(x_{t+Δt}, t+Δt) at multiple t values. Add a penalty term λ · (1 - S)² to the training loss, weighted by the local task complexity (e.g., higher weight near contact-rich trajectory segments identified by privileged simulator state information). This is conceptually related to Rectified Flow's straightness objective but is **local and adaptive** rather than globally uniform, concentrating the straightening pressure at the trajectory segments where curvature is most costly. The IVC mechanism from [[Mean Flow Policy with Instantaneous Velocity Constraint for Onestep Action Generation]] provides a theoretical boundary condition that could be extended to this multi-point curvature regularization framework, creating a unified training objective that simultaneously improves expressiveness and deployability.
 
 
 ---
@@ -450,7 +450,7 @@ graph LR
 - Compared Against: Fixed-Euler with N ∈ {3, 10, 20, 50}; RK45 adaptive solver; AB2 second-order solver with velocity reuse.
 - Confidence: 8
 - Links:
-  - same_problem:: [[Mean_Flow_Policy_with_Instantaneous_Velocity_Constraint_for_Onestep_Action_Generation]]
+  - same_problem:: [[Mean Flow Policy with Instantaneous Velocity Constraint for Onestep Action Generation]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 
@@ -461,7 +461,7 @@ graph LR
 - Compared Against: RK45 (classic adaptive), AB2 (second-order velocity reuse), Fixed-Euler N=3 and N=10.
 - Confidence: 7
 - Links:
-  - same_problem:: [[Mean_Flow_Policy_with_Instantaneous_Velocity_Constraint_for_Onestep_Action_Generation]]
+  - same_problem:: [[Mean Flow Policy with Instantaneous Velocity Constraint for Onestep Action Generation]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 
@@ -483,9 +483,9 @@ graph LR
 - Compared Against: Backbone-focused methods (quantization, token compression); single-step FM approaches such as Mean Flow Policy.
 - Confidence: 7
 - Links:
-  - same_problem:: [[Mean_Flow_Policy_with_Instantaneous_Velocity_Constraint_for_Onestep_Action_Generation]]
+  - same_problem:: [[Mean Flow Policy with Instantaneous Velocity Constraint for Onestep Action Generation]]
   - improves_over:: 待定
-  - conflicts_with:: [[Mean_Flow_Policy_with_Instantaneous_Velocity_Constraint_for_Onestep_Action_Generation]]
+  - conflicts_with:: [[Mean Flow Policy with Instantaneous Velocity Constraint for Onestep Action Generation]]
 
 ## 📂 Resources
 - **Local PDF**: [[ProbeFlow TrainingFree Adaptive Flow Matching for VisionLanguageAction Models.pdf]]

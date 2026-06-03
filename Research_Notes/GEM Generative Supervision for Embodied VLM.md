@@ -283,7 +283,7 @@ Depth is one way to encode geometric structure; another is to predict the next R
 **[[DynaFLIP DynamicsAware Visual Pretraining]]**  
 DynaFLIP addresses the same fundamental gap that GEM tackles: standard vision‑language pre‑training often loses the motion and spatial cues that robots need. Both works try to inject action‑relevant geometric information directly into the visual encoder. DynaFLIP uses image‑language‑3D flow triplets and learns a representation where the three modalities sit close together in a shared hypersphere, forcing the encoder to capture dynamics. GEM, by contrast, adds an explicit depth‑generation head and trains the VLM backbone with a flow‑matching objective to reconstruct depth maps. The key difference is the type of geometric signal: 3D flow captures motion and occlusion boundaries, while depth encodes static 3‑D layout. This implies that the two approaches could be complementary—DynaFLIP’s motion cues might enrich the depth maps GEM generates, and GEM’s depth‑aware backbone could provide a better static‑scene scaffold for DynaFLIP’s motion‑centric loss.
 
-**[[Generation_Models_Know_Space]]**  
+**[[Generation Models Know Space]]**  
 VEGA‑3D (the framework in that note) shares GEM’s diagnosis that multimodal large language models suffer from spatial blindness. Both works aim to supply dense geometric cues without relying on extra sensor modalities at test time. VEGA‑3D extracts spatio‑temporal features from a frozen video diffusion model and fuses them into an MLLM via a gated mechanism, banking on the idea that video generation inherently requires 3‑D understanding. GEM takes a more direct route: it teaches the VLM to predict depth maps from its own hidden states, making the backbone itself geometrically aware. The difference is that VEGA‑3D leverages the implicit priors of a large pre‑trained generative model, whereas GEM trains the VLM from scratch (or fine‑tunes it) to become its own depth predictor. Practically, this means GEM may need less external model capacity but requires large‑scale depth‑annotated data, while VEGA‑3D can potentially benefit from massive unlabelled video. The two strategies illustrate a spectrum of how generative priors can be harnessed—an implicit, inherited spatial scaffold versus an explicit, self‑generated one.
 
 **[[ACEBrain0]]**  
@@ -325,3 +325,7 @@ graph LR
 - **Local PDF**: [[GEM Generative Supervision Helps Embodied Intelligence.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2605.28548.pdf)
 - [ArXiv Link](https://huggingface.co/papers/2605.28548)
+
+
+## Related Work Updates
+- [ ] **2026-06-03**: New paper [[Rethinking VLM Representation for VLA Initialization]] discusses *embodied vlm*. Innovation: "A systematic controlled study revealing that preserving pretrained VLM representation via LoRA and injecting specific embodied VQA domains (Grounding + Egocentric Understanding) yields better VLA initialization than full finetuning or arbitrary VQA adaptation."

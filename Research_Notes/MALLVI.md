@@ -133,8 +133,8 @@ The Reflector agent is the most critical component: removing it reduces average 
 ---
 ### Task 1: Knowledge Connections
 1. [[GeneralVLA]]: MALLVi builds on the foundational general vision-language-action (VLA) paradigm, extending monolithic VLA architectures with a modular multi-agent design and closed-loop feedback mechanism to address common hallucination and grounding failure issues of generic VLA systems for manipulation tasks.
-2. [[World_Action_Models_are_Zero_shot_Policies]]: MALLVi leverages the validated zero-shot transfer property of world-action models for embodied policies, adding targeted component-level error recovery to improve zero-shot manipulation success rates by 15-80% absolute over unmodified world-action model baselines.
-3. [[Learning_Situated_Awareness_in_the_Real_World]]: MALLVi's Descriptor agent explicitly constructs a spatial scene graph of object identities and relational contexts to support grounded reasoning, directly solving the core challenge of real-world situated awareness for robotic agents identified in this work.
+2. [[World Action Models are Zero shot Policies]]: MALLVi leverages the validated zero-shot transfer property of world-action models for embodied policies, adding targeted component-level error recovery to improve zero-shot manipulation success rates by 15-80% absolute over unmodified world-action model baselines.
+3. [[Learning Situated Awareness in the Real World]]: MALLVi's Descriptor agent explicitly constructs a spatial scene graph of object identities and relational contexts to support grounded reasoning, directly solving the core challenge of real-world situated awareness for robotic agents identified in this work.
 4. [[RynnBrain]]: Both frameworks adopt a distributed specialized multi-agent LLM/VLM architecture for embodied tasks, with MALLVi extending the paradigm to closed-loop robotic manipulation, while RynnBrain focuses on general embodied conversational and navigation tasks.
 ---
 ### Task 2: Mermaid Knowledge Graph
@@ -190,7 +190,7 @@ graph LR
 - Compared Against: Internal ablation: MALLVI without Reflector agent; open-loop frameworks such as VoxPoser and CoTDiffusion.
 - Confidence: 7
 - Links:
-  - same_problem:: [[Learning_Situated_Awareness_in_the_Real_World]]
+  - same_problem:: [[Learning Situated Awareness in the Real World]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 
@@ -201,7 +201,7 @@ graph LR
 - Compared Against: Single-agent monolithic VLM baseline; implicitly against faster end-to-end frameworks such as PerAct.
 - Confidence: 6
 - Links:
-  - same_problem:: [[World_Action_Models_are_Zero_shot_Policies]]
+  - same_problem:: [[World Action Models are Zero shot Policies]]
   - improves_over:: 待定
   - conflicts_with:: [[GeneralVLA]]
 
@@ -214,7 +214,7 @@ graph LR
 - Links:
   - same_problem:: [[GeneralVLA]]
   - improves_over:: [[RynnBrain]]
-  - conflicts_with:: [[World_Action_Models_are_Zero_shot_Policies]]
+  - conflicts_with:: [[World Action Models are Zero shot Policies]]
 
 ## 📂 Resources
 - **Local PDF**: [[MALLVI A MultiAgent Framework for Integrated Generalized Robotics Manipulation.pdf]]

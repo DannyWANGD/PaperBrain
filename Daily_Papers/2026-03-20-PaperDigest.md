@@ -6,7 +6,7 @@ Total Papers: 16 | High Impact: 4
 ### 🔥 Generation Models Know Space: Unleashing Implicit 3D Priors for Scene Understanding (Score: 8/10)
 - **💡 Innovation**: The method extracts spatiotemporal features from intermediate noise levels of a pre-trained video diffusion model to provide dense geometric cues to MLLMs via a token-level adaptive gated fusion mechanism.
 - **⚠️ Limitations**: The reliance on pre-trained video diffusion models may introduce significant computational overhead during inference and potential biases inherent in the generative training data.
-- **🔗 Link**: [[Generation_Models_Know_Space]]
+- **🔗 Link**: [[Generation Models Know Space]]
 - **👥 Authors**: Xianjin Wu, Dingkang Liang, Tianrui Feng, Kui Xia, Yumeng Zhang, Xiaofan Li, Xiao Tan, Xiang Bai
 - **🏷️ Tags**: #World_Model #Diffusion_Model #Embodied_AI #Foundation_Model #Robot_Manipulation
 

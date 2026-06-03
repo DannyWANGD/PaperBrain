@@ -297,7 +297,7 @@ The most critical technical divergence is in how contact is represented: FlowHOI
 
 ---
 
-### Connection 2: ArtHOI vs. [[Gaussian_Sequences_with_MultiScale_Dynamics_for_4D_Reconstruction_from_Monocular_Casual_Videos]]
+### Connection 2: ArtHOI vs. [[Gaussian Sequences with MultiScale Dynamics for 4D Reconstruction from Monocular Casual Videos]]
 
 Both papers tackle 4D reconstruction from monocular video using 3D Gaussian representations, but differ significantly in their motion modeling philosophy. The **Gaussian Sequences** paper proposes a *multi-scale dynamics factorization* — decomposing complex motion fields into hierarchical levels from object-scale to particle-scale — as a general solution for arbitrary dynamic scenes. This is a data-driven, unsupervised approach that infers motion structure from appearance alone, using multi-modal priors from vision foundation models as soft constraints.
 
@@ -305,7 +305,7 @@ Both papers tackle 4D reconstruction from monocular video using 3D Gaussian repr
 
 ---
 
-### Connection 3: ArtHOI vs. [[Generated_Reality]]
+### Connection 3: ArtHOI vs. [[Generated Reality]]
 
 The connection here is at the level of *video diffusion models as motion priors* and *3D-aware interaction synthesis*. **Generated Reality** trains a bidirectional video diffusion model conditioned on 3D head and hand poses to generate egocentric virtual environments, targeting XR applications where real-time responsiveness and embodied interaction are paramount. Its contribution is primarily in the conditioning mechanism (joint-level hand pose + head pose → video generation). **ArtHOI** sits at the *downstream* end of a similar pipeline: it consumes the output of a video diffusion model (KLing) and performs inverse rendering to recover 3D articulated structure.
 

@@ -317,7 +317,7 @@ The mathematical distinction from ReKep is that ReKep solves the constraint opti
 ## 🔗 Knowledge Graph & Connections
 ## Task 1: Differential Analysis & Connections
 
-### Connection 1: EmboAlign vs. [[World_Action_Models_are_Zero_shot_Policies]]
+### Connection 1: EmboAlign vs. [[World Action Models are Zero shot Policies]]
 
 Both papers address zero-shot manipulation by leveraging pretrained video generative models as motion priors, but they diverge sharply in how they resolve the gap between video prediction and robot execution. DreamZero (WAM) closes this gap by **jointly learning video and action** within a unified diffusion backbone, enabling real-time closed-loop control at 7Hz through model compression and system optimization. EmboAlign, by contrast, treats the VGM as a **frozen proposal generator** and never trains a video-action joint model — instead, it imposes physical validity post-hoc via VLM-derived compositional constraints applied at both selection and trajectory optimization stages.
 
@@ -470,7 +470,7 @@ The current framework treats each manipulation task as a single-phase trajectory
 
 ### Direction 3: Learning a Compact Constraint-Aware Video Scorer to Replace the Multi-Model Selection Pipeline
 
-The current video selection stage chains four models (V-JEPA-2, CoTracker, RollingDepth, 3D back-projection) in a sequential pipeline with high latency and multiple failure points. The VLM-derived constraint functions, together with large-scale VGM rollouts labeled with their downstream execution success, provide a natural **supervision signal** for training a single compact video constraint-satisfaction predictor. Specifically, one could distill the full selection pipeline — VGM output → binary accept/reject label based on constraint cost < ε — into a lightweight video encoder (e.g., a small ViT operating on sub-sampled frames) that directly predicts spatial constraint satisfaction from pixels, bypassing explicit 3D reconstruction entirely. This model could be trained on synthetic data from simulation (where ground truth 3D keypoint trajectories and constraint satisfaction are exact) and transferred to real rollouts via domain randomization. Such a distilled scorer would dramatically reduce inference latency, enabling N-candidate parallel evaluation rather than sequential evaluation, and aligning EmboAlign's selection stage with the real-time requirements identified as a critical limitation in DreamZero's design rationale from [[World_Action_Models_are_Zero_shot_Policies]].
+The current video selection stage chains four models (V-JEPA-2, CoTracker, RollingDepth, 3D back-projection) in a sequential pipeline with high latency and multiple failure points. The VLM-derived constraint functions, together with large-scale VGM rollouts labeled with their downstream execution success, provide a natural **supervision signal** for training a single compact video constraint-satisfaction predictor. Specifically, one could distill the full selection pipeline — VGM output → binary accept/reject label based on constraint cost < ε — into a lightweight video encoder (e.g., a small ViT operating on sub-sampled frames) that directly predicts spatial constraint satisfaction from pixels, bypassing explicit 3D reconstruction entirely. This model could be trained on synthetic data from simulation (where ground truth 3D keypoint trajectories and constraint satisfaction are exact) and transferred to real rollouts via domain randomization. Such a distilled scorer would dramatically reduce inference latency, enabling N-candidate parallel evaluation rather than sequential evaluation, and aligning EmboAlign's selection stage with the real-time requirements identified as a critical limitation in DreamZero's design rationale from [[World Action Models are Zero shot Policies]].
 
 
 ---
@@ -486,7 +486,7 @@ The current video selection stage chains four models (V-JEPA-2, CoTracker, Rolli
 - Compared Against: ReKep (hierarchical constrained optimization without video guidance) and NovaFlow (3D flow extraction from VGM without constraint filtering), both evaluated on identical hardware and perception setups.
 - Confidence: 7
 - Links:
-  - same_problem:: [[World_Action_Models_are_Zero_shot_Policies]]
+  - same_problem:: [[World Action Models are Zero shot Policies]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 
@@ -497,7 +497,7 @@ The current video selection stage chains four models (V-JEPA-2, CoTracker, Rolli
 - Compared Against: NovaFlow (pure video retargeting without constraint filtering), using the same LVP video generative model as EmboAlign's backbone.
 - Confidence: 6
 - Links:
-  - same_problem:: [[World_Action_Models_are_Zero_shot_Policies]]
+  - same_problem:: [[World Action Models are Zero shot Policies]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 
@@ -519,7 +519,7 @@ The current video selection stage chains four models (V-JEPA-2, CoTracker, Rolli
 - Compared Against: World Action Models and similar zero-shot policy paradigms that use VGMs or world models as policy surrogates, as represented by related work in the zero-shot manipulation literature.
 - Confidence: 6
 - Links:
-  - same_problem:: [[World_Action_Models_are_Zero_shot_Policies]]
+  - same_problem:: [[World Action Models are Zero shot Policies]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 

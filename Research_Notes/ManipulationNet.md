@@ -262,7 +262,7 @@ The value of a benchmark infrastructure is proportional to the number and divers
 
 ### Task 1: Differential Analysis & Connections
 
-#### Connection 1: [[Learning_Situated_Awareness_in_the_Real_World]] — Complementary Evaluation Targets
+#### Connection 1: [[Learning Situated Awareness in the Real World]] — Complementary Evaluation Targets
 
 **Relationship:** SAW-Bench and ManipulationNet's Embodied Reasoning Track share a common motivation—evaluating the cognitive, observer-centric capabilities of embodied agents—but differ fundamentally in their evaluation substrate and design philosophy.
 
@@ -276,7 +276,7 @@ The value of a benchmark infrastructure is proportional to the number and divers
 
 ---
 
-#### Connection 2: [[Soft_Contamination]] — Authenticity Mechanisms and the Integrity Problem
+#### Connection 2: [[Soft Contamination]] — Authenticity Mechanisms and the Integrity Problem
 
 **Relationship:** The paper's central emphasis on **authenticity**—verifiable protocol adherence and result integrity—maps directly onto the contamination concerns raised in the Soft Contamination note, though in a physically embodied rather than data-driven context.
 
@@ -428,7 +428,7 @@ graph LR
 - Compared Against: Standardized object sets (e.g., YCB object set with published protocols), centralized real-world competitions (e.g., IROS/ICRA manipulation challenges), and simulation benchmarks (e.g., RLBench, ManiSkill).
 - Confidence: 7
 - Links:
-  - same_problem:: [[Learning_Situated_Awareness_in_the_Real_World]]
+  - same_problem:: [[Learning Situated Awareness in the Real World]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 
@@ -439,7 +439,7 @@ graph LR
 - Compared Against: Single-modality benchmarks such as RLBench (simulation, skill-focused) and language-conditioned simulation environments that lack physical contact-dynamics fidelity.
 - Confidence: 5
 - Links:
-  - same_problem:: [[Learning_Situated_Awareness_in_the_Real_World]]
+  - same_problem:: [[Learning Situated Awareness in the Real World]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 
@@ -452,7 +452,7 @@ graph LR
 - Links:
   - same_problem:: 待定
   - improves_over:: 待定
-  - conflicts_with:: [[Learning_Situated_Awareness_in_the_Real_World]]
+  - conflicts_with:: [[Learning Situated Awareness in the Real World]]
 
 ### Claim-04
 - Claim: The fragmentation of manipulation research progress—where results across groups are largely incomparable even for ostensibly identical tasks—is primarily caused by the absence of a shared physical benchmark with verified protocols, not by algorithmic diversity alone, implying that infrastructure investment yields higher community-wide returns than incremental algorithmic advances in isolation.
@@ -461,7 +461,7 @@ graph LR
 - Compared Against: The implicit counterfactual of continued algorithm-centric publication without standardized evaluation, as evidenced by the current state of the field described in the paper's introduction and related work.
 - Confidence: 6
 - Links:
-  - same_problem:: [[Learning_Situated_Awareness_in_the_Real_World]]
+  - same_problem:: [[Learning Situated Awareness in the Real World]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 

@@ -19,6 +19,7 @@ from src.run_state import RunState
 from datetime import datetime, timedelta
 from tqdm import tqdm # Import tqdm for progress bars
 import argparse
+import json
 
 # Setup logging
 logging.basicConfig(
@@ -35,6 +36,43 @@ logger = logging.getLogger(__name__)
 
 import shutil
 
+PDF_RATE_LIMIT_COOLDOWN_MINUTES = 60
+PDF_CACHE_DIR = os.path.join("Cache", "pdfs")
+PDF_COOLDOWN_PATH = os.path.join(PDF_CACHE_DIR, "arxiv_pdf_cooldown.json")
+
+def _safe_pdf_filename(title):
+    safe_title = "".join([c for c in title if c.isalpha() or c.isdigit() or c == ' ']).strip()
+    return f"{safe_title[:100]}.pdf"
+
+def _pdf_cooldown_remaining_seconds():
+    if not os.path.exists(PDF_COOLDOWN_PATH):
+        return 0.0
+    try:
+        with open(PDF_COOLDOWN_PATH, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        return max(0.0, float(data.get("until", 0)) - time.time())
+    except Exception:
+        return 0.0
+
+def _mark_pdf_cooldown(reason):
+    os.makedirs(PDF_CACHE_DIR, exist_ok=True)
+    try:
+        with open(PDF_COOLDOWN_PATH, "w", encoding="utf-8") as f:
+            json.dump(
+                {"until": time.time() + PDF_RATE_LIMIT_COOLDOWN_MINUTES * 60, "reason": reason, "created_at": datetime.now().isoformat()},
+                f,
+                indent=2,
+            )
+    except Exception:
+        pass
+
+def _copy_pdf(src, dest_folder, filename):
+    os.makedirs(dest_folder, exist_ok=True)
+    dest = os.path.join(dest_folder, filename)
+    if os.path.abspath(src) != os.path.abspath(dest):
+        shutil.copy2(src, dest)
+    return dest
+
 def download_pdf(url, title, destination_folder=None, retries=3):
     """Downloads PDF to a file with retries and robust headers."""
     # Security Check: Validate URL scheme and domain whitelist
@@ -47,6 +85,20 @@ def download_pdf(url, title, destination_folder=None, retries=3):
     # if not any(domain in url for domain in trusted_domains):
     #     logger.warning(f"[SECURITY] URL not in trusted domains: {url}")
     #     # return None # Uncomment to enforce
+
+    folder = destination_folder or "temp_pdfs"
+    filename = _safe_pdf_filename(title)
+    direct_path = os.path.join(folder, filename)
+    if os.path.exists(direct_path) and os.path.getsize(direct_path) > 1024:
+        logger.info(f"  [CACHE] Reusing existing PDF: {direct_path}")
+        return direct_path
+
+    arxiv_id_for_cache = canonical_arxiv_id(url)
+    if arxiv_id_for_cache:
+        cache_path = os.path.join(PDF_CACHE_DIR, f"{arxiv_id_for_cache}.pdf")
+        if os.path.exists(cache_path) and os.path.getsize(cache_path) > 1024:
+            logger.info(f"  [CACHE] Reusing cached PDF for arXiv:{arxiv_id_for_cache}")
+            return _copy_pdf(cache_path, folder, filename)
 
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -77,6 +129,15 @@ def download_pdf(url, title, destination_folder=None, retries=3):
             seen.add(u)
             deduped_urls.append(u)
 
+    if arxiv_id_for_cache:
+        cooldown_remaining = _pdf_cooldown_remaining_seconds()
+        if cooldown_remaining > 0:
+            logger.warning(
+                f"[WARN] arXiv PDF downloads are in local cooldown for {cooldown_remaining / 60:.1f} more minutes. "
+                f"Skipping network PDF download for {title}."
+            )
+            return None
+
     for attempt in range(retries):
         for target_url in deduped_urls:
             try:
@@ -84,15 +145,6 @@ def download_pdf(url, title, destination_folder=None, retries=3):
                 response = requests.get(target_url, headers=headers, stream=True, timeout=60) # Increased timeout
                 
                 if response.status_code == 200:
-                    # Sanitize filename - MUST match obsidian_writer logic
-                    safe_title = "".join([c for c in title if c.isalpha() or c.isdigit() or c==' ']).strip()
-                    filename = f"{safe_title[:100]}.pdf"
-                    
-                    if destination_folder:
-                        folder = destination_folder
-                    else:
-                        folder = "temp_pdfs"
-                        
                     if not os.path.exists(folder):
                         os.makedirs(folder)
                         
@@ -102,10 +154,18 @@ def download_pdf(url, title, destination_folder=None, retries=3):
                         for chunk in response.iter_content(chunk_size=8192):
                             if chunk:
                                 f.write(chunk)
+
+                    if arxiv_id_for_cache and os.path.getsize(filepath) > 1024:
+                        os.makedirs(PDF_CACHE_DIR, exist_ok=True)
+                        shutil.copy2(filepath, os.path.join(PDF_CACHE_DIR, f"{arxiv_id_for_cache}.pdf"))
                     
                     return filepath
                 else:
                     logger.warning(f"[WARN] Failed to download from {target_url} (Status: {response.status_code})")
+                    if response.status_code == 429 and canonical_arxiv_id(target_url):
+                        _mark_pdf_cooldown(f"HTTP 429 while downloading {target_url}")
+                        logger.warning("[WARN] arXiv PDF endpoint is rate-limited. Stopping arXiv PDF retries for now.")
+                        return None
                     
             except Exception as e:
                 logger.warning(f"[WARN] Connection error on {target_url}: {e}")
@@ -350,6 +410,8 @@ def job(
                                 os.remove(tmp_pdf_path)
                             except Exception:
                                 pass
+                    else:
+                        logger.info("  [CTX] PDF unavailable or rate-limited; rigorous screening will use title/abstract only.")
 
             result = analyser.screen_paper(p)
             _apply_final_screen_result(p, result)

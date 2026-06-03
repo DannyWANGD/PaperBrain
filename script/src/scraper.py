@@ -4,6 +4,9 @@ from datetime import datetime, timedelta
 import logging
 import time
 import random
+import hashlib
+import os
+import json
 from src.paper_identity import canonical_arxiv_id, identity_key, normalize_paper_identity
 
 logging.basicConfig(level=logging.INFO)
@@ -25,6 +28,17 @@ class PaperScraper:
         )
         self.arxiv_timeout = int(config.get('search', {}).get('arxiv_timeout_seconds', 20))
         self.arxiv_max_attempts = int(config.get('search', {}).get('arxiv_max_attempts', 4))
+        self.arxiv_min_interval = float(config.get('search', {}).get('arxiv_min_interval_seconds', 3.2))
+        self.arxiv_cache_enabled = bool(config.get('search', {}).get('arxiv_cache_enabled', True))
+        self.arxiv_cache_ttl_hours = float(config.get('search', {}).get('arxiv_cache_ttl_hours', 72))
+        self.arxiv_rate_limit_cooldown_minutes = float(
+            config.get('search', {}).get('arxiv_rate_limit_cooldown_minutes', 60)
+        )
+        vault_path = config.get("obsidian", {}).get("vault_path") or os.getcwd()
+        self.cache_dir = os.path.join(vault_path, "Cache", "arxiv")
+        self.cooldown_path = os.path.join(self.cache_dir, "rate_limit_cooldown.json")
+        self.last_arxiv_request_at = 0.0
+        os.makedirs(self.cache_dir, exist_ok=True)
 
     def _clean_html(self, text):
         return BeautifulSoup(text, "html.parser").get_text()
@@ -42,28 +56,110 @@ class PaperScraper:
             return f"({cat_query}) AND {date_query}"
         return cat_query
 
+    def _cache_key(self, params):
+        encoded = json.dumps(params, sort_keys=True, ensure_ascii=False)
+        return hashlib.sha1(encoded.encode("utf-8")).hexdigest()
+
+    def _cache_path(self, params):
+        return os.path.join(self.cache_dir, f"{self._cache_key(params)}.xml")
+
+    def _read_cached_feed(self, params, allow_expired=False):
+        if not self.arxiv_cache_enabled:
+            return None
+        path = self._cache_path(params)
+        if not os.path.exists(path):
+            return None
+        age_hours = (time.time() - os.path.getmtime(path)) / 3600
+        if not allow_expired and age_hours > self.arxiv_cache_ttl_hours:
+            return None
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                raw = f.read()
+            logger.info(
+                "  [CACHE] Using %s arXiv feed cache (%s, age %.1fh).",
+                "expired" if age_hours > self.arxiv_cache_ttl_hours else "fresh",
+                os.path.basename(path),
+                age_hours,
+            )
+            return raw
+        except Exception:
+            return None
+
+    def _write_cached_feed(self, params, raw_feed):
+        if not self.arxiv_cache_enabled or not raw_feed:
+            return
+        try:
+            with open(self._cache_path(params), "w", encoding="utf-8") as f:
+                f.write(raw_feed)
+        except Exception as e:
+            logger.debug("Failed to write arXiv cache: %s", e)
+
+    def _cooldown_remaining_seconds(self):
+        if not os.path.exists(self.cooldown_path):
+            return 0.0
+        try:
+            with open(self.cooldown_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            until_ts = float(data.get("until", 0))
+            return max(0.0, until_ts - time.time())
+        except Exception:
+            return 0.0
+
+    def _mark_arxiv_cooldown(self, reason):
+        until_ts = time.time() + self.arxiv_rate_limit_cooldown_minutes * 60
+        try:
+            with open(self.cooldown_path, "w", encoding="utf-8") as f:
+                json.dump({"until": until_ts, "reason": reason, "created_at": datetime.now().isoformat()}, f, indent=2)
+        except Exception:
+            pass
+
+    def _respect_arxiv_interval(self):
+        elapsed = time.time() - self.last_arxiv_request_at
+        wait_s = self.arxiv_min_interval - elapsed
+        if wait_s > 0:
+            time.sleep(wait_s)
+
     def _request_arxiv_feed(self, params):
         url = "https://export.arxiv.org/api/query"
         headers = {"User-Agent": self.arxiv_user_agent}
         last_error = None
 
+        cached = self._read_cached_feed(params, allow_expired=False)
+        if cached:
+            return cached
+
+        cooldown_remaining = self._cooldown_remaining_seconds()
+        if cooldown_remaining > 0:
+            expired = self._read_cached_feed(params, allow_expired=True)
+            if expired:
+                return expired
+            raise RuntimeError(
+                f"arXiv API is in local cooldown for {cooldown_remaining / 60:.1f} more minutes after rate limiting."
+            )
+
         for attempt in range(1, self.arxiv_max_attempts + 1):
             try:
+                self._respect_arxiv_interval()
                 response = requests.get(
                     url,
                     params=params,
                     headers=headers,
                     timeout=self.arxiv_timeout,
                 )
+                self.last_arxiv_request_at = time.time()
                 if response.status_code == 200:
+                    self._write_cached_feed(params, response.text)
                     return response.text
 
                 if response.status_code in (429, 403, 503):
                     last_error = RuntimeError(f"HTTP {response.status_code} from arXiv API")
+                    if response.status_code == 429:
+                        self._mark_arxiv_cooldown(str(last_error))
                     if attempt < self.arxiv_max_attempts:
-                        base_delay = 5 * (2 ** (attempt - 1))
-                        jitter = random.uniform(0.0, 1.5)
-                        sleep_s = min(base_delay + jitter, 45.0)
+                        base_delay = max(15, 8 * (2 ** (attempt - 1)))
+                        jitter = random.uniform(1.0, 5.0)
+                        retry_after = response.headers.get("Retry-After")
+                        sleep_s = max(float(retry_after or 0), min(base_delay + jitter, 90.0))
                         logger.warning(
                             f"[WARN] arXiv API returned HTTP {response.status_code}. "
                             f"Backing off {sleep_s:.1f}s before retry ({attempt}/{self.arxiv_max_attempts})..."
@@ -76,9 +172,9 @@ class PaperScraper:
             except requests.RequestException as e:
                 last_error = e
                 if attempt < self.arxiv_max_attempts:
-                    base_delay = 5 * (2 ** (attempt - 1))
-                    jitter = random.uniform(0.0, 1.5)
-                    sleep_s = min(base_delay + jitter, 45.0)
+                    base_delay = 8 * (2 ** (attempt - 1))
+                    jitter = random.uniform(1.0, 5.0)
+                    sleep_s = min(base_delay + jitter, 90.0)
                     logger.warning(
                         f"[WARN] arXiv request failed ({e}). Backing off {sleep_s:.1f}s "
                         f"before retry ({attempt}/{self.arxiv_max_attempts})..."

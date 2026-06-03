@@ -24,7 +24,7 @@ Total Papers: 55 | High Impact: 5
 ### ✨ Soft Contamination Means Benchmarks Test Shallow Generalization (Score: 7/10)
 - **💡 Innovation**: The paper introduces a semantic-based decontamination framework using embedding-space similarity to detect 'soft contamination' in training corpora, revealing that benchmark performance is significantly inflated by semantically equivalent test data.
 - **⚠️ Limitations**: The study focuses primarily on text-based benchmarks and LLMs, leaving it unclear how these findings translate to the high-dimensional, multi-modal data distributions typical of VLA and Embodied AI benchmarks.
-- **🔗 Link**: [[Soft_Contamination]]
+- **🔗 Link**: [[Soft Contamination]]
 - **👥 Authors**: Ari Spiesberger, Juan J. Vazquez, Nicky Pochinkov, Tomáš Gavenčiak, Peli Grietzer, Gavin Leech, Nandi Schoots
 - **🏷️ Tags**: #LLM #Foundation_Model #VLA #Embodied_AI
 

@@ -127,10 +127,10 @@ The combined RL reward set is the most critical component: removing the semantic
 ## 🔗 Knowledge Graph & Connections
 ---
 ### Task 1: Knowledge Connections
-1.  [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]: MoRL's four-component verifiable reward set directly instantiates the three core consistency principles outlined in this work: cross-modal consistency (text-motion alignment reward), logical consistency (reasoning coherence reward), and physical consistency (physical plausibility reward). This provides empirical validation that multi-faceted consistency optimization drives performance gains for general multimodal sequential models.
+1.  [[The Trinity of Consistency as a Defining Principle for General World Models]]: MoRL's four-component verifiable reward set directly instantiates the three core consistency principles outlined in this work: cross-modal consistency (text-motion alignment reward), logical consistency (reasoning coherence reward), and physical consistency (physical plausibility reward). This provides empirical validation that multi-faceted consistency optimization drives performance gains for general multimodal sequential models.
 2.  [[GeneralVLA]]: Both works develop multimodal foundation models for action-centric tasks. MoRL extends the vision-language-action (VLA) paradigm to the 3D human motion domain, with a dedicated motion tokenizer and motion-specific reward functions that address the unique constraints of human biomechanics, filling a gap in general VLA frameworks that do not natively support high-fidelity human motion synthesis and analysis.
 3.  [[Physics Informed Viscous Value Representations]]: Both works integrate explicit physical constraints into sequential decision making pipelines. MoRL's physical plausibility reward (penalizing joint limit violations and abrupt velocity changes) is a concrete instantiation of physics-informed reinforcement learning optimization for motion generation, aligning with the core thesis of this work that physics-informed objectives improve the realism and transferability of sequential model outputs.
-4.  [[World_Action_Models_are_Zero_shot_Policies]]: MoRL's Chain-of-Motion test-time reasoning strategy shares core design principles with world model action planning, as both generate step-by-step intermediate traces to produce temporally consistent action sequences. MoRL's bidirectional motion understanding and generation capability can be directly extended to zero-shot policy execution for humanoid robots, as outlined in the world action model framework.
+4.  [[World Action Models are Zero shot Policies]]: MoRL's Chain-of-Motion test-time reasoning strategy shares core design principles with world model action planning, as both generate step-by-step intermediate traces to produce temporally consistent action sequences. MoRL's bidirectional motion understanding and generation capability can be directly extended to zero-shot policy execution for humanoid robots, as outlined in the world action model framework.
 5.  [[QuantVLA]]: MoRL's 4B parameter multimodal architecture faces latency bottlenecks for edge deployment, and the quantization best practices for vision-language-action models outlined in [[QuantVLA]] are directly applicable to optimizing MoRL for edge AR and robotics use cases, providing a clear path to reduce inference latency without significant performance degradation.
 ---
 ### Task 2: Mermaid Knowledge Graph
@@ -211,7 +211,7 @@ graph LR
 - Compared Against: MotionGPT, MotionLLM, LaMP (unified multimodal motion models); ReMoGPT, MoRAG-Diffuse (diffusion-based generation specialists)
 - Confidence: 7
 - Links:
-  - same_problem:: [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]
+  - same_problem:: [[The Trinity of Consistency as a Defining Principle for General World Models]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 
@@ -233,7 +233,7 @@ graph LR
 - Compared Against: Single-pass autoregressive decoding baselines (e.g., standard MotionGPT inference)
 - Confidence: 7
 - Links:
-  - same_problem:: [[World_Action_Models_are_Zero_shot_Policies]]
+  - same_problem:: [[World Action Models are Zero shot Policies]]
   - improves_over:: 待定
   - conflicts_with:: [[GeneralVLA]]
 
@@ -244,7 +244,7 @@ graph LR
 - Compared Against: Non-reasoning LLM-based motion models (MotionGPT, MotionLLM); diffusion models without explicit reasoning (ReMoGPT)
 - Confidence: 6
 - Links:
-  - same_problem:: [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]
+  - same_problem:: [[The Trinity of Consistency as a Defining Principle for General World Models]]
   - improves_over:: [[QuantVLA]]
   - conflicts_with:: [[Physics Informed Viscous Value Representations]]
 

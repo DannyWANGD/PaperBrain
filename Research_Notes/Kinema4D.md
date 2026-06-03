@@ -232,7 +232,7 @@ Tab. 4 (referenced in the text) ablates: (i) the pointmap output head vs. RGB-on
 ## 🔗 Knowledge Graph & Connections
 ## Task 1: Differential Analysis & Connections
 
-### Connection 1: [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]
+### Connection 1: [[The Trinity of Consistency as a Defining Principle for General World Models]]
 
 This is the most conceptually direct connection. The Trinity framework proposes that a general world model must satisfy Modal Consistency (semantic interface), Spatial Consistency (geometric basis), and Temporal Consistency (causal engine). Kinema4D can be read as an *engineering instantiation* of exactly this tripartite requirement within the robotic manipulation domain.
 
@@ -240,7 +240,7 @@ This is the most conceptually direct connection. The Trinity framework proposes 
 
 ---
 
-### Connection 2: [[Generated_Reality]]
+### Connection 2: [[Generated Reality]]
 
 Both papers share the core paradigm of conditioning a video diffusion model on *precise, physically grounded 3D kinematic control signals* derived from tracked joint-level pose information, rather than semantic or latent representations. Both reject coarse text/keyboard conditioning in favor of dense geometric control.
 
@@ -335,7 +335,7 @@ Kinema4D currently functions as a forward simulator: given an action sequence, g
 - Compared Against: IRASim (latent joint-angle embedding), Ctrl-World (text/latent action tokens), TesserAct (depth-conditioned 4D generation with latent poses)
 - Confidence: 7
 - Links:
-  - same_problem:: [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]
+  - same_problem:: [[The Trinity of Consistency as a Defining Principle for General World Models]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 
@@ -346,7 +346,7 @@ Kinema4D currently functions as a forward simulator: given an action sequence, g
 - Compared Against: IRASim, Ctrl-World, TesserAct, GWM, iMoWM, Robo4DGen
 - Confidence: 6
 - Links:
-  - same_problem:: [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]
+  - same_problem:: [[The Trinity of Consistency as a Defining Principle for General World Models]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 
@@ -357,7 +357,7 @@ Kinema4D currently functions as a forward simulator: given an action sequence, g
 - Compared Against: TesserAct (which also uses a single depth map but from a potentially more flexible initialization), Robo4DGen
 - Confidence: 8
 - Links:
-  - same_problem:: [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]
+  - same_problem:: [[The Trinity of Consistency as a Defining Principle for General World Models]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 
@@ -368,7 +368,7 @@ Kinema4D currently functions as a forward simulator: given an action sequence, g
 - Compared Against: Latent-embedding approaches (IRASim, Ctrl-World), 2D video world models (GWM, iMoWM)
 - Confidence: 7
 - Links:
-  - same_problem:: [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]
+  - same_problem:: [[The Trinity of Consistency as a Defining Principle for General World Models]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 

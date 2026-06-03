@@ -122,6 +122,12 @@ search:
     - "Foundation Models"
     - "LLM"
   max_results: 50
+  arxiv_timeout_seconds: 45
+  arxiv_max_attempts: 4
+  arxiv_min_interval_seconds: 3.2
+  arxiv_cache_enabled: true
+  arxiv_cache_ttl_hours: 72
+  arxiv_rate_limit_cooldown_minutes: 60
   arxiv_categories:
     - "cs.RO"
     - "cs.AI"

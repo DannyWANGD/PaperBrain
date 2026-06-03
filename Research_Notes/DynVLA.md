@@ -299,7 +299,7 @@ The most significant architectural distinction is continuous vs. discrete: CoWVL
 
 ---
 
-#### Connection 3: DynVLA vs. [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]
+#### Connection 3: DynVLA vs. [[The Trinity of Consistency as a Defining Principle for General World Models]]
 
 This connection operates at a higher theoretical level. The Trinity of Consistency framework proposes that a principled world model must satisfy three consistency properties: **Modal Consistency** (semantic alignment across modalities), **Spatial Consistency** (geometric grounding), and **Temporal Consistency** (causal dynamics modeling). DynVLA can be interpreted as an empirical instantiation of all three properties within the constrained driving domain.
 

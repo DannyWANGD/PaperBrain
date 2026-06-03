@@ -125,10 +125,10 @@ Two core ablations confirm component criticality:
 ## 🔗 Knowledge Graph & Connections
 ---
 ### Task 1: Knowledge Connections
-1. [[World_Action_Models_are_Zero_shot_Policies]]: Both works advance the utility of learned world models for sequential decision making. Where World Action Models focus on zero-shot policy transfer across tasks via pre-trained world representations, WIMLE provides a multi-modal, uncertainty-aware world model training paradigm that can be directly integrated into the World Action Models framework to reduce transfer error when adapting to out-of-distribution tasks, by downweighting low-confidence predictions for unseen task transitions.
-2. [[Generated_Reality]]: Generated Reality pipelines use generative models to synthesize large volumes of training data to reduce reliance on real-world interaction, a core goal shared with WIMLE. WIMLE's IMLE-based multi-modal world model and uncertainty weighting solve two critical pain points of Generated Reality for RL: it eliminates unrealistic averaged synthetic transitions (regression to the mean) and prevents low-quality synthetic data from biasing policy learning, making WIMLE a drop-in improvement for Generated Reality RL pipelines.
+1. [[World Action Models are Zero shot Policies]]: Both works advance the utility of learned world models for sequential decision making. Where World Action Models focus on zero-shot policy transfer across tasks via pre-trained world representations, WIMLE provides a multi-modal, uncertainty-aware world model training paradigm that can be directly integrated into the World Action Models framework to reduce transfer error when adapting to out-of-distribution tasks, by downweighting low-confidence predictions for unseen task transitions.
+2. [[Generated Reality]]: Generated Reality pipelines use generative models to synthesize large volumes of training data to reduce reliance on real-world interaction, a core goal shared with WIMLE. WIMLE's IMLE-based multi-modal world model and uncertainty weighting solve two critical pain points of Generated Reality for RL: it eliminates unrealistic averaged synthetic transitions (regression to the mean) and prevents low-quality synthetic data from biasing policy learning, making WIMLE a drop-in improvement for Generated Reality RL pipelines.
 3. [[MoRL]]: MoRL is a prior risk-aware model-based RL framework that uses ad-hoc rollout truncation to avoid compounding error. WIMLE's inverse-variance uncertainty weighting provides a theoretically grounded alternative to MoRL's rollout truncation, showing that weighting rather than discarding uncertain rollouts preserves more useful training signal while maintaining stability, leading to 20-30% higher sample efficiency on high-stochasticity tasks when compared directly to MoRL's approach.
-4. [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]: The Trinity of Consistency defines three core consistency requirements (mode coverage, temporal consistency, confidence calibration) for general-purpose world models. WIMLE is a direct instantiation of these principles for control-focused world models: IMLE training enforces mode coverage consistency for multi-modal transitions, rollout generation enforces temporal consistency across trajectory steps, and ensemble + latent uncertainty estimation enforces prediction confidence calibration, validating the utility of the trinity framework for building performant world models for RL.
+4. [[The Trinity of Consistency as a Defining Principle for General World Models]]: The Trinity of Consistency defines three core consistency requirements (mode coverage, temporal consistency, confidence calibration) for general-purpose world models. WIMLE is a direct instantiation of these principles for control-focused world models: IMLE training enforces mode coverage consistency for multi-modal transitions, rollout generation enforces temporal consistency across trajectory steps, and ensemble + latent uncertainty estimation enforces prediction confidence calibration, validating the utility of the trinity framework for building performant world models for RL.
 
 ---
 ### Task 2: Mermaid Knowledge Graph
@@ -198,7 +198,7 @@ graph LR
 - Compared Against: DreamerV3, TD-MPC2, BRO, SimbaV2, Simba, MR.Q, PPO, SAC
 - Confidence: 8
 - Links:
-  - same_problem:: [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]
+  - same_problem:: [[The Trinity of Consistency as a Defining Principle for General World Models]]
   - improves_over:: [[MoRL]]
   - conflicts_with:: 待定
 
@@ -209,7 +209,7 @@ graph LR
 - Compared Against: Standard unimodal Gaussian world models as used in DreamerV3 and TD-MPC2
 - Confidence: 7
 - Links:
-  - same_problem:: [[Generated_Reality]]
+  - same_problem:: [[Generated Reality]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 
@@ -222,7 +222,7 @@ graph LR
 - Links:
   - same_problem:: 待定
   - improves_over:: 待定
-  - conflicts_with:: [[World_Action_Models_are_Zero_shot_Policies]]
+  - conflicts_with:: [[World Action Models are Zero shot Policies]]
 
 ### Claim-04
 - Claim: Uncertainty-aware synthetic rollout weighting in MBRL, as demonstrated by WIMLE, represents a broadly applicable principle for mitigating compounding model error in sample-constrained continuous control, suggesting that calibrated uncertainty estimation is a necessary component for closing the MBRL–MFRL performance gap.
@@ -231,7 +231,7 @@ graph LR
 - Compared Against: Uncalibrated MBRL baselines (DreamerV3, TD-MPC2, BRO) and model-free upper bounds (MR.Q, SAC)
 - Confidence: 7
 - Links:
-  - same_problem:: [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]
+  - same_problem:: [[The Trinity of Consistency as a Defining Principle for General World Models]]
   - improves_over:: [[MoRL]]
   - conflicts_with:: 待定
 

@@ -110,8 +110,8 @@ The most critical component is the physically grounded output space with discret
 ### Task 1: Knowledge Connections
 1. [[GeneralVLA]] / [[QuantVLA]]: RynnBrain-VLA is a directly aligned contribution to the general vision-language-action (VLA) research line, extending earlier VLA works by adding explicit structured spatio-temporal coordinate output support, which addresses the key limitation of ungrounded action hallucinations in generic VLA designs. RynnBrain's embodiment-agnostic pretraining paradigm also validates the core design assumption of QuantVLA that unified foundation model backbones improve cross-task VLA transfer performance.
 2. [[Physics Informed Viscous Value Representations]]: Both works prioritize physics-aligned reasoning as a core constraint for embodied agent design. While this prior work applies physical constraints to value function learning, RynnBrain extends the principle to end-to-end foundation model output structure, anchoring all high-level reasoning steps to discretized physical coordinate tokens to eliminate unphysical hallucinations during planning.
-3. [[GeometryAware_Rotary_Position_Embedding_for_Consistent_Video_World_Model]]: RynnBrain uses Interleaved MRoPE for cross-modal spatio-temporal feature alignment, sharing the core insight that geometry-aware positional embedding is a prerequisite for consistent video understanding. RynnBrain's evaluation results implicitly validate this prior work's finding that standard rotary position embeddings fail to capture long-range spatio-temporal dependencies for embodied use cases.
-4. [[World_Action_Models_are_Zero_shot_Policies]]: RynnBrain's post-trained variant suite provides empirical validation for this work's core claim: general pre-trained embodied foundation models can act as strong zero-shot policy backbones when fine-tuned on task-specific action tokens. RynnBrain demonstrates a 7% performance improvement on spatio-temporal reasoning tasks relative to generic world model baselines, confirming the benefit of explicit physical grounding in policy foundation models.
+3. [[GeometryAware Rotary Position Embedding for Consistent Video World Model]]: RynnBrain uses Interleaved MRoPE for cross-modal spatio-temporal feature alignment, sharing the core insight that geometry-aware positional embedding is a prerequisite for consistent video understanding. RynnBrain's evaluation results implicitly validate this prior work's finding that standard rotary position embeddings fail to capture long-range spatio-temporal dependencies for embodied use cases.
+4. [[World Action Models are Zero shot Policies]]: RynnBrain's post-trained variant suite provides empirical validation for this work's core claim: general pre-trained embodied foundation models can act as strong zero-shot policy backbones when fine-tuned on task-specific action tokens. RynnBrain demonstrates a 7% performance improvement on spatio-temporal reasoning tasks relative to generic world model baselines, confirming the benefit of explicit physical grounding in policy foundation models.
 
 ---
 ### Task 2: Mermaid Knowledge Graph
@@ -221,9 +221,9 @@ graph LR
 - Compared Against: Implicit comparison to systems capable of continuous or higher-resolution spatial coordinate representations for fine-grained manipulation.
 - Confidence: 8
 - Links:
-  - same_problem:: [[GeometryAware_Rotary_Position_Embedding_for_Consistent_Video_World_Model]]
+  - same_problem:: [[GeometryAware Rotary Position Embedding for Consistent Video World Model]]
   - improves_over:: 待定
-  - conflicts_with:: [[GeometryAware_Rotary_Position_Embedding_for_Consistent_Video_World_Model]]
+  - conflicts_with:: [[GeometryAware Rotary Position Embedding for Consistent Video World Model]]
 
 ### Claim-04
 - Claim: Bridging general-purpose VLMs with physical grounding through embodied pretraining on curated spatio-temporal data is a viable path toward zero-shot or few-shot generalization in robotic action policies, but scalability is bottlenecked by human-in-the-loop annotation requirements that cap the training corpus at approximately 20 million samples.
@@ -232,9 +232,9 @@ graph LR
 - Compared Against: Large-scale automated pretraining pipelines of general VLMs (e.g., Qwen3-VL) and world-model-based zero-shot policy approaches.
 - Confidence: 7
 - Links:
-  - same_problem:: [[World_Action_Models_are_Zero_shot_Policies]]
+  - same_problem:: [[World Action Models are Zero shot Policies]]
   - improves_over:: 待定
-  - conflicts_with:: [[World_Action_Models_are_Zero_shot_Policies]]
+  - conflicts_with:: [[World Action Models are Zero shot Policies]]
 
 ## 📂 Resources
 - **Local PDF**: [[RynnBrain Open Embodied Foundation Models.pdf]]

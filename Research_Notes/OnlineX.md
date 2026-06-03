@@ -128,10 +128,10 @@ The persistent Anchor State is the most critical component: removing it reduces 
 ## 🔗 Knowledge Graph & Connections
 ---
 ### Task 1: Knowledge Connections
-1.  [[Gaussian_Sequences_with_MultiScale_Dynamics_for_4D_Reconstruction_from_Monocular_Casual_Videos]]: Both works use 3D Gaussian Splatting as the core representation for processing sequential monocular input, and share the core challenge of mitigating cross-frame drift across streaming data. OnlineX's active-to-stable state drift mitigation mechanism can be directly adapted to reduce temporal inconsistency in 4D dynamic reconstruction pipelines, as both approaches prioritize balancing local detail fidelity and long-term sequence consistency.
+1.  [[Gaussian Sequences with MultiScale Dynamics for 4D Reconstruction from Monocular Casual Videos]]: Both works use 3D Gaussian Splatting as the core representation for processing sequential monocular input, and share the core challenge of mitigating cross-frame drift across streaming data. OnlineX's active-to-stable state drift mitigation mechanism can be directly adapted to reduce temporal inconsistency in 4D dynamic reconstruction pipelines, as both approaches prioritize balancing local detail fidelity and long-term sequence consistency.
 2.  [[GeneralVLA]] / [[QuantVLA]]: OnlineX's real-time unified 3D geometric and open-vocabulary semantic field output directly resolves the grounded perception gap for Vision-Language-Action (VLA) models for physical embodied agents. Unlike 2D semantic segmentation outputs, OnlineX's metrically accurate 3D Gaussian fields eliminate the need for explicit 2D-to-3D grounding for VLA action prediction, with projected 10-12% improvement in zero-shot tabletop manipulation performance.
-3.  [[Learning_Situated_Awareness_in_the_Real_World]]: The active-to-stable state paradigm in OnlineX directly enables long-horizon situated awareness for real-world robot deployment. The persistent Anchor State maintains globally consistent scene representation across hours of streaming camera input, avoiding the cumulative drift that limits existing perception pipelines for long-horizon navigation and industrial inspection tasks.
-4.  [[SemanticContact_Fields_for_CategoryLevel_Generalizable_Tactile_Tool_Manipulation]]: OnlineX's dense open-vocabulary 3D Gaussian semantic fields act as a ready-to-use prior for semantic contact field estimation, eliminating the need for per-scene optimization for tactile manipulation pipelines. The metrically accurate geometric priors from OnlineX reduce contact pose estimation error by an estimated 8-10% compared to prior works that rely on sparse point cloud inputs.
+3.  [[Learning Situated Awareness in the Real World]]: The active-to-stable state paradigm in OnlineX directly enables long-horizon situated awareness for real-world robot deployment. The persistent Anchor State maintains globally consistent scene representation across hours of streaming camera input, avoiding the cumulative drift that limits existing perception pipelines for long-horizon navigation and industrial inspection tasks.
+4.  [[SemanticContact Fields for CategoryLevel Generalizable Tactile Tool Manipulation]]: OnlineX's dense open-vocabulary 3D Gaussian semantic fields act as a ready-to-use prior for semantic contact field estimation, eliminating the need for per-scene optimization for tactile manipulation pipelines. The metrically accurate geometric priors from OnlineX reduce contact pose estimation error by an estimated 8-10% compared to prior works that rely on sparse point cloud inputs.
 
 ---
 ### Task 2: Mermaid Knowledge Graph
@@ -179,7 +179,7 @@ graph LR
 - Compared Against: Spann3R (explicit spatial memory, unbounded memory growth) and CUT3R (compact implicit state, cumulative drift)
 - Confidence: 7
 - Links:
-  - same_problem:: [[Gaussian_Sequences_with_MultiScale_Dynamics_for_4D_Reconstruction_from_Monocular_Casual_Videos]]
+  - same_problem:: [[Gaussian Sequences with MultiScale Dynamics for 4D Reconstruction from Monocular Casual Videos]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 
@@ -190,7 +190,7 @@ graph LR
 - Compared Against: MVSplat, NoPoSplat, and FLARE (offline feedforward 3DGS baselines given full sequence access)
 - Confidence: 8
 - Links:
-  - same_problem:: [[Gaussian_Sequences_with_MultiScale_Dynamics_for_4D_Reconstruction_from_Monocular_Casual_Videos]]
+  - same_problem:: [[Gaussian Sequences with MultiScale Dynamics for 4D Reconstruction from Monocular Casual Videos]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 
@@ -201,7 +201,7 @@ graph LR
 - Compared Against: LangSplat and Gaussian Grouping (GS-Group), which use higher-dimensional or full semantic feature representations
 - Confidence: 6
 - Links:
-  - same_problem:: [[Learning_Situated_Awareness_in_the_Real_World]]
+  - same_problem:: [[Learning Situated Awareness in the Real World]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 
@@ -212,7 +212,7 @@ graph LR
 - Compared Against: LangSplat and Gaussian Grouping (per-scene optimization-based semantic 3DGS methods)
 - Confidence: 7
 - Links:
-  - same_problem:: [[Learning_Situated_Awareness_in_the_Real_World]]
+  - same_problem:: [[Learning Situated Awareness in the Real World]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 

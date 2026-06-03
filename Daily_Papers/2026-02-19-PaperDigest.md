@@ -6,7 +6,7 @@ Total Papers: 30 | High Impact: 4
 ### 🔥 World Action Models are Zero-shot Policies (Score: 9/10)
 - **💡 Innovation**: The key novelty is the development of DreamZero, a World Action Model built on a pretrained video diffusion backbone that jointly models future world states and actions from heterogeneous robot and human demonstration data to achieve superior zero-shot and few-shot cross-embodiment robot manipulation generalization that outperforms state-of-the-art VLAs.
 - **⚠️ Limitations**: The work lacks comparisons to non-VLA world model-based robot policy baselines, does not evaluate performance on long-horizon complex manipulation tasks, and does not explore integration with 3D/4D Gaussian Splatting for more accurate 3D world state modeling.
-- **🔗 Link**: [[World_Action_Models_are_Zero_shot_Policies]]
+- **🔗 Link**: [[World Action Models are Zero shot Policies]]
 - **👥 Authors**: Seonghyeon Ye, Yunhao Ge, Kaiyuan Zheng, Shenyuan Gao, Sihyun Yu, George Kurian, Suneel Indupuru, You Liang Tan, Chuning Zhu, Jiannan Xiang, Ayaan Malik, Kyungmin Lee, William Liang, Nadun Ranawaka, Jiasheng Gu, Yinzhen Xu, Guanzhi Wang, Fengyuan Hu, Avnish Narayan, Johan Bjorck, Jing Wang, Gwanghyun Kim, Dantong Niu, Ruijie Zheng, Yuqi Xie, Jimmy Wu, Qi Wang, Ryan Julian, Danfei Xu, Yilun Du, Yevgen Chebotar, Scott Reed, Jan Kautz, Yuke Zhu, Linxi "Jim" Fan, Joel Jang
 - **🏷️ Tags**: #World_Action_Model #Video_Diffusion_Model #VLA #Cross_Embodiment_Transfer #Robot_Manipulation
 
@@ -24,7 +24,7 @@ Total Papers: 30 | High Impact: 4
 ### ✨ Learning Situated Awareness in the Real World (Score: 7/10)
 - **💡 Innovation**: The key novelty is the development of SAW-Bench, a real-world egocentric video benchmark with 2,071 human-annotated QA pairs designed to evaluate observer-centric situated spatial reasoning capabilities of multimodal foundation models, a capability largely ignored in existing environment-centric benchmarks.
 - **⚠️ Limitations**: This work only evaluates existing multimodal foundation models on the proposed benchmark without introducing new methods to close the identified 37.66% human-model performance gap, and does not validate the utility of the benchmark for downstream robotic manipulation or embodied agent deployment tasks.
-- **🔗 Link**: [[Learning_Situated_Awareness_in_the_Real_World]]
+- **🔗 Link**: [[Learning Situated Awareness in the Real World]]
 - **👥 Authors**: Chuhan Li, Ruilin Han, Joy Hsu, Yongyuan Liang, Rajiv Dhawan, Jiajun Wu, Ming-Hsuan Yang, Xin Eric Wang
 - **🏷️ Tags**: #Multimodal_Foundation_Models #Embodied_AI #Egocentric_Spatial_Reasoning #Situated_Awareness_Benchmark
 

@@ -374,11 +374,11 @@ abla \cdot u_t]$ 推导虚拟力代理，这一代理与 HydroShear 所模拟的
 
 ---
 
-### 关联二：VTAM vs. [[SemanticContact_Fields_for_CategoryLevel_Generalizable_Tactile_Tool_Manipulation]]
+### 关联二：VTAM vs. [[SemanticContact Fields for CategoryLevel Generalizable Tactile Tool Manipulation]]
 
 **关系类型**：同领域不同粒度的方法，共享"跨越感知-控制鸿沟"的核心目标，但表示层次不同。
 
-[[SemanticContact_Fields_for_CategoryLevel_Generalizable_Tactile_Tool_Manipulation]]（SCFields）提出将视觉语义与密集接触估计融合为统一 3D 表示（Semantic-Contact Fields），通过 sim-to-real 两阶段管线实现跨工具几何的类别级泛化。其关键洞见是：接触状态需要在 **3D 几何空间**中表示才能跨实例泛化，并通过大规模仿真预训练弥补真实触觉数据的稀缺性。
+[[SemanticContact Fields for CategoryLevel Generalizable Tactile Tool Manipulation]]（SCFields）提出将视觉语义与密集接触估计融合为统一 3D 表示（Semantic-Contact Fields），通过 sim-to-real 两阶段管线实现跨工具几何的类别级泛化。其关键洞见是：接触状态需要在 **3D 几何空间**中表示才能跨实例泛化，并通过大规模仿真预训练弥补真实触觉数据的稀缺性。
 
 VTAM 则工作在**2D 像素空间**的时序流中，不显式构建 3D 接触场，而是将触觉传感器图像直接注入视频 Transformer 的潜在空间。这使 VTAM 在训练效率和硬件依赖方面更简洁（无需仿真管线），但代价是缺乏显式几何理解——当物体形状变化（如不同形状的薯片）时，VTAM 的泛化能力理论上弱于 SCFields。
 
@@ -467,7 +467,7 @@ HydroShear 的反算过程（image → force field）计算成本较高（论文
 
 **为何有前景**
 
-VTAM 当前的泛化能力受限于其 2D 像素级表示——当工具形状或接触区域发生变化时（如从圆形工具切换到扁平工具），视频 Transformer 的表示可能无法捕获几何变化对接触动力学的影响。[[SemanticContact_Fields_for_CategoryLevel_Generalizable_Tactile_Tool_Manipulation]] 的 Semantic-Contact Fields（SCFields）已证明 3D 接触场表示可实现类别级泛化。将 SCFields 的几何感知接触估计注入 VTAM 的跨视角注意力层，可同时获得 VTAM 的时序预测能力和 SCFields 的几何泛化能力。
+VTAM 当前的泛化能力受限于其 2D 像素级表示——当工具形状或接触区域发生变化时（如从圆形工具切换到扁平工具），视频 Transformer 的表示可能无法捕获几何变化对接触动力学的影响。[[SemanticContact Fields for CategoryLevel Generalizable Tactile Tool Manipulation]] 的 Semantic-Contact Fields（SCFields）已证明 3D 接触场表示可实现类别级泛化。将 SCFields 的几何感知接触估计注入 VTAM 的跨视角注意力层，可同时获得 VTAM 的时序预测能力和 SCFields 的几何泛化能力。
 
 **最小可行实验**
 

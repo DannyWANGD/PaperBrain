@@ -249,11 +249,11 @@ This confirms that (a) geometry weak supervision is the single most critical com
 ## 🔗 Knowledge Graph & Connections
 ## Task 1: Differential Analysis & Connections
 
-### Connection 1: [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]
+### Connection 1: [[The Trinity of Consistency as a Defining Principle for General World Models]]
 
 This is the most structurally aligned connection. The Trinity framework proposes that a general world model must satisfy **Modal Consistency** (semantic interface), **Spatial Consistency** (geometric basis), and **Temporal Consistency** (causal engine) as necessary and sufficient conditions. EgoForge operationalizes precisely this tripartite structure, though it arrives at these properties through engineering constraints rather than theoretical prescription: geometry weak supervision (via VGGT angular/scale alignment) implements Spatial Consistency; VideoDiffusionNFT with $\mathcal{R}_{\text{temp}}$ implements Temporal Consistency; and the combined language instruction + CLIP/DINO-scored reward $\mathcal{R}_{\text{goal}}$ implements Modal Consistency. The key **differential** is that the Trinity paper provides a normative theoretical framework without a concrete training algorithm, while EgoForge provides the inverse—a concrete, working system without a principled theoretical justification for why these three consistency types are necessary. EgoForge also adds a **fourth dimension** the Trinity paper does not discuss: *goal-directedness* (the agent's latent intent steering the trajectory), which arguably requires a fourth consistency type—*intentional consistency*—not captured in the Trinity framework.
 
-### Connection 2: [[Generated_Reality]]
+### Connection 2: [[Generated Reality]]
 
 Both papers target egocentric first-person video generation for XR/wearable applications, and both use diffusion transformer architectures with explicit conditioning mechanisms for spatial context. However, the differential is fundamental and reveals opposing design philosophies. Generated_Reality conditions on **dense, precisely tracked 3D signals** (head pose + joint-level hand poses) from real-time motion capture, making it suitable for controlled XR environments where tracking infrastructure exists. EgoForge explicitly rejects this approach, conditioning instead on a **single static frame + language instruction**, making it suitable for unconstrained wearable scenarios (smart glasses) where tracking is unavailable. Generated_Reality achieves high-fidelity dexterous hand–object interaction because it has direct kinematic ground truth; EgoForge must infer plausible hand motion from semantic intent alone, which is why it requires the geometry weak supervision and reward-guided refinement that Generated_Reality does not need. EgoForge is thus a strictly harder problem formulation with weaker supervision, while Generated_Reality is a better-controlled system with richer supervision.
 
@@ -355,7 +355,7 @@ EgoForge's geometry weak supervision relies on a pretrained VGGT backbone that m
 - Compared Against: WAN2.2 fine-tuned on X-Ego, Cosmos, HunyuanVideo, EgoDreamer, and Handi baselines.
 - Confidence: 7
 - Links:
-  - same_problem:: [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]
+  - same_problem:: [[The Trinity of Consistency as a Defining Principle for General World Models]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 
@@ -366,7 +366,7 @@ EgoForge's geometry weak supervision relies on a pretrained VGGT backbone that m
 - Compared Against: WAN2.2 fine-tuned on X-Ego as the progressive ablation base.
 - Confidence: 7
 - Links:
-  - same_problem:: [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]
+  - same_problem:: [[The Trinity of Consistency as a Defining Principle for General World Models]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 
@@ -379,7 +379,7 @@ EgoForge's geometry weak supervision relies on a pretrained VGGT backbone that m
 - Links:
   - same_problem:: 待定
   - improves_over:: 待定
-  - conflicts_with:: [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]
+  - conflicts_with:: [[The Trinity of Consistency as a Defining Principle for General World Models]]
 
 ### Claim-04
 - Claim: EgoForge demonstrates that goal-directed egocentric world simulation—conditioning on high-level natural language goals rather than dense camera trajectories or action primitives—is a viable paradigm for unconstrained wearable deployment, advancing the broader agenda of physically and semantically consistent world models.
@@ -388,7 +388,7 @@ EgoForge's geometry weak supervision relies on a pretrained VGGT backbone that m
 - Compared Against: EgoDreamer and Handi (egocentric-specific models requiring denser supervision), and general-purpose video models (Cosmos, HunyuanVideo, WAN2.2) lacking goal-level conditioning.
 - Confidence: 6
 - Links:
-  - same_problem:: [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]
+  - same_problem:: [[The Trinity of Consistency as a Defining Principle for General World Models]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 

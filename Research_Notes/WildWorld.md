@@ -235,7 +235,7 @@ The most critical components, based on the model design analysis, are:
 ## 🔗 Knowledge Graph & Connections
 ## Task 1: Differential Analysis & Connections
 
-### Connection 1: [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]
+### Connection 1: [[The Trinity of Consistency as a Defining Principle for General World Models]]
 
 This is the most theoretically resonant connection. The Trinity paper proposes that general world models must satisfy Modal Consistency, Spatial Consistency, and Temporal Consistency as foundational principles. WildWorld directly operationalizes two of these three axes in an empirical, engineering-centric manner: its State Alignment metric is a concrete instantiation of Spatial Consistency (tracking skeletal keypoint trajectories against geometric ground truth), while the long-horizon prediction failures documented in WildBench experiments are precisely the Temporal Consistency failures that the Trinity framework predicts would arise in models lacking explicit causal state representations. **The key differential**: the Trinity paper operates at the level of normative theory—defining *what* a world model should satisfy—whereas WildWorld operates at the empirical infrastructure level, providing the *data substrate and measurement tools* to actually test whether models satisfy these consistency properties. WildWorld's State Alignment metric can be understood as the first quantitative PCK-style operationalization of the Trinity's Temporal/Spatial Consistency axioms in an interactive setting.
 
@@ -381,7 +381,7 @@ WildWorld's action distribution follows a pronounced long tail (top-150 action I
 - Compared Against: CamCtrl (camera-only conditioning) and SkelCtrl (skeleton-based conditioning), both fine-tuned on the same Wan2.2-Fun-5B backbone.
 - Confidence: 6
 - Links:
-  - same_problem:: [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]
+  - same_problem:: [[The Trinity of Consistency as a Defining Principle for General World Models]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 
@@ -392,7 +392,7 @@ WildWorld's action distribution follows a pronounced long tail (top-150 action I
 - Compared Against: Prior action-conditioned world modeling datasets that provide only directional movement or low-level camera rotation as action signals and no ground-truth state annotations.
 - Confidence: 7
 - Links:
-  - same_problem:: [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]
+  - same_problem:: [[The Trinity of Consistency as a Defining Principle for General World Models]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 
@@ -403,7 +403,7 @@ WildWorld's action distribution follows a pronounced long tail (top-150 action I
 - Compared Against: Implicit-state world models (e.g., GameGen-X, Genie) that do not require ground-truth state at inference but also cannot enforce explicit state consistency.
 - Confidence: 8
 - Links:
-  - same_problem:: [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]
+  - same_problem:: [[The Trinity of Consistency as a Defining Principle for General World Models]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 
@@ -414,7 +414,7 @@ WildWorld's action distribution follows a pronounced long tail (top-150 action I
 - Compared Against: Implicit-state action-conditioned video generation models that rely solely on visual context without structured state conditioning, consistent with the broader critique of datasets like those used by GameGen-X or Genie.
 - Confidence: 6
 - Links:
-  - same_problem:: [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]
+  - same_problem:: [[The Trinity of Consistency as a Defining Principle for General World Models]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 

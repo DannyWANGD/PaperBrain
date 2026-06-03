@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Daily_Papers/2026-05-28-PaperDigest.md",
-                "mode": "preview",
+                "file": "Run_Records/2026-05-26-openrouter-screening-results.md",
+                "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "2026-05-28-PaperDigest"
+              "title": "2026-05-26-openrouter-screening-results"
             }
           }
         ]
@@ -213,31 +213,38 @@
   },
   "active": "e59f7fd8ed9b5834",
   "lastOpenFiles": [
+    "Daily_Papers/2026-05-26-PaperDigest.md",
+    "Research_Notes/Rethinking VLM Representation for VLA Initialization.md",
+    "Run_Records/2026-05-26-openrouter-screening-results.md",
+    "Cache/pdfs/arxiv_pdf_cooldown.json",
+    "Cache/pdfs/2605.24117.pdf",
+    "temp_pdfs/SkillEvolBench Benchmarking the Evolution from Episodic Experience to Procedural Skills.pdf",
+    "Cache/pdfs/2605.23699.pdf",
+    "Cache/pdfs/2605.24517.pdf",
+    "Cache/pdfs",
+    "temp_pdfs",
+    "Run_Records/2026-05-26-openrouter-run-state.json",
+    "Cache/arxiv/rate_limit_cooldown.json",
+    "Daily_Papers/2026-05-27-PaperDigest.md",
+    "script/tools/__pycache__/normalize_note_filenames.cpython-39.pyc",
+    "Run_Records/2026-05-27-openrouter-screening-results.md",
+    "Daily_Papers/2026-05-28-PaperDigest.md",
+    "Research_Notes/Rethinking_VLM_Rep_VLA_Init.md",
+    "Assets/Rethinking VLM Representation for VLA Initialization_arch.png",
     "Daily_Papers/2026-05-29-PaperDigest.md",
     "Daily_Papers/2026-06-01-PaperDigest.md",
     "Daily_Papers/2026-06-02-PaperDigest.md",
     "Daily_Papers/2026-03-24-PaperDigest.md",
     "Daily_Papers/2026-04-17-PaperDigest.md",
     "Daily_Papers/2026-04-23-PaperDigest.md",
-    "Daily_Papers/2026-05-28-PaperDigest.md",
     "README.md",
     "Run_Records/2026-05-28-openrouter-screening-results.md",
     "Research_Notes/DynaFLIP DynamicsAware Visual Pretraining.md",
-    "Podcasts/GEM Generative Supervision Helps Embodied Intellig_Podcast.mp3",
     "Research_Notes/GEM Generative Supervision for Embodied VLM.md",
-    "Run_Records/2026-05-28-openrouter-run-state.json.tmp",
-    "script/__pycache__/fix_publication_dates.cpython-39.pyc",
-    "script/tests/__pycache__/test_fix_publication_dates.cpython-39.pyc",
-    "script/tests/test_fix_publication_dates.py",
-    "script/tools/__pycache__/fix_publication_dates.cpython-39.pyc",
-    "script/fix_publication_dates.py",
-    "script/tools/fix_publication_dates.py",
     "Research_Notes/QwenVLA Unified VLA for Manipulation and Navigation.md",
     "Research_Notes/HideandSeek Failure Detection for VLA.md",
     "Research_Notes/VisualThinkVLA.md",
     "Research_Notes/Target Viewpoint Reproduction TVR Benchmark.md",
-    "script/tests/__pycache__/test_analyser_content.cpython-39.pyc",
-    "script/tests/test_analyser_content.py",
     "Assets/HideandSeek in Trajectories Discovering Failure Signals for VLA Runtime Monitoring_arch.png",
     "Assets/GEM Generative Supervision Helps Embodied Intelligence_arch.png",
     "Run_Records/2026-06-01-openrouter-screening-results.md",
@@ -249,15 +256,8 @@
     "Research_Notes/AHEAD for Dynamic VLA Manipulation.md",
     "Research_Notes/GeneralVLA.md",
     "Research_Notes/The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models.md",
-    "Daily_Papers/2026-02-27-PaperDigest.md",
-    "Research_Briefs/2026-W23-ResearchBrief.md",
-    "Daily_Papers/2026-03-04-PaperDigest.md",
-    "Research_Notes/Code2Worlds.md",
-    "Research_Notes/CanViT.md",
-    "Research_Notes/VistaBot.md",
     "Assets/Where to Look Can Foundation Models Reach a Target Viewpoint Through Active Exploration_arch.png",
     "Assets/AFUN Towards an Affordance Foundation Model for Functionality Understanding_arch.png",
-    "Assets/VisualThinkVLA Visual Intermediate Reasoning for Effective and LowLatency VisionLanguageAction Polic_arch.png",
-    "Assets/Intercepting the Future LatentSpace Predictive World Model for Dynamic VLA Manipulation_arch.png"
+    "Assets/VisualThinkVLA Visual Intermediate Reasoning for Effective and LowLatency VisionLanguageAction Polic_arch.png"
   ]
 }

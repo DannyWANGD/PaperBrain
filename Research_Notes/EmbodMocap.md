@@ -135,8 +135,8 @@ The cross-view tracking loss $\mathcal{L}_{track}$ is the most critical componen
 ---
 
 ### Task 1: Knowledge Connections
-1.  **[[World_Action_Models_are_Zero_shot_Policies]]**: EmbodMocap directly addresses a core bottleneck for world action model research: the scarcity of metrically aligned, in-the-wild 4D human-scene interaction data required to train generalizable zero-shot policies. The pipeline's output data provides physically grounded, scene-contextualized motion demonstrations that can be used to pre-train world action models for transfer to unseen real-world environments, validating the practical utility of portable capture systems for world model development.
-2.  **[[Learning_Situated_Awareness_in_the_Real_World]]**: This line of work requires situated, environment-specific human behavior data captured outside controlled studio settings to train embodied agents that understand context-dependent interaction constraints. EmbodMocap's low-cost, portable design enables scalable collection of exactly this type of data, eliminating the reliance on studio-captured datasets that lack the unstructured, in-the-wild context required for real-world situated awareness learning.
+1.  **[[World Action Models are Zero shot Policies]]**: EmbodMocap directly addresses a core bottleneck for world action model research: the scarcity of metrically aligned, in-the-wild 4D human-scene interaction data required to train generalizable zero-shot policies. The pipeline's output data provides physically grounded, scene-contextualized motion demonstrations that can be used to pre-train world action models for transfer to unseen real-world environments, validating the practical utility of portable capture systems for world model development.
+2.  **[[Learning Situated Awareness in the Real World]]**: This line of work requires situated, environment-specific human behavior data captured outside controlled studio settings to train embodied agents that understand context-dependent interaction constraints. EmbodMocap's low-cost, portable design enables scalable collection of exactly this type of data, eliminating the reliance on studio-captured datasets that lack the unstructured, in-the-wild context required for real-world situated awareness learning.
 3.  **[[Physics Informed Viscous Value Representations]]**: Physics-informed motion learning frameworks require high-quality, physically consistent human-scene motion data with accurate metric alignment between body poses and scene geometry to train valid value functions. EmbodMocap's validated, physics-aligned motion data can be used to train and evaluate these viscous value representations, especially for scene-aware motion tracking tasks where physical plausibility between the human and static scene geometry is a core constraint.
 4.  **[[Xiaomi-Robotics-0]]**: EmbodMocap's sim-to-real humanoid motion control pipeline is directly applicable to commercial humanoid robotics development, as demonstrated by Xiaomi's humanoid research program. The in-the-wild motion data captured by the system provides diverse, low-cost fine-tuning data to improve zero-shot motion transfer performance on physical humanoid platforms, filling the gap of non-studio motion demonstrations for real-world robot deployment.
 
@@ -197,7 +197,7 @@ graph LR
 - Compared Against: Vicon optical mocap (gold-standard ground truth); monocular GVHMR; single-view optimization variants; out-of-the-box pi3 and VIMO.
 - Confidence: 8
 - Links:
-  - same_problem:: [[Learning_Situated_Awareness_in_the_Real_World]]
+  - same_problem:: [[Learning Situated Awareness in the Real World]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 
@@ -219,7 +219,7 @@ graph LR
 - Compared Against: Studio-based Vicon optical mocap systems, which are not range-constrained in the same way but require controlled environments.
 - Confidence: 9
 - Links:
-  - same_problem:: [[Learning_Situated_Awareness_in_the_Real_World]]
+  - same_problem:: [[Learning Situated Awareness in the Real World]]
   - improves_over:: 待定
   - conflicts_with:: [[Xiaomi-Robotics-0]]
 
@@ -230,7 +230,7 @@ graph LR
 - Compared Against: AMASS optical mocap dataset; monocular GVHMR as a motion estimation baseline for animation tasks.
 - Confidence: 7
 - Links:
-  - same_problem:: [[World_Action_Models_are_Zero_shot_Policies]]
+  - same_problem:: [[World Action Models are Zero shot Policies]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 

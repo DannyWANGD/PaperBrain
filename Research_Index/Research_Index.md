@@ -6,10 +6,10 @@
 
 | 指标 | 数值 |
 |---|---:|
-| Total papers | 82 |
-| High impact (score >= 8) | 50 |
+| Total papers | 83 |
+| High impact (score >= 8) | 51 |
 | Must read (score >= 9) | 4 |
-| Unread | 77 |
+| Unread | 78 |
 | Needs tag review | 3 |
 | Reproduction candidates | 80 |
 | Average score | 7.49 |
@@ -27,11 +27,11 @@
 
 | Tag | Count |
 |---|---:|
-| `#domain/reinforcement_learning` | 73 |
-| `#domain/embodied_ai` | 71 |
-| `#domain/multimodal_perception` | 60 |
+| `#domain/reinforcement_learning` | 74 |
+| `#domain/embodied_ai` | 72 |
+| `#domain/multimodal_perception` | 61 |
 | `#domain/robot_manipulation` | 59 |
-| `#domain/vla` | 39 |
+| `#domain/vla` | 40 |
 | `#domain/world_model` | 26 |
 | `#domain/3d_perception` | 23 |
 | `#domain/sim2real` | 15 |
@@ -40,8 +40,8 @@
 
 | Tag | Count |
 |---|---:|
-| `#method/reinforcement_learning` | 73 |
-| `#method/foundation_model` | 42 |
+| `#method/reinforcement_learning` | 74 |
+| `#method/foundation_model` | 43 |
 | `#method/benchmark` | 40 |
 | `#method/planning` | 39 |
 | `#method/simulation` | 35 |
@@ -54,10 +54,10 @@
 
 | Tag | Count |
 |---|---:|
-| `#task/scene_understanding` | 61 |
+| `#task/scene_understanding` | 62 |
 | `#task/manipulation` | 59 |
 | `#task/planning_reasoning` | 39 |
-| `#task/navigation` | 26 |
+| `#task/navigation` | 27 |
 | `#task/dexterous_contact` | 13 |
 | `#task/video_prediction` | 12 |
 | `#task/loco_manipulation` | 7 |
@@ -68,16 +68,16 @@
 |---|---:|---|---|
 | [[Not All Features Are Created Equal]] | 9.0 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#method/benchmark` | 2026-03-19 |
 | [[Simple Recipe Works]] | 9.0 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#method/benchmark` | 2026-03-12 |
-| [[World_Action_Models_are_Zero_shot_Policies]] | 9.0 | `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#method/foundation_model` `#method/imitation_learning` | 2026-02-19 |
+| [[World Action Models are Zero shot Policies]] | 9.0 | `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#method/foundation_model` `#method/imitation_learning` | 2026-02-19 |
 | [[RISE]] | 9.0 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#domain/world_model` | 2026-02-11 |
 | [[VisualThinkVLA]] | 8.6 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/robot_manipulation` `#domain/vla` `#method/benchmark` `#method/foundation_model` | 2026-06-01 |
+| [[Rethinking VLM Representation for VLA Initialization]] | 8.2 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/vla` `#method/foundation_model` `#method/reinforcement_learning` | 2026-05-27 |
 | [[HideandSeek Failure Detection for VLA]] | 8.1 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#method/foundation_model` | 2026-06-01 |
 | [[DynaFLIP DynamicsAware Visual Pretraining]] | 8.1 | `#domain/3d_perception` `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` | 2026-05-29 |
 | [[GEM Generative Supervision for Embodied VLM]] | 8.1 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#method/benchmark` | 2026-05-28 |
 | [[AHEAD for Dynamic VLA Manipulation]] | 8.0 | `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#domain/world_model` `#method/latent_world_model` | 2026-06-01 |
 | [[SoftMimicGen]] | 8.0 | `#domain/embodied_ai` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/sim2real` `#method/benchmark` `#method/imitation_learning` | 2026-03-26 |
 | [[DreamerAD]] | 8.0 | `#domain/3d_perception` `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/world_model` `#method/diffusion_policy` | 2026-03-25 |
-| [[TAG]] | 8.0 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/robot_manipulation` `#domain/vla` `#method/benchmark` `#method/foundation_model` | 2026-03-25 |
 
 ## Recent Papers
 
@@ -91,10 +91,10 @@
 | [[DynaFLIP DynamicsAware Visual Pretraining]] | 8.1 | `#domain/3d_perception` `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` | 2026-05-29 |
 | [[QwenVLA Unified VLA for Manipulation and Navigation]] | 7.5 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#method/benchmark` | 2026-05-29 |
 | [[GEM Generative Supervision for Embodied VLM]] | 8.1 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#method/benchmark` | 2026-05-28 |
+| [[Rethinking VLM Representation for VLA Initialization]] | 8.2 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/vla` `#method/foundation_model` `#method/reinforcement_learning` | 2026-05-27 |
 | [[HiVLA]] | 7.0 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#method/diffusion_policy` | 2026-04-15 |
 | [[SoftMimicGen]] | 8.0 | `#domain/embodied_ai` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/sim2real` `#method/benchmark` `#method/imitation_learning` | 2026-03-26 |
 | [[DreamerAD]] | 8.0 | `#domain/3d_perception` `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/world_model` `#method/diffusion_policy` | 2026-03-25 |
-| [[TAG]] | 8.0 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/robot_manipulation` `#domain/vla` `#method/benchmark` `#method/foundation_model` | 2026-03-25 |
 
 ## Dataview Queries
 
@@ -135,4 +135,4 @@ SORT score DESC
 ```
 
 ---
-Generated by `script/build_research_index.py` at 2026-06-03 16:27.
+Generated by `script/build_research_index.py` at 2026-06-03 19:10.

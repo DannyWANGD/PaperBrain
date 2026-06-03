@@ -139,10 +139,10 @@ Perceptual Granularity Rescaling is the most critical component: naive unaligned
 
 ## 🔗 Knowledge Graph & Connections
 ### Task 1: Knowledge Connections
-1.  [[GeometryAware_Rotary_Position_Embedding_for_Consistent_Video_World_Model]]: Both works extend rotary positional encoding (RoPE) beyond standard NLP/2D vision domains to enforce geometric consistency and reduce dependency on domain-specific coordinate conventions. Utonia's RoPE implementation on granularity-aligned point cloud coordinates is a parallel 3D spatial application of the same core intuition that RoPE prioritizes relative geometric relationships over absolute positional values, improving cross-domain transfer.
+1.  [[GeometryAware Rotary Position Embedding for Consistent Video World Model]]: Both works extend rotary positional encoding (RoPE) beyond standard NLP/2D vision domains to enforce geometric consistency and reduce dependency on domain-specific coordinate conventions. Utonia's RoPE implementation on granularity-aligned point cloud coordinates is a parallel 3D spatial application of the same core intuition that RoPE prioritizes relative geometric relationships over absolute positional values, improving cross-domain transfer.
 2.  [[GeneralVLA]] / [[QuantVLA]]: Utonia's unified cross-domain 3D point representations directly solve a key limitation of existing Vision-Language-Action (VLA) pipelines, which rely on domain-specific 3D encoders for different deployment settings. The paper's demonstrated +4.1% GraspVLA performance gain confirms Utonia can serve as a drop-in universal 3D backbone for generalist VLA systems spanning indoor manipulation, outdoor navigation, and object-centric grasping tasks.
-3.  [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]: Utonia's design explicitly aligns with the consistency principle for general world models: it enforces three aligned consistency constraints (modality consistency via causal blinding, granularity consistency via perceptual rescaling, positional consistency via RoPE encoding) to learn a transferable 3D spatial representation that generalizes across data domains, fitting the proposed framework for general world model design.
-4.  [[SemanticContact_Fields_for_CategoryLevel_Generalizable_Tactile_Tool_Manipulation]]: Utonia's state-of-the-art cross-domain object part segmentation and geometric understanding capabilities make it an ideal upstream encoder for semantic contact field estimation. It eliminates the need for siloed encoders for object-level contact estimation and scene-level navigation, directly improving cross-category generalization for tactile manipulation pipelines without task-specific retraining.
+3.  [[The Trinity of Consistency as a Defining Principle for General World Models]]: Utonia's design explicitly aligns with the consistency principle for general world models: it enforces three aligned consistency constraints (modality consistency via causal blinding, granularity consistency via perceptual rescaling, positional consistency via RoPE encoding) to learn a transferable 3D spatial representation that generalizes across data domains, fitting the proposed framework for general world model design.
+4.  [[SemanticContact Fields for CategoryLevel Generalizable Tactile Tool Manipulation]]: Utonia's state-of-the-art cross-domain object part segmentation and geometric understanding capabilities make it an ideal upstream encoder for semantic contact field estimation. It eliminates the need for siloed encoders for object-level contact estimation and scene-level navigation, directly improving cross-category generalization for tactile manipulation pipelines without task-specific retraining.
 
 ---
 ### Task 2: Mermaid Knowledge Graph
@@ -238,7 +238,7 @@ graph LR
 - Compared Against: Standard PTv3 (without rotary position embeddings).
 - Confidence: 6
 - Links:
-  - same_problem:: [[GeometryAware_Rotary_Position_Embedding_for_Consistent_Video_World_Model]]
+  - same_problem:: [[GeometryAware Rotary Position Embedding for Consistent Video World Model]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 
@@ -249,7 +249,7 @@ graph LR
 - Compared Against: Sonata, Concerto, PPT (the closest prior attempts at multi-domain or cross-domain point cloud learning).
 - Confidence: 7
 - Links:
-  - same_problem:: [[The_Trinity_of_Consistency_as_a_Defining_Principle_for_General_World_Models]]
+  - same_problem:: [[The Trinity of Consistency as a Defining Principle for General World Models]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 

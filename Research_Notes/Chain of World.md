@@ -296,7 +296,7 @@ The experimental design is **reasonably fair**: all methods are evaluated on the
 ## 🔗 Knowledge Graph & Connections
 ## Task 1: Differential Analysis & Connections
 
-### Connection 1: CoWVLA vs. [[World_Action_Models_are_Zero_shot_Policies]] (DreamZero)
+### Connection 1: CoWVLA vs. [[World Action Models are Zero shot Policies]] (DreamZero)
 
 Both papers address the same foundational critique of standard VLAs: they lack physical world understanding and fail to generalize to novel environments. However, they arrive at diametrically opposed engineering decisions regarding **representation density**.
 
@@ -326,7 +326,7 @@ Viewing all three related papers together reveals a **compression-fidelity spect
 
 | Paper | World Model Target | Representation | Generalization Mode |
 |---|---|---|---|
-| DreamZero ([[World_Action_Models_are_Zero_shot_Policies]]) | Dense pixel video | 14B diffusion model | Zero-shot transfer |
+| DreamZero ([[World Action Models are Zero shot Policies]]) | Dense pixel video | 14B diffusion model | Zero-shot transfer |
 | RISE ([[RISE]]) | Multi-view future frames + value | Compositional pixel+value | Self-improving RL |
 | CoWVLA ([[Chain of World]]) | Latent motion vector (1792-d) | Disentangled VAE | Cross-benchmark stability |
 
@@ -489,7 +489,7 @@ graph LR
 
 ### Direction 3: Cross-Embodiment Transfer via Embodiment-Agnostic Motion Latents
 
-**Gap identified**: The motion latent $z_m$ is currently extracted from robot-arm video data and is therefore implicitly embodiment-specific (it captures WidowX or simulated arm trajectories). However, the directional spatial averaging design ($z_m^h$, $z_m^w$ as height/width projections) is geometrically general — in principle, the same motion structure exists in human hand demonstrations or demonstrations from other robot morphologies. [[World_Action_Models_are_Zero_shot_Policies]] demonstrates cross-embodiment transfer using video-only demonstrations, suggesting that video-level motion representations have embodiment-agnostic components.
+**Gap identified**: The motion latent $z_m$ is currently extracted from robot-arm video data and is therefore implicitly embodiment-specific (it captures WidowX or simulated arm trajectories). However, the directional spatial averaging design ($z_m^h$, $z_m^w$ as height/width projections) is geometrically general — in principle, the same motion structure exists in human hand demonstrations or demonstrations from other robot morphologies. [[World Action Models are Zero shot Policies]] demonstrates cross-embodiment transfer using video-only demonstrations, suggesting that video-level motion representations have embodiment-agnostic components.
 
 **Proposed research**: Investigate whether **disentangling embodiment-specific structure from task-relevant motion** within $z_m$ enables cross-embodiment transfer. Concretely, train the VAE on paired datasets of the same task performed by different embodiments (robot arm, human hand, different robot morphologies) and introduce a **contrastive alignment loss** that pulls together $z_m$ representations of the same task across embodiments while pushing apart $z_m$ representations of different tasks. A VLA pre-trained on human video demonstrations (which are far more abundant than robot data) but fine-tuned on a small set of robot demonstrations could then leverage the human-derived $z_m$ prior — dramatically reducing the robot data requirements for new task domains. The critical technical question is whether the spatial averaging design is sufficient to abstract away gripper morphology differences, or whether explicit embodiment disentanglement (e.g., masking the end-effector region during motion latent extraction) is necessary.
 
@@ -506,7 +506,7 @@ graph LR
 - Compared Against: World-model VLAs (WorldVLA, UniVLA, FlowVLA) and latent-action VLAs (LAPA, villa-X, TLA)
 - Confidence: 7
 - Links:
-  - same_problem:: [[World_Action_Models_are_Zero_shot_Policies]]
+  - same_problem:: [[World Action Models are Zero shot Policies]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 
@@ -517,7 +517,7 @@ graph LR
 - Compared Against: OpenVLA, SpatialVLA, CogACT, DiTA, π₀, π₀-FAST, GR00T-N1, LAPA, villa-X, TLA, WorldVLA, CoT-VLA, UniVLA, FlowVLA
 - Confidence: 7
 - Links:
-  - same_problem:: [[World_Action_Models_are_Zero_shot_Policies]]
+  - same_problem:: [[World Action Models are Zero shot Policies]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 
@@ -539,7 +539,7 @@ graph LR
 - Compared Against: WorldVLA, UniVLA, FlowVLA (pixel-level world models); LAPA, villa-X, TLA (temporally shallow latent-action models)
 - Confidence: 6
 - Links:
-  - same_problem:: [[World_Action_Models_are_Zero_shot_Policies]]
+  - same_problem:: [[World Action Models are Zero shot Policies]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 

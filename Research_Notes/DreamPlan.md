@@ -255,7 +255,7 @@ The key mathematical distinction from explicit verification baselines (Table III
 ## 🔗 Knowledge Graph & Connections
 ## Task 1: Differential Analysis & Connections
 
-### Connection 1: [[World_Action_Models_are_Zero_shot_Policies]] (DreamZero/WAM)
+### Connection 1: [[World Action Models are Zero shot Policies]] (DreamZero/WAM)
 
 **Relationship**: Both DreamPlan and DreamZero use pretrained video diffusion backbones as the foundation for learning physical dynamics, and both aim to bridge the gap between semantic reasoning and physical grounding in robotic manipulation.
 
@@ -370,7 +370,7 @@ The current world model in DreamPlan is task-specific: a separate CogVideoX-5B m
 - Compared Against: Zero-shot Qwen3-VL-32B, zero-shot Qwen3-VL-8B, zero-shot Qwen3-VL-4B, and zero-shot GPT-4o
 - Confidence: 7
 - Links:
-  - same_problem:: [[World_Action_Models_are_Zero_shot_Policies]]
+  - same_problem:: [[World Action Models are Zero shot Policies]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 
@@ -381,7 +381,7 @@ The current world model in DreamPlan is task-specific: a separate CogVideoX-5B m
 - Compared Against: Explicit Verification with N=4 and N=8 zero-shot candidates evaluated by GPT-4o
 - Confidence: 8
 - Links:
-  - same_problem:: [[World_Action_Models_are_Zero_shot_Policies]]
+  - same_problem:: [[World Action Models are Zero shot Policies]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 
@@ -403,7 +403,7 @@ The current world model in DreamPlan is task-specific: a separate CogVideoX-5B m
 - Compared Against: CogVideoX-5B-I2V and Wan2.2-I2V-A14B as alternative world models; implicit comparison to simulation-based RL approaches
 - Confidence: 6
 - Links:
-  - same_problem:: [[World_Action_Models_are_Zero_shot_Policies]]
+  - same_problem:: [[World Action Models are Zero shot Policies]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 

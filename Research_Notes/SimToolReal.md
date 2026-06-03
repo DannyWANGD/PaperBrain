@@ -118,7 +118,7 @@ The two most critical components are: (1) SAPG optimizer: replacing SAPG with st
 ### Task 1: Knowledge Connections
 1. [[Code2Worlds]]: Both works leverage procedural generation of simulation assets to eliminate per-task/per-object real-world training overhead, enabling zero-shot sim-to-real transfer. SimToolReal extends Code2Worlds' general procedural generation paradigm to the constrained domain of dexterous handle-headed tool manipulation, with a specialized goal-reaching reward optimized for contact-rich in-hand reorientation tasks.
 2. [[GeneralVLA]]: SimToolReal's object-centric pose-based action conditioning framework is complementary to general vision-language-action models, which currently perform poorly on fine-grained dexterous manipulation tasks. The lightweight, low-dimensional observation space used in SimToolReal can be integrated as a dedicated manipulation head for GeneralVLA to improve tool-use performance without adding task-specific fine-tuning requirements.
-3. [[World_Action_Models_are_Zero_shot_Policies]]: SimToolReal directly instantiates the core theoretical claim of this work: framing zero-shot policy execution as sequential goal state reaching, rather than task-specific action prediction. SimToolReal's task-agnostic pose-reaching objective validates that world action model design principles are applicable to high-dimensional dexterous manipulation tasks with contact-rich interactions.
+3. [[World Action Models are Zero shot Policies]]: SimToolReal directly instantiates the core theoretical claim of this work: framing zero-shot policy execution as sequential goal state reaching, rather than task-specific action prediction. SimToolReal's task-agnostic pose-reaching objective validates that world action model design principles are applicable to high-dimensional dexterous manipulation tasks with contact-rich interactions.
 4. [[Physics Informed Viscous Value Representations]]: SimToolReal's asymmetric critic component can be improved via physics-informed value representation methods, which explicitly model contact dynamics to reduce value estimation error for force-sensitive tool manipulation tasks. This connection points to a clear path to reduce SimToolReal's training sample complexity and improve performance on heavy-tool tasks.
 
 ---
@@ -199,7 +199,7 @@ graph LR
 - Confidence: 7
 - Links:
   - same_problem:: [[GeneralVLA]]
-  - improves_over:: [[World_Action_Models_are_Zero_shot_Policies]]
+  - improves_over:: [[World Action Models are Zero shot Policies]]
   - conflicts_with:: 待定
 
 ### Claim-02

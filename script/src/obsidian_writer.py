@@ -26,7 +26,8 @@ class ObsidianWriter:
 
     def sanitize_filename(self, filename):
         # Replace invalid characters and ensure it's not too long
-        safe_name = "".join([c for c in filename if c.isalpha() or c.isdigit() or c==' ' or c=='_']).strip()
+        filename = str(filename or "").replace("_", " ")
+        safe_name = "".join([c for c in filename if c.isalpha() or c.isdigit() or c == ' ']).strip()
         # Collapse multiple spaces
         safe_name = re.sub(r'\s+', ' ', safe_name)
         return safe_name[:100] # Limit length

@@ -282,7 +282,7 @@ The third finding implies that VLM-ready features cannot be obtained by post-hoc
 ## 🔗 Knowledge Graph & Connections
 ## Task 1: Differential Analysis & Connections
 
-### Connection 1: [[GeometryAware_Rotary_Position_Embedding_for_Consistent_Video_World_Model]]
+### Connection 1: [[GeometryAware Rotary Position Embedding for Consistent Video World Model]]
 
 Both papers independently arrive at the conclusion that screen-space positional embeddings are insufficient for spatiotemporal reasoning and propose rotary positional embedding extensions to encode geometric structure into transformer attention. However, the approaches diverge fundamentally in their geometric parameterization. ViewRope injects **camera-ray directions** directly into attention—encoding the actual 3D projective geometry of each pixel's viewing ray as the positional signal, which provides a strong physics-grounded inductive bias for 3D consistency across camera revisits. OmniStream's 3D-RoPE, by contrast, uses a simpler **index-based temporal extension** (the 2:3:3 dimensional split across $t, y, x$ axes), which encodes *relative temporal and spatial position* without explicit camera geometry. ViewRope is purpose-built for geometric consistency in world model generation; OmniStream's 3D-RoPE is a pragmatic engineering choice that preserves DINOv3's pre-trained 2D spatial priors while enabling length extrapolation. Consequently, ViewRope should theoretically produce stronger multi-view geometric consistency, while 3D-RoPE achieves broader generalization across semantic and geometric tasks simultaneously. The two approaches could be complementary: incorporating ray-direction parameterization into OmniStream's positional encoding could further improve its streaming geometric reconstruction branch, particularly on metric-critical benchmarks like KITTI where OmniStream currently underperforms CUT3R.
 
@@ -348,7 +348,7 @@ graph LR
 
 ### Direction 1: Ray-Conditioned 3D-RoPE for Metric-Geometric Streaming Backbones
 
-OmniStream underperforms dedicated geometric models (CUT3R) on metric-critical benchmarks (KITTI depth, TUM pose) because its 3D-RoPE encodes only relative spatiotemporal indices without any camera geometry knowledge. Drawing from [[GeometryAware_Rotary_Position_Embedding_for_Consistent_Video_World_Model]], a natural extension is to replace or augment the temporal dimension of 3D-RoPE with **camera-ray direction vectors** derived from intrinsic parameters (available from the [CAM] token predictions or ground-truth at training time). Concretely, the RoPE rotation matrices could be parameterized by the cross-product angle between viewing rays of query and key tokens rather than by frame index differences. This would provide a physics-consistent geometric inductive bias within the attention mechanism itself, potentially closing the gap with CUT3R on outdoor metric scenes while retaining OmniStream's semantic generality. The research question is whether this geometry-grounded attention can be bootstrapped from OmniStream's own predicted camera parameters during training (self-supervised ray conditioning), avoiding dependence on ground-truth intrinsics at inference.
+OmniStream underperforms dedicated geometric models (CUT3R) on metric-critical benchmarks (KITTI depth, TUM pose) because its 3D-RoPE encodes only relative spatiotemporal indices without any camera geometry knowledge. Drawing from [[GeometryAware Rotary Position Embedding for Consistent Video World Model]], a natural extension is to replace or augment the temporal dimension of 3D-RoPE with **camera-ray direction vectors** derived from intrinsic parameters (available from the [CAM] token predictions or ground-truth at training time). Concretely, the RoPE rotation matrices could be parameterized by the cross-product angle between viewing rays of query and key tokens rather than by frame index differences. This would provide a physics-consistent geometric inductive bias within the attention mechanism itself, potentially closing the gap with CUT3R on outdoor metric scenes while retaining OmniStream's semantic generality. The research question is whether this geometry-grounded attention can be bootstrapped from OmniStream's own predicted camera parameters during training (self-supervised ray conditioning), avoiding dependence on ground-truth intrinsics at inference.
 
 ---
 
@@ -376,7 +376,7 @@ OmniStream's three pre-training objectives ($\mathcal{L}_{\text{ssl}}$, $\mathca
 - Compared Against: DINOv3-L (image SSL), V-JEPA2-L (video SSL), CUT3R (streaming 3D reconstruction), LLaVA-Video (VLM), OpenVLA (VLA policy)
 - Confidence: 7
 - Links:
-  - same_problem:: [[GeometryAware_Rotary_Position_Embedding_for_Consistent_Video_World_Model]]
+  - same_problem:: [[GeometryAware Rotary Position Embedding for Consistent Video World Model]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 
@@ -398,7 +398,7 @@ OmniStream's three pre-training objectives ($\mathcal{L}_{\text{ssl}}$, $\mathca
 - Compared Against: CUT3R (streaming 3D geometric reconstruction specialist with multi-view matching and geometric optimization)
 - Confidence: 9
 - Links:
-  - same_problem:: [[GeometryAware_Rotary_Position_Embedding_for_Consistent_Video_World_Model]]
+  - same_problem:: [[GeometryAware Rotary Position Embedding for Consistent Video World Model]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 
@@ -409,7 +409,7 @@ OmniStream's three pre-training objectives ($\mathcal{L}_{\text{ssl}}$, $\mathca
 - Compared Against: DINOv3-L, V-JEPA2-L, CUT3R, LLaVA-Video, OpenVLA (all lacking causal streaming with bounded latency and memory)
 - Confidence: 7
 - Links:
-  - same_problem:: [[GeometryAware_Rotary_Position_Embedding_for_Consistent_Video_World_Model]]
+  - same_problem:: [[GeometryAware Rotary Position Embedding for Consistent Video World Model]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 

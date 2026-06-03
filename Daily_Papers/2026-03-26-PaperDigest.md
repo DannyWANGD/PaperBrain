@@ -24,7 +24,7 @@ Total Papers: 33 | High Impact: 15
 ### 🔥 World Reasoning Arena (Score: 8/10)
 - **💡 Innovation**: Introduces WR-Arena benchmark evaluating world models on action simulation fidelity, long-horizon forecasting, and simulative reasoning beyond standard visual fidelity metrics.
 - **⚠️ Limitations**: Abstract lacks specific quantitative metrics or baseline model performance details to fully assess the claimed gap between current models and human-level reasoning.
-- **🔗 Link**: [[World_Reasoning_Arena]]
+- **🔗 Link**: [[World Reasoning Arena]]
 - **👥 Authors**: PAN Team, Qiyue Gao, Kun Zhou, Jiannan Xiang, Zihan Liu, Dequan Yang, Junrong Chen, Arif Ahmad, Cong Zeng, Ganesh Bannur, Xinqi Huang, Zheqi Liu, Yi Gu, Yichi Yang, Guangyi Liu, Zhiting Hu, Zhengzhong Liu, Eric Xing
 - **🏷️ Tags**: #World_Model #Embodied_AI #VLA #LLM #Foundation_Model
 

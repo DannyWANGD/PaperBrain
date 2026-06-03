@@ -129,8 +129,8 @@ The most critical component is the joint integration of online policy-proposed a
 ## 🔗 Knowledge Graph & Connections
 ### Task 1: Knowledge Connections
 1. [[GeneralVLA]]: RISE builds directly on the generalist VLA paradigm, using the pre-trained $\pi_{0.5}$ VLA as the backbone for both its policy and value model components. This work extends static GeneralVLA-style fine-tuning to a closed-loop self-improving pipeline, addressing the core limitation of base VLAs' brittleness in contact-rich dynamic manipulation tasks by eliminating exposure bias via imaginary on-policy rollouts.
-2. [[GeometryAware_Rotary_Position_Embedding_for_Consistent_Video_World_Model]]: Both works target the critical bottleneck of action controllability and temporal consistency in generative video world models for robot learning. While RISE uses task-centric batching to reduce motion artifacts and action inconsistency, the geometry-aware RoPE work modifies positional embedding logic to achieve the same end. Both demonstrate that improved world model consistency directly translates to better downstream robot policy performance.
-3. [[World_Action_Models_are_Zero_shot_Policies]]: This work shares RISE's core thesis that world models can function as more than just planning tools for robotics, and can instead act as full interactive learning environments. The key divergence is that RISE implements an iterative online RL loop in imaginary space for continuous policy improvement, while the world action model work focuses on zero-shot inference-time policy extraction from pre-trained world models without fine-tuning.
+2. [[GeometryAware Rotary Position Embedding for Consistent Video World Model]]: Both works target the critical bottleneck of action controllability and temporal consistency in generative video world models for robot learning. While RISE uses task-centric batching to reduce motion artifacts and action inconsistency, the geometry-aware RoPE work modifies positional embedding logic to achieve the same end. Both demonstrate that improved world model consistency directly translates to better downstream robot policy performance.
+3. [[World Action Models are Zero shot Policies]]: This work shares RISE's core thesis that world models can function as more than just planning tools for robotics, and can instead act as full interactive learning environments. The key divergence is that RISE implements an iterative online RL loop in imaginary space for continuous policy improvement, while the world action model work focuses on zero-shot inference-time policy extraction from pre-trained world models without fine-tuning.
 4. [[Physics Informed Viscous Value Representations]]: Both pieces of work solve the sparse reward problem in contact-rich manipulation RL by designing dense, failure-sensitive value signals. RISE combines temporal progress regression and temporal-difference learning to produce its advantage estimation signal, while the viscous value representation work injects physics priors into value modeling. Both approaches reduce sample complexity and improve policy robustness relative to sparse terminal reward baselines.
 
 ---
@@ -189,7 +189,7 @@ graph LR
 - Compared Against: Physical-world online RL ($\pi_{0.5}$+PPO) and offline RL/IL baselines including base $\pi_{0.5}$, DAgger, DSRL, and RECAP — all using the same $\pi_{0.5}$ VLA backbone and identical compute/data budget.
 - Confidence: 8
 - Links:
-  - same_problem:: [[World_Action_Models_are_Zero_shot_Policies]]
+  - same_problem:: [[World Action Models are Zero shot Policies]]
   - improves_over:: [[GeneralVLA]]
   - conflicts_with:: 待定
 
@@ -211,7 +211,7 @@ graph LR
 - Compared Against: Physical-world RL ($\pi_{0.5}$+PPO), which does not face generative latency but instead faces safety risks, hardware cost, and serial execution constraints.
 - Confidence: 9
 - Links:
-  - same_problem:: [[GeometryAware_Rotary_Position_Embedding_for_Consistent_Video_World_Model]]
+  - same_problem:: [[GeometryAware Rotary Position Embedding for Consistent Video World Model]]
   - improves_over:: 待定
   - conflicts_with:: 待定
 
@@ -222,7 +222,7 @@ graph LR
 - Compared Against: Physical-world online RL paradigms ($\pi_{0.5}$+PPO, $\pi_{0.5}$+DSRL) and offline IL/RL paradigms (DAgger, RECAP) that do not leverage a learned world model for policy improvement.
 - Confidence: 7
 - Links:
-  - same_problem:: [[World_Action_Models_are_Zero_shot_Policies]]
+  - same_problem:: [[World Action Models are Zero shot Policies]]
   - improves_over:: [[Physics Informed Viscous Value Representations]]
   - conflicts_with:: 待定
 
