@@ -11,40 +11,14 @@
             "id": "e59f7fd8ed9b5834",
             "type": "leaf",
             "state": {
-              "type": "pdf",
+              "type": "markdown",
               "state": {
-                "file": "PDFs/When Does LeJEPA Learn a World Model.pdf"
+                "file": "Run_Records/2026-05-22-openrouter/screening_report.md",
+                "mode": "preview",
+                "source": false
               },
-              "icon": "lucide-file-text",
-              "title": "When Does LeJEPA Learn a World Model"
-            }
-          },
-          {
-            "id": "4cf1233c52b9c978",
-            "type": "leaf",
-            "state": {
-              "type": "webviewer",
-              "state": {
-                "url": "https://en.wikipedia.org/wiki/Hermite_polynomials",
-                "title": "Hermite polynomials - Wikipedia",
-                "mode": "webview"
-              },
-              "icon": "globe-2",
-              "title": "Hermite polynomials - Wikipedia"
-            }
-          },
-          {
-            "id": "75e29c6c1a32e1c0",
-            "type": "leaf",
-            "state": {
-              "type": "webviewer",
-              "state": {
-                "url": "https://klindtlab.github.io/lejepa-identifiability/",
-                "title": "When Does LeJEPA Learn a World Model?",
-                "mode": "webview"
-              },
-              "icon": "globe-2",
-              "title": "When Does LeJEPA Learn a World Model?"
+              "icon": "lucide-file",
+              "title": "screening_report"
             }
           },
           {
@@ -118,7 +92,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 332.50390243530273
+    "width": 200
   },
   "right": {
     "id": "6f4f27bfa99de3fa",
@@ -253,20 +227,27 @@
   },
   "active": "e59f7fd8ed9b5834",
   "lastOpenFiles": [
-    "Cache/arxiv/49cb15ad5146509d16449052d379d63eab7e1a5d.xml",
-    "Cache/huggingface/5e8ed77870c2fdc3d8e17051d1876c1e30309818.json",
-    "Cache/diagnostics/latest.json",
-    "Cache/diagnostics",
-    "Cache/logs/paperbrain.log",
-    "Cache/logs",
-    "script/tests/__pycache__/test_cli_paths.cpython-39.pyc",
-    "script/src/__pycache__/paths.cpython-39.pyc",
-    "script/src/__pycache__/cli.cpython-39.pyc",
-    "script/__pycache__/paperbrain.cpython-39.pyc",
-    "script/tests/test_cli_paths.py",
-    "Research_Notes/LeJEPA.md",
-    "Daily_Papers/2026-05-25-PaperDigest.md",
+    "Daily_Papers/2026-05-22-PaperDigest.md",
+    "Run_Records/2026-05-22-openrouter/screening_report.md",
+    "Daily_Papers/2026-03-25-PaperDigest.md",
+    "Research_Notes/AffordVLA.md",
+    "Run_Records/2026-05-22-openrouter/log_summary.md",
+    "Daily_Papers/2026-05-27-PaperDigest.md",
     "Run_Records/2026-05-25-openrouter-screening-results.md",
+    "Podcasts/AffordVLA ActionAligned Visual Planning via Intern_Podcast.mp3",
+    "Assets/AffordVLA ActionAligned Visual Planning via Internalized Affordance_arch.png",
+    "PDFs/AffordVLA ActionAligned Visual Planning via Internalized Affordance.pdf",
+    "Cache/pdfs/2605.18607.pdf",
+    "Cache/temp_pdfs/Forecasting Downstream Performance of LLMs With Proxy Metrics.pdf",
+    "Cache/pdfs/2605.17602.pdf",
+    "Cache/temp_pdfs/AutoRubricT2I Robust RuleBased Reward Model for TexttoImage Alignment.pdf",
+    "Cache/pdfs/2605.22177.pdf",
+    "Cache/temp_pdfs/Maestro Reinforcement Learning to Orchestrate Hierarchical ModelSkill Ensembles.pdf",
+    "Cache/pdfs/2605.21467.pdf",
+    "Cache/temp_pdfs/DelTA Discriminative Token Credit Assignment for Reinforcement Learning from Verifiable Rewards.pdf",
+    "Research_Notes/LeJEPA.md",
+    "script/tests/README.md",
+    "Daily_Papers/2026-05-25-PaperDigest.md",
     "Research_Notes/Pion.md",
     "Daily_Papers/2026-02-13-PaperDigest.md",
     "Daily_Papers/2026-05-26-PaperDigest.md",
@@ -278,7 +259,6 @@
     "Research_Notes/OnlineX.md",
     "Run_Records/2026-05-26-openrouter-screening-results.md",
     "Research_Notes/Rethinking VLM Representation for VLA Initialization.md",
-    "Daily_Papers/2026-05-27-PaperDigest.md",
     "Run_Records/2026-05-27-openrouter-screening-results.md",
     "Daily_Papers/2026-05-28-PaperDigest.md",
     "Research_Notes/Rethinking_VLM_Rep_VLA_Init.md",
@@ -286,18 +266,12 @@
     "Daily_Papers/2026-05-29-PaperDigest.md",
     "Daily_Papers/2026-06-01-PaperDigest.md",
     "Daily_Papers/2026-03-24-PaperDigest.md",
-    "Daily_Papers/2026-04-17-PaperDigest.md",
-    "Daily_Papers/2026-04-23-PaperDigest.md",
-    "README.md",
-    "Run_Records/2026-05-28-openrouter-screening-results.md",
-    "Research_Notes/DynaFLIP DynamicsAware Visual Pretraining.md",
     "Assets/HideandSeek in Trajectories Discovering Failure Signals for VLA Runtime Monitoring_arch.png",
     "Assets/GEM Generative Supervision Helps Embodied Intelligence_arch.png",
     "Pasted image 20260303220300.png",
     "Pasted image 20260303220437.png",
     "Pasted image 20260303220453.png",
     "paperbrain_arch.png",
-    "Assets/Where to Look Can Foundation Models Reach a Target Viewpoint Through Active Exploration_arch.png",
-    "Assets/AFUN Towards an Affordance Foundation Model for Functionality Understanding_arch.png"
+    "Assets/Where to Look Can Foundation Models Reach a Target Viewpoint Through Active Exploration_arch.png"
   ]
 }

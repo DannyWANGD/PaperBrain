@@ -152,6 +152,28 @@ class MainPipelineHelperTest(unittest.TestCase):
         self.assertNotIn("screening_document_excerpt", papers[0])
         self.assertNotIn("screening_document_excerpt", papers[1])
 
+    def test_mark_digest_membership_backfills_to_target_count(self):
+        cfg = {
+            "openrouter": {"threshold_score": 7},
+            "analysis": {"daily_digest_min_score": 7.0, "daily_digest_target_min_count": 5},
+        }
+        papers = [
+            self._screened("Hard Threshold", 7.4),
+            self._screened("Backfill A", 6.8),
+            self._screened("Backfill B", 6.6),
+            self._screened("Backfill C", 6.4),
+            self._screened("Backfill D", 6.2),
+            self._screened("Left Out", 5.1, rigor=2.0, evidence=2.0),
+        ]
+
+        info = pipeline._mark_digest_membership(papers, cfg, provider="openrouter")
+
+        selected = [paper["title"] for paper in papers if paper.get("in_daily_digest")]
+        self.assertEqual(len(selected), 5)
+        self.assertEqual(info["threshold_count"], 1)
+        self.assertEqual(info["backfill_count"], 4)
+        self.assertNotIn("Left Out", selected)
+
     def test_paper_pdf_candidates_derive_arxiv_pdf_from_huggingface_url(self):
         candidates = pipeline._paper_pdf_url_candidates({
             "title": "Rethinking",
@@ -270,6 +292,19 @@ class MainPipelineHelperTest(unittest.TestCase):
             "coarse_relevance": score,
             "coarse_evidence": score,
             "coarse_method_completeness": score,
+        }
+
+    @staticmethod
+    def _screened(title, score, novelty=8.0, rigor=8.0, evidence=8.0):
+        return {
+            "title": title,
+            "score": score,
+            "novelty": novelty,
+            "rigor": rigor,
+            "evidence": evidence,
+            "reproducibility": 7.0,
+            "confidence": 8.0,
+            "red_flags": [],
         }
 
 

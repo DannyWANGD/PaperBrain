@@ -420,3 +420,6 @@ CompACT is currently validated only within MPC-CEM planning loops. A high-value 
 - **Local PDF**: [[Planning in 8 Tokens A Compact Discrete Tokenizer for Latent World Model.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2603.05438.pdf)
 - [ArXiv Link](https://huggingface.co/papers/2603.05438)
+
+## Related Work Updates
+- [ ] **2026-06-04**: New paper [[AffordVLA]] discusses *planning in 8 tokens*. Innovation: "Internalizing task-conditioned affordance as learnable tokens that decode masks and directly condition action generation in a tightly coupled VLA framework."

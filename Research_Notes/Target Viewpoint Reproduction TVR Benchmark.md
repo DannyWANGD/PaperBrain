@@ -260,3 +260,4 @@ graph LR
 ## Related Work Updates
 - [ ] **2026-06-03**: New paper [[QwenVLA Unified VLA for Manipulation and Navigation]] discusses *foundation models spatial reasoning*. Innovation: "Unifies manipulation, navigation, and trajectory prediction into a single VLA model using embodiment-aware prompts and a DiT-based action decoder."
 - [ ] **2026-06-03**: New paper [[GEM Generative Supervision for Embodied VLM]] discusses *foundation models spatial reasoning*. Innovation: "Integrating depth map generation as an auxiliary generative supervision task during VLM pre-training to enhance spatial and physical reasoning for embodied tasks."
+- [ ] **2026-06-04**: New paper [[AffordVLA]] discusses *foundation models spatial reasoning*. Innovation: "Internalizing task-conditioned affordance as learnable tokens that decode masks and directly condition action generation in a tightly coupled VLA framework."

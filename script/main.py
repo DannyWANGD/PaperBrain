@@ -389,10 +389,25 @@ def _safe_float(value, default):
 def _passes_quality_gate(paper, gate):
     return scoring_utils.passes_quality_gate(paper, gate)
 
-def _mark_digest_membership(papers, config):
-    min_score = float(config.get('analysis', {}).get('daily_digest_min_score', 7.0))
+def _mark_digest_membership(papers, config, provider='doubao'):
+    analysis_cfg = config.get('analysis', {})
+    provider_cfg = config.get(provider, config.get('doubao', {}))
+    provider_threshold = float(provider_cfg.get('threshold_score', 7.0))
+    digest_papers, digest_info = scoring_utils.select_daily_digest_papers(
+        papers,
+        analysis_cfg=analysis_cfg,
+        provider_threshold=provider_threshold,
+    )
+    selected_ids = {id(paper) for paper in digest_papers}
+    selected_keys = {p.get('paper_id') for p in digest_papers if p.get('paper_id')}
+    selected_keys.update({p.get('title') for p in digest_papers if p.get('title')})
     for paper in papers:
-        paper['in_daily_digest'] = float(paper.get('score', 0) or 0) >= min_score
+        paper['in_daily_digest'] = (
+            id(paper) in selected_ids
+            or (paper.get('paper_id') and paper.get('paper_id') in selected_keys)
+            or paper.get('title') in selected_keys
+        )
+    return digest_info
 
 def _mark_deep_selection(papers, high_value_papers):
     selected_keys = {p.get('paper_id') for p in high_value_papers if p.get('paper_id')}
@@ -525,9 +540,9 @@ def _select_and_record_deep_analysis(screened_papers, config, provider, analysis
         provider_threshold=threshold,
     )
     _mark_deep_selection(screened_papers, high_value_papers)
-    _mark_digest_membership(screened_papers, config)
+    digest_info = _mark_digest_membership(screened_papers, config, provider=provider)
     run_state.set_papers(screened_papers, stage="screened")
-    run_state.update_selection(deep_analysis=selection_info)
+    run_state.update_selection(deep_analysis=selection_info, daily_digest=digest_info)
     screening_report = run_state.write_screening_report()
     logger.info(f"[INFO] Full screening report written to {screening_report}")
 

@@ -1,0 +1,71 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "paperbrain"
+version = "0.3.0"
+description = "Local Obsidian-first research paper pipeline."
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+  "openai>=1.0.0",
+  "arxiv>=2.1.0",
+  "requests>=2.31.0",
+  "pyyaml>=6.0.1",
+  "schedule>=1.2.1",
+  "feedparser>=6.0.11",
+  "tqdm>=4.66.1",
+  "beautifulsoup4>=4.12.3",
+  "pypdf>=4.0.0",
+  "pymupdf>=1.23.0",
+  "edge-tts>=6.1.9",
+  "nest_asyncio>=1.5.8",
+  "python-dotenv>=1.0.1",
+]
+
+[project.optional-dependencies]
+dev = [
+  "ruff>=0.6.0",
+  "pre-commit>=3.7.0",
+]
+
+[project.scripts]
+paperbrain = "src.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "script"}
+py-modules = ["main", "paperbrain"]
+
+[tool.setuptools.packages.find]
+where = ["script"]
+include = ["src*", "tools*"]
+
+[tool.ruff]
+target-version = "py39"
+line-length = 120
+src = ["script"]
+extend-exclude = [
+  "Cache",
+  "PDFs",
+  "Research_Notes",
+  "Research_Index",
+  "Research_Briefs",
+  "Run_Records",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = [
+  "E501",
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+
+[tool.paperbrain.check]
+test_start_dir = "script/tests"
+test_pattern = "test_*.py"
+default_python_env = "wd"

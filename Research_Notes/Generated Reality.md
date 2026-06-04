@@ -235,3 +235,4 @@ graph LR
 
 ## Related Work Updates
 - [ ] **2026-06-03**: New paper [[GEM Generative Supervision for Embodied VLM]] discusses *generated_reality*. Innovation: "Integrating depth map generation as an auxiliary generative supervision task during VLM pre-training to enhance spatial and physical reasoning for embodied tasks."
+- [ ] **2026-06-04**: New paper [[AffordVLA]] discusses *generated reality*. Innovation: "Internalizing task-conditioned affordance as learnable tokens that decode masks and directly condition action generation in a tightly coupled VLA framework."

@@ -164,6 +164,91 @@ def quality_priority(paper):
     )
 
 
+def daily_digest_backfill_priority(paper):
+    score = safe_float(paper.get("score"), 0.0)
+    coarse_score = safe_float(paper.get("coarse_score"), score)
+    novelty = safe_float(paper.get("novelty"), 0.0)
+    rigor = safe_float(
+        paper.get("rigor"),
+        safe_float(paper.get("coarse_method_completeness"), 0.0),
+    )
+    evidence = safe_float(
+        paper.get("evidence"),
+        safe_float(paper.get("coarse_evidence"), 0.0),
+    )
+    reproducibility = safe_float(paper.get("reproducibility"), 0.0)
+    confidence = safe_float(paper.get("confidence"), 0.0)
+    flags = normalize_red_flags(paper.get("red_flags", []))
+    return (
+        0.35 * max(score, coarse_score)
+        + 0.20 * novelty
+        + 0.20 * rigor
+        + 0.20 * evidence
+        + 0.05 * reproducibility
+        + 0.05 * confidence
+        - 0.25 * len(flags)
+    )
+
+
+def select_daily_digest_papers(screened_papers, analysis_cfg=None, provider_threshold=7.0):
+    analysis_cfg = analysis_cfg or {}
+    min_score = safe_float(
+        analysis_cfg.get("daily_digest_min_score"),
+        safe_float(provider_threshold, 7.0),
+    )
+    target_min_count = max(0, int(safe_float(
+        analysis_cfg.get("daily_digest_target_min_count"),
+        5,
+    )))
+    papers = list(screened_papers or [])
+
+    selected = [
+        paper for paper in papers
+        if safe_float(paper.get("score"), 0.0) >= min_score
+    ]
+    selected.sort(
+        key=lambda paper: (
+            safe_float(paper.get("score"), 0.0),
+            daily_digest_backfill_priority(paper),
+        ),
+        reverse=True,
+    )
+
+    backfilled = []
+    if target_min_count and len(selected) < target_min_count:
+        selected_ids = {id(paper) for paper in selected}
+        remaining = [paper for paper in papers if id(paper) not in selected_ids]
+        remaining.sort(
+            key=lambda paper: (
+                daily_digest_backfill_priority(paper),
+                safe_float(paper.get("score"), 0.0),
+            ),
+            reverse=True,
+        )
+        backfilled = remaining[:target_min_count - len(selected)]
+        selected.extend(backfilled)
+        selected.sort(
+            key=lambda paper: (
+                safe_float(paper.get("score"), 0.0),
+                daily_digest_backfill_priority(paper),
+            ),
+            reverse=True,
+        )
+
+    threshold_count = len([
+        paper for paper in papers
+        if safe_float(paper.get("score"), 0.0) >= min_score
+    ])
+    diagnostics = {
+        "min_score": min_score,
+        "target_min_count": target_min_count,
+        "threshold_count": threshold_count,
+        "backfill_count": len(backfilled),
+        "selected_count": len(selected),
+    }
+    return selected, diagnostics
+
+
 def passes_quality_gate(paper, gate=None):
     gate = {**DEFAULT_QUALITY_GATE, **(gate or {})}
     flags = normalize_red_flags(paper.get("red_flags", []))

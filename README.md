@@ -3,7 +3,7 @@
 ![PaperBrain architecture](paperbrain_arch.png)
 
 <p align="center">
-  <img alt="Python 3.10" src="https://img.shields.io/badge/Python-3.10-3776AB?logo=python&logoColor=white">
+  <img alt="Python 3.9+" src="https://img.shields.io/badge/Python-3.9%2B-3776AB?logo=python&logoColor=white">
   <img alt="Obsidian first" src="https://img.shields.io/badge/Obsidian-first-7C3AED?logo=obsidian&logoColor=white">
   <img alt="OpenRouter" src="https://img.shields.io/badge/OpenRouter-ready-111827">
   <img alt="arXiv" src="https://img.shields.io/badge/arXiv-tracking-B31B1B?logo=arxiv&logoColor=white">
@@ -63,7 +63,7 @@ arXiv + Hugging Face Daily Papers
   -> backlinks + optional podcast
 ```
 
-The daily digest is broad: by default, it includes every paper with `score >= 7.0`. Deep analysis is stricter: PaperBrain selects the strongest 1-2 papers above the lower threshold, then adds any extra papers above the upper threshold.
+The daily digest is broad: by default, it includes every paper with `score >= 7.0`, then quality-backfills from the remaining papers until it reaches 5 entries when the hard-threshold pool is too small. Deep analysis is stricter: PaperBrain selects the strongest 1-2 papers above the lower threshold, then adds any extra papers above the upper threshold.
 
 ## <a id="quick-start"></a> ⚡ Quick Start
 
@@ -73,6 +73,8 @@ conda create -n wd python=3.10 -y
 conda activate wd
 pip install -r script/requirements.txt
 ```
+
+PaperBrain supports Python 3.9+; Python 3.10 is recommended for fresh environments. The local `wd` environment is the expected runtime environment for this vault.
 
 Create an environment file from the example:
 
@@ -121,7 +123,7 @@ The unified CLI writes human logs and progress to stderr, and writes the final m
 
 | Type | Output | Purpose |
 | --- | --- | --- |
-| 📰 Digest | `Daily_Papers/YYYY-MM-DD-PaperDigest.md` | Daily map of all papers above the digest threshold |
+| 📰 Digest | `Daily_Papers/YYYY-MM-DD-PaperDigest.md` | Daily map of threshold papers, with quality backfill when sparse |
 | 🧾 Audit | `Run_Records/YYYY-MM-DD-openrouter/screening_report.md` | Human-readable screening audit |
 | 💾 State | `Run_Records/YYYY-MM-DD-openrouter/state.json` | Resume state and machine-readable screening data |
 | 🧯 Errors | `Run_Records/YYYY-MM-DD-openrouter/errors.json` | Structured error objects with retry guidance |
@@ -242,6 +244,7 @@ Important analysis knobs:
 ```yaml
 analysis:
   daily_digest_min_score: 7.0
+  daily_digest_target_min_count: 5
   deep_analysis_lower_threshold: 7.5
   deep_analysis_extra_threshold: 8.8
   daily_deep_analysis_base_max: 2
@@ -286,6 +289,34 @@ python script/paperbrain.py doctor
 python script/paperbrain.py check
 python script/paperbrain.py index --no-update-notes
 ```
+
+Useful focused checks:
+
+```bash
+python script/paperbrain.py check --skip-tests --skip-lint
+python script/paperbrain.py check --strict-lint
+python script/paperbrain.py doctor config
+python script/paperbrain.py doctor env
+python script/paperbrain.py doctor arxiv
+python script/paperbrain.py doctor llm --provider openrouter
+python script/paperbrain.py doctor obsidian
+```
+
+Live probes are opt-in:
+
+```bash
+python script/paperbrain.py doctor arxiv --live
+python script/paperbrain.py doctor llm --provider openrouter --live
+```
+
+Tooling files:
+
+| File | Purpose |
+| --- | --- |
+| `pyproject.toml` | Package metadata, editable `paperbrain` entry point, dependencies, Ruff config |
+| `.pre-commit-config.yaml` | Ruff, formatting, trailing whitespace, EOF, and YAML hooks |
+| `.github/workflows/paperbrain-check.yml` | CI preview that installs requirements and runs `paperbrain check` |
+| `script/tests/README.md` | Test layer map and live-probe boundary |
 
 ## 🧩 Operational Notes
 

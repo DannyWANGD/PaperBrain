@@ -1,0 +1,1706 @@
+{
+  "ok": true,
+  "command": "doctor",
+  "scope": "all",
+  "paths": {
+    "repo_root": "D:\\PaperBrain",
+    "script_dir": "D:\\PaperBrain\\script",
+    "config_path": "D:\\PaperBrain\\script\\config\\config.yaml",
+    "prompts_path": "D:\\PaperBrain\\script\\config\\prompts.yaml",
+    "vault_path": "D:\\PaperBrain",
+    "cache_dir": "D:\\PaperBrain\\Cache",
+    "pdf_cache_dir": "D:\\PaperBrain\\Cache\\pdfs",
+    "arxiv_cache_dir": "D:\\PaperBrain\\Cache\\arxiv",
+    "huggingface_cache_dir": "D:\\PaperBrain\\Cache\\huggingface",
+    "logs_dir": "D:\\PaperBrain\\Cache\\logs",
+    "diagnostics_dir": "D:\\PaperBrain\\Cache\\diagnostics",
+    "temp_pdf_dir": "D:\\PaperBrain\\Cache\\temp_pdfs",
+    "daily_digest_dir": "D:\\PaperBrain\\Daily_Papers",
+    "notes_dir": "D:\\PaperBrain\\Research_Notes",
+    "pdf_dir": "D:\\PaperBrain\\PDFs",
+    "assets_dir": "D:\\PaperBrain\\Assets",
+    "research_index_dir": "D:\\PaperBrain\\Research_Index",
+    "research_brief_dir": "D:\\PaperBrain\\Research_Briefs",
+    "run_records_dir": "D:\\PaperBrain\\Run_Records"
+  },
+  "prompts_loaded": true,
+  "sections": [
+    {
+      "name": "config",
+      "ok": true,
+      "checks": [
+        {
+          "name": "config_file",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "path": "D:\\PaperBrain\\script\\config\\config.yaml",
+          "message": "config_file path is usable",
+          "suggestion": ""
+        },
+        {
+          "name": "prompts_loaded",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "prompts.yaml loaded",
+          "suggestion": ""
+        },
+        {
+          "name": "config_section_doubao",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "config section `doubao` exists",
+          "suggestion": ""
+        },
+        {
+          "name": "config_section_openrouter",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "config section `openrouter` exists",
+          "suggestion": ""
+        },
+        {
+          "name": "config_section_analysis",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "config section `analysis` exists",
+          "suggestion": ""
+        },
+        {
+          "name": "config_section_obsidian",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "config section `obsidian` exists",
+          "suggestion": ""
+        },
+        {
+          "name": "config_section_search",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "config section `search` exists",
+          "suggestion": ""
+        },
+        {
+          "name": "config_section_schedule",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "config section `schedule` exists",
+          "suggestion": ""
+        },
+        {
+          "name": "obsidian_vault_path",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "obsidian.vault_path is configured",
+          "suggestion": ""
+        },
+        {
+          "name": "obsidian_daily_digest_folder",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "obsidian.daily_digest_folder is configured",
+          "suggestion": ""
+        },
+        {
+          "name": "obsidian_detailed_notes_folder",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "obsidian.detailed_notes_folder is configured",
+          "suggestion": ""
+        },
+        {
+          "name": "obsidian_research_index_folder",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "obsidian.research_index_folder is configured",
+          "suggestion": ""
+        },
+        {
+          "name": "obsidian_pdf_storage_folder",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "obsidian.pdf_storage_folder is configured",
+          "suggestion": ""
+        },
+        {
+          "name": "search_keywords",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "search.keywords contains at least one keyword",
+          "suggestion": ""
+        },
+        {
+          "name": "search_categories",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "search.arxiv_categories contains at least one category",
+          "suggestion": ""
+        },
+        {
+          "name": "analysis_threshold_order",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "deep analysis thresholds are ordered",
+          "suggestion": "",
+          "data": {
+            "lower": 7.5,
+            "extra": 8.8
+          }
+        },
+        {
+          "name": "analysis_stage2_ratio",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "screening_second_stage_ratio is in (0, 1]",
+          "suggestion": ""
+        },
+        {
+          "name": "doubao_model_flash",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "doubao.model_flash is configured",
+          "suggestion": ""
+        },
+        {
+          "name": "doubao_model_pro",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "doubao.model_pro is configured",
+          "suggestion": ""
+        },
+        {
+          "name": "openrouter_model_flash",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "openrouter.model_flash is configured",
+          "suggestion": ""
+        },
+        {
+          "name": "openrouter_model_pro",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "openrouter.model_pro is configured",
+          "suggestion": ""
+        },
+        {
+          "name": "openrouter_model_screening_pro",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "openrouter.model_screening_pro is configured",
+          "suggestion": ""
+        },
+        {
+          "name": "openrouter_model_podcast",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "openrouter.model_podcast is configured",
+          "suggestion": ""
+        },
+        {
+          "name": "openrouter_model_vision",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "openrouter.model_vision is configured",
+          "suggestion": ""
+        },
+        {
+          "name": "openrouter_model_flash_fallbacks",
+          "ok": true,
+          "severity": "warning",
+          "category": "config",
+          "message": "openrouter.model_flash_fallbacks is a list",
+          "suggestion": ""
+        },
+        {
+          "name": "openrouter_model_screening_pro_fallbacks",
+          "ok": true,
+          "severity": "warning",
+          "category": "config",
+          "message": "openrouter.model_screening_pro_fallbacks is a list",
+          "suggestion": ""
+        },
+        {
+          "name": "openrouter_model_pro_fallbacks",
+          "ok": true,
+          "severity": "warning",
+          "category": "config",
+          "message": "openrouter.model_pro_fallbacks is a list",
+          "suggestion": ""
+        },
+        {
+          "name": "openrouter_model_podcast_fallbacks",
+          "ok": true,
+          "severity": "warning",
+          "category": "config",
+          "message": "openrouter.model_podcast_fallbacks is a list",
+          "suggestion": ""
+        },
+        {
+          "name": "openrouter_model_vision_fallbacks",
+          "ok": true,
+          "severity": "warning",
+          "category": "config",
+          "message": "openrouter.model_vision_fallbacks is a list",
+          "suggestion": ""
+        }
+      ]
+    },
+    {
+      "name": "env",
+      "ok": true,
+      "checks": [
+        {
+          "name": "python_version",
+          "ok": true,
+          "severity": "error",
+          "category": "env",
+          "message": "Python 3.9.18 is running",
+          "suggestion": "",
+          "data": {
+            "executable": "D:\\anaconda3\\envs\\wd\\python.exe"
+          }
+        },
+        {
+          "name": "dependency_feedparser",
+          "package": "feedparser",
+          "module": "feedparser",
+          "ok": true,
+          "severity": "error",
+          "category": "env",
+          "message": "feedparser is importable",
+          "suggestion": "",
+          "version": "6.0.12"
+        },
+        {
+          "name": "dependency_arxiv",
+          "package": "arxiv",
+          "module": "arxiv",
+          "ok": true,
+          "severity": "error",
+          "category": "env",
+          "message": "arxiv is importable",
+          "suggestion": "",
+          "version": "2.4.0"
+        },
+        {
+          "name": "dependency_requests",
+          "package": "requests",
+          "module": "requests",
+          "ok": true,
+          "severity": "error",
+          "category": "env",
+          "message": "requests is importable",
+          "suggestion": "",
+          "version": "2.32.5"
+        },
+        {
+          "name": "dependency_pyyaml",
+          "package": "pyyaml",
+          "module": "yaml",
+          "ok": true,
+          "severity": "error",
+          "category": "env",
+          "message": "pyyaml is importable",
+          "suggestion": "",
+          "version": "6.0.2"
+        },
+        {
+          "name": "dependency_schedule",
+          "package": "schedule",
+          "module": "schedule",
+          "ok": true,
+          "severity": "error",
+          "category": "env",
+          "message": "schedule is importable",
+          "suggestion": "",
+          "version": "1.2.2"
+        },
+        {
+          "name": "dependency_tqdm",
+          "package": "tqdm",
+          "module": "tqdm",
+          "ok": true,
+          "severity": "error",
+          "category": "env",
+          "message": "tqdm is importable",
+          "suggestion": "",
+          "version": "4.67.1"
+        },
+        {
+          "name": "dependency_beautifulsoup4",
+          "package": "beautifulsoup4",
+          "module": "bs4",
+          "ok": true,
+          "severity": "error",
+          "category": "env",
+          "message": "beautifulsoup4 is importable",
+          "suggestion": "",
+          "version": "4.14.3"
+        },
+        {
+          "name": "dependency_pypdf",
+          "package": "pypdf",
+          "module": "pypdf",
+          "ok": true,
+          "severity": "error",
+          "category": "env",
+          "message": "pypdf is importable",
+          "suggestion": "",
+          "version": "6.7.3"
+        },
+        {
+          "name": "dependency_pymupdf",
+          "package": "pymupdf",
+          "module": "fitz",
+          "ok": true,
+          "severity": "error",
+          "category": "env",
+          "message": "pymupdf is importable",
+          "suggestion": "",
+          "version": "1.26.5"
+        },
+        {
+          "name": "dependency_openai",
+          "package": "openai",
+          "module": "openai",
+          "ok": true,
+          "severity": "error",
+          "category": "env",
+          "message": "openai is importable",
+          "suggestion": "",
+          "version": "2.24.0"
+        },
+        {
+          "name": "dependency_edge-tts",
+          "package": "edge-tts",
+          "module": "edge_tts",
+          "ok": true,
+          "severity": "error",
+          "category": "env",
+          "message": "edge-tts is importable",
+          "suggestion": "",
+          "version": "7.2.7"
+        },
+        {
+          "name": "dependency_nest_asyncio",
+          "package": "nest_asyncio",
+          "module": "nest_asyncio",
+          "ok": true,
+          "severity": "error",
+          "category": "env",
+          "message": "nest_asyncio is importable",
+          "suggestion": "",
+          "version": "1.6.0"
+        },
+        {
+          "name": "dependency_python-dotenv",
+          "package": "python-dotenv",
+          "module": "dotenv",
+          "ok": true,
+          "severity": "error",
+          "category": "env",
+          "message": "python-dotenv is importable",
+          "suggestion": "",
+          "version": "1.2.1"
+        },
+        {
+          "name": "doubao_api_key",
+          "ok": true,
+          "severity": "warning",
+          "category": "env",
+          "message": "API key is configured",
+          "suggestion": ""
+        },
+        {
+          "name": "openrouter_api_key",
+          "ok": true,
+          "severity": "warning",
+          "category": "env",
+          "message": "API key is configured",
+          "suggestion": ""
+        },
+        {
+          "name": "cache",
+          "ok": true,
+          "severity": "error",
+          "category": "env",
+          "message": "cache directory is writable",
+          "suggestion": "",
+          "data": {
+            "path": "D:\\PaperBrain\\Cache"
+          }
+        },
+        {
+          "name": "diagnostics",
+          "ok": true,
+          "severity": "error",
+          "category": "env",
+          "message": "diagnostics directory is writable",
+          "suggestion": "",
+          "data": {
+            "path": "D:\\PaperBrain\\Cache\\diagnostics"
+          }
+        },
+        {
+          "name": "run_records",
+          "ok": true,
+          "severity": "error",
+          "category": "env",
+          "message": "run_records directory is writable",
+          "suggestion": "",
+          "data": {
+            "path": "D:\\PaperBrain\\Run_Records"
+          }
+        },
+        {
+          "name": "research_notes",
+          "ok": true,
+          "severity": "error",
+          "category": "env",
+          "message": "research_notes directory is writable",
+          "suggestion": "",
+          "data": {
+            "path": "D:\\PaperBrain\\Research_Notes"
+          }
+        },
+        {
+          "name": "pdfs",
+          "ok": true,
+          "severity": "error",
+          "category": "env",
+          "message": "pdfs directory is writable",
+          "suggestion": "",
+          "data": {
+            "path": "D:\\PaperBrain\\PDFs"
+          }
+        },
+        {
+          "name": "research_index",
+          "ok": true,
+          "severity": "error",
+          "category": "env",
+          "message": "research_index directory is writable",
+          "suggestion": "",
+          "data": {
+            "path": "D:\\PaperBrain\\Research_Index"
+          }
+        },
+        {
+          "name": "proxy_environment",
+          "ok": true,
+          "severity": "info",
+          "category": "env",
+          "message": "proxy environment inspected",
+          "suggestion": "",
+          "data": {
+            "HTTP_PROXY": false,
+            "HTTPS_PROXY": false,
+            "ALL_PROXY": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "arxiv",
+      "ok": true,
+      "checks": [
+        {
+          "name": "arxiv_endpoint_count",
+          "ok": true,
+          "severity": "error",
+          "category": "arxiv",
+          "message": "3 arXiv endpoint(s) configured",
+          "suggestion": ""
+        },
+        {
+          "name": "arxiv_endpoint_fallback",
+          "ok": true,
+          "severity": "warning",
+          "category": "arxiv",
+          "message": "multiple arXiv endpoints configured for fallback",
+          "suggestion": ""
+        },
+        {
+          "name": "arxiv_timeout",
+          "ok": true,
+          "severity": "error",
+          "category": "arxiv",
+          "message": "arXiv timeout is positive",
+          "suggestion": ""
+        },
+        {
+          "name": "arxiv_attempts",
+          "ok": true,
+          "severity": "error",
+          "category": "arxiv",
+          "message": "arXiv max attempts is at least 1",
+          "suggestion": ""
+        },
+        {
+          "name": "arxiv_cache",
+          "ok": true,
+          "severity": "error",
+          "category": "arxiv",
+          "message": "arxiv_cache directory is writable",
+          "suggestion": "",
+          "data": {
+            "path": "D:\\PaperBrain\\Cache\\arxiv"
+          }
+        },
+        {
+          "name": "pdf_cache",
+          "ok": true,
+          "severity": "error",
+          "category": "arxiv",
+          "message": "pdf_cache directory is writable",
+          "suggestion": "",
+          "data": {
+            "path": "D:\\PaperBrain\\Cache\\pdfs"
+          }
+        },
+        {
+          "name": "arxiv_api_cooldown",
+          "ok": true,
+          "severity": "info",
+          "category": "arxiv",
+          "message": "arxiv_api_cooldown cooldown file is readable",
+          "suggestion": "",
+          "data": {
+            "path": "D:\\PaperBrain\\Cache\\arxiv\\rate_limit_cooldown.json",
+            "active": false,
+            "remaining_seconds": 0.0,
+            "reason": "HTTP 429 from arXiv API"
+          }
+        },
+        {
+          "name": "arxiv_pdf_cooldown",
+          "ok": true,
+          "severity": "info",
+          "category": "arxiv",
+          "message": "arxiv_pdf_cooldown cooldown file is readable",
+          "suggestion": "",
+          "data": {
+            "path": "D:\\PaperBrain\\Cache\\pdfs\\arxiv_pdf_cooldown.json",
+            "active": false,
+            "remaining_seconds": 0.0,
+            "reason": "HTTP 429 while downloading https://arxiv.org/pdf/2605.25874.pdf"
+          }
+        },
+        {
+          "name": "arxiv_endpoint_1",
+          "ok": true,
+          "severity": "error",
+          "category": "arxiv",
+          "message": "arXiv endpoint is a valid URL: https://export.arxiv.org/api/query",
+          "suggestion": ""
+        },
+        {
+          "name": "arxiv_endpoint_2",
+          "ok": true,
+          "severity": "error",
+          "category": "arxiv",
+          "message": "arXiv endpoint is a valid URL: https://arxiv.org/api/query",
+          "suggestion": ""
+        },
+        {
+          "name": "arxiv_endpoint_3",
+          "ok": true,
+          "severity": "error",
+          "category": "arxiv",
+          "message": "arXiv endpoint is a valid URL: http://export.arxiv.org/api/query",
+          "suggestion": ""
+        },
+        {
+          "name": "arxiv_abs_fallback",
+          "ok": true,
+          "severity": "info",
+          "category": "arxiv",
+          "message": "single-paper arXiv abs-page fallback is available in PaperScraper",
+          "suggestion": ""
+        },
+        {
+          "name": "arxiv_live_probe",
+          "ok": true,
+          "severity": "info",
+          "category": "arxiv",
+          "message": "live arXiv probe skipped",
+          "suggestion": "Run `paperbrain doctor arxiv --live` for a network probe."
+        }
+      ]
+    },
+    {
+      "name": "llm",
+      "ok": true,
+      "checks": [
+        {
+          "name": "doubao_api_key",
+          "ok": true,
+          "severity": "warning",
+          "category": "llm",
+          "message": "API key is configured",
+          "suggestion": ""
+        },
+        {
+          "name": "doubao_model_flash",
+          "ok": true,
+          "severity": "error",
+          "category": "llm",
+          "message": "doubao.model_flash is configured",
+          "suggestion": ""
+        },
+        {
+          "name": "doubao_model_pro",
+          "ok": true,
+          "severity": "error",
+          "category": "llm",
+          "message": "doubao.model_pro is configured",
+          "suggestion": ""
+        },
+        {
+          "name": "doubao_live_probe",
+          "ok": true,
+          "severity": "info",
+          "category": "llm",
+          "message": "doubao live LLM probe skipped",
+          "suggestion": "Run `paperbrain doctor llm --provider doubao --live` for a low-cost live probe."
+        },
+        {
+          "name": "openrouter_api_key",
+          "ok": true,
+          "severity": "warning",
+          "category": "llm",
+          "message": "API key is configured",
+          "suggestion": ""
+        },
+        {
+          "name": "openrouter_model_flash",
+          "ok": true,
+          "severity": "error",
+          "category": "llm",
+          "message": "openrouter.model_flash is configured",
+          "suggestion": ""
+        },
+        {
+          "name": "openrouter_model_pro",
+          "ok": true,
+          "severity": "error",
+          "category": "llm",
+          "message": "openrouter.model_pro is configured",
+          "suggestion": ""
+        },
+        {
+          "name": "openrouter_model_screening_pro",
+          "ok": true,
+          "severity": "error",
+          "category": "llm",
+          "message": "openrouter.model_screening_pro is configured",
+          "suggestion": ""
+        },
+        {
+          "name": "openrouter_model_podcast",
+          "ok": true,
+          "severity": "error",
+          "category": "llm",
+          "message": "openrouter.model_podcast is configured",
+          "suggestion": ""
+        },
+        {
+          "name": "openrouter_model_vision",
+          "ok": true,
+          "severity": "error",
+          "category": "llm",
+          "message": "openrouter.model_vision is configured",
+          "suggestion": ""
+        },
+        {
+          "name": "openrouter_model_flash_fallbacks",
+          "ok": true,
+          "severity": "warning",
+          "category": "llm",
+          "message": "openrouter.model_flash_fallbacks is a list",
+          "suggestion": ""
+        },
+        {
+          "name": "openrouter_model_screening_pro_fallbacks",
+          "ok": true,
+          "severity": "warning",
+          "category": "llm",
+          "message": "openrouter.model_screening_pro_fallbacks is a list",
+          "suggestion": ""
+        },
+        {
+          "name": "openrouter_model_pro_fallbacks",
+          "ok": true,
+          "severity": "warning",
+          "category": "llm",
+          "message": "openrouter.model_pro_fallbacks is a list",
+          "suggestion": ""
+        },
+        {
+          "name": "openrouter_model_podcast_fallbacks",
+          "ok": true,
+          "severity": "warning",
+          "category": "llm",
+          "message": "openrouter.model_podcast_fallbacks is a list",
+          "suggestion": ""
+        },
+        {
+          "name": "openrouter_model_vision_fallbacks",
+          "ok": true,
+          "severity": "warning",
+          "category": "llm",
+          "message": "openrouter.model_vision_fallbacks is a list",
+          "suggestion": ""
+        },
+        {
+          "name": "openrouter_live_probe",
+          "ok": true,
+          "severity": "info",
+          "category": "llm",
+          "message": "openrouter live LLM probe skipped",
+          "suggestion": "Run `paperbrain doctor llm --provider openrouter --live` for a low-cost live probe."
+        }
+      ]
+    },
+    {
+      "name": "obsidian",
+      "ok": true,
+      "checks": [
+        {
+          "name": "vault",
+          "ok": true,
+          "severity": "error",
+          "category": "obsidian",
+          "path": "D:\\PaperBrain",
+          "message": "vault path is usable",
+          "suggestion": ""
+        },
+        {
+          "name": "daily_digest",
+          "ok": true,
+          "severity": "error",
+          "category": "obsidian",
+          "message": "daily_digest directory is writable",
+          "suggestion": "",
+          "data": {
+            "path": "D:\\PaperBrain\\Daily_Papers"
+          }
+        },
+        {
+          "name": "research_notes",
+          "ok": true,
+          "severity": "error",
+          "category": "obsidian",
+          "message": "research_notes directory is writable",
+          "suggestion": "",
+          "data": {
+            "path": "D:\\PaperBrain\\Research_Notes"
+          }
+        },
+        {
+          "name": "pdfs",
+          "ok": true,
+          "severity": "error",
+          "category": "obsidian",
+          "message": "pdfs directory is writable",
+          "suggestion": "",
+          "data": {
+            "path": "D:\\PaperBrain\\PDFs"
+          }
+        },
+        {
+          "name": "assets",
+          "ok": true,
+          "severity": "error",
+          "category": "obsidian",
+          "message": "assets directory is writable",
+          "suggestion": "",
+          "data": {
+            "path": "D:\\PaperBrain\\Assets"
+          }
+        },
+        {
+          "name": "research_index",
+          "ok": true,
+          "severity": "error",
+          "category": "obsidian",
+          "message": "research_index directory is writable",
+          "suggestion": "",
+          "data": {
+            "path": "D:\\PaperBrain\\Research_Index"
+          }
+        },
+        {
+          "name": "research_briefs",
+          "ok": true,
+          "severity": "error",
+          "category": "obsidian",
+          "message": "research_briefs directory is writable",
+          "suggestion": "",
+          "data": {
+            "path": "D:\\PaperBrain\\Research_Briefs"
+          }
+        },
+        {
+          "name": "obsidian_base_file",
+          "ok": true,
+          "severity": "warning",
+          "category": "obsidian",
+          "message": "Paper_Library.base exists",
+          "suggestion": "",
+          "data": {
+            "path": "D:\\PaperBrain\\Research_Index\\Paper_Library.base"
+          }
+        }
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "name": "config_file",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "path": "D:\\PaperBrain\\script\\config\\config.yaml",
+      "message": "config_file path is usable",
+      "suggestion": ""
+    },
+    {
+      "name": "prompts_loaded",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "prompts.yaml loaded",
+      "suggestion": ""
+    },
+    {
+      "name": "config_section_doubao",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "config section `doubao` exists",
+      "suggestion": ""
+    },
+    {
+      "name": "config_section_openrouter",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "config section `openrouter` exists",
+      "suggestion": ""
+    },
+    {
+      "name": "config_section_analysis",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "config section `analysis` exists",
+      "suggestion": ""
+    },
+    {
+      "name": "config_section_obsidian",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "config section `obsidian` exists",
+      "suggestion": ""
+    },
+    {
+      "name": "config_section_search",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "config section `search` exists",
+      "suggestion": ""
+    },
+    {
+      "name": "config_section_schedule",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "config section `schedule` exists",
+      "suggestion": ""
+    },
+    {
+      "name": "obsidian_vault_path",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "obsidian.vault_path is configured",
+      "suggestion": ""
+    },
+    {
+      "name": "obsidian_daily_digest_folder",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "obsidian.daily_digest_folder is configured",
+      "suggestion": ""
+    },
+    {
+      "name": "obsidian_detailed_notes_folder",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "obsidian.detailed_notes_folder is configured",
+      "suggestion": ""
+    },
+    {
+      "name": "obsidian_research_index_folder",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "obsidian.research_index_folder is configured",
+      "suggestion": ""
+    },
+    {
+      "name": "obsidian_pdf_storage_folder",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "obsidian.pdf_storage_folder is configured",
+      "suggestion": ""
+    },
+    {
+      "name": "search_keywords",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "search.keywords contains at least one keyword",
+      "suggestion": ""
+    },
+    {
+      "name": "search_categories",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "search.arxiv_categories contains at least one category",
+      "suggestion": ""
+    },
+    {
+      "name": "analysis_threshold_order",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "deep analysis thresholds are ordered",
+      "suggestion": "",
+      "data": {
+        "lower": 7.5,
+        "extra": 8.8
+      }
+    },
+    {
+      "name": "analysis_stage2_ratio",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "screening_second_stage_ratio is in (0, 1]",
+      "suggestion": ""
+    },
+    {
+      "name": "doubao_model_flash",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "doubao.model_flash is configured",
+      "suggestion": ""
+    },
+    {
+      "name": "doubao_model_pro",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "doubao.model_pro is configured",
+      "suggestion": ""
+    },
+    {
+      "name": "openrouter_model_flash",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "openrouter.model_flash is configured",
+      "suggestion": ""
+    },
+    {
+      "name": "openrouter_model_pro",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "openrouter.model_pro is configured",
+      "suggestion": ""
+    },
+    {
+      "name": "openrouter_model_screening_pro",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "openrouter.model_screening_pro is configured",
+      "suggestion": ""
+    },
+    {
+      "name": "openrouter_model_podcast",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "openrouter.model_podcast is configured",
+      "suggestion": ""
+    },
+    {
+      "name": "openrouter_model_vision",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "openrouter.model_vision is configured",
+      "suggestion": ""
+    },
+    {
+      "name": "openrouter_model_flash_fallbacks",
+      "ok": true,
+      "severity": "warning",
+      "category": "config",
+      "message": "openrouter.model_flash_fallbacks is a list",
+      "suggestion": ""
+    },
+    {
+      "name": "openrouter_model_screening_pro_fallbacks",
+      "ok": true,
+      "severity": "warning",
+      "category": "config",
+      "message": "openrouter.model_screening_pro_fallbacks is a list",
+      "suggestion": ""
+    },
+    {
+      "name": "openrouter_model_pro_fallbacks",
+      "ok": true,
+      "severity": "warning",
+      "category": "config",
+      "message": "openrouter.model_pro_fallbacks is a list",
+      "suggestion": ""
+    },
+    {
+      "name": "openrouter_model_podcast_fallbacks",
+      "ok": true,
+      "severity": "warning",
+      "category": "config",
+      "message": "openrouter.model_podcast_fallbacks is a list",
+      "suggestion": ""
+    },
+    {
+      "name": "openrouter_model_vision_fallbacks",
+      "ok": true,
+      "severity": "warning",
+      "category": "config",
+      "message": "openrouter.model_vision_fallbacks is a list",
+      "suggestion": ""
+    },
+    {
+      "name": "python_version",
+      "ok": true,
+      "severity": "error",
+      "category": "env",
+      "message": "Python 3.9.18 is running",
+      "suggestion": "",
+      "data": {
+        "executable": "D:\\anaconda3\\envs\\wd\\python.exe"
+      }
+    },
+    {
+      "name": "dependency_feedparser",
+      "package": "feedparser",
+      "module": "feedparser",
+      "ok": true,
+      "severity": "error",
+      "category": "env",
+      "message": "feedparser is importable",
+      "suggestion": "",
+      "version": "6.0.12"
+    },
+    {
+      "name": "dependency_arxiv",
+      "package": "arxiv",
+      "module": "arxiv",
+      "ok": true,
+      "severity": "error",
+      "category": "env",
+      "message": "arxiv is importable",
+      "suggestion": "",
+      "version": "2.4.0"
+    },
+    {
+      "name": "dependency_requests",
+      "package": "requests",
+      "module": "requests",
+      "ok": true,
+      "severity": "error",
+      "category": "env",
+      "message": "requests is importable",
+      "suggestion": "",
+      "version": "2.32.5"
+    },
+    {
+      "name": "dependency_pyyaml",
+      "package": "pyyaml",
+      "module": "yaml",
+      "ok": true,
+      "severity": "error",
+      "category": "env",
+      "message": "pyyaml is importable",
+      "suggestion": "",
+      "version": "6.0.2"
+    },
+    {
+      "name": "dependency_schedule",
+      "package": "schedule",
+      "module": "schedule",
+      "ok": true,
+      "severity": "error",
+      "category": "env",
+      "message": "schedule is importable",
+      "suggestion": "",
+      "version": "1.2.2"
+    },
+    {
+      "name": "dependency_tqdm",
+      "package": "tqdm",
+      "module": "tqdm",
+      "ok": true,
+      "severity": "error",
+      "category": "env",
+      "message": "tqdm is importable",
+      "suggestion": "",
+      "version": "4.67.1"
+    },
+    {
+      "name": "dependency_beautifulsoup4",
+      "package": "beautifulsoup4",
+      "module": "bs4",
+      "ok": true,
+      "severity": "error",
+      "category": "env",
+      "message": "beautifulsoup4 is importable",
+      "suggestion": "",
+      "version": "4.14.3"
+    },
+    {
+      "name": "dependency_pypdf",
+      "package": "pypdf",
+      "module": "pypdf",
+      "ok": true,
+      "severity": "error",
+      "category": "env",
+      "message": "pypdf is importable",
+      "suggestion": "",
+      "version": "6.7.3"
+    },
+    {
+      "name": "dependency_pymupdf",
+      "package": "pymupdf",
+      "module": "fitz",
+      "ok": true,
+      "severity": "error",
+      "category": "env",
+      "message": "pymupdf is importable",
+      "suggestion": "",
+      "version": "1.26.5"
+    },
+    {
+      "name": "dependency_openai",
+      "package": "openai",
+      "module": "openai",
+      "ok": true,
+      "severity": "error",
+      "category": "env",
+      "message": "openai is importable",
+      "suggestion": "",
+      "version": "2.24.0"
+    },
+    {
+      "name": "dependency_edge-tts",
+      "package": "edge-tts",
+      "module": "edge_tts",
+      "ok": true,
+      "severity": "error",
+      "category": "env",
+      "message": "edge-tts is importable",
+      "suggestion": "",
+      "version": "7.2.7"
+    },
+    {
+      "name": "dependency_nest_asyncio",
+      "package": "nest_asyncio",
+      "module": "nest_asyncio",
+      "ok": true,
+      "severity": "error",
+      "category": "env",
+      "message": "nest_asyncio is importable",
+      "suggestion": "",
+      "version": "1.6.0"
+    },
+    {
+      "name": "dependency_python-dotenv",
+      "package": "python-dotenv",
+      "module": "dotenv",
+      "ok": true,
+      "severity": "error",
+      "category": "env",
+      "message": "python-dotenv is importable",
+      "suggestion": "",
+      "version": "1.2.1"
+    },
+    {
+      "name": "doubao_api_key",
+      "ok": true,
+      "severity": "warning",
+      "category": "env",
+      "message": "API key is configured",
+      "suggestion": ""
+    },
+    {
+      "name": "openrouter_api_key",
+      "ok": true,
+      "severity": "warning",
+      "category": "env",
+      "message": "API key is configured",
+      "suggestion": ""
+    },
+    {
+      "name": "cache",
+      "ok": true,
+      "severity": "error",
+      "category": "env",
+      "message": "cache directory is writable",
+      "suggestion": "",
+      "data": {
+        "path": "D:\\PaperBrain\\Cache"
+      }
+    },
+    {
+      "name": "diagnostics",
+      "ok": true,
+      "severity": "error",
+      "category": "env",
+      "message": "diagnostics directory is writable",
+      "suggestion": "",
+      "data": {
+        "path": "D:\\PaperBrain\\Cache\\diagnostics"
+      }
+    },
+    {
+      "name": "run_records",
+      "ok": true,
+      "severity": "error",
+      "category": "env",
+      "message": "run_records directory is writable",
+      "suggestion": "",
+      "data": {
+        "path": "D:\\PaperBrain\\Run_Records"
+      }
+    },
+    {
+      "name": "research_notes",
+      "ok": true,
+      "severity": "error",
+      "category": "env",
+      "message": "research_notes directory is writable",
+      "suggestion": "",
+      "data": {
+        "path": "D:\\PaperBrain\\Research_Notes"
+      }
+    },
+    {
+      "name": "pdfs",
+      "ok": true,
+      "severity": "error",
+      "category": "env",
+      "message": "pdfs directory is writable",
+      "suggestion": "",
+      "data": {
+        "path": "D:\\PaperBrain\\PDFs"
+      }
+    },
+    {
+      "name": "research_index",
+      "ok": true,
+      "severity": "error",
+      "category": "env",
+      "message": "research_index directory is writable",
+      "suggestion": "",
+      "data": {
+        "path": "D:\\PaperBrain\\Research_Index"
+      }
+    },
+    {
+      "name": "proxy_environment",
+      "ok": true,
+      "severity": "info",
+      "category": "env",
+      "message": "proxy environment inspected",
+      "suggestion": "",
+      "data": {
+        "HTTP_PROXY": false,
+        "HTTPS_PROXY": false,
+        "ALL_PROXY": false
+      }
+    },
+    {
+      "name": "arxiv_endpoint_count",
+      "ok": true,
+      "severity": "error",
+      "category": "arxiv",
+      "message": "3 arXiv endpoint(s) configured",
+      "suggestion": ""
+    },
+    {
+      "name": "arxiv_endpoint_fallback",
+      "ok": true,
+      "severity": "warning",
+      "category": "arxiv",
+      "message": "multiple arXiv endpoints configured for fallback",
+      "suggestion": ""
+    },
+    {
+      "name": "arxiv_timeout",
+      "ok": true,
+      "severity": "error",
+      "category": "arxiv",
+      "message": "arXiv timeout is positive",
+      "suggestion": ""
+    },
+    {
+      "name": "arxiv_attempts",
+      "ok": true,
+      "severity": "error",
+      "category": "arxiv",
+      "message": "arXiv max attempts is at least 1",
+      "suggestion": ""
+    },
+    {
+      "name": "arxiv_cache",
+      "ok": true,
+      "severity": "error",
+      "category": "arxiv",
+      "message": "arxiv_cache directory is writable",
+      "suggestion": "",
+      "data": {
+        "path": "D:\\PaperBrain\\Cache\\arxiv"
+      }
+    },
+    {
+      "name": "pdf_cache",
+      "ok": true,
+      "severity": "error",
+      "category": "arxiv",
+      "message": "pdf_cache directory is writable",
+      "suggestion": "",
+      "data": {
+        "path": "D:\\PaperBrain\\Cache\\pdfs"
+      }
+    },
+    {
+      "name": "arxiv_api_cooldown",
+      "ok": true,
+      "severity": "info",
+      "category": "arxiv",
+      "message": "arxiv_api_cooldown cooldown file is readable",
+      "suggestion": "",
+      "data": {
+        "path": "D:\\PaperBrain\\Cache\\arxiv\\rate_limit_cooldown.json",
+        "active": false,
+        "remaining_seconds": 0.0,
+        "reason": "HTTP 429 from arXiv API"
+      }
+    },
+    {
+      "name": "arxiv_pdf_cooldown",
+      "ok": true,
+      "severity": "info",
+      "category": "arxiv",
+      "message": "arxiv_pdf_cooldown cooldown file is readable",
+      "suggestion": "",
+      "data": {
+        "path": "D:\\PaperBrain\\Cache\\pdfs\\arxiv_pdf_cooldown.json",
+        "active": false,
+        "remaining_seconds": 0.0,
+        "reason": "HTTP 429 while downloading https://arxiv.org/pdf/2605.25874.pdf"
+      }
+    },
+    {
+      "name": "arxiv_endpoint_1",
+      "ok": true,
+      "severity": "error",
+      "category": "arxiv",
+      "message": "arXiv endpoint is a valid URL: https://export.arxiv.org/api/query",
+      "suggestion": ""
+    },
+    {
+      "name": "arxiv_endpoint_2",
+      "ok": true,
+      "severity": "error",
+      "category": "arxiv",
+      "message": "arXiv endpoint is a valid URL: https://arxiv.org/api/query",
+      "suggestion": ""
+    },
+    {
+      "name": "arxiv_endpoint_3",
+      "ok": true,
+      "severity": "error",
+      "category": "arxiv",
+      "message": "arXiv endpoint is a valid URL: http://export.arxiv.org/api/query",
+      "suggestion": ""
+    },
+    {
+      "name": "arxiv_abs_fallback",
+      "ok": true,
+      "severity": "info",
+      "category": "arxiv",
+      "message": "single-paper arXiv abs-page fallback is available in PaperScraper",
+      "suggestion": ""
+    },
+    {
+      "name": "arxiv_live_probe",
+      "ok": true,
+      "severity": "info",
+      "category": "arxiv",
+      "message": "live arXiv probe skipped",
+      "suggestion": "Run `paperbrain doctor arxiv --live` for a network probe."
+    },
+    {
+      "name": "doubao_api_key",
+      "ok": true,
+      "severity": "warning",
+      "category": "llm",
+      "message": "API key is configured",
+      "suggestion": ""
+    },
+    {
+      "name": "doubao_model_flash",
+      "ok": true,
+      "severity": "error",
+      "category": "llm",
+      "message": "doubao.model_flash is configured",
+      "suggestion": ""
+    },
+    {
+      "name": "doubao_model_pro",
+      "ok": true,
+      "severity": "error",
+      "category": "llm",
+      "message": "doubao.model_pro is configured",
+      "suggestion": ""
+    },
+    {
+      "name": "doubao_live_probe",
+      "ok": true,
+      "severity": "info",
+      "category": "llm",
+      "message": "doubao live LLM probe skipped",
+      "suggestion": "Run `paperbrain doctor llm --provider doubao --live` for a low-cost live probe."
+    },
+    {
+      "name": "openrouter_api_key",
+      "ok": true,
+      "severity": "warning",
+      "category": "llm",
+      "message": "API key is configured",
+      "suggestion": ""
+    },
+    {
+      "name": "openrouter_model_flash",
+      "ok": true,
+      "severity": "error",
+      "category": "llm",
+      "message": "openrouter.model_flash is configured",
+      "suggestion": ""
+    },
+    {
+      "name": "openrouter_model_pro",
+      "ok": true,
+      "severity": "error",
+      "category": "llm",
+      "message": "openrouter.model_pro is configured",
+      "suggestion": ""
+    },
+    {
+      "name": "openrouter_model_screening_pro",
+      "ok": true,
+      "severity": "error",
+      "category": "llm",
+      "message": "openrouter.model_screening_pro is configured",
+      "suggestion": ""
+    },
+    {
+      "name": "openrouter_model_podcast",
+      "ok": true,
+      "severity": "error",
+      "category": "llm",
+      "message": "openrouter.model_podcast is configured",
+      "suggestion": ""
+    },
+    {
+      "name": "openrouter_model_vision",
+      "ok": true,
+      "severity": "error",
+      "category": "llm",
+      "message": "openrouter.model_vision is configured",
+      "suggestion": ""
+    },
+    {
+      "name": "openrouter_model_flash_fallbacks",
+      "ok": true,
+      "severity": "warning",
+      "category": "llm",
+      "message": "openrouter.model_flash_fallbacks is a list",
+      "suggestion": ""
+    },
+    {
+      "name": "openrouter_model_screening_pro_fallbacks",
+      "ok": true,
+      "severity": "warning",
+      "category": "llm",
+      "message": "openrouter.model_screening_pro_fallbacks is a list",
+      "suggestion": ""
+    },
+    {
+      "name": "openrouter_model_pro_fallbacks",
+      "ok": true,
+      "severity": "warning",
+      "category": "llm",
+      "message": "openrouter.model_pro_fallbacks is a list",
+      "suggestion": ""
+    },
+    {
+      "name": "openrouter_model_podcast_fallbacks",
+      "ok": true,
+      "severity": "warning",
+      "category": "llm",
+      "message": "openrouter.model_podcast_fallbacks is a list",
+      "suggestion": ""
+    },
+    {
+      "name": "openrouter_model_vision_fallbacks",
+      "ok": true,
+      "severity": "warning",
+      "category": "llm",
+      "message": "openrouter.model_vision_fallbacks is a list",
+      "suggestion": ""
+    },
+    {
+      "name": "openrouter_live_probe",
+      "ok": true,
+      "severity": "info",
+      "category": "llm",
+      "message": "openrouter live LLM probe skipped",
+      "suggestion": "Run `paperbrain doctor llm --provider openrouter --live` for a low-cost live probe."
+    },
+    {
+      "name": "vault",
+      "ok": true,
+      "severity": "error",
+      "category": "obsidian",
+      "path": "D:\\PaperBrain",
+      "message": "vault path is usable",
+      "suggestion": ""
+    },
+    {
+      "name": "daily_digest",
+      "ok": true,
+      "severity": "error",
+      "category": "obsidian",
+      "message": "daily_digest directory is writable",
+      "suggestion": "",
+      "data": {
+        "path": "D:\\PaperBrain\\Daily_Papers"
+      }
+    },
+    {
+      "name": "research_notes",
+      "ok": true,
+      "severity": "error",
+      "category": "obsidian",
+      "message": "research_notes directory is writable",
+      "suggestion": "",
+      "data": {
+        "path": "D:\\PaperBrain\\Research_Notes"
+      }
+    },
+    {
+      "name": "pdfs",
+      "ok": true,
+      "severity": "error",
+      "category": "obsidian",
+      "message": "pdfs directory is writable",
+      "suggestion": "",
+      "data": {
+        "path": "D:\\PaperBrain\\PDFs"
+      }
+    },
+    {
+      "name": "assets",
+      "ok": true,
+      "severity": "error",
+      "category": "obsidian",
+      "message": "assets directory is writable",
+      "suggestion": "",
+      "data": {
+        "path": "D:\\PaperBrain\\Assets"
+      }
+    },
+    {
+      "name": "research_index",
+      "ok": true,
+      "severity": "error",
+      "category": "obsidian",
+      "message": "research_index directory is writable",
+      "suggestion": "",
+      "data": {
+        "path": "D:\\PaperBrain\\Research_Index"
+      }
+    },
+    {
+      "name": "research_briefs",
+      "ok": true,
+      "severity": "error",
+      "category": "obsidian",
+      "message": "research_briefs directory is writable",
+      "suggestion": "",
+      "data": {
+        "path": "D:\\PaperBrain\\Research_Briefs"
+      }
+    },
+    {
+      "name": "obsidian_base_file",
+      "ok": true,
+      "severity": "warning",
+      "category": "obsidian",
+      "message": "Paper_Library.base exists",
+      "suggestion": "",
+      "data": {
+        "path": "D:\\PaperBrain\\Research_Index\\Paper_Library.base"
+      }
+    }
+  ],
+  "written_at": "2026-06-04T13:09:52"
+}

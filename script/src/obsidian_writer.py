@@ -3,6 +3,7 @@ import re
 from datetime import datetime
 import logging
 import yaml
+from src import scoring as scoring_utils
 from src.paper_identity import canonical_arxiv_id, normalize_paper_identity, paper_id_from_arxiv_id
 from src.paths import PaperBrainPaths
 
@@ -301,17 +302,19 @@ class ObsidianWriter:
         threshold = provider_cfg.get('threshold_score', 7)
         high_impact = [p for p in papers if self._numeric_score(p.get('score', 0)) >= threshold]
 
-        # Daily digest is the broad daily map: include every paper with score >= 7.0.
-        # Deep-analysis selection remains stricter and is handled separately in main.py.
-        MIN_DIGEST_SCORE = self._numeric_score(
-            self.config.get('analysis', {}).get('daily_digest_min_score'),
-            7.0
+        # Include every paper above the hard threshold, then backfill only when
+        # the daily attention pool would otherwise be too sparse.
+        digest_papers, digest_info = scoring_utils.select_daily_digest_papers(
+            papers,
+            analysis_cfg=self.config.get('analysis', {}),
+            provider_threshold=threshold,
         )
-        digest_papers = [
-            p for p in papers
-            if self._numeric_score(p.get('score', 0)) >= MIN_DIGEST_SCORE
-        ]
-        digest_papers.sort(key=lambda x: self._numeric_score(x.get('score', 0)), reverse=True)
+        if digest_info.get("backfill_count"):
+            logger.info(
+                "Daily digest backfilled %s paper(s) to reach %s entries.",
+                digest_info["backfill_count"],
+                digest_info["target_min_count"],
+            )
 
         if not digest_papers:
             logger.info("No papers met the minimum score threshold for daily digest. Writing summary-only digest.")

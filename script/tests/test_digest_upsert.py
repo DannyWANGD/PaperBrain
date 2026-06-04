@@ -16,7 +16,7 @@ class DailyDigestUpsertTest(unittest.TestCase):
         self.tmp = tempfile.mkdtemp()
         self.config = {
             "openrouter": {"threshold_score": 7},
-            "analysis": {"daily_digest_min_score": 7.0},
+            "analysis": {"daily_digest_min_score": 7.0, "daily_digest_target_min_count": 5},
             "obsidian": {
                 "vault_path": self.tmp,
                 "daily_digest_folder": "Daily_Papers",
@@ -93,6 +93,42 @@ class DailyDigestUpsertTest(unittest.TestCase):
         text = Path(path).read_text(encoding="utf-8")
         self.assertIn('publication_date: "2026-06-02"', text)
         self.assertIn('metadata_publication_date: "2026-05-31"', text)
+
+    def test_write_daily_digest_backfills_to_five_and_keeps_high_impact_count(self):
+        papers = [
+            self._paper("Hard Threshold", 7.5),
+            self._paper("Backfill A", 6.8),
+            self._paper("Backfill B", 6.6),
+            self._paper("Backfill C", 6.4),
+            self._paper("Backfill D", 6.2),
+            self._paper("Left Out", 5.0, rigor=2.0, evidence=2.0),
+        ]
+
+        path = self.writer.write_daily_digest(papers, target_date=date(2026, 6, 2))
+        text = Path(path).read_text(encoding="utf-8")
+
+        self.assertIn("Total Papers: 5 | High Impact: 1", text)
+        self.assertEqual(text.count("(Score:"), 5)
+        self.assertIn("Hard Threshold", text)
+        self.assertIn("Backfill D", text)
+        self.assertNotIn("Left Out", text)
+
+    @staticmethod
+    def _paper(title, score, novelty=8.0, rigor=8.0, evidence=8.0):
+        return {
+            "title": title,
+            "url": f"https://example.com/{title.replace(' ', '-').lower()}",
+            "score": score,
+            "innovation": f"{title} innovation.",
+            "limitations": f"{title} limitations.",
+            "authors": ["Author One"],
+            "novelty": novelty,
+            "rigor": rigor,
+            "evidence": evidence,
+            "reproducibility": 7.0,
+            "confidence": 8.0,
+            "red_flags": [],
+        }
 
 
 if __name__ == "__main__":

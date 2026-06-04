@@ -1,0 +1,298 @@
+{
+  "ok": true,
+  "command": "doctor",
+  "scope": "arxiv",
+  "paths": {
+    "repo_root": "D:\\PaperBrain",
+    "script_dir": "D:\\PaperBrain\\script",
+    "config_path": "D:\\PaperBrain\\script\\config\\config.yaml",
+    "prompts_path": "D:\\PaperBrain\\script\\config\\prompts.yaml",
+    "vault_path": "D:\\PaperBrain",
+    "cache_dir": "D:\\PaperBrain\\Cache",
+    "pdf_cache_dir": "D:\\PaperBrain\\Cache\\pdfs",
+    "arxiv_cache_dir": "D:\\PaperBrain\\Cache\\arxiv",
+    "huggingface_cache_dir": "D:\\PaperBrain\\Cache\\huggingface",
+    "logs_dir": "D:\\PaperBrain\\Cache\\logs",
+    "diagnostics_dir": "D:\\PaperBrain\\Cache\\diagnostics",
+    "temp_pdf_dir": "D:\\PaperBrain\\Cache\\temp_pdfs",
+    "daily_digest_dir": "D:\\PaperBrain\\Daily_Papers",
+    "notes_dir": "D:\\PaperBrain\\Research_Notes",
+    "pdf_dir": "D:\\PaperBrain\\PDFs",
+    "assets_dir": "D:\\PaperBrain\\Assets",
+    "research_index_dir": "D:\\PaperBrain\\Research_Index",
+    "research_brief_dir": "D:\\PaperBrain\\Research_Briefs",
+    "run_records_dir": "D:\\PaperBrain\\Run_Records"
+  },
+  "prompts_loaded": true,
+  "sections": [
+    {
+      "name": "arxiv",
+      "ok": true,
+      "checks": [
+        {
+          "name": "arxiv_endpoint_count",
+          "ok": true,
+          "severity": "error",
+          "category": "arxiv",
+          "message": "3 arXiv endpoint(s) configured",
+          "suggestion": ""
+        },
+        {
+          "name": "arxiv_endpoint_fallback",
+          "ok": true,
+          "severity": "warning",
+          "category": "arxiv",
+          "message": "multiple arXiv endpoints configured for fallback",
+          "suggestion": ""
+        },
+        {
+          "name": "arxiv_timeout",
+          "ok": true,
+          "severity": "error",
+          "category": "arxiv",
+          "message": "arXiv timeout is positive",
+          "suggestion": ""
+        },
+        {
+          "name": "arxiv_attempts",
+          "ok": true,
+          "severity": "error",
+          "category": "arxiv",
+          "message": "arXiv max attempts is at least 1",
+          "suggestion": ""
+        },
+        {
+          "name": "arxiv_cache",
+          "ok": true,
+          "severity": "error",
+          "category": "arxiv",
+          "message": "arxiv_cache directory is writable",
+          "suggestion": "",
+          "data": {
+            "path": "D:\\PaperBrain\\Cache\\arxiv"
+          }
+        },
+        {
+          "name": "pdf_cache",
+          "ok": true,
+          "severity": "error",
+          "category": "arxiv",
+          "message": "pdf_cache directory is writable",
+          "suggestion": "",
+          "data": {
+            "path": "D:\\PaperBrain\\Cache\\pdfs"
+          }
+        },
+        {
+          "name": "arxiv_api_cooldown",
+          "ok": true,
+          "severity": "info",
+          "category": "arxiv",
+          "message": "arxiv_api_cooldown cooldown file is readable",
+          "suggestion": "",
+          "data": {
+            "path": "D:\\PaperBrain\\Cache\\arxiv\\rate_limit_cooldown.json",
+            "active": false,
+            "remaining_seconds": 0.0,
+            "reason": "HTTP 429 from arXiv API"
+          }
+        },
+        {
+          "name": "arxiv_pdf_cooldown",
+          "ok": true,
+          "severity": "info",
+          "category": "arxiv",
+          "message": "arxiv_pdf_cooldown cooldown file is readable",
+          "suggestion": "",
+          "data": {
+            "path": "D:\\PaperBrain\\Cache\\pdfs\\arxiv_pdf_cooldown.json",
+            "active": false,
+            "remaining_seconds": 0.0,
+            "reason": "HTTP 429 while downloading https://arxiv.org/pdf/2605.25874.pdf"
+          }
+        },
+        {
+          "name": "arxiv_endpoint_1",
+          "ok": true,
+          "severity": "error",
+          "category": "arxiv",
+          "message": "arXiv endpoint is a valid URL: https://export.arxiv.org/api/query",
+          "suggestion": ""
+        },
+        {
+          "name": "arxiv_endpoint_2",
+          "ok": true,
+          "severity": "error",
+          "category": "arxiv",
+          "message": "arXiv endpoint is a valid URL: https://arxiv.org/api/query",
+          "suggestion": ""
+        },
+        {
+          "name": "arxiv_endpoint_3",
+          "ok": true,
+          "severity": "error",
+          "category": "arxiv",
+          "message": "arXiv endpoint is a valid URL: http://export.arxiv.org/api/query",
+          "suggestion": ""
+        },
+        {
+          "name": "arxiv_abs_fallback",
+          "ok": true,
+          "severity": "info",
+          "category": "arxiv",
+          "message": "single-paper arXiv abs-page fallback is available in PaperScraper",
+          "suggestion": ""
+        },
+        {
+          "name": "arxiv_live_probe",
+          "ok": true,
+          "severity": "info",
+          "category": "arxiv",
+          "message": "live arXiv probe skipped",
+          "suggestion": "Run `paperbrain doctor arxiv --live` for a network probe."
+        },
+        {
+          "name": "arxiv_pdf_live_probe",
+          "ok": true,
+          "severity": "info",
+          "category": "arxiv",
+          "message": "live arXiv PDF probe skipped",
+          "suggestion": "Run `paperbrain doctor arxiv --live` to verify PDF download."
+        }
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "name": "arxiv_endpoint_count",
+      "ok": true,
+      "severity": "error",
+      "category": "arxiv",
+      "message": "3 arXiv endpoint(s) configured",
+      "suggestion": ""
+    },
+    {
+      "name": "arxiv_endpoint_fallback",
+      "ok": true,
+      "severity": "warning",
+      "category": "arxiv",
+      "message": "multiple arXiv endpoints configured for fallback",
+      "suggestion": ""
+    },
+    {
+      "name": "arxiv_timeout",
+      "ok": true,
+      "severity": "error",
+      "category": "arxiv",
+      "message": "arXiv timeout is positive",
+      "suggestion": ""
+    },
+    {
+      "name": "arxiv_attempts",
+      "ok": true,
+      "severity": "error",
+      "category": "arxiv",
+      "message": "arXiv max attempts is at least 1",
+      "suggestion": ""
+    },
+    {
+      "name": "arxiv_cache",
+      "ok": true,
+      "severity": "error",
+      "category": "arxiv",
+      "message": "arxiv_cache directory is writable",
+      "suggestion": "",
+      "data": {
+        "path": "D:\\PaperBrain\\Cache\\arxiv"
+      }
+    },
+    {
+      "name": "pdf_cache",
+      "ok": true,
+      "severity": "error",
+      "category": "arxiv",
+      "message": "pdf_cache directory is writable",
+      "suggestion": "",
+      "data": {
+        "path": "D:\\PaperBrain\\Cache\\pdfs"
+      }
+    },
+    {
+      "name": "arxiv_api_cooldown",
+      "ok": true,
+      "severity": "info",
+      "category": "arxiv",
+      "message": "arxiv_api_cooldown cooldown file is readable",
+      "suggestion": "",
+      "data": {
+        "path": "D:\\PaperBrain\\Cache\\arxiv\\rate_limit_cooldown.json",
+        "active": false,
+        "remaining_seconds": 0.0,
+        "reason": "HTTP 429 from arXiv API"
+      }
+    },
+    {
+      "name": "arxiv_pdf_cooldown",
+      "ok": true,
+      "severity": "info",
+      "category": "arxiv",
+      "message": "arxiv_pdf_cooldown cooldown file is readable",
+      "suggestion": "",
+      "data": {
+        "path": "D:\\PaperBrain\\Cache\\pdfs\\arxiv_pdf_cooldown.json",
+        "active": false,
+        "remaining_seconds": 0.0,
+        "reason": "HTTP 429 while downloading https://arxiv.org/pdf/2605.25874.pdf"
+      }
+    },
+    {
+      "name": "arxiv_endpoint_1",
+      "ok": true,
+      "severity": "error",
+      "category": "arxiv",
+      "message": "arXiv endpoint is a valid URL: https://export.arxiv.org/api/query",
+      "suggestion": ""
+    },
+    {
+      "name": "arxiv_endpoint_2",
+      "ok": true,
+      "severity": "error",
+      "category": "arxiv",
+      "message": "arXiv endpoint is a valid URL: https://arxiv.org/api/query",
+      "suggestion": ""
+    },
+    {
+      "name": "arxiv_endpoint_3",
+      "ok": true,
+      "severity": "error",
+      "category": "arxiv",
+      "message": "arXiv endpoint is a valid URL: http://export.arxiv.org/api/query",
+      "suggestion": ""
+    },
+    {
+      "name": "arxiv_abs_fallback",
+      "ok": true,
+      "severity": "info",
+      "category": "arxiv",
+      "message": "single-paper arXiv abs-page fallback is available in PaperScraper",
+      "suggestion": ""
+    },
+    {
+      "name": "arxiv_live_probe",
+      "ok": true,
+      "severity": "info",
+      "category": "arxiv",
+      "message": "live arXiv probe skipped",
+      "suggestion": "Run `paperbrain doctor arxiv --live` for a network probe."
+    },
+    {
+      "name": "arxiv_pdf_live_probe",
+      "ok": true,
+      "severity": "info",
+      "category": "arxiv",
+      "message": "live arXiv PDF probe skipped",
+      "suggestion": "Run `paperbrain doctor arxiv --live` to verify PDF download."
+    }
+  ],
+  "written_at": "2026-06-04T13:13:30"
+}

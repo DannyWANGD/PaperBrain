@@ -1,0 +1,210 @@
+{
+  "ok": true,
+  "command": "doctor",
+  "scope": "obsidian",
+  "paths": {
+    "repo_root": "D:\\PaperBrain",
+    "script_dir": "D:\\PaperBrain\\script",
+    "config_path": "D:\\PaperBrain\\script\\config\\config.yaml",
+    "prompts_path": "D:\\PaperBrain\\script\\config\\prompts.yaml",
+    "vault_path": "D:\\PaperBrain",
+    "cache_dir": "D:\\PaperBrain\\Cache",
+    "pdf_cache_dir": "D:\\PaperBrain\\Cache\\pdfs",
+    "arxiv_cache_dir": "D:\\PaperBrain\\Cache\\arxiv",
+    "huggingface_cache_dir": "D:\\PaperBrain\\Cache\\huggingface",
+    "logs_dir": "D:\\PaperBrain\\Cache\\logs",
+    "diagnostics_dir": "D:\\PaperBrain\\Cache\\diagnostics",
+    "temp_pdf_dir": "D:\\PaperBrain\\Cache\\temp_pdfs",
+    "daily_digest_dir": "D:\\PaperBrain\\Daily_Papers",
+    "notes_dir": "D:\\PaperBrain\\Research_Notes",
+    "pdf_dir": "D:\\PaperBrain\\PDFs",
+    "assets_dir": "D:\\PaperBrain\\Assets",
+    "research_index_dir": "D:\\PaperBrain\\Research_Index",
+    "research_brief_dir": "D:\\PaperBrain\\Research_Briefs",
+    "run_records_dir": "D:\\PaperBrain\\Run_Records"
+  },
+  "prompts_loaded": true,
+  "sections": [
+    {
+      "name": "obsidian",
+      "ok": true,
+      "checks": [
+        {
+          "name": "vault",
+          "ok": true,
+          "severity": "error",
+          "category": "obsidian",
+          "path": "D:\\PaperBrain",
+          "message": "vault path is usable",
+          "suggestion": ""
+        },
+        {
+          "name": "daily_digest",
+          "ok": true,
+          "severity": "error",
+          "category": "obsidian",
+          "message": "daily_digest directory is writable",
+          "suggestion": "",
+          "data": {
+            "path": "D:\\PaperBrain\\Daily_Papers"
+          }
+        },
+        {
+          "name": "research_notes",
+          "ok": true,
+          "severity": "error",
+          "category": "obsidian",
+          "message": "research_notes directory is writable",
+          "suggestion": "",
+          "data": {
+            "path": "D:\\PaperBrain\\Research_Notes"
+          }
+        },
+        {
+          "name": "pdfs",
+          "ok": true,
+          "severity": "error",
+          "category": "obsidian",
+          "message": "pdfs directory is writable",
+          "suggestion": "",
+          "data": {
+            "path": "D:\\PaperBrain\\PDFs"
+          }
+        },
+        {
+          "name": "assets",
+          "ok": true,
+          "severity": "error",
+          "category": "obsidian",
+          "message": "assets directory is writable",
+          "suggestion": "",
+          "data": {
+            "path": "D:\\PaperBrain\\Assets"
+          }
+        },
+        {
+          "name": "research_index",
+          "ok": true,
+          "severity": "error",
+          "category": "obsidian",
+          "message": "research_index directory is writable",
+          "suggestion": "",
+          "data": {
+            "path": "D:\\PaperBrain\\Research_Index"
+          }
+        },
+        {
+          "name": "research_briefs",
+          "ok": true,
+          "severity": "error",
+          "category": "obsidian",
+          "message": "research_briefs directory is writable",
+          "suggestion": "",
+          "data": {
+            "path": "D:\\PaperBrain\\Research_Briefs"
+          }
+        },
+        {
+          "name": "obsidian_base_file",
+          "ok": true,
+          "severity": "warning",
+          "category": "obsidian",
+          "message": "Paper_Library.base exists",
+          "suggestion": "",
+          "data": {
+            "path": "D:\\PaperBrain\\Research_Index\\Paper_Library.base"
+          }
+        }
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "name": "vault",
+      "ok": true,
+      "severity": "error",
+      "category": "obsidian",
+      "path": "D:\\PaperBrain",
+      "message": "vault path is usable",
+      "suggestion": ""
+    },
+    {
+      "name": "daily_digest",
+      "ok": true,
+      "severity": "error",
+      "category": "obsidian",
+      "message": "daily_digest directory is writable",
+      "suggestion": "",
+      "data": {
+        "path": "D:\\PaperBrain\\Daily_Papers"
+      }
+    },
+    {
+      "name": "research_notes",
+      "ok": true,
+      "severity": "error",
+      "category": "obsidian",
+      "message": "research_notes directory is writable",
+      "suggestion": "",
+      "data": {
+        "path": "D:\\PaperBrain\\Research_Notes"
+      }
+    },
+    {
+      "name": "pdfs",
+      "ok": true,
+      "severity": "error",
+      "category": "obsidian",
+      "message": "pdfs directory is writable",
+      "suggestion": "",
+      "data": {
+        "path": "D:\\PaperBrain\\PDFs"
+      }
+    },
+    {
+      "name": "assets",
+      "ok": true,
+      "severity": "error",
+      "category": "obsidian",
+      "message": "assets directory is writable",
+      "suggestion": "",
+      "data": {
+        "path": "D:\\PaperBrain\\Assets"
+      }
+    },
+    {
+      "name": "research_index",
+      "ok": true,
+      "severity": "error",
+      "category": "obsidian",
+      "message": "research_index directory is writable",
+      "suggestion": "",
+      "data": {
+        "path": "D:\\PaperBrain\\Research_Index"
+      }
+    },
+    {
+      "name": "research_briefs",
+      "ok": true,
+      "severity": "error",
+      "category": "obsidian",
+      "message": "research_briefs directory is writable",
+      "suggestion": "",
+      "data": {
+        "path": "D:\\PaperBrain\\Research_Briefs"
+      }
+    },
+    {
+      "name": "obsidian_base_file",
+      "ok": true,
+      "severity": "warning",
+      "category": "obsidian",
+      "message": "Paper_Library.base exists",
+      "suggestion": "",
+      "data": {
+        "path": "D:\\PaperBrain\\Research_Index\\Paper_Library.base"
+      }
+    }
+  ],
+  "written_at": "2026-06-04T13:09:53"
+}

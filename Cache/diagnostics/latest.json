@@ -1,6 +1,7 @@
 {
   "ok": true,
   "command": "doctor",
+  "scope": "config",
   "paths": {
     "repo_root": "D:\\PaperBrain",
     "script_dir": "D:\\PaperBrain\\script",
@@ -23,131 +24,489 @@
     "run_records_dir": "D:\\PaperBrain\\Run_Records"
   },
   "prompts_loaded": true,
-  "checks": [
+  "sections": [
     {
       "name": "config",
       "ok": true,
-      "severity": "error",
-      "path": "D:\\PaperBrain\\script\\config\\config.yaml",
-      "message": "config path is usable"
-    },
-    {
-      "name": "prompts",
-      "ok": true,
-      "severity": "warning",
-      "path": "D:\\PaperBrain\\script\\config\\prompts.yaml",
-      "message": "prompts path is usable"
-    },
-    {
-      "name": "vault",
-      "ok": true,
-      "severity": "error",
-      "path": "D:\\PaperBrain",
-      "message": "vault path is usable"
-    },
-    {
-      "name": "cache",
-      "ok": true,
-      "severity": "warning",
-      "path": "D:\\PaperBrain\\Cache",
-      "message": "cache path is usable"
-    },
-    {
-      "name": "run_records",
-      "ok": true,
-      "severity": "warning",
-      "path": "D:\\PaperBrain\\Run_Records",
-      "message": "run_records path is usable"
-    },
-    {
-      "name": "research_notes",
-      "ok": true,
-      "severity": "warning",
-      "path": "D:\\PaperBrain\\Research_Notes",
-      "message": "research_notes path is usable"
-    },
-    {
-      "name": "research_index",
-      "ok": true,
-      "severity": "warning",
-      "path": "D:\\PaperBrain\\Research_Index",
-      "message": "research_index path is usable"
-    },
-    {
-      "name": "doubao_api_key",
-      "ok": true,
-      "severity": "warning",
-      "message": "API key is configured"
-    },
-    {
-      "name": "openrouter_api_key",
-      "ok": true,
-      "severity": "warning",
-      "message": "API key is configured"
-    },
-    {
-      "name": "dependency_feedparser",
-      "package": "feedparser",
-      "module": "feedparser",
-      "ok": true,
-      "severity": "warning",
-      "message": "feedparser is importable"
-    },
-    {
-      "name": "dependency_requests",
-      "package": "requests",
-      "module": "requests",
-      "ok": true,
-      "severity": "warning",
-      "message": "requests is importable"
-    },
-    {
-      "name": "dependency_pyyaml",
-      "package": "pyyaml",
-      "module": "yaml",
-      "ok": true,
-      "severity": "warning",
-      "message": "pyyaml is importable"
-    },
-    {
-      "name": "dependency_tqdm",
-      "package": "tqdm",
-      "module": "tqdm",
-      "ok": true,
-      "severity": "warning",
-      "message": "tqdm is importable"
-    },
-    {
-      "name": "dependency_beautifulsoup4",
-      "package": "beautifulsoup4",
-      "module": "bs4",
-      "ok": true,
-      "severity": "warning",
-      "message": "beautifulsoup4 is importable"
-    },
-    {
-      "name": "dependency_pymupdf",
-      "package": "pymupdf",
-      "module": "fitz",
-      "ok": true,
-      "severity": "warning",
-      "message": "pymupdf is importable"
-    },
-    {
-      "name": "dependency_openai",
-      "package": "openai",
-      "module": "openai",
-      "ok": true,
-      "severity": "warning",
-      "message": "openai is importable"
-    },
-    {
-      "name": "dependency_edge-tts",
-      "package": "edge-tts",
-      "module": "edge_tts",
-      "ok": true,
-      "severity": "warning",
-      "message": "edge-tts is importable"
+      "checks": [
+        {
+          "name": "config_file",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "path": "D:\\PaperBrain\\script\\config\\config.yaml",
+          "message": "config_file path is usable",
+          "suggestion": ""
+        },
+        {
+          "name": "prompts_loaded",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "prompts.yaml loaded",
+          "suggestion": ""
+        },
+        {
+          "name": "config_section_doubao",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "config section `doubao` exists",
+          "suggestion": ""
+        },
+        {
+          "name": "config_section_openrouter",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "config section `openrouter` exists",
+          "suggestion": ""
+        },
+        {
+          "name": "config_section_analysis",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "config section `analysis` exists",
+          "suggestion": ""
+        },
+        {
+          "name": "config_section_obsidian",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "config section `obsidian` exists",
+          "suggestion": ""
+        },
+        {
+          "name": "config_section_search",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "config section `search` exists",
+          "suggestion": ""
+        },
+        {
+          "name": "config_section_schedule",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "config section `schedule` exists",
+          "suggestion": ""
+        },
+        {
+          "name": "obsidian_vault_path",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "obsidian.vault_path is configured",
+          "suggestion": ""
+        },
+        {
+          "name": "obsidian_daily_digest_folder",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "obsidian.daily_digest_folder is configured",
+          "suggestion": ""
+        },
+        {
+          "name": "obsidian_detailed_notes_folder",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "obsidian.detailed_notes_folder is configured",
+          "suggestion": ""
+        },
+        {
+          "name": "obsidian_research_index_folder",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "obsidian.research_index_folder is configured",
+          "suggestion": ""
+        },
+        {
+          "name": "obsidian_pdf_storage_folder",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "obsidian.pdf_storage_folder is configured",
+          "suggestion": ""
+        },
+        {
+          "name": "search_keywords",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "search.keywords contains at least one keyword",
+          "suggestion": ""
+        },
+        {
+          "name": "search_categories",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "search.arxiv_categories contains at least one category",
+          "suggestion": ""
+        },
+        {
+          "name": "analysis_threshold_order",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "deep analysis thresholds are ordered",
+          "suggestion": "",
+          "data": {
+            "lower": 7.5,
+            "extra": 8.8
+          }
+        },
+        {
+          "name": "analysis_stage2_ratio",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "screening_second_stage_ratio is in (0, 1]",
+          "suggestion": ""
+        },
+        {
+          "name": "doubao_model_flash",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "doubao.model_flash is configured",
+          "suggestion": ""
+        },
+        {
+          "name": "doubao_model_pro",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "doubao.model_pro is configured",
+          "suggestion": ""
+        },
+        {
+          "name": "openrouter_model_flash",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "openrouter.model_flash is configured",
+          "suggestion": ""
+        },
+        {
+          "name": "openrouter_model_pro",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "openrouter.model_pro is configured",
+          "suggestion": ""
+        },
+        {
+          "name": "openrouter_model_screening_pro",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "openrouter.model_screening_pro is configured",
+          "suggestion": ""
+        },
+        {
+          "name": "openrouter_model_podcast",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "openrouter.model_podcast is configured",
+          "suggestion": ""
+        },
+        {
+          "name": "openrouter_model_vision",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "openrouter.model_vision is configured",
+          "suggestion": ""
+        },
+        {
+          "name": "openrouter_model_flash_fallbacks",
+          "ok": true,
+          "severity": "warning",
+          "category": "config",
+          "message": "openrouter.model_flash_fallbacks is a list",
+          "suggestion": ""
+        },
+        {
+          "name": "openrouter_model_screening_pro_fallbacks",
+          "ok": true,
+          "severity": "warning",
+          "category": "config",
+          "message": "openrouter.model_screening_pro_fallbacks is a list",
+          "suggestion": ""
+        },
+        {
+          "name": "openrouter_model_pro_fallbacks",
+          "ok": true,
+          "severity": "warning",
+          "category": "config",
+          "message": "openrouter.model_pro_fallbacks is a list",
+          "suggestion": ""
+        },
+        {
+          "name": "openrouter_model_podcast_fallbacks",
+          "ok": true,
+          "severity": "warning",
+          "category": "config",
+          "message": "openrouter.model_podcast_fallbacks is a list",
+          "suggestion": ""
+        },
+        {
+          "name": "openrouter_model_vision_fallbacks",
+          "ok": true,
+          "severity": "warning",
+          "category": "config",
+          "message": "openrouter.model_vision_fallbacks is a list",
+          "suggestion": ""
+        }
+      ]
     }
-  ]
+  ],
+  "checks": [
+    {
+      "name": "config_file",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "path": "D:\\PaperBrain\\script\\config\\config.yaml",
+      "message": "config_file path is usable",
+      "suggestion": ""
+    },
+    {
+      "name": "prompts_loaded",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "prompts.yaml loaded",
+      "suggestion": ""
+    },
+    {
+      "name": "config_section_doubao",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "config section `doubao` exists",
+      "suggestion": ""
+    },
+    {
+      "name": "config_section_openrouter",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "config section `openrouter` exists",
+      "suggestion": ""
+    },
+    {
+      "name": "config_section_analysis",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "config section `analysis` exists",
+      "suggestion": ""
+    },
+    {
+      "name": "config_section_obsidian",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "config section `obsidian` exists",
+      "suggestion": ""
+    },
+    {
+      "name": "config_section_search",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "config section `search` exists",
+      "suggestion": ""
+    },
+    {
+      "name": "config_section_schedule",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "config section `schedule` exists",
+      "suggestion": ""
+    },
+    {
+      "name": "obsidian_vault_path",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "obsidian.vault_path is configured",
+      "suggestion": ""
+    },
+    {
+      "name": "obsidian_daily_digest_folder",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "obsidian.daily_digest_folder is configured",
+      "suggestion": ""
+    },
+    {
+      "name": "obsidian_detailed_notes_folder",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "obsidian.detailed_notes_folder is configured",
+      "suggestion": ""
+    },
+    {
+      "name": "obsidian_research_index_folder",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "obsidian.research_index_folder is configured",
+      "suggestion": ""
+    },
+    {
+      "name": "obsidian_pdf_storage_folder",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "obsidian.pdf_storage_folder is configured",
+      "suggestion": ""
+    },
+    {
+      "name": "search_keywords",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "search.keywords contains at least one keyword",
+      "suggestion": ""
+    },
+    {
+      "name": "search_categories",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "search.arxiv_categories contains at least one category",
+      "suggestion": ""
+    },
+    {
+      "name": "analysis_threshold_order",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "deep analysis thresholds are ordered",
+      "suggestion": "",
+      "data": {
+        "lower": 7.5,
+        "extra": 8.8
+      }
+    },
+    {
+      "name": "analysis_stage2_ratio",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "screening_second_stage_ratio is in (0, 1]",
+      "suggestion": ""
+    },
+    {
+      "name": "doubao_model_flash",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "doubao.model_flash is configured",
+      "suggestion": ""
+    },
+    {
+      "name": "doubao_model_pro",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "doubao.model_pro is configured",
+      "suggestion": ""
+    },
+    {
+      "name": "openrouter_model_flash",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "openrouter.model_flash is configured",
+      "suggestion": ""
+    },
+    {
+      "name": "openrouter_model_pro",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "openrouter.model_pro is configured",
+      "suggestion": ""
+    },
+    {
+      "name": "openrouter_model_screening_pro",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "openrouter.model_screening_pro is configured",
+      "suggestion": ""
+    },
+    {
+      "name": "openrouter_model_podcast",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "openrouter.model_podcast is configured",
+      "suggestion": ""
+    },
+    {
+      "name": "openrouter_model_vision",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "openrouter.model_vision is configured",
+      "suggestion": ""
+    },
+    {
+      "name": "openrouter_model_flash_fallbacks",
+      "ok": true,
+      "severity": "warning",
+      "category": "config",
+      "message": "openrouter.model_flash_fallbacks is a list",
+      "suggestion": ""
+    },
+    {
+      "name": "openrouter_model_screening_pro_fallbacks",
+      "ok": true,
+      "severity": "warning",
+      "category": "config",
+      "message": "openrouter.model_screening_pro_fallbacks is a list",
+      "suggestion": ""
+    },
+    {
+      "name": "openrouter_model_pro_fallbacks",
+      "ok": true,
+      "severity": "warning",
+      "category": "config",
+      "message": "openrouter.model_pro_fallbacks is a list",
+      "suggestion": ""
+    },
+    {
+      "name": "openrouter_model_podcast_fallbacks",
+      "ok": true,
+      "severity": "warning",
+      "category": "config",
+      "message": "openrouter.model_podcast_fallbacks is a list",
+      "suggestion": ""
+    },
+    {
+      "name": "openrouter_model_vision_fallbacks",
+      "ok": true,
+      "severity": "warning",
+      "category": "config",
+      "message": "openrouter.model_vision_fallbacks is a list",
+      "suggestion": ""
+    }
+  ],
+  "written_at": "2026-06-04T13:13:30"
 }

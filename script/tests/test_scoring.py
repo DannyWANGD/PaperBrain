@@ -10,6 +10,7 @@ from src.scoring import (  # noqa: E402
     coarse_screening_score,
     dynamic_stage2_top_k,
     passes_quality_gate,
+    select_daily_digest_papers,
     select_deep_analysis_papers,
 )
 
@@ -152,15 +153,52 @@ class ScreeningSelectionTest(unittest.TestCase):
         self.assertEqual(selected, [])
         self.assertEqual(diagnostics["candidate_count"], 0)
 
+    def test_daily_digest_backfills_to_minimum_from_quality_remainder(self):
+        cfg = {"daily_digest_min_score": 7.0, "daily_digest_target_min_count": 5}
+        papers = [
+            self._paper("Hard Threshold", 7.5),
+            self._paper("Low Relevance Solid Benchmark", 6.6, relevance=2.0, novelty=8.5, rigor=8.5, evidence=8.5),
+            self._paper("World Model Candidate", 6.5, novelty=7.5, rigor=7.5, evidence=7.5),
+            self._paper("Reliable Systems Paper", 6.2, novelty=7.0, rigor=8.0, evidence=8.0),
+            self._paper("Method Note", 5.9, novelty=7.0, rigor=7.0, evidence=7.0),
+            self._paper("Weak Remainder", 6.4, novelty=2.0, rigor=2.0, evidence=2.0),
+        ]
+
+        selected, diagnostics = select_daily_digest_papers(papers, cfg, provider_threshold=7.0)
+
+        self.assertEqual(len(selected), 5)
+        self.assertEqual(diagnostics["threshold_count"], 1)
+        self.assertEqual(diagnostics["backfill_count"], 4)
+        self.assertIn("Low Relevance Solid Benchmark", [paper["title"] for paper in selected])
+        self.assertNotIn("Weak Remainder", [paper["title"] for paper in selected])
+
+    def test_daily_digest_keeps_all_threshold_papers_when_over_minimum(self):
+        cfg = {"daily_digest_min_score": 7.0, "daily_digest_target_min_count": 5}
+        papers = [
+            self._paper("A", 8.2),
+            self._paper("B", 7.9),
+            self._paper("C", 7.6),
+            self._paper("D", 7.3),
+            self._paper("E", 7.1),
+            self._paper("F", 7.0),
+            self._paper("Backfill Not Needed", 6.9),
+        ]
+
+        selected, diagnostics = select_daily_digest_papers(papers, cfg, provider_threshold=7.0)
+
+        self.assertEqual(len(selected), 6)
+        self.assertEqual(diagnostics["backfill_count"], 0)
+        self.assertNotIn("Backfill Not Needed", [paper["title"] for paper in selected])
+
     @staticmethod
-    def _paper(title, score, relevance=8.0):
+    def _paper(title, score, relevance=8.0, novelty=8.0, rigor=8.0, evidence=8.0):
         return {
             "title": title,
             "score": score,
             "relevance": relevance,
-            "novelty": 8.0,
-            "rigor": 8.0,
-            "evidence": 8.0,
+            "novelty": novelty,
+            "rigor": rigor,
+            "evidence": evidence,
             "reproducibility": 7.0,
             "confidence": 8.0,
             "red_flags": [],

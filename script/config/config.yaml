@@ -63,6 +63,7 @@ analysis:
   daily_deep_analysis_min: 1
   daily_deep_analysis_base_max: 2
   daily_digest_min_score: 7.0
+  daily_digest_target_min_count: 5
   deep_analysis_lower_threshold: 7.5
   deep_analysis_extra_threshold: 8.8
   deep_analysis_quality_gate:
