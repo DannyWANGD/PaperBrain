@@ -125,9 +125,23 @@ search:
   arxiv_timeout_seconds: 45
   arxiv_max_attempts: 4
   arxiv_min_interval_seconds: 3.2
+  arxiv_api_endpoints:
+    - "https://export.arxiv.org/api/query"
+    - "https://arxiv.org/api/query"
+    - "http://export.arxiv.org/api/query"
   arxiv_cache_enabled: true
   arxiv_cache_ttl_hours: 72
   arxiv_rate_limit_cooldown_minutes: 60
+  hf_connect_timeout_seconds: 5
+  hf_read_timeout_seconds: 15
+  hf_max_attempts: 2
+  hf_min_interval_seconds: 1.0
+  hf_daily_papers_endpoints:
+    - "https://huggingface.co/api/daily_papers"
+    - "https://hf.co/api/daily_papers"
+  hf_cache_enabled: true
+  hf_cache_ttl_hours: 72
+  hf_failure_cooldown_minutes: 20
   arxiv_categories:
     - "cs.RO"
     - "cs.AI"

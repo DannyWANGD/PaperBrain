@@ -1,18 +1,9 @@
 import yaml
-import schedule
 import time
 import requests
 import os
 import logging
 from src.config_loader import load_config, load_prompts
-from src.scraper import PaperScraper
-from src.analyser import PaperAnalyser
-from src.obsidian_writer import ObsidianWriter
-from src.gardener import KnowledgeGardener
-
-from src.knowledge_base import KnowledgeBase
-from src.podcaster import Podcaster
-from src.research_indexer import ResearchIndexer
 from src import scoring as scoring_utils
 from src.paper_identity import canonical_arxiv_id, normalize_paper_identity
 from src.run_state import RunState
@@ -20,6 +11,29 @@ from datetime import datetime, timedelta
 from tqdm import tqdm # Import tqdm for progress bars
 import argparse
 import json
+
+try:
+    import schedule
+except ImportError:
+    schedule = None
+
+SAVED_PAPER_STAGES = (
+    "fetched",
+    "coarse_screened",
+    "screened",
+    "digest_written",
+    "deep_analyzed",
+    "completed",
+)
+COARSE_READY_STAGES = (
+    "coarse_screened",
+    "screened",
+    "digest_written",
+    "deep_analyzed",
+    "completed",
+)
+SCREENED_READY_STAGES = ("screened", "digest_written", "deep_analyzed", "completed")
+DEEP_READY_STAGES = ("deep_analyzed", "completed")
 
 # Setup logging
 logging.basicConfig(
@@ -43,6 +57,25 @@ PDF_COOLDOWN_PATH = os.path.join(PDF_CACHE_DIR, "arxiv_pdf_cooldown.json")
 def _safe_pdf_filename(title):
     safe_title = "".join([c for c in title if c.isalpha() or c.isdigit() or c == ' ']).strip()
     return f"{safe_title[:100]}.pdf"
+
+def _looks_like_pdf_url(url):
+    value = str(url or "").strip()
+    if not value:
+        return False
+    lowered = value.split("?", 1)[0].split("#", 1)[0].lower()
+    return lowered.endswith(".pdf") or lowered.endswith("/pdf") or "/pdf/" in lowered
+
+def _is_usable_local_pdf(path):
+    if not path or not os.path.exists(path):
+        return False
+    try:
+        if os.path.getsize(path) <= 1024:
+            return False
+        with open(path, "rb") as f:
+            header = f.read(1024)
+        return b"%PDF-" in header
+    except Exception:
+        return False
 
 def _pdf_cooldown_remaining_seconds():
     if not os.path.exists(PDF_COOLDOWN_PATH):
@@ -89,14 +122,14 @@ def download_pdf(url, title, destination_folder=None, retries=3):
     folder = destination_folder or "temp_pdfs"
     filename = _safe_pdf_filename(title)
     direct_path = os.path.join(folder, filename)
-    if os.path.exists(direct_path) and os.path.getsize(direct_path) > 1024:
+    if _is_usable_local_pdf(direct_path):
         logger.info(f"  [CACHE] Reusing existing PDF: {direct_path}")
         return direct_path
 
     arxiv_id_for_cache = canonical_arxiv_id(url)
     if arxiv_id_for_cache:
         cache_path = os.path.join(PDF_CACHE_DIR, f"{arxiv_id_for_cache}.pdf")
-        if os.path.exists(cache_path) and os.path.getsize(cache_path) > 1024:
+        if _is_usable_local_pdf(cache_path):
             logger.info(f"  [CACHE] Reusing cached PDF for arXiv:{arxiv_id_for_cache}")
             return _copy_pdf(cache_path, folder, filename)
 
@@ -107,20 +140,14 @@ def download_pdf(url, title, destination_folder=None, retries=3):
     }
     
     urls_to_try = [url]
-    if 'arxiv.org/pdf/' in url or 'arxiv.org/abs/' in url:
-        arxiv_id = url.split('/')[-1].replace('.pdf', '')
-        if arxiv_id:
-            base_id = arxiv_id
-            if 'v' in arxiv_id and arxiv_id.split('v')[-1].isdigit():
-                base_id = arxiv_id.rsplit('v', 1)[0]
-            urls_to_try.extend([
-                f"https://arxiv.org/pdf/{arxiv_id}.pdf",
-                f"https://export.arxiv.org/pdf/{arxiv_id}.pdf",
-                f"https://arxiv.org/pdf/{arxiv_id}",
-                f"https://arxiv.org/pdf/{base_id}.pdf",
-                f"https://export.arxiv.org/pdf/{base_id}.pdf",
-                f"https://arxiv.org/pdf/{base_id}",
-            ])
+    arxiv_id = canonical_arxiv_id(url)
+    if arxiv_id:
+        urls_to_try.extend([
+            f"https://arxiv.org/pdf/{arxiv_id}.pdf",
+            f"https://export.arxiv.org/pdf/{arxiv_id}.pdf",
+            f"https://arxiv.org/pdf/{arxiv_id}",
+            f"https://export.arxiv.org/pdf/{arxiv_id}",
+        ])
     
     seen = set()
     deduped_urls = []
@@ -138,6 +165,7 @@ def download_pdf(url, title, destination_folder=None, retries=3):
             )
             return None
 
+    arxiv_429_url = ""
     for attempt in range(retries):
         for target_url in deduped_urls:
             try:
@@ -155,7 +183,15 @@ def download_pdf(url, title, destination_folder=None, retries=3):
                             if chunk:
                                 f.write(chunk)
 
-                    if arxiv_id_for_cache and os.path.getsize(filepath) > 1024:
+                    if not _is_usable_local_pdf(filepath):
+                        logger.warning(f"[WARN] Downloaded file from {target_url} is not a usable PDF.")
+                        try:
+                            os.remove(filepath)
+                        except Exception:
+                            pass
+                        continue
+
+                    if arxiv_id_for_cache:
                         os.makedirs(PDF_CACHE_DIR, exist_ok=True)
                         shutil.copy2(filepath, os.path.join(PDF_CACHE_DIR, f"{arxiv_id_for_cache}.pdf"))
                     
@@ -163,17 +199,61 @@ def download_pdf(url, title, destination_folder=None, retries=3):
                 else:
                     logger.warning(f"[WARN] Failed to download from {target_url} (Status: {response.status_code})")
                     if response.status_code == 429 and canonical_arxiv_id(target_url):
-                        _mark_pdf_cooldown(f"HTTP 429 while downloading {target_url}")
-                        logger.warning("[WARN] arXiv PDF endpoint is rate-limited. Stopping arXiv PDF retries for now.")
-                        return None
+                        arxiv_429_url = target_url
+                        continue
                     
             except Exception as e:
                 logger.warning(f"[WARN] Connection error on {target_url}: {e}")
                 time.sleep(2) # Backoff
+
+        if arxiv_429_url:
+            _mark_pdf_cooldown(f"HTTP 429 while downloading {arxiv_429_url}")
+            logger.warning("[WARN] arXiv PDF endpoint is rate-limited after trying PDF URL variants. Stopping arXiv PDF retries for now.")
+            return None
         
         time.sleep(5) # Wait longer between retry sets
 
     logger.error(f"[ERR] All download attempts failed for {title}")
+    return None
+
+def _paper_pdf_url_candidates(paper):
+    urls = []
+    pdf_url = str(paper.get("pdf_url") or "").strip()
+    if pdf_url:
+        urls.append(pdf_url)
+
+    page_or_pdf_url = str(paper.get("url") or "").strip()
+    if page_or_pdf_url and _looks_like_pdf_url(page_or_pdf_url):
+        urls.append(page_or_pdf_url)
+
+    arxiv_id = ""
+    for key in ("pdf_url", "url", "arxiv_id", "paper_id"):
+        arxiv_id = canonical_arxiv_id(paper.get(key))
+        if arxiv_id:
+            break
+    if arxiv_id:
+        urls.extend([
+            f"https://arxiv.org/pdf/{arxiv_id}.pdf",
+            f"https://export.arxiv.org/pdf/{arxiv_id}.pdf",
+            f"https://arxiv.org/pdf/{arxiv_id}",
+            f"https://export.arxiv.org/pdf/{arxiv_id}",
+        ])
+
+    deduped = []
+    seen = set()
+    for url in urls:
+        if url and url not in seen:
+            seen.add(url)
+            deduped.append(url)
+    return deduped
+
+def download_paper_pdf(paper, destination_folder):
+    """Download a paper PDF locally before any PDF-dependent analysis."""
+    title = paper.get("title") or paper.get("short_title") or "paper"
+    for url in _paper_pdf_url_candidates(paper):
+        pdf_path = download_pdf(url, title, destination_folder=destination_folder)
+        if _is_usable_local_pdf(pdf_path):
+            return pdf_path
     return None
 
 def _extract_arxiv_id(raw_url):
@@ -269,52 +349,8 @@ def _mark_deep_selection(papers, high_value_papers):
             or paper.get('title') in selected_keys
         )
 
-def job(
-    target_date=None,
-    provider='doubao',
-    generate_podcast=True,
-    podcast_minutes=5,
-    arxiv_url=None,
-    resume=True,
-    force=False,
-    stop_after=None,
-):
-    logger.info("Starting Daily PaperBrain Job...")
-
-    # Determine target date
-    if target_date is None:
-        target_date = datetime.now().date() - timedelta(days=1)
-
-    logger.info(f"[INFO] Target Date for search: {target_date}")
-    logger.info(f"[INFO] AI Provider: {provider}")
-    logger.info(f"[INFO] Podcast Generation: {'Enabled' if generate_podcast else 'Disabled'}")
-    logger.info(f"[INFO] Podcast Duration: ~{podcast_minutes} minutes")
-    if arxiv_url:
-        logger.info(f"[INFO] Single-paper mode enabled for: {arxiv_url}")
-
-    config = load_config()
-    prompts = load_prompts()
-    run_state = RunState(config, target_date, provider, single_paper=bool(arxiv_url))
-    if force:
-        logger.info("[INFO] Force mode enabled: resetting run state.")
-        run_state.reset()
-
-    scraper = PaperScraper(config)
-    analyser = PaperAnalyser(config, provider=provider, prompts=prompts)
-    obsidian_writer = ObsidianWriter(config, provider=provider)
-    gardener = KnowledgeGardener(config, provider=provider)
-    knowledge_base = KnowledgeBase(config, provider=provider, prompts=prompts)
-    podcaster = Podcaster(config, provider=provider, prompts=prompts)
-    research_indexer = ResearchIndexer(config)
-    
-    if resume and not force and run_state.data.get("stage") in (
-        "fetched",
-        "coarse_screened",
-        "screened",
-        "digest_written",
-        "deep_analyzed",
-        "completed",
-    ):
+def _load_papers_for_run(scraper, run_state, target_date, arxiv_url, resume=True, force=False):
+    if resume and not force and run_state.data.get("stage") in SAVED_PAPER_STAGES:
         papers = run_state.papers()
         logger.info(f"[RESUME] Loaded {len(papers)} papers from {run_state.path}")
     elif arxiv_url:
@@ -322,41 +358,29 @@ def job(
         papers = [single_paper] if single_paper else []
     else:
         papers = scraper.get_all_papers(target_date=target_date)
+
     papers = [normalize_paper_identity(p) for p in papers if p]
-    if not papers:
-        logger.info(f"No papers found for date {target_date}.")
-        return
-    if run_state.data.get("stage") == "initialized" or not resume or force:
+    if papers and (run_state.data.get("stage") == "initialized" or not resume or force):
         run_state.set_papers(papers, stage="fetched")
-    if stop_after == "fetch":
-        logger.info("[STOP] stop_after=fetch")
-        return
+    return papers
 
-    # 2. Two-stage screening
-    screened_papers = run_state.papers() if resume and run_state.data.get("stage") in (
-        "coarse_screened",
-        "screened",
-        "digest_written",
-        "deep_analyzed",
-        "completed",
-    ) else []
-
+def _run_coarse_screening(papers, analyser, run_state, resume=True):
+    screened_papers = run_state.papers() if resume and run_state.data.get("stage") in COARSE_READY_STAGES else []
     if screened_papers:
         logger.info(f"[RESUME] Using cached coarse-screened papers: {len(screened_papers)}")
-    else:
-        logger.info(f"[INFO] Starting stage-1 coarse screening for {len(papers)} papers with {analyser.model_flash}...")
-        for p in tqdm(papers, desc="Coarse Screening", unit="paper", ascii=True):
-            coarse_result = analyser.coarse_screen_paper(p)
-            _apply_coarse_screen_result(p, coarse_result)
-            p = normalize_paper_identity(p)
-            screened_papers.append(p)
-            run_state.update_paper(p)
-        run_state.mark_stage("coarse_screened")
-    if stop_after == "coarse":
-        logger.info("[STOP] stop_after=coarse")
-        return
+        return screened_papers
 
-    analysis_cfg = config.get('analysis', {})
+    logger.info(f"[INFO] Starting stage-1 coarse screening for {len(papers)} papers with {analyser.model_flash}...")
+    for p in tqdm(papers, desc="Coarse Screening", unit="paper", ascii=True):
+        coarse_result = analyser.coarse_screen_paper(p)
+        _apply_coarse_screen_result(p, coarse_result)
+        p = normalize_paper_identity(p)
+        screened_papers.append(p)
+        run_state.update_paper(p)
+    run_state.mark_stage("coarse_screened")
+    return screened_papers
+
+def _build_rescreen_pool(screened_papers, analysis_cfg):
     stage2_min_k = int(analysis_cfg.get('screening_second_stage_top_k', 10))
     stage2_ratio = float(analysis_cfg.get('screening_second_stage_ratio', 0.25))
     stage2_max_k = int(analysis_cfg.get('screening_second_stage_max_k', 20))
@@ -371,8 +395,10 @@ def job(
     rescreen_pool = rescreen_true[:stage2_top_k]
     if len(rescreen_pool) < stage2_top_k:
         rescreen_pool.extend(rescreen_false[:stage2_top_k - len(rescreen_pool)])
-    rescreen_ids = {id(p) for p in rescreen_pool}
+    return rescreen_pool
 
+def _run_rigorous_screening(screened_papers, rescreen_pool, analyser, run_state, analysis_cfg, resume=True):
+    rescreen_ids = {id(p) for p in rescreen_pool}
     logger.info(
         f"[INFO] Stage-1 complete. Promoting {len(rescreen_pool)} papers to stage-2 rigorous screening "
         f"with {analyser.model_screening_pro}."
@@ -386,47 +412,45 @@ def job(
         if id(p) not in rescreen_ids:
             _apply_coarse_as_final_result(p)
 
-    if resume and run_state.data.get("stage") in ("screened", "digest_written", "deep_analyzed", "completed"):
+    if resume and run_state.data.get("stage") in SCREENED_READY_STAGES:
         logger.info(f"[RESUME] Using cached rigorous screening results: {len(screened_papers)}")
-    else:
-        for p in tqdm(rescreen_pool, desc="Rigorous Re-Screen", unit="paper", ascii=True):
-            if use_pdf_context:
-                p.pop('screening_document_excerpt', None)
-                if p.get('pdf_url'):
-                    logger.info(f"  [CTX] Building stage-2 document excerpt: {p['title']}")
-                    tmp_pdf_path = download_pdf(p['pdf_url'], p['title'], destination_folder="temp_pdfs")
-                    if tmp_pdf_path:
-                        try:
-                            excerpt_text = analyser._extract_text_from_pdf_fitz(tmp_pdf_path, max_pages=pdf_context_pages)
-                            if not excerpt_text:
-                                excerpt_text = analyser.extract_text_from_pdf(tmp_pdf_path)
-                            excerpt_text = (excerpt_text or "").strip()
-                            if excerpt_text:
-                                p['screening_document_excerpt'] = excerpt_text[:pdf_context_max_chars]
-                        except Exception as e:
-                            logger.warning(f"[WARN] Failed to prepare stage-2 document excerpt for '{p['title']}': {e}")
-                        finally:
-                            try:
-                                os.remove(tmp_pdf_path)
-                            except Exception:
-                                pass
-                    else:
-                        logger.info("  [CTX] PDF unavailable or rate-limited; rigorous screening will use title/abstract only.")
-
-            result = analyser.screen_paper(p)
-            _apply_final_screen_result(p, result)
-            p = normalize_paper_identity(p)
-            run_state.update_paper(p)
-        run_state.mark_stage("screened")
-
-    if stop_after == "screen":
-        logger.info("[STOP] stop_after=screen")
         return
 
-    for p in screened_papers:
+    for p in tqdm(rescreen_pool, desc="Rigorous Re-Screen", unit="paper", ascii=True):
+        if use_pdf_context:
+            p.pop('screening_document_excerpt', None)
+            if _paper_pdf_url_candidates(p):
+                logger.info(f"  [CTX] Building stage-2 document excerpt: {p['title']}")
+                tmp_pdf_path = download_paper_pdf(p, destination_folder="temp_pdfs")
+                if tmp_pdf_path:
+                    try:
+                        excerpt_text = analyser._extract_text_from_pdf_fitz(tmp_pdf_path, max_pages=pdf_context_pages)
+                        if not excerpt_text:
+                            excerpt_text = analyser.extract_text_from_pdf(tmp_pdf_path)
+                        excerpt_text = (excerpt_text or "").strip()
+                        if excerpt_text:
+                            p['screening_document_excerpt'] = excerpt_text[:pdf_context_max_chars]
+                    except Exception as e:
+                        logger.warning(f"[WARN] Failed to prepare stage-2 document excerpt for '{p['title']}': {e}")
+                    finally:
+                        try:
+                            os.remove(tmp_pdf_path)
+                        except Exception:
+                            pass
+                else:
+                    logger.info("  [CTX] PDF unavailable or rate-limited; rigorous screening will use title/abstract only.")
+
+        result = analyser.screen_paper(p)
+        _apply_final_screen_result(p, result)
+        p = normalize_paper_identity(p)
+        run_state.update_paper(p)
+    run_state.mark_stage("screened")
+
+def _drop_screening_excerpts(papers):
+    for p in papers:
         p.pop('screening_document_excerpt', None)
 
-    # Clean up temp PDFs after screening
+def _cleanup_temp_pdfs():
     if os.path.exists("temp_pdfs"):
         try:
             shutil.rmtree("temp_pdfs", ignore_errors=True)
@@ -434,11 +458,7 @@ def job(
         except Exception as e:
             logger.warning(f"[WARN] Failed to clean temp_pdfs: {e}")
 
-    # Sort by score descending
-    screened_papers.sort(key=lambda x: x.get('score', 0), reverse=True)
-    logger.info("[INFO] Screening complete. Generating Daily Digest...")
-    
-    # 3. Deep Analysis for High Value Papers
+def _select_and_record_deep_analysis(screened_papers, config, provider, analysis_cfg, obsidian_writer, run_state):
     provider_cfg = config.get(provider, config.get('doubao', {}))
     threshold = float(analysis_cfg.get(
         'deep_analysis_lower_threshold',
@@ -470,6 +490,101 @@ def job(
             f"extra_above_{selection_info['extra_threshold']}={selection_info['extra_count']}, "
             f"total={selection_info['selected_count']}."
         )
+    return high_value_papers, selection_info, existing_notes
+
+def job(
+    target_date=None,
+    provider='doubao',
+    generate_podcast=True,
+    podcast_minutes=5,
+    arxiv_url=None,
+    resume=True,
+    force=False,
+    stop_after=None,
+):
+    logger.info("Starting Daily PaperBrain Job...")
+
+    # Determine target date
+    if target_date is None:
+        target_date = datetime.now().date() - timedelta(days=1)
+
+    logger.info(f"[INFO] Target Date for search: {target_date}")
+    logger.info(f"[INFO] AI Provider: {provider}")
+    logger.info(f"[INFO] Podcast Generation: {'Enabled' if generate_podcast else 'Disabled'}")
+    logger.info(f"[INFO] Podcast Duration: ~{podcast_minutes} minutes")
+    if arxiv_url:
+        logger.info(f"[INFO] Single-paper mode enabled for: {arxiv_url}")
+
+    config = load_config()
+    prompts = load_prompts()
+    from src.scraper import PaperScraper
+    from src.analyser import PaperAnalyser
+    from src.obsidian_writer import ObsidianWriter
+    from src.gardener import KnowledgeGardener
+    from src.knowledge_base import KnowledgeBase
+    from src.podcaster import Podcaster
+    from src.research_indexer import ResearchIndexer
+
+    run_state = RunState(config, target_date, provider, single_paper=bool(arxiv_url))
+    if force:
+        logger.info("[INFO] Force mode enabled: resetting run state.")
+        run_state.reset()
+
+    scraper = PaperScraper(config)
+    analyser = PaperAnalyser(config, provider=provider, prompts=prompts)
+    obsidian_writer = ObsidianWriter(config, provider=provider)
+    gardener = KnowledgeGardener(config, provider=provider)
+    knowledge_base = KnowledgeBase(config, provider=provider, prompts=prompts)
+    podcaster = Podcaster(config, provider=provider, prompts=prompts)
+    research_indexer = ResearchIndexer(config)
+    
+    papers = _load_papers_for_run(
+        scraper,
+        run_state,
+        target_date,
+        arxiv_url,
+        resume=resume,
+        force=force,
+    )
+    if not papers:
+        logger.info(f"No papers found for date {target_date}.")
+        return
+    if stop_after == "fetch":
+        logger.info("[STOP] stop_after=fetch")
+        return
+
+    # 2. Two-stage screening
+    screened_papers = _run_coarse_screening(papers, analyser, run_state, resume=resume)
+    if stop_after == "coarse":
+        logger.info("[STOP] stop_after=coarse")
+        return
+
+    analysis_cfg = config.get('analysis', {})
+    rescreen_pool = _build_rescreen_pool(screened_papers, analysis_cfg)
+    _run_rigorous_screening(screened_papers, rescreen_pool, analyser, run_state, analysis_cfg, resume=resume)
+
+    if stop_after == "screen":
+        logger.info("[STOP] stop_after=screen")
+        return
+
+    _drop_screening_excerpts(screened_papers)
+
+    # Clean up temp PDFs after screening
+    _cleanup_temp_pdfs()
+
+    # Sort by score descending
+    screened_papers.sort(key=lambda x: x.get('score', 0), reverse=True)
+    logger.info("[INFO] Screening complete. Generating Daily Digest...")
+    
+    # 3. Deep Analysis for High Value Papers
+    high_value_papers, selection_info, existing_notes = _select_and_record_deep_analysis(
+        screened_papers,
+        config,
+        provider,
+        analysis_cfg,
+        obsidian_writer,
+        run_state,
+    )
     
     highest_scoring_paper = None
     highest_score = -1
@@ -486,21 +601,13 @@ def job(
         for i, p in enumerate(high_value_papers):
             logger.info(f"[{i+1}/{len(high_value_papers)}] Analyzing: {p['title']} (Score: {p['score']})")
             
-            if not p.get('pdf_url'):
+            if not _paper_pdf_url_candidates(p):
                 logger.warning(f"[WARN] No PDF URL for {p['title']}, skipping.")
                 continue
             
             # Download PDF
             logger.info(f"  [STEP] Downloading PDF...")
-            pdf_path = download_pdf(p['pdf_url'], p['title'], destination_folder=obsidian_writer.pdf_folder)
-            if (not pdf_path) and p.get('url'):
-                alt_url = p['url']
-                if '/abs/' in alt_url:
-                    alt_url = alt_url.replace('/abs/', '/pdf/')
-                id_main = canonical_arxiv_id(p.get('pdf_url', ''))
-                id_alt = canonical_arxiv_id(alt_url)
-                if id_main != id_alt:
-                    pdf_path = download_pdf(alt_url, p['title'], destination_folder=obsidian_writer.pdf_folder)
+            pdf_path = download_paper_pdf(p, destination_folder=obsidian_writer.pdf_folder)
             
             if pdf_path:
                 # Context-Aware RAG Retrieval (only after PDF is available to avoid unnecessary token usage)
@@ -626,6 +733,9 @@ if __name__ == "__main__":
             stop_after=args.stop_after,
         )
     else:
+        if schedule is None:
+            logger.error("The 'schedule' package is required for scheduled mode. Install dependencies or use --run-now.")
+            exit(1)
         config = load_config()
         schedule_time = config['schedule'].get('time', "08:00")
         logger.info(f"Scheduler started. Job set for {schedule_time} daily. Provider: {args.provider}. Podcast: {'Enabled' if generate_podcast else 'Disabled'}. Duration: ~{podcast_minutes} minutes")

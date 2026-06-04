@@ -29,16 +29,51 @@ class PaperScraper:
         self.arxiv_timeout = int(config.get('search', {}).get('arxiv_timeout_seconds', 20))
         self.arxiv_max_attempts = int(config.get('search', {}).get('arxiv_max_attempts', 4))
         self.arxiv_min_interval = float(config.get('search', {}).get('arxiv_min_interval_seconds', 3.2))
+        endpoints = config.get('search', {}).get('arxiv_api_endpoints') or [
+            "https://export.arxiv.org/api/query",
+            "https://arxiv.org/api/query",
+            "http://export.arxiv.org/api/query",
+        ]
+        self.arxiv_api_endpoints = [str(endpoint).strip() for endpoint in endpoints if str(endpoint).strip()]
         self.arxiv_cache_enabled = bool(config.get('search', {}).get('arxiv_cache_enabled', True))
         self.arxiv_cache_ttl_hours = float(config.get('search', {}).get('arxiv_cache_ttl_hours', 72))
         self.arxiv_rate_limit_cooldown_minutes = float(
             config.get('search', {}).get('arxiv_rate_limit_cooldown_minutes', 60)
         )
+        self.hf_user_agent = config.get(
+            'search', {}
+        ).get(
+            'hf_user_agent',
+            self.arxiv_user_agent
+        )
+        self.hf_connect_timeout = float(config.get('search', {}).get('hf_connect_timeout_seconds', 5))
+        self.hf_read_timeout = float(
+            config.get('search', {}).get(
+                'hf_read_timeout_seconds',
+                config.get('search', {}).get('hf_timeout_seconds', 15)
+            )
+        )
+        self.hf_max_attempts = int(config.get('search', {}).get('hf_max_attempts', 2))
+        self.hf_min_interval = float(config.get('search', {}).get('hf_min_interval_seconds', 1.0))
+        hf_endpoints = config.get('search', {}).get('hf_daily_papers_endpoints') or [
+            "https://huggingface.co/api/daily_papers",
+            "https://hf.co/api/daily_papers",
+        ]
+        self.hf_daily_papers_endpoints = [str(endpoint).strip() for endpoint in hf_endpoints if str(endpoint).strip()]
+        self.hf_cache_enabled = bool(config.get('search', {}).get('hf_cache_enabled', True))
+        self.hf_cache_ttl_hours = float(config.get('search', {}).get('hf_cache_ttl_hours', 72))
+        self.hf_failure_cooldown_minutes = float(
+            config.get('search', {}).get('hf_failure_cooldown_minutes', 20)
+        )
         vault_path = config.get("obsidian", {}).get("vault_path") or os.getcwd()
         self.cache_dir = os.path.join(vault_path, "Cache", "arxiv")
         self.cooldown_path = os.path.join(self.cache_dir, "rate_limit_cooldown.json")
+        self.hf_cache_dir = os.path.join(vault_path, "Cache", "huggingface")
+        self.hf_cooldown_path = os.path.join(self.hf_cache_dir, "failure_cooldown.json")
         self.last_arxiv_request_at = 0.0
+        self.last_hf_request_at = 0.0
         os.makedirs(self.cache_dir, exist_ok=True)
+        os.makedirs(self.hf_cache_dir, exist_ok=True)
 
     def _clean_html(self, text):
         return BeautifulSoup(text, "html.parser").get_text()
@@ -94,6 +129,44 @@ class PaperScraper:
         except Exception as e:
             logger.debug("Failed to write arXiv cache: %s", e)
 
+    def _hf_cache_key(self, params):
+        encoded = json.dumps(params, sort_keys=True, ensure_ascii=False)
+        return hashlib.sha1(encoded.encode("utf-8")).hexdigest()
+
+    def _hf_cache_path(self, params):
+        return os.path.join(self.hf_cache_dir, f"{self._hf_cache_key(params)}.json")
+
+    def _read_cached_hf_daily_papers(self, params, allow_expired=False):
+        if not self.hf_cache_enabled:
+            return None
+        path = self._hf_cache_path(params)
+        if not os.path.exists(path):
+            return None
+        age_hours = (time.time() - os.path.getmtime(path)) / 3600
+        if not allow_expired and age_hours > self.hf_cache_ttl_hours:
+            return None
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            logger.info(
+                "  [CACHE] Using %s Hugging Face daily papers cache (%s, age %.1fh).",
+                "expired" if age_hours > self.hf_cache_ttl_hours else "fresh",
+                os.path.basename(path),
+                age_hours,
+            )
+            return data
+        except Exception:
+            return None
+
+    def _write_cached_hf_daily_papers(self, params, data):
+        if not self.hf_cache_enabled or data is None:
+            return
+        try:
+            with open(self._hf_cache_path(params), "w", encoding="utf-8") as f:
+                json.dump(data, f, ensure_ascii=False, indent=2, default=str)
+        except Exception as e:
+            logger.debug("Failed to write Hugging Face daily papers cache: %s", e)
+
     def _cooldown_remaining_seconds(self):
         if not os.path.exists(self.cooldown_path):
             return 0.0
@@ -113,16 +186,41 @@ class PaperScraper:
         except Exception:
             pass
 
+    def _hf_cooldown_remaining_seconds(self):
+        if not os.path.exists(self.hf_cooldown_path):
+            return 0.0
+        try:
+            with open(self.hf_cooldown_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            until_ts = float(data.get("until", 0))
+            return max(0.0, until_ts - time.time())
+        except Exception:
+            return 0.0
+
+    def _mark_hf_cooldown(self, reason):
+        until_ts = time.time() + self.hf_failure_cooldown_minutes * 60
+        try:
+            with open(self.hf_cooldown_path, "w", encoding="utf-8") as f:
+                json.dump({"until": until_ts, "reason": reason, "created_at": datetime.now().isoformat()}, f, indent=2)
+        except Exception:
+            pass
+
     def _respect_arxiv_interval(self):
         elapsed = time.time() - self.last_arxiv_request_at
         wait_s = self.arxiv_min_interval - elapsed
         if wait_s > 0:
             time.sleep(wait_s)
 
+    def _respect_hf_interval(self):
+        elapsed = time.time() - self.last_hf_request_at
+        wait_s = self.hf_min_interval - elapsed
+        if wait_s > 0:
+            time.sleep(wait_s)
+
     def _request_arxiv_feed(self, params):
-        url = "https://export.arxiv.org/api/query"
         headers = {"User-Agent": self.arxiv_user_agent}
         last_error = None
+        saw_429 = False
 
         cached = self._read_cached_feed(params, allow_expired=False)
         if cached:
@@ -138,54 +236,121 @@ class PaperScraper:
             )
 
         for attempt in range(1, self.arxiv_max_attempts + 1):
-            try:
-                self._respect_arxiv_interval()
-                response = requests.get(
-                    url,
-                    params=params,
-                    headers=headers,
-                    timeout=self.arxiv_timeout,
-                )
-                self.last_arxiv_request_at = time.time()
-                if response.status_code == 200:
-                    self._write_cached_feed(params, response.text)
-                    return response.text
-
-                if response.status_code in (429, 403, 503):
-                    last_error = RuntimeError(f"HTTP {response.status_code} from arXiv API")
-                    if response.status_code == 429:
-                        self._mark_arxiv_cooldown(str(last_error))
-                    if attempt < self.arxiv_max_attempts:
-                        base_delay = max(15, 8 * (2 ** (attempt - 1)))
-                        jitter = random.uniform(1.0, 5.0)
-                        retry_after = response.headers.get("Retry-After")
-                        sleep_s = max(float(retry_after or 0), min(base_delay + jitter, 90.0))
-                        logger.warning(
-                            f"[WARN] arXiv API returned HTTP {response.status_code}. "
-                            f"Backing off {sleep_s:.1f}s before retry ({attempt}/{self.arxiv_max_attempts})..."
-                        )
-                        time.sleep(sleep_s)
-                        continue
-                    raise last_error
-
-                response.raise_for_status()
-            except requests.RequestException as e:
-                last_error = e
-                if attempt < self.arxiv_max_attempts:
-                    base_delay = 8 * (2 ** (attempt - 1))
-                    jitter = random.uniform(1.0, 5.0)
-                    sleep_s = min(base_delay + jitter, 90.0)
-                    logger.warning(
-                        f"[WARN] arXiv request failed ({e}). Backing off {sleep_s:.1f}s "
-                        f"before retry ({attempt}/{self.arxiv_max_attempts})..."
+            for url in self.arxiv_api_endpoints:
+                try:
+                    self._respect_arxiv_interval()
+                    response = requests.get(
+                        url,
+                        params=params,
+                        headers=headers,
+                        timeout=self.arxiv_timeout,
                     )
-                    time.sleep(sleep_s)
-                    continue
-                raise
+                    self.last_arxiv_request_at = time.time()
+                    if response.status_code == 200:
+                        self._write_cached_feed(params, response.text)
+                        return response.text
 
+                    if response.status_code in (429, 403, 503):
+                        last_error = RuntimeError(f"HTTP {response.status_code} from arXiv API endpoint {url}")
+                        saw_429 = saw_429 or response.status_code == 429
+                        logger.warning(
+                            f"[WARN] arXiv API endpoint {url} returned HTTP {response.status_code} "
+                            f"({attempt}/{self.arxiv_max_attempts})."
+                        )
+                        continue
+
+                    response.raise_for_status()
+                except requests.RequestException as e:
+                    last_error = e
+                    logger.warning(f"[WARN] arXiv request failed via {url}: {e}")
+
+            if attempt < self.arxiv_max_attempts:
+                base_delay = max(15, 8 * (2 ** (attempt - 1))) if saw_429 else 8 * (2 ** (attempt - 1))
+                jitter = random.uniform(1.0, 5.0)
+                sleep_s = min(base_delay + jitter, 90.0)
+                logger.warning(
+                    f"[WARN] arXiv API endpoints failed. Backing off {sleep_s:.1f}s "
+                    f"before retry ({attempt}/{self.arxiv_max_attempts})..."
+                )
+                time.sleep(sleep_s)
+                continue
+
+        if saw_429 and last_error:
+            self._mark_arxiv_cooldown(str(last_error))
+        expired = self._read_cached_feed(params, allow_expired=True)
+        if expired:
+            logger.warning("[WARN] Live arXiv API failed; falling back to expired arXiv cache.")
+            return expired
         if last_error:
             raise last_error
         raise RuntimeError("Unknown arXiv API error")
+
+    def _request_hf_daily_papers(self, params):
+        headers = {
+            "User-Agent": self.hf_user_agent,
+            "Accept": "application/json",
+        }
+        last_error = None
+
+        cached = self._read_cached_hf_daily_papers(params, allow_expired=False)
+        if cached is not None:
+            return cached
+
+        cooldown_remaining = self._hf_cooldown_remaining_seconds()
+        if cooldown_remaining > 0:
+            expired = self._read_cached_hf_daily_papers(params, allow_expired=True)
+            if expired is not None:
+                return expired
+            raise RuntimeError(
+                f"Hugging Face daily papers is in local cooldown for {cooldown_remaining / 60:.1f} more minutes."
+            )
+
+        for attempt in range(1, self.hf_max_attempts + 1):
+            for url in self.hf_daily_papers_endpoints:
+                try:
+                    self._respect_hf_interval()
+                    response = requests.get(
+                        url,
+                        params=params,
+                        headers=headers,
+                        timeout=(self.hf_connect_timeout, self.hf_read_timeout),
+                    )
+                    self.last_hf_request_at = time.time()
+                    if response.status_code == 200:
+                        data = response.json()
+                        self._write_cached_hf_daily_papers(params, data)
+                        return data
+
+                    if response.status_code in (429, 403, 500, 502, 503, 504):
+                        last_error = RuntimeError(f"HTTP {response.status_code} from Hugging Face endpoint {url}")
+                        logger.warning(
+                            f"[WARN] Hugging Face endpoint {url} returned HTTP {response.status_code} "
+                            f"({attempt}/{self.hf_max_attempts})."
+                        )
+                        continue
+
+                    response.raise_for_status()
+                except (requests.RequestException, ValueError) as e:
+                    last_error = e
+                    logger.warning(f"[WARN] Hugging Face request failed via {url}: {e}")
+
+            if attempt < self.hf_max_attempts:
+                sleep_s = min(5 * (2 ** (attempt - 1)) + random.uniform(0.5, 3.0), 30.0)
+                logger.warning(
+                    f"[WARN] Hugging Face endpoints failed. Backing off {sleep_s:.1f}s "
+                    f"before retry ({attempt}/{self.hf_max_attempts})..."
+                )
+                time.sleep(sleep_s)
+
+        if last_error:
+            self._mark_hf_cooldown(str(last_error))
+        expired = self._read_cached_hf_daily_papers(params, allow_expired=True)
+        if expired is not None:
+            logger.warning("[WARN] Live Hugging Face daily papers failed; falling back to expired cache.")
+            return expired
+        if last_error:
+            raise last_error
+        raise RuntimeError("Unknown Hugging Face daily papers error")
 
     def _extract_pdf_url(self, entry, entry_id):
         for link in entry.get("links", []):
@@ -222,6 +387,60 @@ class PaperScraper:
             'source': source,
             'authors': authors
         })
+
+    def _single_arxiv_query_variants(self, arxiv_id):
+        base = {
+            "start": 0,
+            "max_results": 1,
+        }
+        return [
+            {**base, "search_query": "", "id_list": arxiv_id},
+            {**base, "search_query": f"id:{arxiv_id}", "id_list": ""},
+            {**base, "search_query": f"all:{arxiv_id}", "id_list": ""},
+        ]
+
+    def _fetch_single_arxiv_abs_page(self, arxiv_id):
+        url = f"https://arxiv.org/abs/{arxiv_id}"
+        try:
+            response = requests.get(
+                url,
+                headers={"User-Agent": self.arxiv_user_agent},
+                timeout=self.arxiv_timeout,
+            )
+            if response.status_code != 200:
+                logger.warning("arXiv abs fallback failed for %s: HTTP %s", arxiv_id, response.status_code)
+                return None
+            soup = BeautifulSoup(response.text, "html.parser")
+
+            def clean_labeled(node, label):
+                if not node:
+                    return ""
+                text = node.get_text(" ", strip=True)
+                return text.replace(label, "", 1).strip()
+
+            title = clean_labeled(soup.find("h1", class_="title"), "Title:")
+            abstract = clean_labeled(soup.find("blockquote", class_="abstract"), "Abstract:")
+            authors_node = soup.find("div", class_="authors")
+            authors = []
+            if authors_node:
+                authors = [a.get_text(" ", strip=True) for a in authors_node.find_all("a") if a.get_text(strip=True)]
+
+            if not title:
+                logger.warning("arXiv abs fallback found no title for %s", arxiv_id)
+                return None
+
+            return normalize_paper_identity({
+                "title": title,
+                "abstract": abstract,
+                "url": url,
+                "pdf_url": f"https://arxiv.org/pdf/{arxiv_id}.pdf",
+                "published": None,
+                "source": "arXiv",
+                "authors": authors,
+            })
+        except Exception as e:
+            logger.error(f"[ERR] arXiv abs fallback failed for {arxiv_id}: {e}")
+            return None
 
     def fetch_arxiv_papers(self, target_date=None):
         """Fetches papers from arXiv based on keywords and categories."""
@@ -276,39 +495,49 @@ class PaperScraper:
              target_date = datetime.now().date() - timedelta(days=1)
         
         date_str = target_date.strftime("%Y-%m-%d")
-        api_url = f"https://huggingface.co/api/daily_papers?date={date_str}"
+        params = {"date": date_str}
         
         papers = []
         try:
-            response = requests.get(api_url)
-            if response.status_code == 200:
-                data = response.json()
-                # data is a list of objects like [{"paper": {...}}, ...]
-                
-                for item in data:
-                    paper_info = item.get('paper', {})
-                    if not paper_info:
-                        continue
-                        
-                    title = paper_info.get('title', '')
-                    summary = paper_info.get('summary', '')
-                    paper_id = paper_info.get('id', '') # e.g. "2602.10388"
+            data = self._request_hf_daily_papers(params)
+            if isinstance(data, dict):
+                data = data.get("papers") or data.get("daily_papers") or data.get("results") or []
+            # data is usually a list of objects like [{"paper": {...}}, ...].
+            for item in data or []:
+                paper_info = item.get('paper', item) if isinstance(item, dict) else {}
+                if not paper_info:
+                    continue
                     
-                    # Filter by keywords
-                    text_content = (title + " " + summary).lower()
-                    if any(k.lower() in text_content for k in self.keywords):
-                        papers.append(normalize_paper_identity({
-                            'title': title,
-                            'abstract': summary,
-                            'url': f"https://huggingface.co/papers/{paper_id}",
-                            'pdf_url': f"https://arxiv.org/pdf/{paper_id}.pdf", # Construct arXiv PDF link
-                            'published': target_date, # Since we queried by date
-                            'source': 'HuggingFace',
-                            'authors': [a.get('name') for a in paper_info.get('authors', [])]
-                        }))
-            else:
-                logger.warning(f"Failed to fetch HF papers: {response.status_code}")
+                title = paper_info.get('title', '')
+                summary = paper_info.get('summary', '') or paper_info.get('abstract', '')
+                paper_id = paper_info.get('id', '') or paper_info.get('paper_id', '')
+                arxiv_id = self._extract_arxiv_id(paper_id)
+                if not arxiv_id:
+                    arxiv_id = self._extract_arxiv_id(paper_info.get('url', '') or paper_info.get('arxiv_id', ''))
+                if not arxiv_id:
+                    continue
                 
+                authors = []
+                for author in paper_info.get('authors', []):
+                    if isinstance(author, dict):
+                        name = author.get('name', '')
+                    else:
+                        name = str(author)
+                    if name:
+                        authors.append(name)
+
+                # Filter by keywords
+                text_content = (title + " " + summary).lower()
+                if any(k.lower() in text_content for k in self.keywords):
+                    papers.append(normalize_paper_identity({
+                        'title': title,
+                        'abstract': summary,
+                        'url': f"https://huggingface.co/papers/{arxiv_id}",
+                        'pdf_url': f"https://arxiv.org/pdf/{arxiv_id}.pdf",
+                        'published': target_date, # Since we queried by date
+                        'source': 'HuggingFace',
+                        'authors': authors
+                    }))
         except Exception as e:
             logger.error(f"Error fetching HF papers: {e}")
         
@@ -344,18 +573,25 @@ class PaperScraper:
         arxiv_id = self._extract_arxiv_id(arxiv_url_or_id)
         if not arxiv_id:
             return None
-        try:
-            raw_feed = self._request_arxiv_feed({
-                "search_query": "",
-                "id_list": arxiv_id,
-                "start": 0,
-                "max_results": 1,
-            })
-            results = feedparser.parse(raw_feed).entries or []
-        except Exception as e:
-            logger.error(f"[ERR] Failed to fetch arXiv paper {arxiv_id}: {e}")
-            return None
-        if not results:
+        last_error = None
+        saw_empty_result = False
+        for params in self._single_arxiv_query_variants(arxiv_id):
+            try:
+                raw_feed = self._request_arxiv_feed(params)
+                results = feedparser.parse(raw_feed).entries or []
+            except Exception as e:
+                last_error = e
+                logger.warning(f"[WARN] Failed arXiv single-paper API query for {arxiv_id}: {e}")
+                continue
+
+            if results:
+                return self._entry_to_paper(results[0], 'arXiv')
+            saw_empty_result = True
+
+        if last_error:
+            logger.error(f"[ERR] Failed to fetch arXiv paper {arxiv_id}: {last_error}")
+        elif saw_empty_result:
             logger.error(f"[ERR] No arXiv paper found for id: {arxiv_id}")
-            return None
-        return self._entry_to_paper(results[0], 'arXiv')
+
+        logger.info("[INFO] Trying arXiv abs page fallback for %s...", arxiv_id)
+        return self._fetch_single_arxiv_abs_page(arxiv_id)

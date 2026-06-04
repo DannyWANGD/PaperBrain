@@ -114,8 +114,9 @@ analysis:
       L = L_{\text{task}} + \lambda L_{\text{reg}}
       $$
     - Use backticks only for code, commands, filenames, property names, model IDs, tags, or literal syntax examples. Never put mathematical equations inside backticks unless you are explicitly discussing code that contains the equation.
-    - For suitable, meaningful knowledge points that require extra study or extra reading to understand well, provide related learning links directly in the note. These may include web pages, official documentation, blogs, tutorials, project pages, datasets, benchmarks, or code repositories.
-    - Use Obsidian-compatible Markdown website links, such as `[concept guide](https://example.com)`, `[official documentation](https://example.com)`, `[blog explanation](https://example.com)`, or `[code repository](https://github.com/example/repo)`. Add links only when they genuinely help the student learn a prerequisite, method, benchmark, dataset, library, or implementation detail. Do not fabricate URLs; if you are unsure of a precise URL, omit the link rather than guessing.
+    - For suitable, meaningful knowledge points that require extra study or extra reading to understand well, provide related learning links directly in the note.
+    - Prefer reputable learning resources: official project pages, official documentation, GitHub repositories, runnable demos, dataset or benchmark pages, Wikipedia pages for foundational concepts, well-known technical blogs, YouTube lectures or course videos, university course pages, open textbooks, and lecture notes.
+    - Use Obsidian-compatible Markdown website links, such as `[concept guide](https://example.com)`, `[official documentation](https://example.com)`, `[blog explanation](https://example.com)`, `[video lecture](https://youtube.com/...)`, `[open textbook](https://example.com)`, or `[code repository](https://github.com/example/repo)`. Add links only when they genuinely help the student learn a prerequisite, method, benchmark, dataset, library, or implementation detail. Do not fabricate URLs; if you are unsure of a precise URL, omit the link rather than guessing.
     - Do not use unsupported HTML or decorative formatting.
 
     Start with this metadata JSON block exactly:
@@ -202,7 +203,7 @@ analysis:
     - Every subsection must include complete paragraphs, not only bullets.
     - Avoid giant paragraphs. After one or two conceptual moves, start a new paragraph.
     - The "## 4. Core Theory And Formulas" section must include Obsidian-compatible inline math `$...$` and display math `$$...$$` when formulas or objectives exist in the paper, but do not wrap the formulas in backticks.
-    - For meaningful concepts that need extra learning to understand, include relevant web pages, blogs, tutorials, project pages, datasets, benchmarks, or GitHub repositories using Obsidian-compatible Markdown links. Do not invent URLs.
+    - For meaningful concepts that need extra learning to understand, include reputable learning resources using Obsidian-compatible Markdown links. Good resource types include official project pages, GitHub repositories, demos, Wikipedia foundations, well-known blogs, YouTube/video lectures, university courses, open textbooks, documentation, datasets, and benchmarks. Do not invent URLs.
     - Before finalizing, check that the note is accurate, clear, student-friendly, well segmented, and not fragmented.
 
   refinement_user: |
@@ -225,7 +226,9 @@ analysis:
     - Strengthen "## 4. Core Theory And Formulas" with Obsidian-compatible inline math using single dollar signs and display math using double dollar signs. Explain every symbol and the practical meaning of each equation.
     - Do not put math formulas inside backticks or fenced code blocks. Backticks are only for code, commands, filenames, property names, tags, model IDs, and literal syntax examples.
     - Add or improve short Obsidian callouts only when they help the student notice a key point, uncertainty, warning, or question.
-    - For suitable, meaningful knowledge points that require extra study or extra reading to understand well, add related learning links such as web pages, blogs, tutorials, project pages, datasets, benchmarks, or repositories. Use Obsidian-compatible Markdown links like `[concept guide](https://example.com)`. Do not invent URLs.
+    - Add learning resources inline at the relevant point in the existing prose, directly after the concept, method, dataset, theorem, implementation detail, or benchmark that needs extra study. Do not create a separate "Learning Resources" section or any new resource-only section.
+    - Include high-quality links when reliable exact URLs are known. Prefer a balanced mix of: official paper/project pages, GitHub repositories, runnable demos, Wikipedia pages for foundational concepts, well-known technical blogs, YouTube lectures or course videos, university course pages, open textbooks, lecture notes, official documentation, datasets, and benchmark pages.
+    - Use Obsidian-compatible Markdown links like `[concept guide](https://example.com)`, `[video lecture](https://youtube.com/...)`, `[open textbook](https://example.com)`, `[demo](https://example.com)`, or `[code repository](https://github.com/example/repo)`. Do not invent URLs. If you know the resource exists but are not sure of the exact URL, omit it rather than guessing.
     - Use `**bold**`, `*italic*`, and `==highlight==` sparingly and correctly. Highlight only the most important takeaway in a section.
     - Keep all prose in English. Use complete paragraphs. Avoid a pile of disconnected bullets.
     - Do not invent facts. If the excerpt or draft does not support a detail, write "Not clear from the provided text".
@@ -257,6 +260,13 @@ analysis:
 
     ### Concept Map
     Generate one Mermaid graph (`graph LR`) that shows the paper's core pipeline and its strongest knowledge-base connections. Use English-only node IDs and labels. Keep the graph small enough to render reliably in Obsidian.
+    Mermaid syntax constraints:
+    - Use only simple ASCII node IDs such as `A`, `B`, `C`, `N1`, `N2`.
+    - Always quote node labels with square-bracket syntax, for example `A["Input video"] --> B["Encoder"]`.
+    - Keep labels short and plain. Avoid parentheses, square brackets inside labels, braces, colons, semicolons, pipes, angle brackets, equals signs, tildes, markdown, wiki links, math, HTML, emojis, Unicode arrows, and line breaks inside labels.
+    - Do not put Obsidian `[[Wiki-Link]]` syntax inside Mermaid nodes. Use plain text labels in the graph and discuss wiki links in the prose above or below it.
+    - Edge labels are optional. If used, keep them short ASCII phrases such as `uses`, `predicts`, or `compares`, with no punctuation.
+    - Before returning, mentally validate every graph line against this safe pattern: `A["Short plain label"] --> B["Short plain label"]`.
 
     ### Questions For Future Reading
     Write three thoughtful questions that I should keep in mind while reading future papers in this area. Each question should explain why it matters and what kind of evidence would answer it.

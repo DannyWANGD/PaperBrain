@@ -14,6 +14,7 @@
 | [[World Reasoning Arena]] | 8.0 | `#domain/embodied_ai` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#domain/world_model` `#method/benchmark` | Unknown |
 | [[VisualThinkVLA]] | 8.6 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/robot_manipulation` `#domain/vla` `#method/benchmark` `#method/foundation_model` | 2026-06-01 |
 | [[Vega]] | 8.0 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/vla` `#domain/world_model` `#method/benchmark` | Unknown |
+| [[LeJEPA]] | 8.2 | `#domain/3d_perception` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/world_model` `#method/planning` | 2026-05-25 |
 | [[GEM Generative Supervision for Embodied VLM]] | 8.1 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#method/benchmark` | 2026-05-28 |
 | [[Generation Models Know Space]] | 8.0 | `#domain/3d_perception` `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/world_model` | 2026-03-19 |
 | [[ProbeFlow]] | 8.0 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/sim2real` `#domain/vla` | 2026-03-18 |
@@ -32,8 +33,7 @@
 | [[VistaBot]] | 8.0 | `#domain/3d_perception` `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/world_model` | Unknown |
 | [[HideandSeek Failure Detection for VLA]] | 8.1 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#method/foundation_model` | 2026-06-01 |
 | [[DynaFLIP DynamicsAware Visual Pretraining]] | 8.1 | `#domain/3d_perception` `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` | 2026-05-29 |
-| [[SoftMimicGen]] | 8.0 | `#domain/embodied_ai` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/sim2real` `#method/benchmark` `#method/imitation_learning` | 2026-03-26 |
-| [[DreamerAD]] | 8.0 | `#domain/3d_perception` `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/world_model` `#method/diffusion_policy` | 2026-03-25 |
+| [[Pion]] | 8.0 | `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#method/foundation_model` `#method/imitation_learning` | 2026-05-25 |
 
 ## Must Read, Unread
 

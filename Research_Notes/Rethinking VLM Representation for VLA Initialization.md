@@ -286,3 +286,7 @@ graph LR
 - **Local PDF**: [[Rethinking VLM Representation for VLA Initialization.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2605.25802.pdf)
 - [ArXiv Link](https://huggingface.co/papers/2605.25802)
+
+
+## Related Work Updates
+- [ ] **2026-06-04**: New paper [[Pion]] discusses *controlled vla design*. Innovation: "Proposes Pion, a high-pass Newton-Schulz iteration that anchors dominant singular values at 1 while suppressing noisy tail components, with per-head mode for preserving pretrained heterogeneity."

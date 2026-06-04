@@ -34,6 +34,7 @@ Use this page when you want a practical implementation, benchmark, or protocol-r
 | [[VistaBot]] | 8.0 | `#domain/3d_perception` `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/world_model` | Unknown |
 | [[HideandSeek Failure Detection for VLA]] | 8.1 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#method/foundation_model` | 2026-06-01 |
 | [[DynaFLIP DynamicsAware Visual Pretraining]] | 8.1 | `#domain/3d_perception` `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` | 2026-05-29 |
+| [[Pion]] | 8.0 | `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#method/foundation_model` `#method/imitation_learning` | 2026-05-25 |
 | [[SoftMimicGen]] | 8.0 | `#domain/embodied_ai` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/sim2real` `#method/benchmark` `#method/imitation_learning` | 2026-03-26 |
 | [[DreamerAD]] | 8.0 | `#domain/3d_perception` `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/world_model` `#method/diffusion_policy` | 2026-03-25 |
 | [[TAG]] | 8.0 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/robot_manipulation` `#domain/vla` `#method/benchmark` `#method/foundation_model` | 2026-03-25 |
@@ -45,7 +46,6 @@ Use this page when you want a practical implementation, benchmark, or protocol-r
 | [[ULTRA]] | 8.0 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/sim2real` `#method/imitation_learning` | 2026-03-03 |
 | [[HydroShear]] | 8.0 | `#domain/embodied_ai` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/sim2real` `#method/reinforcement_learning` `#method/simulation` | 2026-02-28 |
 | [[RynnBrain]] | 8.0 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/vla` `#method/benchmark` `#method/foundation_model` | 2026-02-17 |
-| [[FlowHOI]] | 8.0 | `#domain/3d_perception` `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` | 2026-02-13 |
 
 ```dataview
 TABLE priority_score, score, paper_type, domains, methods, tasks, github, project_page, next_action

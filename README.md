@@ -99,31 +99,31 @@ Run a known date:
 python script/main.py --run-now --date 2026-06-01 --provider openrouter
 ```
 
-## <a id="daily-usage"></a> Daily Usage
+## <a id="daily-usage"></a> 🗓️ Daily Usage
 
-### Run Modes
+### 🚀 Run Modes
 
 | Mode | Goal | Command |
-| --- | --- |
-| Daily | Today | `python script/main.py --run-now --provider openrouter` |
-| Calendar | Specific date | `python script/main.py --run-now --date 2026-06-01 --provider openrouter` |
-| Fetch debug | Fetch only | `python script/main.py --run-now --date 2026-06-01 --provider openrouter --stop-after fetch` |
-| Screen debug | Screening only | `python script/main.py --run-now --date 2026-06-01 --provider openrouter --stop-after screen` |
-| Resume | Continue previous run | `python script/main.py --run-now --date 2026-06-01 --provider openrouter` |
-| Reset | Clean rerun | `python script/main.py --run-now --date 2026-06-01 --provider openrouter --force` |
-| Audio | Skip podcast | `python script/main.py --run-now --provider openrouter --no-podcast` |
-| Focus | Single paper | `python script/main.py --run-now --provider openrouter --arxiv-url https://arxiv.org/abs/2606.02486` |
+| --- | --- | --- |
+| 🗓️ Daily | Today | `python script/main.py --run-now --provider openrouter` |
+| 📅 Calendar | Specific date | `python script/main.py --run-now --date 2026-06-01 --provider openrouter` |
+| 🧰 Debug | Fetch only | `python script/main.py --run-now --date 2026-06-01 --provider openrouter --stop-after fetch` |
+| 🧪 Debug | Screening only | `python script/main.py --run-now --date 2026-06-01 --provider openrouter --stop-after screen` |
+| 🔁 Resume | Continue previous run | `python script/main.py --run-now --date 2026-06-01 --provider openrouter` |
+| ♻️ Reset | Clean rerun | `python script/main.py --run-now --date 2026-06-01 --provider openrouter --force` |
+| 🎧 Audio | Skip podcast | `python script/main.py --run-now --provider openrouter --no-podcast` |
+| 🎯 Focus | Single paper | `python script/main.py --run-now --provider openrouter --arxiv-url https://arxiv.org/abs/2606.02486` |
 
-### What To Check After A Run
+### 📌 What To Check After A Run
 
 | Type | Output | Purpose |
-| --- | --- |
-| Digest | `Daily_Papers/YYYY-MM-DD-PaperDigest.md` | Daily map of all papers above the digest threshold |
-| Audit | `Run_Records/YYYY-MM-DD-openrouter-screening-results.md` | Human-readable screening audit |
-| State | `Run_Records/YYYY-MM-DD-openrouter-run-state.json` | Resume state and machine-readable screening data |
-| Notes | `Research_Notes/*.md` | Deep analysis notes for selected papers |
-| Index | `Research_Index/Research_Index.md` | Obsidian research dashboard |
-| Base | `Research_Index/Paper_Library.base` | Obsidian Bases table view |
+| --- | --- | --- |
+| 📰 Digest | `Daily_Papers/YYYY-MM-DD-PaperDigest.md` | Daily map of all papers above the digest threshold |
+| 🧾 Audit | `Run_Records/YYYY-MM-DD-openrouter-screening-results.md` | Human-readable screening audit |
+| 💾 State | `Run_Records/YYYY-MM-DD-openrouter-run-state.json` | Resume state and machine-readable screening data |
+| 📖 Notes | `Research_Notes/*.md` | Deep analysis notes for selected papers |
+| 🧭 Index | `Research_Index/Research_Index.md` | Obsidian research dashboard |
+| 📊 Base | `Research_Index/Paper_Library.base` | Obsidian Bases table view |
 
 Each digest entry includes score, innovation, limitations, note/web link, authors, institutions, and tags/source when available.
 
