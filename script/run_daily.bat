@@ -40,7 +40,7 @@ if %errorlevel% neq 0 (
 
 :: 6. Run Main Script
 echo [INFO] Starting PaperBrain...
-python main.py --run-now --provider openrouter
+python paperbrain.py run --provider openrouter
 
 :: 7. Cleanup & Exit
 set EC=%ERRORLEVEL%

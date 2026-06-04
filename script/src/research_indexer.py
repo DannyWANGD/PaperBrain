@@ -7,6 +7,7 @@ from datetime import datetime
 
 import yaml
 from src.paper_identity import canonical_arxiv_id, paper_id_from_metadata
+from src.paths import PaperBrainPaths
 
 logger = logging.getLogger(__name__)
 
@@ -61,10 +62,10 @@ class ResearchIndexer:
 
     def __init__(self, config):
         self.config = config
-        obsidian = config["obsidian"]
-        self.vault_path = obsidian["vault_path"]
-        self.notes_folder = os.path.join(self.vault_path, obsidian["detailed_notes_folder"])
-        self.index_folder = os.path.join(self.vault_path, obsidian.get("research_index_folder", "Research_Index"))
+        paths = PaperBrainPaths.from_config_dict(config)
+        self.vault_path = str(paths.vault_path)
+        self.notes_folder = str(paths.notes_dir)
+        self.index_folder = str(paths.research_index_dir)
         os.makedirs(self.index_folder, exist_ok=True)
 
     def build(self, update_notes=True):

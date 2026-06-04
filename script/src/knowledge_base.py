@@ -4,6 +4,7 @@ import logging
 from typing import List, Dict
 import re
 from openai import OpenAI
+from src.paths import PaperBrainPaths
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -18,7 +19,8 @@ class KnowledgeBase:
         self.config = config
         self.provider = provider
         self.prompts = prompts or {}
-        self.notes_dir = os.path.join(config['obsidian']['vault_path'], config['obsidian']['detailed_notes_folder'])
+        paths = PaperBrainPaths.from_config_dict(config)
+        self.notes_dir = str(paths.notes_dir)
         
         # Setup Client (Same logic as Analyser)
         if provider == 'openrouter':

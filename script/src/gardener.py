@@ -3,6 +3,7 @@ import re
 import logging
 import yaml
 from datetime import datetime
+from src.paths import PaperBrainPaths
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -12,8 +13,9 @@ class KnowledgeGardener:
     def __init__(self, config, provider='doubao'):
         self.config = config
         self.provider = provider
-        self.vault_path = config['obsidian']['vault_path']
-        self.notes_folder = os.path.join(self.vault_path, config['obsidian']['detailed_notes_folder'])
+        paths = PaperBrainPaths.from_config_dict(config)
+        self.vault_path = str(paths.vault_path)
+        self.notes_folder = str(paths.notes_dir)
 
     _SUFFIXES = [
         'ation', 'tion', 'sion', 'ment', 'ness', 'able', 'ible',

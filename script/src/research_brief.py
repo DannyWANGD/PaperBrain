@@ -6,6 +6,7 @@ from collections import Counter
 from datetime import date as Date
 from datetime import datetime, timedelta
 
+from src.paths import PaperBrainPaths
 from src.research_indexer import ResearchIndexer
 
 
@@ -14,12 +15,9 @@ class ResearchBriefGenerator:
 
     def __init__(self, config):
         self.config = config
-        obsidian = config["obsidian"]
-        self.vault_path = obsidian["vault_path"]
-        self.brief_folder = os.path.join(
-            self.vault_path,
-            obsidian.get("research_brief_folder", "Research_Briefs"),
-        )
+        paths = PaperBrainPaths.from_config_dict(config)
+        self.vault_path = str(paths.vault_path)
+        self.brief_folder = str(paths.research_brief_dir)
         os.makedirs(self.brief_folder, exist_ok=True)
         self.indexer = ResearchIndexer(config)
 

@@ -8,6 +8,7 @@ import hashlib
 import os
 import json
 from src.paper_identity import canonical_arxiv_id, identity_key, normalize_paper_identity
+from src.paths import PaperBrainPaths
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -65,10 +66,10 @@ class PaperScraper:
         self.hf_failure_cooldown_minutes = float(
             config.get('search', {}).get('hf_failure_cooldown_minutes', 20)
         )
-        vault_path = config.get("obsidian", {}).get("vault_path") or os.getcwd()
-        self.cache_dir = os.path.join(vault_path, "Cache", "arxiv")
+        paths = PaperBrainPaths.from_config_dict(config)
+        self.cache_dir = str(paths.arxiv_cache_dir)
         self.cooldown_path = os.path.join(self.cache_dir, "rate_limit_cooldown.json")
-        self.hf_cache_dir = os.path.join(vault_path, "Cache", "huggingface")
+        self.hf_cache_dir = str(paths.huggingface_cache_dir)
         self.hf_cooldown_path = os.path.join(self.hf_cache_dir, "failure_cooldown.json")
         self.last_arxiv_request_at = 0.0
         self.last_hf_request_at = 0.0

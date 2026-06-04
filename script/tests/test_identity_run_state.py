@@ -73,8 +73,37 @@ class RunStateTest(unittest.TestCase):
 
         report = reloaded.write_screening_report()
         self.assertTrue(Path(report).exists())
+        self.assertEqual(Path(report).name, "screening_report.md")
+        self.assertEqual(Path(reloaded.path).name, "state.json")
+        self.assertTrue(Path(reloaded.log_summary_path).exists())
+        self.assertTrue(Path(reloaded.errors_path).exists())
         raw = Path(reloaded.path).read_text(encoding="utf-8")
-        self.assertEqual(json.loads(raw)["papers"][0]["score"], 8.4)
+        data = json.loads(raw)
+        self.assertEqual(data["papers"][0]["score"], 8.4)
+        self.assertEqual(data["paths"]["state"], reloaded.path)
+
+    def test_loads_legacy_state_and_writes_new_state_json(self):
+        legacy_dir = Path(self.tmp) / "Run_Records"
+        legacy_dir.mkdir()
+        legacy_path = legacy_dir / "2026-06-01-openrouter-run-state.json"
+        legacy_path.write_text(
+            json.dumps(
+                {
+                    "date": "2026-06-01",
+                    "provider": "openrouter",
+                    "stage": "screened",
+                    "papers": [{"title": "Legacy", "url": "https://arxiv.org/abs/2606.02486"}],
+                }
+            ),
+            encoding="utf-8",
+        )
+
+        state = RunState(self.config, date(2026, 6, 1), "openrouter")
+
+        self.assertEqual(state.data["stage"], "screened")
+        self.assertEqual(state.papers()[0]["paper_id"], "arxiv:2606.02486")
+        self.assertTrue(Path(state.path).exists())
+        self.assertEqual(Path(state.path).name, "state.json")
 
 
 if __name__ == "__main__":

@@ -6,6 +6,7 @@ import re
 from pathlib import Path
 
 from src.config_loader import load_config
+from src.paths import PaperBrainPaths
 
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -57,7 +58,9 @@ def _rewrite_text_files(vault, rename_map, dry_run=False):
 
 def _rewrite_run_state_paths(vault, rename_map, dry_run=False):
     changed = []
-    for path in (vault / "Run_Records").glob("*-run-state.json"):
+    run_records = vault / "Run_Records"
+    state_paths = list(run_records.glob("*-run-state.json")) + list(run_records.glob("*/state.json"))
+    for path in state_paths:
         try:
             data = json.loads(path.read_text(encoding="utf-8"))
         except Exception:
@@ -154,8 +157,9 @@ graph LR
 
 def normalize_note_filenames(dry_run=False):
     config = load_config()
-    vault = Path(config["obsidian"]["vault_path"])
-    notes_dir = vault / config["obsidian"]["detailed_notes_folder"]
+    paths = PaperBrainPaths.from_config_dict(config)
+    vault = paths.vault_path
+    notes_dir = paths.notes_dir
 
     fixed_mermaid = fix_rethinking_mermaid(vault, dry_run=dry_run)
     rename_map = _rename_notes(notes_dir, dry_run=dry_run)

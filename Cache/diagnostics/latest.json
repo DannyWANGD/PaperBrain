@@ -1,0 +1,153 @@
+{
+  "ok": true,
+  "command": "doctor",
+  "paths": {
+    "repo_root": "D:\\PaperBrain",
+    "script_dir": "D:\\PaperBrain\\script",
+    "config_path": "D:\\PaperBrain\\script\\config\\config.yaml",
+    "prompts_path": "D:\\PaperBrain\\script\\config\\prompts.yaml",
+    "vault_path": "D:\\PaperBrain",
+    "cache_dir": "D:\\PaperBrain\\Cache",
+    "pdf_cache_dir": "D:\\PaperBrain\\Cache\\pdfs",
+    "arxiv_cache_dir": "D:\\PaperBrain\\Cache\\arxiv",
+    "huggingface_cache_dir": "D:\\PaperBrain\\Cache\\huggingface",
+    "logs_dir": "D:\\PaperBrain\\Cache\\logs",
+    "diagnostics_dir": "D:\\PaperBrain\\Cache\\diagnostics",
+    "temp_pdf_dir": "D:\\PaperBrain\\Cache\\temp_pdfs",
+    "daily_digest_dir": "D:\\PaperBrain\\Daily_Papers",
+    "notes_dir": "D:\\PaperBrain\\Research_Notes",
+    "pdf_dir": "D:\\PaperBrain\\PDFs",
+    "assets_dir": "D:\\PaperBrain\\Assets",
+    "research_index_dir": "D:\\PaperBrain\\Research_Index",
+    "research_brief_dir": "D:\\PaperBrain\\Research_Briefs",
+    "run_records_dir": "D:\\PaperBrain\\Run_Records"
+  },
+  "prompts_loaded": true,
+  "checks": [
+    {
+      "name": "config",
+      "ok": true,
+      "severity": "error",
+      "path": "D:\\PaperBrain\\script\\config\\config.yaml",
+      "message": "config path is usable"
+    },
+    {
+      "name": "prompts",
+      "ok": true,
+      "severity": "warning",
+      "path": "D:\\PaperBrain\\script\\config\\prompts.yaml",
+      "message": "prompts path is usable"
+    },
+    {
+      "name": "vault",
+      "ok": true,
+      "severity": "error",
+      "path": "D:\\PaperBrain",
+      "message": "vault path is usable"
+    },
+    {
+      "name": "cache",
+      "ok": true,
+      "severity": "warning",
+      "path": "D:\\PaperBrain\\Cache",
+      "message": "cache path is usable"
+    },
+    {
+      "name": "run_records",
+      "ok": true,
+      "severity": "warning",
+      "path": "D:\\PaperBrain\\Run_Records",
+      "message": "run_records path is usable"
+    },
+    {
+      "name": "research_notes",
+      "ok": true,
+      "severity": "warning",
+      "path": "D:\\PaperBrain\\Research_Notes",
+      "message": "research_notes path is usable"
+    },
+    {
+      "name": "research_index",
+      "ok": true,
+      "severity": "warning",
+      "path": "D:\\PaperBrain\\Research_Index",
+      "message": "research_index path is usable"
+    },
+    {
+      "name": "doubao_api_key",
+      "ok": true,
+      "severity": "warning",
+      "message": "API key is configured"
+    },
+    {
+      "name": "openrouter_api_key",
+      "ok": true,
+      "severity": "warning",
+      "message": "API key is configured"
+    },
+    {
+      "name": "dependency_feedparser",
+      "package": "feedparser",
+      "module": "feedparser",
+      "ok": true,
+      "severity": "warning",
+      "message": "feedparser is importable"
+    },
+    {
+      "name": "dependency_requests",
+      "package": "requests",
+      "module": "requests",
+      "ok": true,
+      "severity": "warning",
+      "message": "requests is importable"
+    },
+    {
+      "name": "dependency_pyyaml",
+      "package": "pyyaml",
+      "module": "yaml",
+      "ok": true,
+      "severity": "warning",
+      "message": "pyyaml is importable"
+    },
+    {
+      "name": "dependency_tqdm",
+      "package": "tqdm",
+      "module": "tqdm",
+      "ok": true,
+      "severity": "warning",
+      "message": "tqdm is importable"
+    },
+    {
+      "name": "dependency_beautifulsoup4",
+      "package": "beautifulsoup4",
+      "module": "bs4",
+      "ok": true,
+      "severity": "warning",
+      "message": "beautifulsoup4 is importable"
+    },
+    {
+      "name": "dependency_pymupdf",
+      "package": "pymupdf",
+      "module": "fitz",
+      "ok": true,
+      "severity": "warning",
+      "message": "pymupdf is importable"
+    },
+    {
+      "name": "dependency_openai",
+      "package": "openai",
+      "module": "openai",
+      "ok": true,
+      "severity": "warning",
+      "message": "openai is importable"
+    },
+    {
+      "name": "dependency_edge-tts",
+      "package": "edge-tts",
+      "module": "edge_tts",
+      "ok": true,
+      "severity": "warning",
+      "message": "edge-tts is importable"
+    }
+  ]
+}

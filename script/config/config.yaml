@@ -97,7 +97,7 @@ analysis:
   # analysis.prompts is kept as an empty placeholder for backward compatibility
 
 obsidian:
-  vault_path: "../../"  # Path to your Obsidian Vault root from script/config/
+  vault_path: "."  # Path to your Obsidian Vault root from the repository root
   daily_digest_folder: "Daily_Papers"
   detailed_notes_folder: "Research_Notes"
   research_index_folder: "Research_Index"

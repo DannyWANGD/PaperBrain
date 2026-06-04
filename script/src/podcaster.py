@@ -3,6 +3,7 @@ import asyncio
 import logging
 from openai import OpenAI
 import edge_tts
+from src.paths import PaperBrainPaths
 
 try:
     import nest_asyncio
@@ -18,11 +19,8 @@ class Podcaster:
         self.config = config
         self.provider = provider
         self.prompts = prompts or {}
-        # config['obsidian']['vault_path'] might be relative, so we need to resolve it
-        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) # Go up one level from src to script
-        vault_path = os.path.abspath(os.path.join(base_dir, config['obsidian']['vault_path']))
-        
-        self.output_dir = os.path.join(vault_path, "Podcasts")
+        paths = PaperBrainPaths.from_config_dict(config)
+        self.output_dir = os.path.join(str(paths.vault_path), "Podcasts")
         if not os.path.exists(self.output_dir):
             os.makedirs(self.output_dir)
             

@@ -4,6 +4,7 @@ from datetime import datetime
 import logging
 import yaml
 from src.paper_identity import canonical_arxiv_id, normalize_paper_identity, paper_id_from_arxiv_id
+from src.paths import PaperBrainPaths
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -12,11 +13,12 @@ class ObsidianWriter:
     def __init__(self, config, provider='doubao'):
         self.config = config
         self.provider = provider
-        self.vault_path = config['obsidian']['vault_path']
-        self.daily_folder = os.path.join(self.vault_path, config['obsidian']['daily_digest_folder'])
-        self.notes_folder = os.path.join(self.vault_path, config['obsidian']['detailed_notes_folder'])
-        self.pdf_folder = os.path.join(self.vault_path, config['obsidian'].get('pdf_storage_folder', 'PDFs'))
-        self.assets_folder = os.path.join(self.vault_path, "Assets")
+        paths = PaperBrainPaths.from_config_dict(config)
+        self.vault_path = str(paths.vault_path)
+        self.daily_folder = str(paths.daily_digest_dir)
+        self.notes_folder = str(paths.notes_dir)
+        self.pdf_folder = str(paths.pdf_dir)
+        self.assets_folder = str(paths.assets_dir)
         
         # Ensure directories exist
         os.makedirs(self.daily_folder, exist_ok=True)

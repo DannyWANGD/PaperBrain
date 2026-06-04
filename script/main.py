@@ -6,6 +6,7 @@ import logging
 from src.config_loader import load_config, load_prompts
 from src import scoring as scoring_utils
 from src.paper_identity import canonical_arxiv_id, normalize_paper_identity
+from src.paths import PaperBrainPaths
 from src.run_state import RunState
 from datetime import datetime, timedelta
 from tqdm import tqdm # Import tqdm for progress bars
@@ -35,12 +36,15 @@ COARSE_READY_STAGES = (
 SCREENED_READY_STAGES = ("screened", "digest_written", "deep_analyzed", "completed")
 DEEP_READY_STAGES = ("deep_analyzed", "completed")
 
+DEFAULT_PATHS = PaperBrainPaths.default()
+os.makedirs(DEFAULT_PATHS.logs_dir, exist_ok=True)
+
 # Setup logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s', # Simplified format for console
     handlers=[
-        logging.FileHandler("paperbrain.log"),
+        logging.FileHandler(DEFAULT_PATHS.log_path, encoding="utf-8"),
         logging.StreamHandler()
     ]
 )
@@ -51,8 +55,9 @@ logger = logging.getLogger(__name__)
 import shutil
 
 PDF_RATE_LIMIT_COOLDOWN_MINUTES = 60
-PDF_CACHE_DIR = os.path.join("Cache", "pdfs")
-PDF_COOLDOWN_PATH = os.path.join(PDF_CACHE_DIR, "arxiv_pdf_cooldown.json")
+PDF_CACHE_DIR = str(DEFAULT_PATHS.pdf_cache_dir)
+PDF_COOLDOWN_PATH = str(DEFAULT_PATHS.pdf_cooldown_path)
+TEMP_PDF_DIR = str(DEFAULT_PATHS.temp_pdf_dir)
 
 def _safe_pdf_filename(title):
     safe_title = "".join([c for c in title if c.isalpha() or c.isdigit() or c == ' ']).strip()
@@ -165,7 +170,7 @@ def download_pdf(url, title, destination_folder=None, retries=3, cache_paths=Non
     #     logger.warning(f"[SECURITY] URL not in trusted domains: {url}")
     #     # return None # Uncomment to enforce
 
-    folder = destination_folder or "temp_pdfs"
+    folder = destination_folder or TEMP_PDF_DIR
     filename = _safe_pdf_filename(title)
     direct_path = os.path.join(folder, filename)
     if _is_usable_local_pdf(direct_path):
@@ -470,7 +475,7 @@ def _run_rigorous_screening(screened_papers, rescreen_pool, analyser, run_state,
             p.pop('screening_document_excerpt', None)
             if _paper_pdf_url_candidates(p):
                 logger.info(f"  [CTX] Building stage-2 document excerpt: {p['title']}")
-                tmp_pdf_path = download_paper_pdf(p, destination_folder="temp_pdfs", cache_paths=cache_paths)
+                tmp_pdf_path = download_paper_pdf(p, destination_folder=TEMP_PDF_DIR, cache_paths=cache_paths)
                 if tmp_pdf_path:
                     try:
                         excerpt_text = analyser._extract_text_from_pdf_fitz(tmp_pdf_path, max_pages=pdf_context_pages)
@@ -500,12 +505,12 @@ def _drop_screening_excerpts(papers):
         p.pop('screening_document_excerpt', None)
 
 def _cleanup_temp_pdfs():
-    if os.path.exists("temp_pdfs"):
+    if os.path.exists(TEMP_PDF_DIR):
         try:
-            shutil.rmtree("temp_pdfs", ignore_errors=True)
+            shutil.rmtree(TEMP_PDF_DIR, ignore_errors=True)
             logger.info("[INFO] Cleaned up temporary PDF files from screening stage.")
         except Exception as e:
-            logger.warning(f"[WARN] Failed to clean temp_pdfs: {e}")
+            logger.warning(f"[WARN] Failed to clean temp PDFs: {e}")
 
 def _select_and_record_deep_analysis(screened_papers, config, provider, analysis_cfg, obsidian_writer, run_state):
     provider_cfg = config.get(provider, config.get('doubao', {}))
@@ -540,6 +545,11 @@ def _select_and_record_deep_analysis(screened_papers, config, provider, analysis
             f"total={selection_info['selected_count']}."
         )
     return high_value_papers, selection_info, existing_notes
+
+def _job_summary(run_state, ok=True):
+    summary = run_state.summary()
+    summary["ok"] = bool(ok and not summary.get("errors"))
+    return summary
 
 def job(
     target_date=None,
@@ -599,16 +609,17 @@ def job(
     )
     if not papers:
         logger.info(f"No papers found for date {target_date}.")
-        return
+        run_state.mark_stage("completed")
+        return _job_summary(run_state)
     if stop_after == "fetch":
         logger.info("[STOP] stop_after=fetch")
-        return
+        return _job_summary(run_state)
 
     # 2. Two-stage screening
     screened_papers = _run_coarse_screening(papers, analyser, run_state, resume=resume)
     if stop_after == "coarse":
         logger.info("[STOP] stop_after=coarse")
-        return
+        return _job_summary(run_state)
 
     analysis_cfg = config.get('analysis', {})
     rescreen_pool = _build_rescreen_pool(screened_papers, analysis_cfg)
@@ -624,7 +635,7 @@ def job(
 
     if stop_after == "screen":
         logger.info("[STOP] stop_after=screen")
-        return
+        return _job_summary(run_state)
 
     _drop_screening_excerpts(screened_papers)
 
@@ -715,7 +726,7 @@ def job(
 
     if stop_after == "deep":
         logger.info("[STOP] stop_after=deep")
-        return
+        return _job_summary(run_state)
 
     # 4. Write Daily Digest — skip in single-paper mode (arxiv_url provided)
     if not arxiv_url:
@@ -750,62 +761,14 @@ def job(
     run_state.mark_stage("completed")
     _cleanup_completed_run_pdf_cache(cache_cleanup_day_start, run_pdf_cache_paths)
     logger.info("[SUCCESS] Job completed successfully.")
-    return
+    return _job_summary(run_state)
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="PaperBrain Daily Job")
-    parser.add_argument("--run-now", action="store_true", help="Run the job immediately")
-    parser.add_argument("--date", type=str, help="Target date in YYYY-MM-DD format (default: yesterday)")
-    parser.add_argument("--provider", type=str, default="doubao", choices=["doubao", "openrouter"], help="AI Provider (default: doubao)")
-    parser.add_argument("--no-podcast", action="store_true", help="Disable podcast generation")
-    parser.add_argument("--podcast-minutes", type=int, default=5, help="Target podcast duration in minutes (default: 5)")
-    parser.add_argument("--arxiv-url", type=str, help="Analyze a specific arXiv URL or ID directly")
-    parser.add_argument("--force", action="store_true", help="Reset saved run state and recompute all stages")
-    parser.add_argument("--no-resume", action="store_true", help="Ignore saved run state without deleting it")
-    parser.add_argument(
-        "--stop-after",
-        choices=["fetch", "coarse", "screen", "deep"],
-        help="Stop after a pipeline stage; useful for checkpointed runs",
+    import sys
+    from src.cli import legacy_main_args, main as cli_main
+
+    print(
+        "[DEPRECATED] Use `python script/paperbrain.py run ...` instead of `python script/main.py ...`.",
+        file=sys.stderr,
     )
-    
-    args = parser.parse_args()
-    
-    target_date = None
-    if args.date:
-        try:
-            target_date = datetime.strptime(args.date, "%Y-%m-%d").date()
-        except ValueError:
-            logger.error("Invalid date format. Please use YYYY-MM-DD.")
-            exit(1)
-            
-    generate_podcast = not args.no_podcast
-    podcast_minutes = max(1, args.podcast_minutes)
-    
-    if args.run_now:
-        job(
-            target_date,
-            provider=args.provider,
-            generate_podcast=generate_podcast,
-            podcast_minutes=podcast_minutes,
-            arxiv_url=args.arxiv_url,
-            resume=not args.no_resume,
-            force=args.force,
-            stop_after=args.stop_after,
-        )
-    else:
-        if schedule is None:
-            logger.error("The 'schedule' package is required for scheduled mode. Install dependencies or use --run-now.")
-            exit(1)
-        config = load_config()
-        schedule_time = config['schedule'].get('time', "08:00")
-        logger.info(f"Scheduler started. Job set for {schedule_time} daily. Provider: {args.provider}. Podcast: {'Enabled' if generate_podcast else 'Disabled'}. Duration: ~{podcast_minutes} minutes")
-        
-        # Define a wrapper to always calculate yesterday dynamically
-        def scheduled_job():
-            job(target_date=None, provider=args.provider, generate_podcast=generate_podcast, podcast_minutes=podcast_minutes) # Will default to yesterday inside job()
-            
-        schedule.every().day.at(schedule_time).do(scheduled_job)
-        
-        while True:
-            schedule.run_pending()
-            time.sleep(60)
+    raise SystemExit(cli_main(legacy_main_args(sys.argv[1:]), pipeline_module=sys.modules[__name__]))

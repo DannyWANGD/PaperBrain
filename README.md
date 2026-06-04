@@ -90,13 +90,13 @@ OPENROUTER_API_KEY=your_openrouter_api_key_here
 Run today's pipeline:
 
 ```bash
-python script/main.py --run-now --provider openrouter
+python script/paperbrain.py run --provider openrouter
 ```
 
 Run a known date:
 
 ```bash
-python script/main.py --run-now --date 2026-06-01 --provider openrouter
+python script/paperbrain.py run --date 2026-06-01 --provider openrouter
 ```
 
 ## <a id="daily-usage"></a> 🗓️ Daily Usage
@@ -105,22 +105,27 @@ python script/main.py --run-now --date 2026-06-01 --provider openrouter
 
 | Mode | Goal | Command |
 | --- | --- | --- |
-| 🗓️ Daily | Today | `python script/main.py --run-now --provider openrouter` |
-| 📅 Calendar | Specific date | `python script/main.py --run-now --date 2026-06-01 --provider openrouter` |
-| 🧰 Debug | Fetch only | `python script/main.py --run-now --date 2026-06-01 --provider openrouter --stop-after fetch` |
-| 🧪 Debug | Screening only | `python script/main.py --run-now --date 2026-06-01 --provider openrouter --stop-after screen` |
-| 🔁 Resume | Continue previous run | `python script/main.py --run-now --date 2026-06-01 --provider openrouter` |
-| ♻️ Reset | Clean rerun | `python script/main.py --run-now --date 2026-06-01 --provider openrouter --force` |
-| 🎧 Audio | Skip podcast | `python script/main.py --run-now --provider openrouter --no-podcast` |
-| 🎯 Focus | Single paper | `python script/main.py --run-now --provider openrouter --arxiv-url https://arxiv.org/abs/2606.02486` |
+| 🗓️ Daily | Today | `python script/paperbrain.py run --provider openrouter` |
+| 📅 Calendar | Specific date | `python script/paperbrain.py run --date 2026-06-01 --provider openrouter` |
+| 🧰 Debug | Fetch only | `python script/paperbrain.py fetch --date 2026-06-01 --provider openrouter` |
+| 🧪 Debug | Screening only | `python script/paperbrain.py screen --date 2026-06-01 --provider openrouter` |
+| 📖 Debug | Deep analysis only path | `python script/paperbrain.py deep --date 2026-06-01 --provider openrouter` |
+| 🔁 Resume | Continue previous run | `python script/paperbrain.py run --date 2026-06-01 --provider openrouter --resume` |
+| ♻️ Reset | Clean rerun | `python script/paperbrain.py run --date 2026-06-01 --provider openrouter --force` |
+| 🎧 Audio | Skip podcast | `python script/paperbrain.py run --provider openrouter --no-podcast` |
+| 🎯 Focus | Single paper | `python script/paperbrain.py run --provider openrouter --arxiv-url https://arxiv.org/abs/2606.02486` |
+
+The unified CLI writes human logs and progress to stderr, and writes the final machine-readable JSON summary to stdout. The JSON includes `exit_code`, `run_dir`, `state_path`, `artifacts`, and any structured `errors`.
 
 ### 📌 What To Check After A Run
 
 | Type | Output | Purpose |
 | --- | --- | --- |
 | 📰 Digest | `Daily_Papers/YYYY-MM-DD-PaperDigest.md` | Daily map of all papers above the digest threshold |
-| 🧾 Audit | `Run_Records/YYYY-MM-DD-openrouter-screening-results.md` | Human-readable screening audit |
-| 💾 State | `Run_Records/YYYY-MM-DD-openrouter-run-state.json` | Resume state and machine-readable screening data |
+| 🧾 Audit | `Run_Records/YYYY-MM-DD-openrouter/screening_report.md` | Human-readable screening audit |
+| 💾 State | `Run_Records/YYYY-MM-DD-openrouter/state.json` | Resume state and machine-readable screening data |
+| 🧯 Errors | `Run_Records/YYYY-MM-DD-openrouter/errors.json` | Structured error objects with retry guidance |
+| 🪵 Logs | `Run_Records/YYYY-MM-DD-openrouter/log_summary.md` | Compact stage/artifact log summary |
 | 📖 Notes | `Research_Notes/*.md` | Deep analysis notes for selected papers |
 | 🧭 Index | `Research_Index/Research_Index.md` | Obsidian research dashboard |
 | 📊 Base | `Research_Index/Paper_Library.base` | Obsidian Bases table view |
@@ -132,13 +137,13 @@ Each digest entry includes score, innovation, limitations, note/web link, author
 Rebuild the Obsidian index and normalize note frontmatter:
 
 ```bash
-python script/build_research_index.py
+python script/paperbrain.py index
 ```
 
 Regenerate index files without rewriting notes:
 
 ```bash
-python script/build_research_index.py --no-update-notes
+python script/paperbrain.py index --no-update-notes
 ```
 
 Generate a weekly brief:
@@ -180,7 +185,7 @@ Daily_Papers/       daily paper digests
 Research_Notes/     deep paper notes
 Research_Index/     library index, queues, Bases view, tag guide
 Research_Briefs/    weekly, monthly, and custom-range synthesis briefs
-Run_Records/        full run state and screening reports
+Run_Records/        per-run directories with state, reports, logs, and errors
 PDFs/               downloaded papers
 Assets/             extracted figures and architecture images
 Podcasts/           optional audio summaries
@@ -262,27 +267,29 @@ python script/generate_podcast.py "AHEAD for Dynamic VLA Manipulation.md" --prov
 
 Primary command entry points:
 
-```text
-script/main.py
-script/build_research_index.py
-script/generate_research_brief.py
-script/generate_podcast.py
-script/fix_publication_dates.py
-```
+| Entry | Status | Use |
+| --- | --- | --- |
+| `script/paperbrain.py` | Recommended | Unified CLI: `run`, `fetch`, `screen`, `deep`, `index`, `doctor`, `check` |
+| `script/main.py` | Compatibility wrapper | Old daily entry; prints a migration hint and forwards to `paperbrain.py run` |
+| `script/build_research_index.py` | Compatibility wrapper | Old index entry; prints a migration hint and forwards to `paperbrain.py index` |
+| `script/generate_research_brief.py` | Kept maintenance command | Weekly, monthly, and date-range briefs |
+| `script/generate_podcast.py` | Kept maintenance command | Podcast from an existing note |
+| `script/fix_publication_dates.py` | Kept maintenance command | Repair note dates from run-state data |
+| `script/normalize_note_filenames.py` | Kept maintenance command | One-off filename/link normalization |
 
 Organized implementations live in `script/tools/`. The top-level `script/*.py` commands are kept as stable wrappers.
 
 ## <a id="development-checks"></a> ✅ Development Checks
 
 ```bash
-python -m py_compile script/main.py script/src/*.py script/tools/*.py
-python -m unittest discover -s script/tests -p test_*.py
-python script/build_research_index.py --no-update-notes
+python script/paperbrain.py doctor
+python script/paperbrain.py check
+python script/paperbrain.py index --no-update-notes
 ```
 
 ## 🧩 Operational Notes
 
-- `Run_Records/` makes every screening decision auditable and resumable.
+- `Run_Records/` makes every screening decision auditable and resumable; each run now has a fixed directory with `state.json`, `screening_report.md`, `log_summary.md`, and `errors.json`.
 - `paper_id` prevents aliases and title changes from breaking deduplication.
 - Daily digests are broad maps; deep analyses are high-confidence selections.
 - The Research Index relies on Obsidian tags, properties, and Bases rather than fixed theme pages.

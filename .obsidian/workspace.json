@@ -11,14 +11,12 @@
             "id": "e59f7fd8ed9b5834",
             "type": "leaf",
             "state": {
-              "type": "markdown",
+              "type": "pdf",
               "state": {
-                "file": "Research_Notes/LeJEPA.md",
-                "mode": "source",
-                "source": false
+                "file": "PDFs/When Does LeJEPA Learn a World Model.pdf"
               },
-              "icon": "lucide-file",
-              "title": "LeJEPA"
+              "icon": "lucide-file-text",
+              "title": "When Does LeJEPA Learn a World Model"
             }
           },
           {
@@ -255,23 +253,24 @@
   },
   "active": "e59f7fd8ed9b5834",
   "lastOpenFiles": [
-    "PDFs/When Does LeJEPA Learn a World Model.pdf",
+    "Cache/arxiv/49cb15ad5146509d16449052d379d63eab7e1a5d.xml",
+    "Cache/huggingface/5e8ed77870c2fdc3d8e17051d1876c1e30309818.json",
+    "Cache/diagnostics/latest.json",
+    "Cache/diagnostics",
+    "Cache/logs/paperbrain.log",
+    "Cache/logs",
+    "script/tests/__pycache__/test_cli_paths.cpython-39.pyc",
+    "script/src/__pycache__/paths.cpython-39.pyc",
+    "script/src/__pycache__/cli.cpython-39.pyc",
+    "script/__pycache__/paperbrain.cpython-39.pyc",
+    "script/tests/test_cli_paths.py",
     "Research_Notes/LeJEPA.md",
     "Daily_Papers/2026-05-25-PaperDigest.md",
     "Run_Records/2026-05-25-openrouter-screening-results.md",
-    "Run_Records/2026-05-25-openrouter-run-state.json.tmp",
-    "Podcasts/When Does LeJEPA Learn a World Model_Podcast.mp3",
     "Research_Notes/Pion.md",
-    "PDFs/Rethinking Muon Beyond Pretraining Spectral Failures and HighPass Remedies for VLA and RLVR.pdf",
     "Daily_Papers/2026-02-13-PaperDigest.md",
     "Daily_Papers/2026-05-26-PaperDigest.md",
     "Assets/When Does LeJEPA Learn a World Model_arch.png",
-    "Cache/pdfs/2605.26362.pdf",
-    "temp_pdfs/Why LLMs Hallucinate on Structured Knowledge A Mechanistic Analysis of Reasoning over Linearized Rep.pdf",
-    "Cache/pdfs/2605.23901.pdf",
-    "temp_pdfs/LLMs as Noisy Channels A Shannon Perspective on Model Capacity and Scaling Laws.pdf",
-    "Cache/pdfs/2605.23903.pdf",
-    "temp_pdfs/GeoAlign Video Generation Alignment via Metric Geometry Reward.pdf",
     "Research_Notes/Target Viewpoint Reproduction TVR Benchmark.md",
     "Daily_Papers/2026-06-02-PaperDigest.md",
     "Daily_Papers/2026-06-03-PaperDigest.md",

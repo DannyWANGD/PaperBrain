@@ -7,6 +7,7 @@ from pathlib import Path
 import yaml
 
 from src.config_loader import load_config
+from src.paths import PaperBrainPaths
 
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -33,13 +34,15 @@ def _frontmatter_text(data):
 
 def fix_dates(dates, provider="openrouter", dry_run=False):
     config = load_config()
-    vault = Path(config["obsidian"]["vault_path"])
-    run_dir = vault / "Run_Records"
+    paths = PaperBrainPaths.from_config_dict(config)
     changed_notes = []
     changed_runs = []
 
     for day in dates:
-        run_path = run_dir / f"{day}-{provider}-run-state.json"
+        run_path = paths.state_path(day, provider)
+        legacy_run_path = paths.legacy_state_path(day, provider)
+        if not run_path.exists() and legacy_run_path.exists():
+            run_path = legacy_run_path
         if not run_path.exists():
             logger.warning("Run state not found: %s", run_path)
             continue
