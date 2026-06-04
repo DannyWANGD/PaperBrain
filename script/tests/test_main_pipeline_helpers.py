@@ -167,7 +167,7 @@ class MainPipelineHelperTest(unittest.TestCase):
             local_pdf.write_bytes(b"%PDF-1.4\n" + b"x" * 2048)
             calls = []
 
-            def fake_download(url, title, destination_folder=None):
+            def fake_download(url, title, destination_folder=None, **kwargs):
                 calls.append(url)
                 if url == "https://arxiv.org/pdf/2605.25802.pdf":
                     return str(local_pdf)
@@ -190,7 +190,7 @@ class MainPipelineHelperTest(unittest.TestCase):
             good_pdf = Path(tmp) / "paper.pdf"
             good_pdf.write_bytes(b"%PDF-1.4\n" + b"x" * 2048)
 
-            def fake_download(url, title, destination_folder=None):
+            def fake_download(url, title, destination_folder=None, **kwargs):
                 if url == "https://example.com/not-really.pdf":
                     return str(bad_file)
                 if url == "https://arxiv.org/pdf/2605.25802.pdf":
@@ -208,6 +208,36 @@ class MainPipelineHelperTest(unittest.TestCase):
                 )
 
         self.assertEqual(pdf_path, str(good_pdf))
+
+    def test_cleanup_completed_run_pdf_cache_removes_only_pdf_cache_files(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            cache_dir = Path(tmp) / "Cache" / "pdfs"
+            cache_dir.mkdir(parents=True)
+            today_pdf = cache_dir / "today.pdf"
+            today_pdf.write_bytes(b"%PDF-1.4\n" + b"x" * 2048)
+            old_touched_pdf = cache_dir / "old-touched.pdf"
+            old_touched_pdf.write_bytes(b"%PDF-1.4\n" + b"x" * 2048)
+            metadata = cache_dir / "arxiv_pdf_cooldown.json"
+            metadata.write_text("{}", encoding="utf-8")
+            outside_pdf = Path(tmp) / "outside.pdf"
+            outside_pdf.write_bytes(b"%PDF-1.4\n" + b"x" * 2048)
+
+            day_start = today_pdf.stat().st_mtime - 1
+            old_time = day_start - 86400
+            import os
+            os.utime(old_touched_pdf, (old_time, old_time))
+
+            with patch("main.PDF_CACHE_DIR", str(cache_dir)):
+                removed = pipeline._cleanup_completed_run_pdf_cache(
+                    day_start,
+                    cache_paths={str(old_touched_pdf), str(outside_pdf)},
+                )
+
+            self.assertEqual(removed, 2)
+            self.assertFalse(today_pdf.exists())
+            self.assertFalse(old_touched_pdf.exists())
+            self.assertTrue(metadata.exists())
+            self.assertTrue(outside_pdf.exists())
 
     def test_run_rigorous_screening_updates_promoted_and_marks_others_coarse_only(self):
         analyser = FakeAnalyser()

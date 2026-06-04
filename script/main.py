@@ -99,6 +99,52 @@ def _mark_pdf_cooldown(reason):
     except Exception:
         pass
 
+def _record_pdf_cache_path(path, cache_paths):
+    if cache_paths is not None and path:
+        cache_paths.add(os.path.abspath(path))
+
+def _is_pdf_cache_file(path):
+    if not path:
+        return False
+    try:
+        cache_root = os.path.abspath(PDF_CACHE_DIR)
+        target = os.path.abspath(path)
+        return (
+            os.path.commonpath([cache_root, target]) == cache_root
+            and os.path.isfile(target)
+            and target.lower().endswith(".pdf")
+        )
+    except Exception:
+        return False
+
+def _cleanup_completed_run_pdf_cache(day_start_ts, cache_paths=None):
+    """Remove PDF cache files after a full successful run, preserving metadata/cooldown files."""
+    if not os.path.isdir(PDF_CACHE_DIR):
+        return 0
+
+    candidates = set(cache_paths or [])
+    try:
+        for name in os.listdir(PDF_CACHE_DIR):
+            path = os.path.join(PDF_CACHE_DIR, name)
+            if _is_pdf_cache_file(path) and os.path.getmtime(path) >= day_start_ts:
+                candidates.add(os.path.abspath(path))
+    except Exception as e:
+        logger.warning(f"[WARN] Failed to scan PDF cache for cleanup: {e}")
+
+    removed = 0
+    for path in sorted(candidates):
+        if not _is_pdf_cache_file(path):
+            continue
+        try:
+            os.remove(path)
+            removed += 1
+        except Exception as e:
+            logger.warning(f"[WARN] Failed to remove cached PDF {path}: {e}")
+
+    if removed:
+        logger.info(f"[INFO] Removed {removed} completed-run cached PDF(s) from {PDF_CACHE_DIR}.")
+    return removed
+
 def _copy_pdf(src, dest_folder, filename):
     os.makedirs(dest_folder, exist_ok=True)
     dest = os.path.join(dest_folder, filename)
@@ -106,7 +152,7 @@ def _copy_pdf(src, dest_folder, filename):
         shutil.copy2(src, dest)
     return dest
 
-def download_pdf(url, title, destination_folder=None, retries=3):
+def download_pdf(url, title, destination_folder=None, retries=3, cache_paths=None):
     """Downloads PDF to a file with retries and robust headers."""
     # Security Check: Validate URL scheme and domain whitelist
     if not url.startswith(('http://', 'https://')):
@@ -131,6 +177,7 @@ def download_pdf(url, title, destination_folder=None, retries=3):
         cache_path = os.path.join(PDF_CACHE_DIR, f"{arxiv_id_for_cache}.pdf")
         if _is_usable_local_pdf(cache_path):
             logger.info(f"  [CACHE] Reusing cached PDF for arXiv:{arxiv_id_for_cache}")
+            _record_pdf_cache_path(cache_path, cache_paths)
             return _copy_pdf(cache_path, folder, filename)
 
     headers = {
@@ -193,7 +240,9 @@ def download_pdf(url, title, destination_folder=None, retries=3):
 
                     if arxiv_id_for_cache:
                         os.makedirs(PDF_CACHE_DIR, exist_ok=True)
-                        shutil.copy2(filepath, os.path.join(PDF_CACHE_DIR, f"{arxiv_id_for_cache}.pdf"))
+                        cache_path = os.path.join(PDF_CACHE_DIR, f"{arxiv_id_for_cache}.pdf")
+                        shutil.copy2(filepath, cache_path)
+                        _record_pdf_cache_path(cache_path, cache_paths)
                     
                     return filepath
                 else:
@@ -247,11 +296,11 @@ def _paper_pdf_url_candidates(paper):
             deduped.append(url)
     return deduped
 
-def download_paper_pdf(paper, destination_folder):
+def download_paper_pdf(paper, destination_folder, cache_paths=None):
     """Download a paper PDF locally before any PDF-dependent analysis."""
     title = paper.get("title") or paper.get("short_title") or "paper"
     for url in _paper_pdf_url_candidates(paper):
-        pdf_path = download_pdf(url, title, destination_folder=destination_folder)
+        pdf_path = download_pdf(url, title, destination_folder=destination_folder, cache_paths=cache_paths)
         if _is_usable_local_pdf(pdf_path):
             return pdf_path
     return None
@@ -397,7 +446,7 @@ def _build_rescreen_pool(screened_papers, analysis_cfg):
         rescreen_pool.extend(rescreen_false[:stage2_top_k - len(rescreen_pool)])
     return rescreen_pool
 
-def _run_rigorous_screening(screened_papers, rescreen_pool, analyser, run_state, analysis_cfg, resume=True):
+def _run_rigorous_screening(screened_papers, rescreen_pool, analyser, run_state, analysis_cfg, resume=True, cache_paths=None):
     rescreen_ids = {id(p) for p in rescreen_pool}
     logger.info(
         f"[INFO] Stage-1 complete. Promoting {len(rescreen_pool)} papers to stage-2 rigorous screening "
@@ -421,7 +470,7 @@ def _run_rigorous_screening(screened_papers, rescreen_pool, analyser, run_state,
             p.pop('screening_document_excerpt', None)
             if _paper_pdf_url_candidates(p):
                 logger.info(f"  [CTX] Building stage-2 document excerpt: {p['title']}")
-                tmp_pdf_path = download_paper_pdf(p, destination_folder="temp_pdfs")
+                tmp_pdf_path = download_paper_pdf(p, destination_folder="temp_pdfs", cache_paths=cache_paths)
                 if tmp_pdf_path:
                     try:
                         excerpt_text = analyser._extract_text_from_pdf_fitz(tmp_pdf_path, max_pages=pdf_context_pages)
@@ -503,6 +552,8 @@ def job(
     stop_after=None,
 ):
     logger.info("Starting Daily PaperBrain Job...")
+    run_pdf_cache_paths = set()
+    cache_cleanup_day_start = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0).timestamp()
 
     # Determine target date
     if target_date is None:
@@ -561,7 +612,15 @@ def job(
 
     analysis_cfg = config.get('analysis', {})
     rescreen_pool = _build_rescreen_pool(screened_papers, analysis_cfg)
-    _run_rigorous_screening(screened_papers, rescreen_pool, analyser, run_state, analysis_cfg, resume=resume)
+    _run_rigorous_screening(
+        screened_papers,
+        rescreen_pool,
+        analyser,
+        run_state,
+        analysis_cfg,
+        resume=resume,
+        cache_paths=run_pdf_cache_paths,
+    )
 
     if stop_after == "screen":
         logger.info("[STOP] stop_after=screen")
@@ -607,7 +666,7 @@ def job(
             
             # Download PDF
             logger.info(f"  [STEP] Downloading PDF...")
-            pdf_path = download_paper_pdf(p, destination_folder=obsidian_writer.pdf_folder)
+            pdf_path = download_paper_pdf(p, destination_folder=obsidian_writer.pdf_folder, cache_paths=run_pdf_cache_paths)
             
             if pdf_path:
                 # Context-Aware RAG Retrieval (only after PDF is available to avoid unnecessary token usage)
@@ -689,6 +748,7 @@ def job(
         run_state.update_artifacts(podcast=audio_path)
 
     run_state.mark_stage("completed")
+    _cleanup_completed_run_pdf_cache(cache_cleanup_day_start, run_pdf_cache_paths)
     logger.info("[SUCCESS] Job completed successfully.")
     return
 
