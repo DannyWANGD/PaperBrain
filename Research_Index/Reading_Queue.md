@@ -8,6 +8,7 @@
 | [[Not All Features Are Created Equal]] | 9.0 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#method/benchmark` | 2026-03-19 |
 | [[Simple Recipe Works]] | 9.0 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#method/benchmark` | 2026-03-12 |
 | [[World Action Models are Zero shot Policies]] | 9.0 | `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#method/foundation_model` `#method/imitation_learning` | 2026-02-19 |
+| [[Cosmos 3]] | 8.9 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/vla` `#domain/world_model` `#method/benchmark` | 2026-06-04 |
 | [[AHEAD for Dynamic VLA Manipulation]] | 8.0 | `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#domain/world_model` `#method/latent_world_model` | 2026-06-01 |
 | [[VTAM]] | 8.0 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#domain/world_model` | 2026-03-24 |
 | [[Chain of World]] | 8.0 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#domain/world_model` | 2026-03-03 |
@@ -33,7 +34,6 @@
 | [[VistaBot]] | 8.0 | `#domain/3d_perception` `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/world_model` | Unknown |
 | [[HideandSeek Failure Detection for VLA]] | 8.1 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#method/foundation_model` | 2026-06-01 |
 | [[DynaFLIP DynamicsAware Visual Pretraining]] | 8.1 | `#domain/3d_perception` `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` | 2026-05-29 |
-| [[Pion]] | 8.0 | `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#method/foundation_model` `#method/imitation_learning` | 2026-05-25 |
 
 ## Must Read, Unread
 

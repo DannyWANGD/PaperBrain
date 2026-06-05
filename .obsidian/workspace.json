@@ -4,35 +4,35 @@
     "type": "split",
     "children": [
       {
-        "id": "234857a3e691b42a",
+        "id": "c833fd300cda950c",
         "type": "tabs",
         "children": [
           {
-            "id": "e59f7fd8ed9b5834",
+            "id": "656d58f6fbd29039",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Run_Records/2026-05-22-openrouter/screening_report.md",
+                "file": "Research_Notes/OVOSBench.md",
                 "mode": "preview",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "screening_report"
+              "title": "OVOSBench"
             }
           },
           {
-            "id": "e57729b34f59ac39",
+            "id": "f43d120e16f8c1d3",
             "type": "leaf",
             "state": {
               "type": "webviewer",
               "state": {
-                "url": "https://arxiv.org/pdf/2503.19415",
-                "title": "2503.19415",
+                "url": "https://internlm.github.io/OVO-S-Bench/",
+                "title": "OVO-S-Bench",
                 "mode": "webview"
               },
               "icon": "globe-2",
-              "title": "2503.19415"
+              "title": "OVO-S-Bench"
             }
           }
         ]
@@ -92,7 +92,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200
+    "width": 200,
+    "collapsed": true
   },
   "right": {
     "id": "6f4f27bfa99de3fa",
@@ -196,13 +197,23 @@
               "icon": "message-square",
               "title": "Copilot"
             }
+          },
+          {
+            "id": "7fa81f2d42b667aa",
+            "type": "leaf",
+            "state": {
+              "type": "paperbrain-console-view",
+              "state": {},
+              "icon": "brain-circuit",
+              "title": "PaperBrain Console"
+            }
           }
         ],
-        "currentTab": 6
+        "currentTab": 7
       }
     ],
     "direction": "horizontal",
-    "width": 541.5,
+    "width": 682.5,
     "collapsed": true
   },
   "left-ribbon": {
@@ -222,56 +233,56 @@
       "smart-connections:Smart Lookup: Open lookup view": false,
       "smart-connections:Smart Connections: Open random connection": false,
       "obsidian42-brat:BRAT": false,
-      "copilot:Open Copilot Chat": false
+      "copilot:Open Copilot Chat": false,
+      "paperbrain:PaperBrain Console": false
     }
   },
-  "active": "e59f7fd8ed9b5834",
+  "active": "656d58f6fbd29039",
   "lastOpenFiles": [
-    "Daily_Papers/2026-05-22-PaperDigest.md",
-    "Run_Records/2026-05-22-openrouter/screening_report.md",
-    "Daily_Papers/2026-03-25-PaperDigest.md",
-    "Research_Notes/AffordVLA.md",
-    "Run_Records/2026-05-22-openrouter/log_summary.md",
-    "Daily_Papers/2026-05-27-PaperDigest.md",
-    "Run_Records/2026-05-25-openrouter-screening-results.md",
-    "Podcasts/AffordVLA ActionAligned Visual Planning via Intern_Podcast.mp3",
-    "Assets/AffordVLA ActionAligned Visual Planning via Internalized Affordance_arch.png",
-    "PDFs/AffordVLA ActionAligned Visual Planning via Internalized Affordance.pdf",
-    "Cache/pdfs/2605.18607.pdf",
-    "Cache/temp_pdfs/Forecasting Downstream Performance of LLMs With Proxy Metrics.pdf",
-    "Cache/pdfs/2605.17602.pdf",
-    "Cache/temp_pdfs/AutoRubricT2I Robust RuleBased Reward Model for TexttoImage Alignment.pdf",
-    "Cache/pdfs/2605.22177.pdf",
-    "Cache/temp_pdfs/Maestro Reinforcement Learning to Orchestrate Hierarchical ModelSkill Ensembles.pdf",
-    "Cache/pdfs/2605.21467.pdf",
-    "Cache/temp_pdfs/DelTA Discriminative Token Credit Assignment for Reinforcement Learning from Verifiable Rewards.pdf",
-    "Research_Notes/LeJEPA.md",
-    "script/tests/README.md",
-    "Daily_Papers/2026-05-25-PaperDigest.md",
-    "Research_Notes/Pion.md",
-    "Daily_Papers/2026-02-13-PaperDigest.md",
-    "Daily_Papers/2026-05-26-PaperDigest.md",
-    "Assets/When Does LeJEPA Learn a World Model_arch.png",
-    "Research_Notes/Target Viewpoint Reproduction TVR Benchmark.md",
-    "Daily_Papers/2026-06-02-PaperDigest.md",
-    "Daily_Papers/2026-06-03-PaperDigest.md",
-    "Run_Records/2026-06-03-openrouter-screening-results.md",
-    "Research_Notes/OnlineX.md",
-    "Run_Records/2026-05-26-openrouter-screening-results.md",
-    "Research_Notes/Rethinking VLM Representation for VLA Initialization.md",
-    "Run_Records/2026-05-27-openrouter-screening-results.md",
-    "Daily_Papers/2026-05-28-PaperDigest.md",
-    "Research_Notes/Rethinking_VLM_Rep_VLA_Init.md",
-    "Assets/Rethinking VLM Representation for VLA Initialization_arch.png",
-    "Daily_Papers/2026-05-29-PaperDigest.md",
+    "Research_Notes/OVOSBench.md",
+    "Daily_Papers/2026-06-04-PaperDigest.md",
+    "Research_Notes/Cosmos 3.md",
+    "Podcasts/Cosmos 3 Omnimodal World Models for Physical AI_Podcast.mp3",
+    "Run_Records/2026-06-04/state.json.tmp",
+    "Assets/OVOSBench A Hierarchical Benchmark for Streaming Spatial Intelligence in Multimodal LLMs_arch.png",
+    "PDFs/OVOSBench A Hierarchical Benchmark for Streaming Spatial Intelligence in Multimodal LLMs.pdf",
+    "Assets/Cosmos 3 Omnimodal World Models for Physical AI_arch.png",
+    "PDFs/Cosmos 3 Omnimodal World Models for Physical AI.pdf",
+    "Run_Records/2026-06-04/screening_report.md",
+    "Cache/pdfs/2606.00825.pdf",
+    "Cache/temp_pdfs/SuperMemoryVQA An Egocentric Visual QuestionAnswering Benchmark for LongHorizon Memory.pdf",
+    "Cache/pdfs/2606.06467.pdf",
+    "Cache/temp_pdfs/You Only Index Once CrossLayer Sparse Attention with Shared Routing.pdf",
+    "Cache/pdfs/2606.06453.pdf",
+    "Cache/temp_pdfs/Vortex Efficient and Programmable Sparse Attention Serving for AI Agents.pdf",
+    "obsidian-plugin/paperbrain/README.md",
     "Daily_Papers/2026-06-01-PaperDigest.md",
-    "Daily_Papers/2026-03-24-PaperDigest.md",
+    "Run_Records/2026-06-04/log_summary.md",
+    "Research_Briefs/2026-W23-ResearchBrief.md",
+    "Research_Briefs/2026-W10-ResearchBrief.md",
+    "Research_Notes/HideandSeek Failure Detection for VLA.md",
+    "Hide-and-Seek in Trajectories Discovering Failure Signals for VLA Runtime Monitoring.md",
+    "Daily_Papers/2026-02-17-PaperDigest.md",
+    "Daily_Papers/2026-05-27-PaperDigest.md",
+    "Run_Records/_legacy/2026-05-29/2026-05-29-openrouter-screening-results.md",
+    "Run_Records/_legacy/2026-06-03/2026-06-03-single/screening_report.md",
+    "Run_Records/_legacy/2026-06-03/2026-06-03-single/log_summary.md",
+    "Run_Records/_legacy/2026-06-03/2026-06-03-openrouter/log_summary.md",
+    "Run_Records/_legacy/2026-06-03/2026-06-03-openrouter/screening_report.md",
+    "Run_Records/_legacy/2026-06-03/2026-06-03-openrouter-screening-results.md",
+    "Run_Records/2026-06-03/log_summary.md",
+    "Run_Records/2026-06-03/screening_report.md",
+    "Run_Records/_legacy/2026-06-02/2026-06-02-openrouter-screening-results.md",
+    "Run_Records/2026-06-02/screening_report.md",
+    "Run_Records/2026-06-02/log_summary.md",
+    "Run_Records/_legacy/2026-06-01/2026-06-01-openrouter-screening-results.md",
+    "Assets/AffordVLA ActionAligned Visual Planning via Internalized Affordance_arch.png",
+    "Assets/When Does LeJEPA Learn a World Model_arch.png",
+    "Assets/Rethinking VLM Representation for VLA Initialization_arch.png",
     "Assets/HideandSeek in Trajectories Discovering Failure Signals for VLA Runtime Monitoring_arch.png",
     "Assets/GEM Generative Supervision Helps Embodied Intelligence_arch.png",
     "Pasted image 20260303220300.png",
     "Pasted image 20260303220437.png",
-    "Pasted image 20260303220453.png",
-    "paperbrain_arch.png",
-    "Assets/Where to Look Can Foundation Models Reach a Target Viewpoint Through Active Exploration_arch.png"
+    "Pasted image 20260303220453.png"
   ]
 }

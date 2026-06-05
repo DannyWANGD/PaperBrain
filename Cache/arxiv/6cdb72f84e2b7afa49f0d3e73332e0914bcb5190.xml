@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://arxiv.org/api/76spvhmcrlYArE6mSbsHbEgLywM</id>
+  <title>arXiv Query: search_query=&amp;id_list=2606.05015&amp;start=0&amp;max_results=1</title>
+  <updated>2026-06-04T14:27:12Z</updated>
+  <link href="https://arxiv.org/api/query?search_query=&amp;start=0&amp;max_results=1&amp;id_list=2606.05015" type="application/atom+xml"/>
+  <opensearch:itemsPerPage>1</opensearch:itemsPerPage>
+  <opensearch:totalResults>1</opensearch:totalResults>
+  <opensearch:startIndex>0</opensearch:startIndex>
+  <entry>
+    <id>http://arxiv.org/abs/2606.05015v1</id>
+    <title>Generalization of World Models under Environmental Variability for Vision-based Quadrotor Navigation</title>
+    <updated>2026-06-03T15:38:36Z</updated>
+    <link href="https://arxiv.org/abs/2606.05015v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2606.05015v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>World models, learned generative models that predict how an environment evolves, have become a promising tool for sample-efficient robot learning. Yet how robust they are to environmental variability remains poorly understood. To address this, we conduct a systematic study using vision-based quadrotor navigation as a testbed problem, training DreamerV3-based world models under varying levels of environmental randomness and evaluating them across all levels through cross-environment validation, spanning both Self-Supervised Learning (SSL) pretraining and Reinforcement Learning (RL) fine-tuning. We then deploy all world models and associated navigation policies on a real quadrotor in unseen environments, including an open-loop run where the model receives just 2.5s of real sensory input before all sensors are cut off, leaving the system to navigate entirely in imagination over a 12m traverse. Our results show that world model robustness during SSL pretraining is a strong predictor of sim-to-real transfer: every model that generalized well in cross-environment SSL validation deployed successfully in the real world, passing through gaps as narrow as 0.67m, whereas the model that dominated simulation policy evaluation failed on the real platform. We further identify (a) the discrete latent size and (b) the training-sequence length as the dominant factors governing world model quality.</summary>
+    <category term="cs.RO" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-06-03T15:38:36Z</published>
+    <arxiv:primary_category term="cs.RO"/>
+    <author>
+      <name>Luca Zanatta</name>
+    </author>
+    <author>
+      <name>Grzegorz Malczyk</name>
+    </author>
+    <author>
+      <name>Kostas Alexis</name>
+    </author>
+  </entry>
+</feed>

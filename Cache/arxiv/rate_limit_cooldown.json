@@ -1,5 +1,5 @@
 {
-  "until": 1780495423.506328,
-  "reason": "HTTP 429 from arXiv API",
-  "created_at": "2026-06-03T21:03:43.507330"
+  "until": 1780642543.6391296,
+  "reason": "HTTP 429 from arXiv API endpoint http://export.arxiv.org/api/query",
+  "created_at": "2026-06-05T13:55:43.640135"
 }

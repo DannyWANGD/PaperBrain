@@ -271,6 +271,23 @@ analysis:
     ### Questions For Future Reading
     Write three thoughtful questions that I should keep in mind while reading future papers in this area. Each question should explain why it matters and what kind of evidence would answer it.
 
+    ### Learning Roadmap And Verified Resources
+    Build a student-friendly learning roadmap for the paper. Choose 4-6 knowledge points that are genuinely needed to understand the paper, ordered from beginner-friendly foundations to advanced implementation details.
+
+    For each knowledge point:
+    - Explain why this concept matters for the paper in 2-4 complete sentences.
+    - Give a short "study order" telling me what to learn first, next, and last.
+    - Include a compact Markdown table with these columns: `Type`, `Resource`, `Why this one`.
+    - Add high-quality learning links when they genuinely help. Do not force every resource type under every knowledge point.
+    - Across the whole roadmap, try to include a rich and balanced mix of `Blog/Tutorial`, `Video/Public Course`, `Open Textbook/Lecture Notes/E-book`, `Code`, `Dataset`, `Benchmark`, `Documentation`, and `Project Page` resources when relevant.
+
+    Link quality rules:
+    - Use exact Markdown links only, such as `[resource title](https://...)`.
+    - Prefer stable, reputable sources: university course pages, MIT/Stanford/CMU/Berkeley/ETH materials, official documentation, official project pages, well-known technical blogs, open textbooks, lecture notes, canonical YouTube lectures/playlists from universities or recognized educators, datasets, benchmarks, and code repositories.
+    - Do not invent URLs. Do not use placeholder links. Do not use search-result URLs.
+    - If a very narrow concept lacks reliable exact URLs, choose fewer but better resources or use a broader prerequisite concept that still helps with this paper.
+    - The generated links will be programmatically checked for reachability, so prefer canonical URLs that are likely to remain accessible.
+
   abstract_fallback_user: |
     Generate a concise English reading note using only the title, abstract, and related notes context.
     Mark missing evidence as "Unknown from abstract".

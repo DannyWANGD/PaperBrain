@@ -1,0 +1,69 @@
+{
+  "run_id": "2026-05-26",
+  "date": "2026-05-26",
+  "provider": "openrouter",
+  "providers": [
+    "openrouter"
+  ],
+  "single_paper": false,
+  "run_modes": [
+    "daily"
+  ],
+  "created_at": "2026-06-04T10:54:49",
+  "updated_at": "2026-06-05T11:10:55",
+  "stage": "initialized",
+  "papers": [],
+  "selection": {},
+  "artifacts": {
+    "screening_report": "D:\\PaperBrain\\Run_Records\\2026-05-26\\screening_report.md"
+  },
+  "errors": [],
+  "logs": [
+    {
+      "schema_version": 1,
+      "event_type": "legacy_migration",
+      "status": "archived",
+      "created_at": "2026-06-05T11:09:18",
+      "ts": "2026-06-05T11:09:18",
+      "stage": "initialized",
+      "paper_id": "",
+      "title": "",
+      "provider": "openrouter",
+      "model": "",
+      "elapsed_ms": null,
+      "retry_count": 0,
+      "artifact_path": "",
+      "message": "archived_legacy_sources=1",
+      "details": {}
+    },
+    {
+      "schema_version": 1,
+      "event_type": "artifact_written",
+      "status": "available",
+      "created_at": "2026-06-05T11:09:18",
+      "ts": "2026-06-05T11:09:18",
+      "stage": "initialized",
+      "paper_id": "",
+      "title": "",
+      "provider": "openrouter",
+      "model": "",
+      "elapsed_ms": null,
+      "retry_count": 0,
+      "artifact_path": "D:\\PaperBrain\\Run_Records\\2026-05-26\\screening_report.md",
+      "message": "artifact=screening_report",
+      "details": {}
+    }
+  ],
+  "merged_from": [
+    "D:\\PaperBrain\\Run_Records\\2026-05-26-openrouter-run-state.json",
+    "D:\\PaperBrain\\Run_Records\\2026-05-26\\state.json"
+  ],
+  "paths": {
+    "run_dir": "D:\\PaperBrain\\Run_Records\\2026-05-26",
+    "state": "D:\\PaperBrain\\Run_Records\\2026-05-26\\state.json",
+    "legacy_state": "D:\\PaperBrain\\Run_Records\\2026-05-26-run-state.json",
+    "screening_report": "D:\\PaperBrain\\Run_Records\\2026-05-26\\screening_report.md",
+    "log_summary": "D:\\PaperBrain\\Run_Records\\2026-05-26\\log_summary.md",
+    "errors": "D:\\PaperBrain\\Run_Records\\2026-05-26\\errors.json"
+  }
+}

@@ -116,6 +116,7 @@ python script/paperbrain.py run --date 2026-06-01 --provider openrouter
 | ♻️ Reset | Clean rerun | `python script/paperbrain.py run --date 2026-06-01 --provider openrouter --force` |
 | 🎧 Audio | Skip podcast | `python script/paperbrain.py run --provider openrouter --no-podcast` |
 | 🎯 Focus | Single paper | `python script/paperbrain.py run --provider openrouter --arxiv-url https://arxiv.org/abs/2606.02486` |
+| 📰 Digest | Digest only | `python script/paperbrain.py digest --date 2026-05-22 --provider openrouter` |
 
 The unified CLI writes human logs and progress to stderr, and writes the final machine-readable JSON summary to stdout. The JSON includes `exit_code`, `run_dir`, `state_path`, `artifacts`, and any structured `errors`.
 
@@ -171,13 +172,14 @@ Briefs are written to `Research_Briefs/` and use this structure:
 
 ```text
 1. Executive Summary
-2. Top Papers This Week
+2. Top Papers This Period
 3. Research Trend Map
 4. Novel Signals
 5. Repeated Patterns And Saturation
 6. Evidence Quality
-7. Reading Plan For Next Week
+7. Reading Plan For Next Period
 8. Open Research Questions
+9. Manual Notes
 ```
 
 ## <a id="vault-structure"></a> 🗂️ Vault Structure
@@ -272,9 +274,39 @@ Primary command entry points:
 
 | Entry | Status | Use |
 | --- | --- | --- |
-| `script/paperbrain.py` | Recommended | Unified CLI: `run`, `fetch`, `screen`, `deep`, `index`, `doctor`, `check` |
+| `script/paperbrain.py` | Recommended | Unified CLI: `run`, `fetch`, `screen`, `deep`, `digest`, `cancel`, `dry-run`, `bridge`, `index`, `doctor`, `check` |
 | `script/main.py` | Compatibility wrapper | Old daily entry; prints a migration hint and forwards to `paperbrain.py run` |
 | `script/build_research_index.py` | Compatibility wrapper | Old index entry; prints a migration hint and forwards to `paperbrain.py index` |
+
+### Obsidian Plugin
+
+The desktop-only PaperBrain Console plugin is a lightweight control surface. Python remains the source of truth for fetching, screening, deep analysis, digest writing, indexing, run-state, and diagnostics.
+
+Plugin source:
+
+```text
+obsidian-plugin/paperbrain/
+```
+
+Local Obsidian runtime copy:
+
+```text
+.obsidian/plugins/paperbrain/
+```
+
+Sync source files into the local plugin directory:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File obsidian-plugin\sync_plugin.ps1
+```
+
+The plugin calls commands such as:
+
+```powershell
+python script\paperbrain.py digest --date 2026-05-22 --provider openrouter
+python script\paperbrain.py cancel --reason plugin_stop
+python script\paperbrain.py dry-run --mode digest --date 2026-05-22 --provider openrouter
+```
 | `script/generate_research_brief.py` | Kept maintenance command | Weekly, monthly, and date-range briefs |
 | `script/generate_podcast.py` | Kept maintenance command | Podcast from an existing note |
 | `script/fix_publication_dates.py` | Kept maintenance command | Repair note dates from run-state data |

@@ -10,6 +10,7 @@ Use this page when you want a practical implementation, benchmark, or protocol-r
 | [[Not All Features Are Created Equal]] | 9.0 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#method/benchmark` | 2026-03-19 |
 | [[Simple Recipe Works]] | 9.0 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#method/benchmark` | 2026-03-12 |
 | [[World Action Models are Zero shot Policies]] | 9.0 | `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#method/foundation_model` `#method/imitation_learning` | 2026-02-19 |
+| [[Cosmos 3]] | 8.9 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/vla` `#domain/world_model` `#method/benchmark` | 2026-06-04 |
 | [[AHEAD for Dynamic VLA Manipulation]] | 8.0 | `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#domain/world_model` `#method/latent_world_model` | 2026-06-01 |
 | [[VTAM]] | 8.0 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#domain/world_model` | 2026-03-24 |
 | [[Chain of World]] | 8.0 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#domain/world_model` | 2026-03-03 |
@@ -45,7 +46,6 @@ Use this page when you want a practical implementation, benchmark, or protocol-r
 | [[RoboMME]] | 8.0 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/robot_manipulation` `#domain/vla` `#method/benchmark` `#method/foundation_model` | 2026-03-04 |
 | [[ULTRA]] | 8.0 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/sim2real` `#method/imitation_learning` | 2026-03-03 |
 | [[HydroShear]] | 8.0 | `#domain/embodied_ai` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/sim2real` `#method/reinforcement_learning` `#method/simulation` | 2026-02-28 |
-| [[RynnBrain]] | 8.0 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/vla` `#method/benchmark` `#method/foundation_model` | 2026-02-17 |
 
 ```dataview
 TABLE priority_score, score, paper_type, domains, methods, tasks, github, project_page, next_action

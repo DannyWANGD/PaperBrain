@@ -94,7 +94,7 @@
             "path": "D:\\PaperBrain\\Cache\\arxiv\\rate_limit_cooldown.json",
             "active": false,
             "remaining_seconds": 0.0,
-            "reason": "HTTP 429 from arXiv API"
+            "reason": "HTTP 429 from arXiv API endpoint http://export.arxiv.org/api/query"
           }
         },
         {
@@ -228,7 +228,7 @@
         "path": "D:\\PaperBrain\\Cache\\arxiv\\rate_limit_cooldown.json",
         "active": false,
         "remaining_seconds": 0.0,
-        "reason": "HTTP 429 from arXiv API"
+        "reason": "HTTP 429 from arXiv API endpoint http://export.arxiv.org/api/query"
       }
     },
     {
@@ -294,5 +294,5 @@
       "suggestion": "Run `paperbrain doctor arxiv --live` to verify PDF download."
     }
   ],
-  "written_at": "2026-06-04T13:13:30"
+  "written_at": "2026-06-05T16:24:44"
 }

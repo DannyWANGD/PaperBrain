@@ -143,6 +143,9 @@ class PaperBrainPaths:
         return cls.from_config(config)
 
     def run_id(self, date_key: str, provider: str, single_paper: bool = False) -> str:
+        return str(date_key)
+
+    def legacy_run_id(self, date_key: str, provider: str, single_paper: bool = False) -> str:
         suffix = "single" if single_paper else provider
         return f"{date_key}-{suffix}"
 

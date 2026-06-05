@@ -79,12 +79,52 @@ def build_parser() -> argparse.ArgumentParser:
         sub = subparsers.add_parser(command, help=help_text)
         _add_pipeline_args(sub)
 
+    digest_parser = subparsers.add_parser("digest", help="Write the daily PaperDigest from saved run state.")
+    digest_parser.add_argument("--date", type=_date_arg, required=True, help="Target date in YYYY-MM-DD format.")
+    digest_parser.add_argument(
+        "--provider",
+        default="doubao",
+        choices=["doubao", "openrouter"],
+        help="AI provider used by the saved run state.",
+    )
+    digest_parser.add_argument("--single-paper", action="store_true", help="Use the single-paper run state.")
+
+    cancel_parser = subparsers.add_parser("cancel", help="Request a soft cancellation for the active PaperBrain run.")
+    cancel_parser.add_argument("--reason", default="user_requested", help="Reason stored in the cancel request.")
+
+    dry_run_parser = subparsers.add_parser("dry-run", help="Preview a command without running network or LLM work.")
+    dry_run_parser.add_argument(
+        "--mode",
+        default="run",
+        choices=["run", "fetch", "screen", "deep", "digest", "index", "brief", "doctor"],
+        help="Command shape to preview.",
+    )
+    dry_run_parser.add_argument("--date", type=_date_arg, help="Target date in YYYY-MM-DD format.")
+    dry_run_parser.add_argument("--provider", default="doubao", choices=["doubao", "openrouter"], help="AI provider.")
+    dry_run_parser.add_argument("--arxiv-url", help="Analyze a specific arXiv URL or ID directly.")
+    dry_run_parser.add_argument("--no-podcast", action="store_true", help="Disable podcast generation.")
+    dry_run_parser.add_argument("--force", action="store_true", help="Preview a forced pipeline run.")
+
+    bridge_parser = subparsers.add_parser("bridge", help="Run a PaperBrain command from a JSON request file.")
+    bridge_parser.add_argument("--request-file", required=True, help="Path to a JSON request file.")
+
     index_parser = subparsers.add_parser("index", help="Rebuild the Obsidian research index.")
     index_parser.add_argument(
         "--no-update-notes",
         action="store_true",
         help="Only regenerate index files; do not rewrite note frontmatter.",
     )
+
+    brief_parser = subparsers.add_parser("brief", help="Generate a weekly, monthly, or range Research Brief.")
+    brief_parser.add_argument("--mode", choices=["week", "month", "range"], default="week")
+    brief_parser.add_argument("--week", help="ISO week, for example 2026-W23.")
+    brief_parser.add_argument("--month", help="Month, for example 2026-06.")
+    brief_parser.add_argument("--from-date", dest="from_date", help="Range start date, YYYY-MM-DD.")
+    brief_parser.add_argument("--to-date", dest="to_date", help="Range end date, YYYY-MM-DD.")
+    brief_parser.add_argument("--last-days", type=int, help="Generate a rolling range ending at --date or today.")
+    brief_parser.add_argument("--date", dest="date_value", help="Anchor date for automatic week/month/range, YYYY-MM-DD.")
+    brief_parser.add_argument("--max-top", type=int, default=8, help="Maximum papers in the Top Papers table.")
+    brief_parser.add_argument("--max-questions", type=int, default=10, help="Maximum open questions to include.")
 
     doctor_parser = subparsers.add_parser("doctor", help="Run local diagnostics.")
     doctor_subparsers = doctor_parser.add_subparsers(dest="doctor_command")
@@ -148,8 +188,18 @@ def main(argv: list[str] | None = None, pipeline_module=None) -> int:
     try:
         if args.command in PIPELINE_COMMANDS:
             payload = _run_pipeline(args, pipeline_module=pipeline_module)
+        elif args.command == "digest":
+            payload = _run_digest(args, pipeline_module=pipeline_module)
+        elif args.command == "cancel":
+            payload = _run_cancel(args)
+        elif args.command == "dry-run":
+            payload = _run_dry_run(args)
+        elif args.command == "bridge":
+            payload = _run_bridge(args, pipeline_module=pipeline_module)
         elif args.command == "index":
             payload = _run_index(args)
+        elif args.command == "brief":
+            payload = _run_brief(args)
         elif args.command == "doctor":
             payload = _run_doctor(args)
         elif args.command == "check":
@@ -215,17 +265,34 @@ def _run_pipeline(args, pipeline_module=None) -> dict:
     elif args.command == "deep":
         stop_after = "deep"
 
+    config = load_config()
+    from src import run_control
+
     pipeline = _pipeline_module(pipeline_module)
-    result = pipeline.job(
-        target_date=args.date,
-        provider=args.provider,
-        generate_podcast=not args.no_podcast,
-        podcast_minutes=max(1, args.podcast_minutes),
-        arxiv_url=args.arxiv_url,
-        resume=args.resume,
-        force=args.force,
-        stop_after=stop_after,
-    )
+    try:
+        with run_control.PipelineLock(config, command=args.command, target_date=args.date, provider=args.provider):
+            run_control.clear_cancel_request(config)
+            result = pipeline.job(
+                target_date=args.date,
+                provider=args.provider,
+                generate_podcast=not args.no_podcast,
+                podcast_minutes=max(1, args.podcast_minutes),
+                arxiv_url=args.arxiv_url,
+                resume=args.resume,
+                force=args.force,
+                stop_after=stop_after,
+            )
+    except run_control.RunCancelled as exc:
+        result = {
+            "ok": False,
+            "cancelled": True,
+            "error": {
+                "code": "cancelled",
+                "message": str(exc),
+                "suggestion": "Resume the same run when ready.",
+                "retryable": True,
+            },
+        }
     if isinstance(result, dict):
         result = dict(result)
     else:
@@ -233,6 +300,116 @@ def _run_pipeline(args, pipeline_module=None) -> dict:
     result["command"] = args.command
     result["stop_after"] = stop_after
     return result
+
+
+def _run_digest(args, pipeline_module=None) -> dict:
+    config = load_config()
+    from src import run_control
+
+    pipeline = _pipeline_module(pipeline_module)
+    with run_control.PipelineLock(config, command="digest", target_date=args.date, provider=args.provider):
+        run_control.clear_cancel_request(config)
+        result = pipeline.write_digest_from_state(
+            target_date=args.date,
+            provider=args.provider,
+            single_paper=bool(getattr(args, "single_paper", False)),
+        )
+    if isinstance(result, dict):
+        result = dict(result)
+    else:
+        result = {"ok": True}
+    result["command"] = "digest"
+    return result
+
+
+def _run_cancel(args) -> dict:
+    config = load_config()
+    from src import run_control
+
+    path, request = run_control.request_cancel(config, reason=args.reason)
+    return {
+        "ok": True,
+        "command": "cancel",
+        "cancel_requested": True,
+        "cancel_request": request,
+        "artifacts": {"cancel_request": str(path)},
+    }
+
+
+def _run_dry_run(args) -> dict:
+    config = load_config()
+    paths = PaperBrainPaths.from_config_dict(config)
+    mode = args.mode
+    auto_arxiv_date = mode in {"run", "fetch", "screen", "deep"} and args.arxiv_url and args.date is None
+    target_date = None if auto_arxiv_date else (args.date or (datetime.now().date() - timedelta(days=1)))
+    command = [sys.executable, str(paths.script_dir / "paperbrain.py"), mode]
+    if mode == "brief":
+        command.extend(["--mode", "week"])
+    if mode in {"run", "fetch", "screen", "deep", "digest"}:
+        if target_date is not None:
+            command.extend(["--date", target_date.strftime("%Y-%m-%d")])
+        command.extend(["--provider", args.provider])
+    if mode in {"run", "fetch", "screen", "deep"}:
+        if args.arxiv_url:
+            command.extend(["--arxiv-url", args.arxiv_url])
+        if args.no_podcast:
+            command.append("--no-podcast")
+        if getattr(args, "force", False):
+            command.append("--force")
+    return {
+        "ok": True,
+        "command": "dry-run",
+        "preview_mode": mode,
+        "would_run": command,
+        "target_date": target_date.strftime("%Y-%m-%d") if target_date is not None else "",
+        "target_date_source": "arxiv_v1" if auto_arxiv_date else ("manual" if args.date else "default_yesterday"),
+        "provider": args.provider,
+        "paths": {
+            **paths.as_dict(),
+            "lock": str(paths.cache_dir / "paperbrain_pipeline.lock.json"),
+            "cancel": str(paths.cache_dir / "paperbrain_cancel.json"),
+        },
+        "network_or_llm_invoked": False,
+    }
+
+
+def _run_bridge(args, pipeline_module=None) -> dict:
+    request_path = Path(args.request_file)
+    with open(request_path, "r", encoding="utf-8") as f:
+        request = json.load(f)
+    command = str(request.get("command") or request.get("mode") or "").strip()
+    if not command:
+        raise ValueError("Bridge request must include `command`.")
+
+    namespace = argparse.Namespace(
+        command=command,
+        date=_date_arg(request["date"]) if request.get("date") else None,
+        provider=request.get("provider", "doubao"),
+        arxiv_url=request.get("arxiv_url"),
+        no_podcast=not bool(request.get("generate_podcast", True)),
+        podcast_minutes=int(request.get("podcast_minutes", 5) or 5),
+        resume=bool(request.get("resume", True)),
+        force=bool(request.get("force", False)),
+        stop_after=request.get("stop_after"),
+        schedule=False,
+        single_paper=bool(request.get("single_paper", False)),
+        reason=request.get("reason", "plugin_requested"),
+        mode=request.get("mode", command),
+    )
+    if command in PIPELINE_COMMANDS:
+        payload = _run_pipeline(namespace, pipeline_module=pipeline_module)
+    elif command == "digest":
+        if namespace.date is None:
+            raise ValueError("Bridge digest request must include `date`.")
+        payload = _run_digest(namespace, pipeline_module=pipeline_module)
+    elif command == "cancel":
+        payload = _run_cancel(namespace)
+    elif command == "dry-run":
+        payload = _run_dry_run(namespace)
+    else:
+        raise ValueError(f"Unsupported bridge command: {command}")
+    payload["bridge_request"] = str(request_path)
+    return payload
 
 
 def _run_schedule(args, pipeline_module=None) -> dict:
@@ -284,6 +461,39 @@ def _run_index(args) -> dict:
         "command": "index",
         "notes_indexed": len(notes),
         "artifacts": {"research_index": str(paths.research_index_dir)},
+    }
+
+
+def _run_brief(args) -> dict:
+    config = load_config()
+    from src.research_brief import ResearchBriefGenerator, resolve_period
+
+    start_date, end_date, period_label, brief_type = resolve_period(
+        mode=args.mode,
+        week=args.week,
+        month=args.month,
+        from_date=args.from_date,
+        to_date=args.to_date,
+        last_days=args.last_days,
+        date_value=args.date_value,
+    )
+    generator = ResearchBriefGenerator(config)
+    path = generator.generate(
+        start_date=start_date,
+        end_date=end_date,
+        period_label=period_label,
+        brief_type=brief_type,
+        max_top=args.max_top,
+        max_questions=args.max_questions,
+    )
+    return {
+        "ok": True,
+        "command": "brief",
+        "brief_type": brief_type,
+        "period_label": period_label,
+        "from_date": start_date.isoformat(),
+        "to_date": end_date.isoformat(),
+        "artifacts": {"research_brief": path},
     }
 
 
@@ -1023,7 +1233,7 @@ def _run_ruff_checks(paths: PaperBrainPaths, skip=False, strict=False) -> dict:
 
 
 def _record_run_error_if_possible(args, error: dict) -> None:
-    if getattr(args, "command", "") not in PIPELINE_COMMANDS:
+    if getattr(args, "command", "") not in PIPELINE_COMMANDS | {"digest"}:
         return
     try:
         config = load_config()
@@ -1045,6 +1255,8 @@ def _record_run_error_if_possible(args, error: dict) -> None:
 
 def _classify_exception(exc: Exception) -> ExitCode:
     text = f"{exc.__class__.__name__}: {exc}".lower()
+    if "already running" in text or "already active" in text:
+        return ExitCode.CONFIG_ERROR
     if isinstance(exc, ModuleNotFoundError) or "validation" in text or "checks failed" in text:
         return ExitCode.VALIDATION_FAILED
     if isinstance(exc, (KeyError, ValueError)) or "config" in text or "yaml" in text:

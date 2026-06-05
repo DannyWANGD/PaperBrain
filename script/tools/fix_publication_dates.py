@@ -32,6 +32,18 @@ def _frontmatter_text(data):
     return yaml.safe_dump(data, allow_unicode=True, sort_keys=False, default_flow_style=False).strip()
 
 
+def _run_state_candidates(paths, day, provider):
+    run_records = paths.run_records_dir
+    return [
+        paths.state_path(day, provider),
+        paths.legacy_state_path(day, provider),
+        run_records / f"{day}-{provider}" / "state.json",
+        run_records / f"{day}-single" / "state.json",
+        run_records / f"{day}-{provider}-run-state.json",
+        run_records / f"{day}-single-run-state.json",
+    ]
+
+
 def fix_dates(dates, provider="openrouter", dry_run=False):
     config = load_config()
     paths = PaperBrainPaths.from_config_dict(config)
@@ -39,12 +51,9 @@ def fix_dates(dates, provider="openrouter", dry_run=False):
     changed_runs = []
 
     for day in dates:
-        run_path = paths.state_path(day, provider)
-        legacy_run_path = paths.legacy_state_path(day, provider)
-        if not run_path.exists() and legacy_run_path.exists():
-            run_path = legacy_run_path
-        if not run_path.exists():
-            logger.warning("Run state not found: %s", run_path)
+        run_path = next((candidate for candidate in _run_state_candidates(paths, day, provider) if candidate.exists()), None)
+        if run_path is None:
+            logger.warning("Run state not found: %s", paths.state_path(day, provider))
             continue
 
         data = json.loads(run_path.read_text(encoding="utf-8"))

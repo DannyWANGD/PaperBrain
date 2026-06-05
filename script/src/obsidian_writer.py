@@ -1,10 +1,11 @@
 import os
 import re
+import json
 from datetime import datetime
 import logging
 import yaml
 from src import scoring as scoring_utils
-from src.paper_identity import canonical_arxiv_id, normalize_paper_identity, paper_id_from_arxiv_id
+from src.paper_identity import canonical_arxiv_id, identity_key, normalize_paper_identity, paper_id_from_arxiv_id
 from src.paths import PaperBrainPaths
 
 logging.basicConfig(level=logging.INFO)
@@ -20,6 +21,8 @@ class ObsidianWriter:
         self.notes_folder = str(paths.notes_dir)
         self.pdf_folder = str(paths.pdf_dir)
         self.assets_folder = str(paths.assets_dir)
+        self.run_records_dir = str(paths.run_records_dir)
+        self._institution_lookup_cache = None
         
         # Ensure directories exist
         os.makedirs(self.daily_folder, exist_ok=True)
@@ -131,6 +134,66 @@ class ObsidianWriter:
             items = [value]
         return [str(item).strip() for item in items if item is not None and str(item).strip()]
 
+    def _paper_authors(self, paper):
+        return self._ensure_clean_list(paper.get("authors"))
+
+    def _local_institution_lookup(self):
+        if self._institution_lookup_cache is not None:
+            return self._institution_lookup_cache
+
+        lookup = {"by_token": {}, "by_author": {}}
+        if not os.path.isdir(self.run_records_dir):
+            self._institution_lookup_cache = lookup
+            return lookup
+
+        state_names = {"state.json"}
+        for root, _, files in os.walk(self.run_records_dir):
+            for name in files:
+                if name not in state_names and not name.endswith("-run-state.json"):
+                    continue
+                path = os.path.join(root, name)
+                try:
+                    with open(path, "r", encoding="utf-8") as f:
+                        data = json.load(f)
+                except Exception:
+                    continue
+                for candidate in data.get("papers", []) or []:
+                    if not isinstance(candidate, dict):
+                        continue
+                    metadata = candidate.get("metadata") if isinstance(candidate.get("metadata"), dict) else {}
+                    institutions = self._ensure_clean_list(candidate.get("institutions") or metadata.get("institutions"))
+                    if not institutions:
+                        continue
+                    for token in self._digest_identity_tokens(candidate):
+                        lookup["by_token"].setdefault(token, institutions)
+                    for author in self._paper_authors(candidate):
+                        lookup["by_author"].setdefault(author.lower(), []).append(institutions)
+
+        self._institution_lookup_cache = lookup
+        return lookup
+
+    def _institutions_from_local_history(self, paper):
+        lookup = self._local_institution_lookup()
+        for token in self._digest_identity_tokens(paper):
+            institutions = lookup["by_token"].get(token)
+            if institutions:
+                return institutions
+
+        authors = [author.lower() for author in self._paper_authors(paper)]
+        if len(authors) < 2:
+            return []
+
+        votes = {}
+        for author in authors:
+            for institutions in lookup["by_author"].get(author, []):
+                key = tuple(institutions)
+                votes[key] = votes.get(key, 0) + 1
+        if not votes:
+            return []
+
+        institutions, count = max(votes.items(), key=lambda item: item[1])
+        return list(institutions) if count >= 2 else []
+
     def _paper_institutions(self, paper):
         metadata = paper.get("metadata") if isinstance(paper.get("metadata"), dict) else {}
         for value in (paper.get("institutions"), metadata.get("institutions")):
@@ -145,6 +208,9 @@ class ObsidianWriter:
             institutions = self._ensure_clean_list(self._read_note_frontmatter(note_path).get("institutions"))
             if institutions:
                 return institutions
+        institutions = self._institutions_from_local_history(paper)
+        if institutions:
+            return institutions
         return []
 
     def _note_link_for_paper(self, paper):
@@ -193,7 +259,7 @@ class ObsidianWriter:
         content += f"- **⚠️ Limitations**: {limitations}\n"
         content += f"- **🔗 Link**: {link}\n"
         content += f"- **👥 Authors**: {authors}\n"
-        content += f"- **Institutions**: {institutions_text}\n"
+        content += f"- **🏛️ Institutions**: {institutions_text}\n"
 
         if paper.get('tags'):
             tags_formatted = ' '.join([f"#{t.strip().replace(' ', '_').replace('-', '_')}" for t in paper['tags']])
@@ -201,12 +267,44 @@ class ObsidianWriter:
         elif paper.get('source'):
             content += f"- **🏷️ Source**: #{paper['source']}\n"
 
+        sources = paper.get("paper_sources") or []
+        if paper.get("forced_deep") or paper.get("forced_digest") or paper.get("preserved_deep") or sources:
+            source_text = "+".join(sources) if isinstance(sources, list) else str(sources)
+            if paper.get("forced_deep") or paper.get("forced_digest"):
+                source_text = f"{source_text or 'single'} forced"
+            if paper.get("preserved_deep"):
+                source_text = f"{source_text or 'deep'} preserved"
+            content += f"- **Source Mode**: {source_text}\n"
+
         content += "\n---\n"
         return content
 
     def _split_digest_entries(self, content):
         entries = re.findall(r"^###\s+[\s\S]*?(?=^###\s+|\Z)", content.strip(), flags=re.MULTILINE)
         return [entry.strip() + "\n" for entry in entries if entry.strip()]
+
+    def _entry_matches_paper(self, entry_text, paper):
+        entry_low = entry_text.lower()
+        return any(token and token in entry_low for token in self._digest_identity_tokens(paper))
+
+    def _forced_digest_papers(self, papers):
+        return [
+            paper for paper in papers
+            if paper.get("forced_deep") or paper.get("forced_digest") or paper.get("manual_requested_at") or paper.get("preserved_deep")
+        ]
+
+    def _merge_digest_papers(self, selected, papers):
+        by_key = {}
+        for paper in list(selected or []) + self._forced_digest_papers(papers):
+            key = identity_key(paper)
+            if not key:
+                continue
+            existing = by_key.get(key)
+            if existing is None or self._numeric_score(paper.get("score"), 0.0) > self._numeric_score(existing.get("score"), 0.0):
+                by_key[key] = paper
+        merged = list(by_key.values())
+        merged.sort(key=lambda paper: self._numeric_score(paper.get("score"), 0.0), reverse=True)
+        return merged
 
     def _update_digest_summary_counts(self, text, total_count, high_count):
         replacement = f"Total Papers: {total_count} | High Impact: {high_count}"
@@ -223,12 +321,6 @@ class ObsidianWriter:
             logger.info("Single-paper digest update skipped: publication date is unknown.")
             return None
 
-        min_score = self._numeric_score(self.config.get('analysis', {}).get('daily_digest_min_score'), 7.0)
-        score = self._numeric_score(paper.get('score', 0), 0.0)
-        if score < min_score:
-            logger.info(f"Single-paper digest update skipped: score {score:.1f} < {min_score:.1f}.")
-            return None
-
         today_str = target_date.strftime("%Y-%m-%d")
         filepath = os.path.join(self.daily_folder, f"{today_str}-PaperDigest.md")
         if not os.path.exists(filepath):
@@ -237,9 +329,6 @@ class ObsidianWriter:
 
         with open(filepath, "r", encoding="utf-8") as f:
             raw = f.read()
-        if self._digest_entry_exists(raw, paper):
-            logger.info(f"Daily digest already contains this paper: {paper.get('paper_id') or paper.get('title')}")
-            return filepath
 
         papers_header = re.search(r"^##\s+.*?Papers List.*?$", raw, flags=re.MULTILINE)
         if not papers_header:
@@ -250,7 +339,21 @@ class ObsidianWriter:
         body = raw[papers_header.end():].strip()
         entries = self._split_digest_entries(body)
         new_entry = self._render_daily_digest_entry(paper)
-        entries.append(new_entry)
+        replaced = False
+        for index, entry in enumerate(entries):
+            if not self._entry_matches_paper(entry, paper):
+                continue
+            existing_score = self._digest_entry_score(entry)
+            new_score = self._numeric_score(paper.get("score"), 0.0)
+            if new_score > existing_score:
+                entries[index] = new_entry
+                logger.info(f"Replaced existing digest entry for: {paper.get('paper_id') or paper.get('title')}")
+            else:
+                logger.info(f"Daily digest already contains a higher-scoring entry: {paper.get('paper_id') or paper.get('title')}")
+            replaced = True
+            break
+        if not replaced:
+            entries.append(new_entry)
         entries.sort(key=self._digest_entry_score, reverse=True)
 
         content = head + "\n" + "\n".join(entries).strip() + "\n"
@@ -287,6 +390,67 @@ class ObsidianWriter:
                     notes.append(file.replace(".md", ""))
         return notes
 
+    def _supplement_date_key(self, paper):
+        value = paper.get("manual_deep_supplement_date") or paper.get("publication_date") or paper.get("published")
+        if hasattr(value, "strftime"):
+            return value.strftime("%Y-%m-%d")
+        if isinstance(value, str) and len(value) >= 10:
+            return value[:10]
+        return datetime.now().strftime("%Y-%m-%d")
+
+    def _clean_supplement_analysis(self, analysis_content):
+        analysis_clean = self._sanitize_obsidian_text(analysis_content or "")
+        analysis_clean = re.sub(r'^#\s+🚀\s+Deep Analysis Report:[^\n]*\n+', '', analysis_clean, flags=re.MULTILINE)
+        analysis_clean = re.sub(r'^##\s+📊\s+Academic Quality & Innovation\s*\n+', '', analysis_clean, flags=re.MULTILINE)
+        analysis_clean = re.sub(r'^#\s+Deep (Analysis|Engineering Analysis):[^\n]*\n+', '', analysis_clean, flags=re.MULTILINE)
+        analysis_clean = re.sub(r'\n{3,}', '\n\n', analysis_clean).strip()
+        return analysis_clean
+
+    def _ensure_frontmatter_scalar(self, raw, key, value):
+        if not value or not raw.startswith("---\n"):
+            return raw
+        match = re.match(r"^---\n([\s\S]*?)\n---\n?", raw)
+        if not match or re.search(rf"^{re.escape(key)}\s*:", match.group(1), flags=re.MULTILINE):
+            return raw
+        frontmatter = match.group(1).rstrip()
+        body = raw[match.end():]
+        return f"---\n{frontmatter}\n{key}: \"{value}\"\n---\n{body}"
+
+    def _supplement_existing_note(self, filepath, paper, analysis_content, local_pdf_path=None):
+        with open(filepath, "r", encoding="utf-8") as f:
+            raw = f.read()
+
+        date_key = self._supplement_date_key(paper)
+        analysis_clean = self._clean_supplement_analysis(analysis_content)
+        start = f"<!-- paperbrain-single-deep:{date_key}:start -->"
+        end = f"<!-- paperbrain-single-deep:{date_key}:end -->"
+        block = (
+            f"{start}\n"
+            f"## Single Deep Supplement ({date_key})\n\n"
+            f"{analysis_clean}\n\n"
+            f"{end}"
+        )
+
+        pattern = re.compile(
+            rf"<!-- paperbrain-single-deep:{re.escape(date_key)}:start -->[\s\S]*?<!-- paperbrain-single-deep:{re.escape(date_key)}:end -->"
+        )
+        if pattern.search(raw):
+            updated = pattern.sub(block, raw, count=1)
+        else:
+            updated = raw.rstrip() + "\n\n" + block + "\n"
+
+        arxiv_id = canonical_arxiv_id(paper.get("arxiv_id") or paper.get("paper_id") or paper.get("url") or paper.get("pdf_url"))
+        paper_id = paper.get("paper_id") or paper_id_from_arxiv_id(arxiv_id)
+        pdf_link = f"[[{os.path.basename(local_pdf_path)}]]" if local_pdf_path else ""
+        updated = self._ensure_frontmatter_scalar(updated, "paper_id", paper_id)
+        updated = self._ensure_frontmatter_scalar(updated, "arxiv_id", arxiv_id)
+        updated = self._ensure_frontmatter_scalar(updated, "local_pdf", pdf_link)
+
+        with open(filepath, "w", encoding="utf-8") as f:
+            f.write(updated)
+        logger.info(f"Detailed note supplemented at {filepath}")
+        return filepath
+
     def write_daily_digest(self, papers, target_date=None):
         """Writes the daily digest file with structured analysis."""
         papers = [normalize_paper_identity(p) for p in papers]
@@ -309,6 +473,9 @@ class ObsidianWriter:
             analysis_cfg=self.config.get('analysis', {}),
             provider_threshold=threshold,
         )
+        digest_papers = self._merge_digest_papers(digest_papers, papers)
+        digest_info["forced_count"] = len(self._forced_digest_papers(papers))
+        digest_info["selected_count"] = len(digest_papers)
         if digest_info.get("backfill_count"):
             logger.info(
                 "Daily digest backfilled %s paper(s) to reach %s entries.",
@@ -345,12 +512,24 @@ class ObsidianWriter:
         filename = f"{safe_title}.md"
         filepath = os.path.join(self.notes_folder, filename)
 
+        if paper.get("forced_deep"):
+            existing_note = self._find_note_path_for_paper(paper)
+            if existing_note:
+                return self._supplement_existing_note(existing_note, paper, analysis_content, local_pdf_path=local_pdf_path)
+
         # Dedup check: scan existing notes for same arXiv ID
         paper_url = paper.get('url', '')
         arxiv_id = self._extract_arxiv_id(paper_url)
         if arxiv_id:
             existing = self._find_note_by_arxiv_id(arxiv_id, exclude=filename)
             if existing:
+                if paper.get("forced_deep"):
+                    return self._supplement_existing_note(
+                        os.path.join(self.notes_folder, existing),
+                        paper,
+                        analysis_content,
+                        local_pdf_path=local_pdf_path,
+                    )
                 logger.warning(
                     f"[DEDUP] Skipping write for '{filename}': "
                     f"arXiv ID {arxiv_id} already exists as '{existing}'. "
@@ -395,6 +574,7 @@ class ObsidianWriter:
             if a and a not in all_aliases:
                 all_aliases.append(a)
         aliases_yaml = "\n".join([f'  - "{a}"' for a in all_aliases])
+        authors_yaml = "\n".join([f'  - "{a}"' for a in self._paper_authors(paper)])
 
         # arxiv_id for dedup
         arxiv_id_val = canonical_arxiv_id(arxiv_id or paper.get("arxiv_id") or paper.get("pdf_url") or paper.get("url"))
@@ -445,6 +625,8 @@ tags:
 {tags_yaml}
 aliases:
 {aliases_yaml}
+authors:
+{authors_yaml or '  - "Unknown"'}
 paper_id: "{paper_id_val}"
 arxiv_id: "{arxiv_id_val}"
 url: {paper.get('url')}

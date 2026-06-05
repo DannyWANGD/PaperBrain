@@ -1,0 +1,156 @@
+{
+  "run_id": "2026-06-03-single",
+  "date": "2026-06-03",
+  "provider": "openrouter",
+  "single_paper": true,
+  "created_at": "2026-06-04T22:25:42",
+  "updated_at": "2026-06-04T22:27:51",
+  "stage": "completed",
+  "papers": [
+    {
+      "title": "Generalization of World Models under Environmental Variability for Vision-based Quadrotor Navigation",
+      "abstract": "World models, learned generative models that predict how an environment evolves, have become a promising tool for sample-efficient robot learning. Yet how robust they are to environmental variability remains poorly understood. To address this, we conduct a systematic study using vision-based quadrotor navigation as a testbed problem, training DreamerV3-based world models under varying levels of environmental randomness and evaluating them across all levels through cross-environment validation, spanning both Self-Supervised Learning (SSL) pretraining and Reinforcement Learning (RL) fine-tuning. We then deploy all world models and associated navigation policies on a real quadrotor in unseen environments, including an open-loop run where the model receives just 2.5s of real sensory input before all sensors are cut off, leaving the system to navigate entirely in imagination over a 12m traverse. Our results show that world model robustness during SSL pretraining is a strong predictor of sim-to-real transfer: every model that generalized well in cross-environment SSL validation deployed successfully in the real world, passing through gaps as narrow as 0.67m, whereas the model that dominated simulation policy evaluation failed on the real platform. We further identify (a) the discrete latent size and (b) the training-sequence length as the dominant factors governing world model quality.",
+      "url": "http://arxiv.org/abs/2606.05015v1",
+      "pdf_url": "https://arxiv.org/pdf/2606.05015v1",
+      "published": "2026-06-03T15:38:36",
+      "source": "arXiv",
+      "authors": [
+        "Luca Zanatta",
+        "Grzegorz Malczyk",
+        "Kostas Alexis"
+      ],
+      "arxiv_id": "2606.05015",
+      "paper_id": "arxiv:2606.05015",
+      "coarse_score": 7.1,
+      "coarse_relevance": 6.5,
+      "coarse_evidence": 8.0,
+      "coarse_method_completeness": 7.0,
+      "should_rescreen": true,
+      "coarse_reason": "World model robustness study with real-world quadrotor deployment, relevant to world model and RL interests, though not directly about manipulation or VLA.",
+      "coarse_model": "deepseek/deepseek-v4-flash",
+      "short_title": "World Model Generalization for Quadrotor Navigation",
+      "score": 7.1,
+      "innovation": "Demonstrates that world model robustness during SSL pretraining is a strong predictor of sim-to-real transfer for vision-based quadrotor navigation.",
+      "limitations": "Study limited to DreamerV3 and depth-image-based navigation, not tested on other world model architectures or manipulation tasks.",
+      "reason": "Systematic analysis of world model generalization with real-world validation, but limited novelty and not directly aligned with manipulation or VLA interests.",
+      "tags": [
+        "domain/world_model",
+        "domain/embodied_ai",
+        "domain/reinforcement_learning",
+        "domain/sim2real",
+        "task/navigation",
+        "type/analysis",
+        "method/world_model",
+        "method/reinforcement_learning"
+      ],
+      "relevance": 7.5,
+      "novelty": 6.5,
+      "rigor": 8.0,
+      "evidence": 8.0,
+      "reproducibility": 7.5,
+      "confidence": 8.0,
+      "red_flags": [
+        "Not directly aligned with manipulation or VLA interests; limited to DreamerV3 architecture"
+      ],
+      "screening_stage": "detailed",
+      "screening_model": "deepseek/deepseek-v4-pro",
+      "selected_for_deep_analysis": false,
+      "in_daily_digest": true
+    }
+  ],
+  "selection": {
+    "deep_analysis": {
+      "lower_threshold": 7.5,
+      "extra_threshold": 8.8,
+      "base_max": 2,
+      "daily_min": 1,
+      "candidate_count": 0,
+      "quality_passed_count": 0,
+      "base_count": 0,
+      "extra_count": 0,
+      "selected_count": 0
+    },
+    "daily_digest": {
+      "min_score": 7.0,
+      "target_min_count": 5,
+      "threshold_count": 1,
+      "backfill_count": 0,
+      "selected_count": 1
+    }
+  },
+  "artifacts": {
+    "screening_report": "D:\\PaperBrain\\Run_Records\\2026-06-03-single\\screening_report.md",
+    "daily_digest": "D:\\PaperBrain\\Daily_Papers\\2026-06-03-PaperDigest.md"
+  },
+  "errors": [],
+  "logs": [
+    {
+      "created_at": "2026-06-04T22:27:34",
+      "stage": "coarse_screened",
+      "paper_id": "",
+      "title": "",
+      "provider": "openrouter",
+      "model": "",
+      "elapsed_ms": null,
+      "retry_count": 0,
+      "artifact_path": "",
+      "message": "stage=coarse_screened"
+    },
+    {
+      "created_at": "2026-06-04T22:27:51",
+      "stage": "screened",
+      "paper_id": "",
+      "title": "",
+      "provider": "openrouter",
+      "model": "",
+      "elapsed_ms": null,
+      "retry_count": 0,
+      "artifact_path": "",
+      "message": "stage=screened"
+    },
+    {
+      "created_at": "2026-06-04T22:27:51",
+      "stage": "screened",
+      "paper_id": "",
+      "title": "",
+      "provider": "openrouter",
+      "model": "",
+      "elapsed_ms": null,
+      "retry_count": 0,
+      "artifact_path": "D:\\PaperBrain\\Run_Records\\2026-06-03-single\\screening_report.md",
+      "message": "artifact=screening_report"
+    },
+    {
+      "created_at": "2026-06-04T22:27:51",
+      "stage": "screened",
+      "paper_id": "",
+      "title": "",
+      "provider": "openrouter",
+      "model": "",
+      "elapsed_ms": null,
+      "retry_count": 0,
+      "artifact_path": "D:\\PaperBrain\\Daily_Papers\\2026-06-03-PaperDigest.md",
+      "message": "artifact=daily_digest"
+    },
+    {
+      "created_at": "2026-06-04T22:27:51",
+      "stage": "completed",
+      "paper_id": "",
+      "title": "",
+      "provider": "openrouter",
+      "model": "",
+      "elapsed_ms": null,
+      "retry_count": 0,
+      "artifact_path": "",
+      "message": "stage=completed"
+    }
+  ],
+  "paths": {
+    "run_dir": "D:\\PaperBrain\\Run_Records\\2026-06-03-single",
+    "state": "D:\\PaperBrain\\Run_Records\\2026-06-03-single\\state.json",
+    "legacy_state": "D:\\PaperBrain\\Run_Records\\2026-06-03-single-run-state.json",
+    "screening_report": "D:\\PaperBrain\\Run_Records\\2026-06-03-single\\screening_report.md",
+    "log_summary": "D:\\PaperBrain\\Run_Records\\2026-06-03-single\\log_summary.md",
+    "errors": "D:\\PaperBrain\\Run_Records\\2026-06-03-single\\errors.json"
+  }
+}

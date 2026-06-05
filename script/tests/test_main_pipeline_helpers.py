@@ -12,9 +12,10 @@ import main as pipeline  # noqa: E402
 
 
 class FakeScraper:
-    def __init__(self):
+    def __init__(self, single_paper=None):
         self.target_date = None
         self.single_url = None
+        self.single_paper = single_paper
 
     def get_all_papers(self, target_date=None):
         self.target_date = target_date
@@ -22,7 +23,7 @@ class FakeScraper:
 
     def fetch_single_arxiv_paper(self, arxiv_url):
         self.single_url = arxiv_url
-        return {"title": "Single Paper", "url": arxiv_url}
+        return self.single_paper or {"title": "Single Paper", "url": arxiv_url}
 
 
 class FakeAnalyser:
@@ -69,7 +70,7 @@ class FakeRunState:
     path = "fake-run-state.json"
 
     def __init__(self, stage="initialized", papers=None):
-        self.data = {"stage": stage, "papers": papers or []}
+        self.data = {"stage": stage, "papers": papers or [], "selection": {}, "logs": []}
         self.set_calls = []
         self.updated = []
         self.marked = []
@@ -84,13 +85,95 @@ class FakeRunState:
 
     def update_paper(self, paper):
         self.updated.append(dict(paper))
+        key = paper.get("paper_id") or paper.get("url") or paper.get("title")
+        for index, existing in enumerate(self.data.setdefault("papers", [])):
+            existing_key = existing.get("paper_id") or existing.get("url") or existing.get("title")
+            if existing_key == key:
+                self.data["papers"][index] = dict(paper)
+                break
+        else:
+            self.data.setdefault("papers", []).append(dict(paper))
+
+    def merge_paper(self, paper, mode=None, forced_deep=False):
+        merged = dict(paper)
+        if forced_deep:
+            merged["forced_deep"] = True
+            merged["forced_digest"] = True
+            merged["selected_for_deep_analysis"] = True
+            merged["in_daily_digest"] = True
+        sources = list(merged.get("paper_sources", []))
+        if mode and mode not in sources:
+            sources.append(mode)
+        merged["paper_sources"] = sources
+        self.update_paper(merged)
+        return merged
 
     def mark_stage(self, stage):
         self.data["stage"] = stage
         self.marked.append(stage)
 
+    def update_selection(self, **kwargs):
+        self.data.setdefault("selection", {}).update(kwargs)
+
+    def add_log_event(self, **kwargs):
+        self.data.setdefault("logs", []).append(kwargs)
+
 
 class MainPipelineHelperTest(unittest.TestCase):
+    def test_resolve_target_date_uses_arxiv_publication_when_date_omitted(self):
+        scraper = FakeScraper({
+            "title": "Single Paper",
+            "url": "https://arxiv.org/abs/2606.02486",
+            "publication_date": "2026-05-31",
+        })
+
+        target, source, paper, arxiv_publication_date, warning = pipeline._resolve_target_date_for_run(
+            scraper,
+            target_date=None,
+            arxiv_url="https://arxiv.org/abs/2606.02486",
+        )
+
+        self.assertEqual(target, date(2026, 5, 31))
+        self.assertEqual(source, "arxiv_v1")
+        self.assertEqual(arxiv_publication_date, "2026-05-31")
+        self.assertEqual(warning, "")
+        self.assertEqual(paper["paper_id"], "arxiv:2606.02486")
+
+    def test_resolve_target_date_keeps_explicit_manual_date(self):
+        scraper = FakeScraper({
+            "title": "Single Paper",
+            "url": "https://arxiv.org/abs/2606.02486",
+            "publication_date": "2026-05-31",
+        })
+
+        target, source, paper, arxiv_publication_date, warning = pipeline._resolve_target_date_for_run(
+            scraper,
+            target_date=date(2026, 6, 1),
+            arxiv_url="https://arxiv.org/abs/2606.02486",
+        )
+
+        self.assertEqual(target, date(2026, 6, 1))
+        self.assertEqual(source, "manual")
+        self.assertIsNone(paper)
+        self.assertEqual(arxiv_publication_date, "")
+        self.assertEqual(warning, "")
+        self.assertIsNone(scraper.single_url)
+
+    def test_resolve_target_date_falls_back_when_arxiv_date_unknown(self):
+        scraper = FakeScraper({"title": "Single Paper", "url": "https://arxiv.org/abs/2606.02486"})
+
+        target, source, paper, arxiv_publication_date, warning = pipeline._resolve_target_date_for_run(
+            scraper,
+            target_date=None,
+            arxiv_url="https://arxiv.org/abs/2606.02486",
+        )
+
+        self.assertIsInstance(target, date)
+        self.assertEqual(source, "fallback_yesterday")
+        self.assertEqual(paper["paper_id"], "arxiv:2606.02486")
+        self.assertEqual(arxiv_publication_date, "")
+        self.assertEqual(warning, "arxiv_publication_date_unavailable")
+
     def test_load_papers_fetches_and_persists_fresh_run(self):
         scraper = FakeScraper()
         state = FakeRunState()
@@ -112,6 +195,23 @@ class MainPipelineHelperTest(unittest.TestCase):
         self.assertIsNone(scraper.target_date)
         self.assertEqual(papers[0]["paper_id"], "arxiv:2605.25802")
         self.assertEqual(state.set_calls, [])
+
+    def test_single_arxiv_injects_even_when_daily_state_completed(self):
+        scraper = FakeScraper()
+        state = FakeRunState(stage="completed", papers=[{"title": "Saved", "url": "https://arxiv.org/abs/2605.25802", "score": 8.0}])
+
+        papers = pipeline._load_papers_for_run(
+            scraper,
+            state,
+            date(2026, 6, 1),
+            arxiv_url="https://arxiv.org/abs/2606.02486",
+        )
+
+        self.assertEqual(scraper.single_url, "https://arxiv.org/abs/2606.02486")
+        injected = [p for p in papers if p["paper_id"] == "arxiv:2606.02486"][0]
+        self.assertTrue(injected["forced_deep"])
+        self.assertTrue(injected["in_daily_digest"])
+        self.assertIn("single", injected["paper_sources"])
 
     def test_run_coarse_screening_updates_each_paper_and_stage(self):
         state = FakeRunState()
@@ -144,6 +244,18 @@ class MainPipelineHelperTest(unittest.TestCase):
 
         self.assertEqual([p["title"] for p in selected], ["true-high", "true-low", "false-high"])
 
+    def test_build_rescreen_pool_always_includes_forced_papers(self):
+        forced = self._coarse("forced-low", False, 1.0)
+        forced["forced_deep"] = True
+        papers = [self._coarse("regular-high", True, 9.0), forced]
+
+        selected = pipeline._build_rescreen_pool(
+            papers,
+            {"screening_second_stage_top_k": 1, "screening_second_stage_ratio": 0.1, "screening_second_stage_max_k": 1},
+        )
+
+        self.assertIn("forced-low", [p["title"] for p in selected])
+
     def test_drop_screening_excerpts_removes_temporary_context(self):
         papers = [{"title": "A", "screening_document_excerpt": "temporary"}, {"title": "B"}]
 
@@ -173,6 +285,139 @@ class MainPipelineHelperTest(unittest.TestCase):
         self.assertEqual(info["threshold_count"], 1)
         self.assertEqual(info["backfill_count"], 4)
         self.assertNotIn("Left Out", selected)
+
+    def test_mark_digest_and_deep_membership_preserve_forced_paper(self):
+        cfg = {
+            "openrouter": {"threshold_score": 7},
+            "analysis": {"daily_digest_min_score": 7.0, "daily_digest_target_min_count": 1},
+        }
+        forced = self._screened("Forced Low", 2.0)
+        forced["forced_deep"] = True
+        papers = [self._screened("Regular High", 8.0), forced]
+
+        info = pipeline._mark_digest_membership(papers, cfg, provider="openrouter")
+        pipeline._mark_deep_selection(papers, [papers[0]])
+
+        self.assertTrue(forced["in_daily_digest"])
+        self.assertTrue(forced["selected_for_deep_analysis"])
+        self.assertGreaterEqual(info["forced_count"], 1)
+
+    def test_collect_force_preserved_deep_keeps_completed_note_before_reset(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            note = Path(tmp) / "Research_Notes" / "Preserved.md"
+            note.parent.mkdir()
+            note.write_text("# Preserved Paper\n", encoding="utf-8")
+            state = FakeRunState(
+                stage="completed",
+                papers=[{
+                    "title": "Preserved Paper",
+                    "url": "https://arxiv.org/abs/2606.11111",
+                    "score": 8.2,
+                    "selected_for_deep_analysis": True,
+                    "note_path": str(note),
+                    "provider_sources": ["openrouter"],
+                }],
+            )
+
+            preserved = pipeline._collect_force_preserved_deep(
+                state,
+                self._config(tmp),
+                date(2026, 6, 1),
+            )
+
+        self.assertEqual(len(preserved), 1)
+        self.assertEqual(preserved[0]["paper_id"], "arxiv:2606.11111")
+        self.assertTrue(preserved[0]["preserved_deep"])
+        self.assertTrue(preserved[0]["deep_analysis_completed"])
+        self.assertTrue(preserved[0]["selected_for_deep_analysis"])
+        self.assertTrue(preserved[0]["in_daily_digest"])
+        self.assertTrue(preserved[0]["note_path"].endswith("Preserved.md"))
+
+    def test_collect_force_preserved_deep_ignores_incomplete_forced_without_note(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            state = FakeRunState(
+                stage="screened",
+                papers=[{
+                    "title": "Missing Note",
+                    "url": "https://arxiv.org/abs/2606.22222",
+                    "score": 8.0,
+                    "forced_deep": True,
+                    "note_path": str(Path(tmp) / "Research_Notes" / "Missing.md"),
+                }],
+            )
+
+            preserved = pipeline._collect_force_preserved_deep(
+                state,
+                self._config(tmp),
+                date(2026, 6, 1),
+            )
+
+        self.assertEqual(preserved, [])
+
+    def test_merge_preserved_deep_dedupes_and_keeps_note_metadata(self):
+        fresh = self._screened("Fresh Score", 8.7)
+        fresh["url"] = "https://arxiv.org/abs/2606.33333"
+        fresh["provider_sources"] = ["openrouter"]
+        fresh["tags"] = ["fresh"]
+        preserved = self._screened("Fresh Score", 7.2)
+        preserved.update({
+            "url": "https://arxiv.org/abs/2606.33333",
+            "note_path": "Research_Notes/Fresh Score.md",
+            "manual_deep_completed_at": "2026-06-01T09:00:00",
+            "preserved_deep": True,
+            "deep_analysis_completed": True,
+            "selected_for_deep_analysis": True,
+            "in_daily_digest": True,
+            "provider_sources": ["doubao"],
+            "tags": ["preserved"],
+        })
+
+        merged = pipeline._merge_preserved_deep_papers([fresh], [preserved])
+
+        self.assertEqual(len(merged), 1)
+        self.assertEqual(merged[0]["score"], 8.7)
+        self.assertEqual(merged[0]["note_path"], "Research_Notes/Fresh Score.md")
+        self.assertTrue(merged[0]["preserved_deep"])
+        self.assertIn("openrouter", merged[0]["provider_sources"])
+        self.assertIn("doubao", merged[0]["provider_sources"])
+        self.assertIn("fresh", merged[0]["tags"])
+        self.assertIn("preserved", merged[0]["tags"])
+
+    def test_pending_deep_papers_skips_preserved_completed_note(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            note = Path(tmp) / "Research_Notes" / "Already Done.md"
+            note.parent.mkdir()
+            note.write_text("# Already Done\n", encoding="utf-8")
+            preserved = self._screened("Already Done", 8.1)
+            preserved.update({
+                "url": "https://arxiv.org/abs/2606.44444",
+                "note_path": str(note),
+                "preserved_deep": True,
+                "deep_analysis_completed": True,
+            })
+            pending = self._screened("Needs Deep", 8.4)
+
+            result = pipeline._pending_deep_papers(
+                [preserved, pending],
+                date(2026, 6, 1),
+                config=self._config(tmp),
+            )
+
+        self.assertEqual([paper["title"] for paper in result], ["Needs Deep"])
+
+    def test_mark_digest_membership_includes_preserved_deep(self):
+        cfg = {
+            "openrouter": {"threshold_score": 7},
+            "analysis": {"daily_digest_min_score": 7.0, "daily_digest_target_min_count": 1},
+        }
+        preserved = self._screened("Preserved Low", 2.0)
+        preserved["preserved_deep"] = True
+        papers = [self._screened("Regular High", 8.0), preserved]
+
+        info = pipeline._mark_digest_membership(papers, cfg, provider="openrouter")
+
+        self.assertTrue(preserved["in_daily_digest"])
+        self.assertGreaterEqual(info["forced_count"], 1)
 
     def test_paper_pdf_candidates_derive_arxiv_pdf_from_huggingface_url(self):
         candidates = pipeline._paper_pdf_url_candidates({
@@ -305,6 +550,21 @@ class MainPipelineHelperTest(unittest.TestCase):
             "reproducibility": 7.0,
             "confidence": 8.0,
             "red_flags": [],
+        }
+
+    @staticmethod
+    def _config(tmp):
+        return {
+            "openrouter": {"threshold_score": 7},
+            "analysis": {"daily_digest_min_score": 7.0, "daily_digest_target_min_count": 5},
+            "obsidian": {
+                "vault_path": tmp,
+                "daily_digest_folder": "Daily_Papers",
+                "detailed_notes_folder": "Research_Notes",
+                "research_index_folder": "Research_Index",
+                "research_brief_folder": "Research_Briefs",
+                "pdf_storage_folder": "PDFs",
+            },
         }
 
 

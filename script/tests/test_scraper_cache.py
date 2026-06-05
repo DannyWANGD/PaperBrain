@@ -167,6 +167,7 @@ class ScraperCacheTest(unittest.TestCase):
         html = """
         <html>
           <h1 class="title">Title: Fallback Robot Paper</h1>
+          <div class="dateline">Submitted on 27 May 2026 (v1), last revised 29 May 2026</div>
           <div class="authors"><a>Ada</a><a>Lin</a></div>
           <blockquote class="abstract">Abstract: Robot manipulation abstract.</blockquote>
         </html>
@@ -178,7 +179,29 @@ class ScraperCacheTest(unittest.TestCase):
 
         self.assertEqual(paper["title"], "Fallback Robot Paper")
         self.assertEqual(paper["pdf_url"], "https://arxiv.org/pdf/2605.25802.pdf")
+        self.assertEqual(paper["publication_date"], "2026-05-27")
         self.assertEqual(paper["authors"], ["Ada", "Lin"])
+
+    def test_single_arxiv_feed_sets_publication_date_and_updated_metadata(self):
+        self.config["search"]["arxiv_cache_enabled"] = False
+        scraper = PaperScraper(self.config)
+        entry = {
+            "id": "https://arxiv.org/abs/2605.25802v1",
+            "title": "Robot Foundation Model",
+            "summary": "A robot manipulation paper.",
+            "authors": [{"name": "Ada"}],
+            "links": [],
+            "published_parsed": (2026, 5, 27, 12, 30, 0, 0, 0, 0),
+            "updated_parsed": (2026, 5, 29, 8, 15, 0, 0, 0, 0),
+        }
+
+        with patch.object(scraper, "_request_arxiv_feed", return_value="hit"), \
+             patch("src.scraper.feedparser.parse", return_value=types.SimpleNamespace(entries=[entry])):
+            paper = scraper.fetch_single_arxiv_paper("2605.25802")
+
+        self.assertEqual(paper["publication_date"], "2026-05-27")
+        self.assertEqual(paper["arxiv_updated_at"], "2026-05-29T08:15:00")
+        self.assertEqual(paper["paper_id"], "arxiv:2605.25802")
 
     def test_single_arxiv_fetch_tries_search_query_when_id_list_is_empty(self):
         self.config["search"]["arxiv_cache_enabled"] = False

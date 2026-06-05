@@ -66,7 +66,7 @@ class DailyDigestUpsertTest(unittest.TestCase):
         path = self.writer.upsert_single_paper_digest_entry(paper)
         text = Path(path).read_text(encoding="utf-8")
         self.assertIn("Total Papers: 2 | High Impact: 2", text)
-        self.assertIn("- **Institutions**: Shanghai AI Lab, Tsinghua University", text)
+        self.assertIn("- **🏛️ Institutions**: Shanghai AI Lab, Tsinghua University", text)
         self.assertLess(text.index("AHEAD"), text.index("Existing Paper"))
 
         self.writer.upsert_single_paper_digest_entry({**paper, "title": "AHEAD Duplicate"})
@@ -112,6 +112,111 @@ class DailyDigestUpsertTest(unittest.TestCase):
         self.assertIn("Hard Threshold", text)
         self.assertIn("Backfill D", text)
         self.assertNotIn("Left Out", text)
+
+    def test_daily_digest_uses_local_run_history_for_missing_institutions(self):
+        run_dir = Path(self.tmp) / "Run_Records" / "2026-05-30-openrouter"
+        run_dir.mkdir(parents=True)
+        (run_dir / "state.json").write_text(
+            (
+                '{"papers":[{"title":"History Paper","url":"https://arxiv.org/abs/2606.00002",'
+                '"metadata":{"institutions":["History Lab"]}}]}'
+            ),
+            encoding="utf-8",
+        )
+        paper = self._paper("History Paper", 7.2)
+        paper["url"] = "https://arxiv.org/abs/2606.00002"
+
+        path = self.writer.write_daily_digest([paper], target_date=date(2026, 6, 3))
+        text = Path(path).read_text(encoding="utf-8")
+
+        self.assertIn("- **🏛️ Institutions**: History Lab", text)
+
+    def test_write_daily_digest_forces_manual_paper_even_beyond_five(self):
+        papers = [
+            self._paper("High A", 8.0),
+            self._paper("High B", 7.9),
+            self._paper("High C", 7.8),
+            self._paper("High D", 7.7),
+            self._paper("High E", 7.6),
+            {**self._paper("Manual Low", 3.2), "forced_deep": True, "manual_requested_at": "2026-06-04T10:00:00"},
+        ]
+
+        path = self.writer.write_daily_digest(papers, target_date=date(2026, 6, 4))
+        text = Path(path).read_text(encoding="utf-8")
+
+        self.assertIn("Total Papers: 6 | High Impact: 5", text)
+        self.assertIn("Manual Low", text)
+        self.assertEqual(text.count("(Score:"), 6)
+
+    def test_write_daily_digest_includes_preserved_deep_even_beyond_five(self):
+        papers = [
+            self._paper("High A", 8.0),
+            self._paper("High B", 7.9),
+            self._paper("High C", 7.8),
+            self._paper("High D", 7.7),
+            self._paper("High E", 7.6),
+            {**self._paper("Preserved Low", 3.1), "preserved_deep": True, "deep_analysis_completed": True},
+        ]
+
+        path = self.writer.write_daily_digest(papers, target_date=date(2026, 6, 5))
+        text = Path(path).read_text(encoding="utf-8")
+
+        self.assertIn("Total Papers: 6 | High Impact: 5", text)
+        self.assertIn("Preserved Low", text)
+        self.assertIn("preserved", text)
+        self.assertEqual(text.count("(Score:"), 6)
+
+    def test_write_daily_digest_dedupes_preserved_deep_identity(self):
+        fresh = self._paper("Duplicate Fresh", 8.4)
+        fresh["url"] = "https://arxiv.org/abs/2606.55555"
+        preserved = self._paper("Duplicate Preserved", 3.1)
+        preserved.update({
+            "url": "https://arxiv.org/abs/2606.55555v2",
+            "preserved_deep": True,
+            "deep_analysis_completed": True,
+        })
+
+        path = self.writer.write_daily_digest([fresh, preserved], target_date=date(2026, 6, 6))
+        text = Path(path).read_text(encoding="utf-8")
+
+        self.assertEqual(text.count("(Score:"), 1)
+        self.assertIn("Duplicate Fresh", text)
+        self.assertNotIn("Duplicate Preserved", text)
+
+    def test_forced_single_deep_supplements_existing_note_without_overwrite(self):
+        notes = Path(self.tmp) / "Research_Notes"
+        notes.mkdir(exist_ok=True)
+        note = notes / "Existing.md"
+        note.write_text(
+            "---\n"
+            "title: Existing\n"
+            "arxiv_id: \"2606.02486\"\n"
+            "---\n\n"
+            "# Existing\n\n"
+            "Manual paragraph stays.\n",
+            encoding="utf-8",
+        )
+        paper = {
+            "title": "Existing",
+            "url": "https://arxiv.org/abs/2606.02486",
+            "pdf_url": "https://arxiv.org/pdf/2606.02486",
+            "score": 8.1,
+            "forced_deep": True,
+            "manual_deep_supplement_date": "2026-06-04",
+        }
+
+        path = self.writer.write_detailed_note(paper, "## New Analysis\nBetter explanation.")
+        text = Path(path).read_text(encoding="utf-8")
+
+        self.assertIn("Manual paragraph stays.", text)
+        self.assertIn("## Single Deep Supplement (2026-06-04)", text)
+        self.assertIn("Better explanation.", text)
+
+        self.writer.write_detailed_note(paper, "Updated supplement.")
+        updated = Path(path).read_text(encoding="utf-8")
+        self.assertEqual(updated.count("Single Deep Supplement (2026-06-04)"), 1)
+        self.assertIn("Updated supplement.", updated)
+        self.assertNotIn("Better explanation.", updated)
 
     @staticmethod
     def _paper(title, score, novelty=8.0, rigor=8.0, evidence=8.0):

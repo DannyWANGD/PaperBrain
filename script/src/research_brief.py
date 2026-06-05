@@ -6,8 +6,14 @@ from collections import Counter
 from datetime import date as Date
 from datetime import datetime, timedelta
 
+from src.paper_identity import canonical_arxiv_id, paper_id_from_arxiv_id
 from src.paths import PaperBrainPaths
 from src.research_indexer import ResearchIndexer
+
+
+MANUAL_HEADING = "## 9. Manual Notes"
+MANUAL_START = "<!-- paperbrain:manual:start -->"
+MANUAL_END = "<!-- paperbrain:manual:end -->"
 
 
 class ResearchBriefGenerator:
@@ -18,6 +24,7 @@ class ResearchBriefGenerator:
         paths = PaperBrainPaths.from_config_dict(config)
         self.vault_path = str(paths.vault_path)
         self.brief_folder = str(paths.research_brief_dir)
+        self.daily_folder = str(paths.daily_digest_dir)
         os.makedirs(self.brief_folder, exist_ok=True)
         self.indexer = ResearchIndexer(config)
 
@@ -36,6 +43,9 @@ class ResearchBriefGenerator:
             raise ValueError("end_date must be on or after start_date")
 
         period_label = period_label or f"{start_date.isoformat()}_to_{end_date.isoformat()}"
+        filename = f"{self._safe_filename(period_label)}-ResearchBrief.md"
+        path = os.path.join(self.brief_folder, filename)
+        manual_notes = self._extract_manual_notes(path)
         notes = self._notes_in_range(start_date, end_date)
         content = self._render_brief(
             notes=notes,
@@ -45,23 +55,301 @@ class ResearchBriefGenerator:
             brief_type=brief_type,
             max_top=max_top,
             max_questions=max_questions,
+            manual_notes=manual_notes,
         )
-        filename = f"{self._safe_filename(period_label)}-ResearchBrief.md"
-        path = os.path.join(self.brief_folder, filename)
         with open(path, "w", encoding="utf-8") as f:
             f.write(content)
         return path
 
     def _notes_in_range(self, start_date, end_date):
-        notes = []
-        for note in self.indexer._scan_notes():
+        all_notes = [self._normalize_brief_note(note) for note in self.indexer._scan_notes()]
+        note_lookup = self._build_note_lookup(all_notes)
+        notes_by_key = {}
+
+        for note in all_notes:
             note_date = self._note_date(note)
             if note_date and start_date <= note_date <= end_date:
-                notes.append(note)
+                key = self._identity_key(note)
+                if key:
+                    notes_by_key[key] = note
+
+        notes_by_period_key = {}
+        consumed_note_keys = set()
+        for digest_note in self._daily_digest_notes_in_range(start_date, end_date):
+            note = self._match_existing_note(digest_note, note_lookup)
+            merged = self._merge_digest_and_note(digest_note, note) if note else digest_note
+            key = self._identity_key(merged)
+            if note:
+                consumed_note_keys.add(self._identity_key(note))
+            if key in notes_by_period_key:
+                notes_by_period_key[key] = self._merge_digest_and_note(notes_by_period_key[key], merged)
+            else:
+                notes_by_period_key[key] = merged
+
+        for key, note in notes_by_key.items():
+            if key not in consumed_note_keys and key not in notes_by_period_key:
+                notes_by_period_key[key] = note
+
+        notes = list(notes_by_period_key.values())
         notes.sort(key=lambda n: (n.get("score", 0), n.get("priority_score", 0)), reverse=True)
         return notes
 
-    def _render_brief(self, notes, start_date, end_date, period_label, brief_type, max_top, max_questions):
+    def _daily_digest_notes_in_range(self, start_date, end_date):
+        notes = []
+        current = start_date
+        while current <= end_date:
+            path = os.path.join(self.daily_folder, f"{current.isoformat()}-PaperDigest.md")
+            if os.path.exists(path):
+                notes.extend(self._parse_daily_digest(path, current))
+            current += timedelta(days=1)
+        return notes
+
+    def _parse_daily_digest(self, path, publication_date):
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                raw = f.read()
+        except Exception:
+            return []
+
+        notes = []
+        chunks = re.split(r"(?m)^###\s+", raw)
+        for chunk in chunks[1:]:
+            header, _, body = chunk.partition("\n")
+            match = re.match(r"(.+?)\s*\(Score:\s*([0-9]+(?:\.[0-9]+)?)/10\)", header.strip())
+            if not match:
+                continue
+            title = self._clean_digest_title(match.group(1))
+            score = _to_float(match.group(2), 0.0)
+            innovation = self._digest_field(body, "Innovation")
+            limitations = self._digest_field(body, "Limitations")
+            link_text = self._digest_field(body, "Link")
+            authors = self._split_csv(self._digest_field(body, "Authors"))
+            institutions = self._split_csv(self._digest_field(body, "Institutions"))
+            tags = self._digest_tags(body)
+            arxiv_id = canonical_arxiv_id(link_text)
+            paper_id = paper_id_from_arxiv_id(arxiv_id) if arxiv_id else ""
+            domains, methods, tasks, paper_type = self._facets_from_tags(tags)
+            link_note_name = self._extract_wikilink_target(link_text)
+            note_name = link_note_name or self._safe_wikilink_title(title)
+            body_text = "\n\n".join([
+                f"## Abstract\n{innovation}",
+                f"## Core Contribution\n{innovation}",
+                f"## Limitations\n{limitations}",
+            ])
+            notes.append({
+                "path": "",
+                "filename": f"{note_name}.md",
+                "note_name": note_name,
+                "title": title,
+                "frontmatter": {
+                    "institutions": institutions,
+                    "source_digest": path,
+                    "url": self._extract_first_url(link_text),
+                },
+                "body": body_text,
+                "raw": body_text,
+                "score": score,
+                "arxiv_id": arxiv_id,
+                "paper_id": paper_id,
+                "link_note_name": link_note_name,
+                "publication_date": publication_date.isoformat(),
+                "year": publication_date.year,
+                "domains": domains,
+                "methods": methods,
+                "tasks": tasks,
+                "paper_type": paper_type,
+                "impact_band": self._impact_band(score),
+                "reading_status": "unread",
+                "priority_score": int(round(score * 10)),
+                "review_status": "auto_tagged" if tags else "needs_review",
+                "next_action": "deep_read" if score >= 8.0 else "skim_then_decide" if score >= 7.0 else "archive",
+                "open_question": "",
+                "tags": tags,
+            })
+        return notes
+
+    def _merge_digest_and_note(self, digest_note, note):
+        merged = dict(digest_note)
+        for key, value in note.items():
+            if key in {"domains", "methods", "tasks", "tags"}:
+                merged[key] = self._merge_unique(merged.get(key), value)
+            elif key == "frontmatter":
+                fm = dict(merged.get("frontmatter") or {})
+                fm.update(value or {})
+                merged[key] = fm
+            elif self._present(value):
+                merged[key] = value
+        merged["score"] = max(_to_float(digest_note.get("score"), 0.0), _to_float(note.get("score"), 0.0))
+        return merged
+
+    def _normalize_brief_note(self, note):
+        normalized = dict(note or {})
+        filename = str(normalized.get("filename") or "").strip()
+        if filename and not normalized.get("note_name"):
+            normalized["note_name"] = filename[:-3] if filename.endswith(".md") else filename
+        if not normalized.get("note_name") and normalized.get("path"):
+            filename = os.path.basename(str(normalized["path"]))
+            normalized["filename"] = filename
+            normalized["note_name"] = filename[:-3] if filename.endswith(".md") else filename
+        return normalized
+
+    def _build_note_lookup(self, notes):
+        lookup = {}
+        for note in notes:
+            for key in self._lookup_keys(note):
+                lookup.setdefault(key, note)
+        return lookup
+
+    def _match_existing_note(self, digest_note, note_lookup):
+        for key in self._lookup_keys(digest_note):
+            note = note_lookup.get(key)
+            if note:
+                return note
+        return None
+
+    def _identity_key(self, note):
+        paper_id = str(note.get("paper_id") or "").strip().lower()
+        if paper_id:
+            return paper_id
+        frontmatter = note.get("frontmatter") or {}
+        arxiv_id = canonical_arxiv_id(
+            note.get("arxiv_id")
+            or note.get("url")
+            or note.get("pdf_url")
+            or frontmatter.get("arxiv_id")
+            or frontmatter.get("url")
+            or frontmatter.get("pdf_url")
+            or note.get("paper_id")
+        )
+        if arxiv_id:
+            return f"arxiv:{arxiv_id}"
+        return self._lookup_key(note.get("title") or note.get("note_name"))
+
+    def _lookup_keys(self, note):
+        keys = []
+        frontmatter = note.get("frontmatter") or {}
+        values = [
+            note.get("paper_id"),
+            note.get("arxiv_id"),
+            note.get("url"),
+            note.get("pdf_url"),
+            frontmatter.get("arxiv_id"),
+            frontmatter.get("url"),
+            frontmatter.get("pdf_url"),
+            note.get("note_name"),
+            note.get("filename"),
+            note.get("link_note_name"),
+            note.get("title"),
+            frontmatter.get("title"),
+            frontmatter.get("short_title"),
+        ]
+        values.extend(self._ensure_list(frontmatter.get("aliases")))
+        for value in values:
+            arxiv_id = canonical_arxiv_id(value)
+            if arxiv_id:
+                keys.append(f"arxiv:{arxiv_id}")
+            key = self._lookup_key(value)
+            if key:
+                keys.append(key)
+        return keys
+
+    def _lookup_key(self, value):
+        value = str(value or "").strip()
+        if not value:
+            return ""
+        value = self._extract_wikilink_target(value) or value
+        if value.endswith(".md"):
+            value = value[:-3]
+        return self._clean_text(value).casefold()
+
+    def _digest_field(self, body, label):
+        pattern = rf"-\s+\*\*[^*\n]*{re.escape(label)}\*\*:\s*([\s\S]*?)(?=\n-\s+\*\*|\n---|\Z)"
+        match = re.search(pattern, body, flags=re.IGNORECASE)
+        return self._clean_text(match.group(1)) if match else ""
+
+    def _digest_tags(self, body):
+        tags = []
+        for tag in re.findall(r"#([A-Za-z0-9_/-]+)", body):
+            normalized = tag.strip().replace("_", "_")
+            if normalized and normalized not in tags:
+                tags.append(normalized)
+        if "paper" not in tags:
+            tags.insert(0, "paper")
+        return tags
+
+    def _facets_from_tags(self, tags):
+        domains = []
+        methods = []
+        tasks = []
+        paper_type = "method"
+        for tag in tags:
+            if tag.startswith("domain/"):
+                domains.append(tag.split("/", 1)[1])
+            elif tag.startswith("method/"):
+                methods.append(tag.split("/", 1)[1])
+            elif tag.startswith("task/"):
+                tasks.append(tag.split("/", 1)[1])
+            elif tag.startswith("type/") and paper_type == "method":
+                paper_type = tag.split("/", 1)[1]
+        return sorted(set(domains)), sorted(set(methods)), sorted(set(tasks)), paper_type
+
+    def _clean_digest_title(self, title):
+        title = re.sub(r"^[^\w]+", "", str(title or ""), flags=re.UNICODE).strip()
+        return self._clean_text(title)
+
+    def _safe_wikilink_title(self, title):
+        cleaned = re.sub(r"[\\/:*?\"<>|#^\[\]]+", "", str(title or "")).strip()
+        return cleaned[:120].strip() or "Untitled Paper"
+
+    def _extract_wikilink_target(self, text):
+        match = re.search(r"\[\[([^\]|#]+)(?:#[^\]|]+)?(?:\|[^\]]*)?\]\]", str(text or ""))
+        if not match:
+            return ""
+        target = match.group(1).strip()
+        return target[:-3] if target.endswith(".md") else target
+
+    def _extract_first_url(self, text):
+        match = re.search(r"https?://[^)\s]+", str(text or ""))
+        return match.group(0) if match else ""
+
+    def _split_csv(self, text):
+        text = self._clean_text(text)
+        if not text or text.lower() == "unknown":
+            return []
+        return [item.strip() for item in text.split(",") if item.strip()]
+
+    def _merge_unique(self, *values):
+        merged = []
+        seen = set()
+        for value in values:
+            for item in self._ensure_list(value):
+                key = str(item).strip().lower()
+                if key and key not in seen:
+                    seen.add(key)
+                    merged.append(item)
+        return merged
+
+    def _present(self, value):
+        if value is None:
+            return False
+        if isinstance(value, str) and not value.strip():
+            return False
+        if isinstance(value, (list, tuple, dict)) and not value:
+            return False
+        return True
+
+    def _impact_band(self, score):
+        if score >= 9.0:
+            return "must_read"
+        if score >= 8.0:
+            return "high_value"
+        if score >= 7.0:
+            return "solid"
+        if score >= 5.0:
+            return "watch"
+        return "archive"
+
+    def _render_brief(self, notes, start_date, end_date, period_label, brief_type, max_top, max_questions, manual_notes=""):
         generated_at = datetime.now().strftime("%Y-%m-%d %H:%M")
         top_notes = notes[:max_top]
         avg_score = self._average_score(notes)
@@ -91,7 +379,7 @@ class ResearchBriefGenerator:
             "",
             self._executive_summary(notes, avg_score, high_count, domain_counts, method_counts),
             "",
-            "## 2. Top Papers This Week",
+            "## 2. Top Papers This Period",
             "",
             self._top_papers(top_notes),
             "",
@@ -111,7 +399,7 @@ class ResearchBriefGenerator:
             "",
             self._evidence_quality(notes),
             "",
-            "## 7. Reading Plan For Next Week",
+            "## 7. Reading Plan For Next Period",
             "",
             self._reading_plan(top_notes),
             "",
@@ -119,13 +407,15 @@ class ResearchBriefGenerator:
             "",
             self._open_questions(top_notes, max_questions),
             "",
+            self._manual_section(manual_notes),
+            "",
         ])
 
     def _executive_summary(self, notes, avg_score, high_count, domain_counts, method_counts):
         if not notes:
             return (
-                "No deep-analysis notes fall inside this period. Treat this brief as a calendar placeholder, "
-                "then generate or import paper notes before using it for trend tracking."
+                "No daily digest entries or deep-analysis notes fall inside this period. Treat this brief as a calendar "
+                "placeholder, then generate or import paper data before using it for trend tracking."
             )
 
         leading_domains = self._format_counter(domain_counts, limit=3) or "no dominant domain"
@@ -156,9 +446,9 @@ class ResearchBriefGenerator:
         ]
         for idx, note in enumerate(notes, start=1):
             rows.append(
-                "| {rank} | [[{note_name}]] | {score:.1f} | {institutions} | {why} |".format(
+                "| {rank} | {paper} | {score:.1f} | {institutions} | {why} |".format(
                     rank=idx,
-                    note_name=note["note_name"],
+                    paper=self._paper_link(note),
                     score=note.get("score", 0.0),
                     institutions=self._table_cell(self._institutions(note)),
                     why=self._table_cell(self._why_it_matters(note)),
@@ -188,7 +478,7 @@ class ResearchBriefGenerator:
             if not clue:
                 clue = self._why_it_matters(note)
             paragraphs.append(
-                f"**[[{note['note_name']}]]** is a useful signal for **{domain.replace('_', ' ')}** because "
+                f"**{self._paper_link(note)}** is a useful signal for **{domain.replace('_', ' ')}** because "
                 f"it pushes on **{method.replace('_', ' ')}** rather than only reporting another benchmark number. "
                 f"{self._clean_text(clue)}"
             )
@@ -273,7 +563,7 @@ class ResearchBriefGenerator:
         for idx, note in enumerate(notes[:5], start=1):
             action = str(note.get("next_action") or "read_deeply").replace("_", " ")
             reason = self._why_it_matters(note)
-            lines.append(f"{idx}. Read [[{note['note_name']}]] for **{action}**. {reason}")
+            lines.append(f"{idx}. Read {self._paper_link(note)} for **{action}**. {reason}")
         return "\n".join(lines)
 
     def _open_questions(self, notes, max_questions):
@@ -292,9 +582,21 @@ class ResearchBriefGenerator:
             return "_No paper-specific open questions were found in the selected notes._"
 
         return "\n".join([
-            f"{idx}. **[[{note['note_name']}]]**: {question}"
+            f"{idx}. **{self._paper_link(note)}**: {question}"
             for idx, (note, question) in enumerate(questions, start=1)
         ])
+
+    def _paper_link(self, note):
+        return f"[[{self._display_note_name(note)}]]"
+
+    def _display_note_name(self, note):
+        note_name = str(note.get("note_name") or "").strip()
+        if note_name:
+            return note_name[:-3] if note_name.endswith(".md") else note_name
+        filename = str(note.get("filename") or "").strip()
+        if filename:
+            return filename[:-3] if filename.endswith(".md") else filename
+        return self._safe_wikilink_title(note.get("title") or "Untitled Paper")
 
     def _facet_counts(self, notes, field):
         counter = Counter()
@@ -392,7 +694,7 @@ class ResearchBriefGenerator:
         return any(marker in low for marker in bad_markers)
 
     def _fallback_question(self, note):
-        title = note.get("title") or note.get("note_name") or "this paper"
+        title = self._display_note_name(note) or "this paper"
         domains = set(note.get("domains") or [])
         methods = set(note.get("methods") or [])
         if "world_model" in domains or "latent_world_model" in methods:
@@ -474,6 +776,31 @@ class ResearchBriefGenerator:
         text = re.sub(r"\s+", " ", text)
         return text.strip()
 
+    def _extract_manual_notes(self, path):
+        if not os.path.exists(path):
+            return ""
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                raw = f.read()
+        except Exception:
+            return ""
+
+        start = raw.find(MANUAL_START)
+        end = raw.find(MANUAL_END, start + len(MANUAL_START)) if start >= 0 else -1
+        if start >= 0 and end >= 0:
+            return raw[start + len(MANUAL_START):end].strip("\n")
+
+        match = re.search(r"(?ms)^##\s+9\.\s+Manual Notes\s*\n(.*)\Z", raw)
+        return match.group(1).strip("\n") if match else ""
+
+    def _manual_section(self, manual_notes):
+        body = str(manual_notes or "").strip("\n")
+        lines = [MANUAL_HEADING, "", MANUAL_START]
+        if body:
+            lines.append(body)
+        lines.append(MANUAL_END)
+        return "\n".join(lines)
+
     def _safe_filename(self, value):
         safe = re.sub(r"[^A-Za-z0-9_.-]+", "_", str(value).strip())
         safe = re.sub(r"_+", "_", safe).strip("_")
@@ -553,3 +880,10 @@ def _coerce_date(value):
     if parsed is None:
         raise ValueError(f"Invalid date: {value}")
     return parsed
+
+
+def _to_float(value, default=0.0):
+    try:
+        return float(value)
+    except Exception:
+        return default

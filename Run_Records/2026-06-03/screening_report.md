@@ -1,0 +1,29 @@
+# 2026-06-03 Screening Results
+
+- Provider: `openrouter`
+- Providers seen: `openrouter`
+- Run modes: `daily, single`
+- Run state: `state.json`
+- Papers tracked: 19
+
+| Score | Stage | Source | Forced | Paper ID | Title | Decision | Red Flags |
+|---:|---|---|---|---|---|---|---|
+| 7.3 | detailed | daily+single | yes | `arxiv:2606.05015` | Generalization of World Models under Environmental Variability for Vision-based Quadrotor Navigation | digest, deep, forced, stage2 | Not directly aligned with manipulation or VLA interests; limited to DreamerV3 architecture |
+| 6.7 | detailed | daily |  | `arxiv:2606.05159` | X4Val: Learning Neural Surrogates for Variance-Reduced Policy Evaluation | digest, stage2 | Focus is on evaluation methodology rather than advancing core manipulation, VLA, world model, or RL methods, limiting direct relevance to the target research interests. |
+| 6.4 | detailed | daily |  | `arxiv:2606.05160` | GRAIL: Generating Humanoid Loco-Manipulation from 3D Assets and Video Priors | digest, stage2 | No comparison to policies trained on other data sources (teleoperation, motion capture, or other synthetic data), Limited task diversity in real-world evaluation (only pick-up and stair-climbing), Reliance on privileged 3D configurations may limit applicability to in-the-wild scenarios |
+| 5.4 | detailed | daily |  | `arxiv:2606.05165` | STRIDE: Training Data Attribution via Sparse Recovery from Subset Perturbations | digest | Paper focuses on LLM training data attribution, which is not directly relevant to the target robotics/AI interests (robot manipulation, VLA, world models, RL, diffusion models, embodied AI)., No evaluation on robotics or embodied AI tasks; applicability to the workflow is unclear. |
+| 5.2 | detailed | daily |  | `arxiv:2606.05152` | Reinforcement Learning from Rich Feedback with Distributional DAgger | digest, stage2 | Evaluation limited to text-based reasoning (science, coding, math) with no demonstration on robot manipulation, embodied AI, or VLA tasks, severely limiting relevance to the target workflow., Relies on access to an expert distribution on visited states, which may be impractical in many robotics settings. |
+| 4.9 | detailed | daily |  | `arxiv:2606.05107` | Who Needs Labels? Adapting Vision Foundation Models With the Metadata You Already Have | screened | Not relevant to robotics, manipulation, VLA, world models, RL, diffusion models, or embodied AI; only tangentially related to foundation models. |
+| 4.5 | detailed | daily |  | `arxiv:2606.05025` | Invariant Gradient Alignment for Robust Reasoning Distillation | screened | No robotics or embodied AI application, Evaluation limited to text reasoning benchmarks |
+| 4.3 | coarse_only | daily |  | `arxiv:2606.05130` | Towards Efficient and Evidence-grounded Mobility Prediction with LLM-Driven Agent | screened |  |
+| 4.2 | detailed | daily |  | `arxiv:2606.05071` | InstantRetouch: Efficient and High-Fidelity Instruction-Guided Image Retouching with Bilateral Space | screened | Not relevant to target robotics interests; paper focuses on image retouching, not manipulation, VLA, or embodied AI. |
+| 4.2 | detailed | daily |  | `arxiv:2606.05058` | UniCAD: A Unified Benchmark and Universal Model for Multi-Modal Multi-Task CAD | screened | Low relevance to target robotics/AI interests; primarily CAD domain, Limited empirical evidence in provided excerpt |
+| 4.2 | coarse_only | daily |  | `arxiv:2606.05021` | Enhancing the MADDPG Algorithm for Multi-Agent Learning via Action Inference and Importance Sampling | screened |  |
+| 4.1 | coarse_only | daily |  | `arxiv:2606.05158` | Streaming Communication in Multi-Agent Reasoning | screened |  |
+| 4.1 | coarse_only | daily |  | `arxiv:2606.05104` | Knowledge Index of Noah's Ark | screened |  |
+| 4.0 | coarse_only | daily |  | `arxiv:2606.05134` | Activation-Based Active Learning for In-Context Learning: Challenges and Insights | screened |  |
+| 4.0 | coarse_only | daily |  | `arxiv:2606.05101` | FoeGlass: Simple In-Context Learning Is Enough for Red Teaming Audio Deepfake Detectors | screened |  |
+| 3.8 | coarse_only | daily |  | `arxiv:2606.05079` | Fast & Faithful Function Vectors | screened |  |
+| 3.7 | detailed | daily |  | `arxiv:2606.05106` | Arithmetic Pedagogy for Language Models | screened | Not relevant to target interests (robot manipulation, VLA, world model, RL, diffusion, embodied AI), Evaluation limited to basic arithmetic in Indonesian; no robotics or embodied task connection |
+| 2.5 | coarse_only | daily |  | `arxiv:2606.05037` | Self-Reflective APIs: Structure Beats Verbosity for AI Agent Recovery | screened |  |
+| 1.9 | coarse_only | daily |  | `arxiv:2606.05029` | Validity Threats for Foundation Model Research | screened |  |

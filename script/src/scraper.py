@@ -7,6 +7,7 @@ import random
 import hashlib
 import os
 import json
+import re
 from src.paper_identity import canonical_arxiv_id, identity_key, normalize_paper_identity
 from src.paths import PaperBrainPaths
 
@@ -14,6 +15,19 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 from bs4 import BeautifulSoup
+
+
+def _date_key(value):
+    if value is None:
+        return ""
+    if hasattr(value, "date"):
+        return value.date().isoformat()
+    if hasattr(value, "isoformat"):
+        return value.isoformat()
+    if isinstance(value, str) and len(value) >= 10:
+        return value[:10]
+    return ""
+
 
 class PaperScraper:
     def __init__(self, config):
@@ -369,6 +383,10 @@ class PaperScraper:
         published_parsed = entry.get("published_parsed")
         if published is None and published_parsed:
             published = datetime(*published_parsed[:6])
+        updated = None
+        updated_parsed = entry.get("updated_parsed")
+        if updated_parsed:
+            updated = datetime(*updated_parsed[:6])
 
         authors = []
         for author in entry.get("authors", []):
@@ -385,6 +403,8 @@ class PaperScraper:
             'url': entry_id,
             'pdf_url': self._extract_pdf_url(entry, entry_id),
             'published': published,
+            'publication_date': _date_key(published),
+            'arxiv_updated_at': updated.isoformat() if updated else "",
             'source': source,
             'authors': authors
         })
@@ -421,6 +441,7 @@ class PaperScraper:
 
             title = clean_labeled(soup.find("h1", class_="title"), "Title:")
             abstract = clean_labeled(soup.find("blockquote", class_="abstract"), "Abstract:")
+            published = self._parse_abs_submitted_date(soup.find("div", class_="dateline"))
             authors_node = soup.find("div", class_="authors")
             authors = []
             if authors_node:
@@ -435,13 +456,29 @@ class PaperScraper:
                 "abstract": abstract,
                 "url": url,
                 "pdf_url": f"https://arxiv.org/pdf/{arxiv_id}.pdf",
-                "published": None,
+                "published": published,
+                "publication_date": _date_key(published),
                 "source": "arXiv",
                 "authors": authors,
             })
         except Exception as e:
             logger.error(f"[ERR] arXiv abs fallback failed for {arxiv_id}: {e}")
             return None
+
+    def _parse_abs_submitted_date(self, node):
+        if not node:
+            return None
+        text = node.get_text(" ", strip=True)
+        match = re.search(r"Submitted\s+on\s+(\d{1,2}\s+[A-Za-z]{3,9}\s+\d{4})", text)
+        if not match:
+            return None
+        raw = match.group(1)
+        for fmt in ("%d %b %Y", "%d %B %Y"):
+            try:
+                return datetime.strptime(raw, fmt)
+            except ValueError:
+                continue
+        return None
 
     def fetch_arxiv_papers(self, target_date=None):
         """Fetches papers from arXiv based on keywords and categories."""
@@ -536,6 +573,7 @@ class PaperScraper:
                         'url': f"https://huggingface.co/papers/{arxiv_id}",
                         'pdf_url': f"https://arxiv.org/pdf/{arxiv_id}.pdf",
                         'published': target_date, # Since we queried by date
+                        'publication_date': _date_key(target_date),
                         'source': 'HuggingFace',
                         'authors': authors
                     }))

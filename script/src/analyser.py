@@ -4,6 +4,7 @@ import logging
 import json
 import fitz  # PyMuPDF
 import re
+import requests
 from openai import OpenAI
 from pypdf import PdfReader
 from PIL import Image
@@ -35,15 +36,17 @@ class PaperAnalyser:
             self.model_flash = config['openrouter'].get('model_flash', 'deepseek/deepseek-v4-flash')
             self.model_screening_pro = config['openrouter'].get('model_screening_pro', self.model_flash)
             self.model_pro = config['openrouter'].get('model_pro', 'deepseek/deepseek-v4-pro')
+            self.model_learning_resources = config['openrouter'].get('model_learning_resources', self.model_pro)
             self.model_vision = config['openrouter'].get('model_vision', 'qwen/qwen3-vl-30b-a3b-thinking')
-            logger.info(f"Using OpenRouter Provider. Flash: {self.model_flash}, Screening-Pro: {self.model_screening_pro}, Pro: {self.model_pro}, Vision: {self.model_vision}")
+            logger.info(f"Using OpenRouter Provider. Flash: {self.model_flash}, Screening-Pro: {self.model_screening_pro}, Pro: {self.model_pro}, Learning: {self.model_learning_resources}, Vision: {self.model_vision}")
         else:
             self.api_key = config['doubao']['api_key']
             self.base_url = "https://ark.cn-beijing.volces.com/api/v3"
             self.model_flash = config['doubao'].get('model_flash', 'doubao-seed-2-0-lite-260215')
             self.model_screening_pro = config['doubao'].get('model_screening_pro', self.model_flash)
             self.model_pro = config['doubao'].get('model_pro', 'doubao-seed-2-0-pro-260215')
-            logger.info(f"Using Doubao Provider. Flash: {self.model_flash}, Screening-Pro: {self.model_screening_pro}, Pro: {self.model_pro}")
+            self.model_learning_resources = config['doubao'].get('model_learning_resources', self.model_pro)
+            logger.info(f"Using Doubao Provider. Flash: {self.model_flash}, Screening-Pro: {self.model_screening_pro}, Pro: {self.model_pro}, Learning: {self.model_learning_resources}")
 
         self.client = OpenAI(
             api_key=self.api_key,
@@ -104,6 +107,17 @@ class PaperAnalyser:
                 "moonshotai/kimi-k2.6",
                 "qwen/qwen3-max-thinking",
             ]
+        elif kind == "model_learning_resources":
+            defaults = [
+                "deepseek/deepseek-v4-pro",
+                "qwen/qwen3.7-max",
+                "x-ai/grok-4.3",
+                "moonshotai/kimi-k2.6",
+                "minimax/minimax-m3",
+                "z-ai/glm-5.1",
+                "qwen/qwen3-max-thinking",
+                "deepseek/deepseek-v3.2",
+            ]
         elif kind == "model_vision":
             defaults = [
                 "qwen/qwen3-vl-30b-a3b-thinking",
@@ -127,7 +141,23 @@ class PaperAnalyser:
                     continue
                 filtered.append(m)
             candidates = filtered
+        if kind == "model_learning_resources":
+            candidates = [m for m in candidates if not self._is_disallowed_learning_model(m)]
         return candidates
+
+    def _is_disallowed_learning_model(self, model):
+        value = str(model or "").strip().lower()
+        author = value.split("/", 1)[0] if "/" in value else ""
+        disallowed_authors = {"anthropic", "openai", "google", "google-ai", "googleai"}
+        disallowed_terms = ("claude", "gpt", "openai", "gemini")
+        return author in disallowed_authors or any(term in value for term in disallowed_terms)
+
+    def _learning_resource_model_candidates(self):
+        primary = getattr(self, "model_learning_resources", self.model_pro)
+        if self.provider == 'openrouter':
+            candidates = self._openrouter_model_candidates(primary, "model_learning_resources")
+            return candidates or self._openrouter_model_candidates(self.model_pro, "model_pro")
+        return [primary]
 
     def _chat_with_fallback(self, models, messages, **kwargs):
         last_err = None
@@ -332,6 +362,93 @@ class PaperAnalyser:
             if abstract_idx > 0:
                 content = content[abstract_idx:]
         return re.sub(r'\n{3,}', '\n\n', content).strip()
+
+    def _extract_resource_urls(self, text):
+        urls = []
+        for match in re.finditer(r'\[[^\]]+\]\((https?://[^)\s]+)\)', text or ""):
+            urls.append(match.group(1))
+        for match in re.finditer(r'(?<!\()https?://[^\s<>)\]]+', text or ""):
+            urls.append(match.group(0))
+        cleaned = []
+        seen = set()
+        for url in urls:
+            url = str(url or "").strip().rstrip('.,;:')
+            if url and url not in seen:
+                seen.add(url)
+                cleaned.append(url)
+        return cleaned
+
+    def _url_is_reachable(self, url, timeout=8):
+        headers = {
+            "User-Agent": "PaperBrain/1.0 (+https://paperbrain.ai)",
+            "Accept": "text/html,application/pdf,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        }
+        for method in ("head", "get"):
+            try:
+                response = requests.request(
+                    method.upper(),
+                    url,
+                    headers=headers,
+                    timeout=timeout,
+                    allow_redirects=True,
+                    stream=(method == "get"),
+                )
+                try:
+                    status = int(response.status_code)
+                finally:
+                    close = getattr(response, "close", None)
+                    if callable(close):
+                        close()
+                if 200 <= status < 400:
+                    return True, status
+                if method == "head" and status in (401, 403, 405, 429):
+                    continue
+                return False, status
+            except requests.RequestException:
+                if method == "head":
+                    continue
+                return False, "request_error"
+        return False, "request_error"
+
+    def _remove_invalid_resource_links(self, text, invalid_urls):
+        cleaned = text or ""
+        for url in invalid_urls:
+            escaped = re.escape(url)
+            cleaned = re.sub(rf'\[([^\]]+)\]\({escaped}\)', r'\1 (link removed: validation failed)', cleaned)
+            cleaned = cleaned.replace(url, "link removed: validation failed")
+        return cleaned
+
+    def _validate_learning_resource_links(self, text):
+        analysis_cfg = self.config.get('analysis', {})
+        if not analysis_cfg.get("learning_resources_validate_links", True):
+            return text, {"checked": 0, "valid": 0, "invalid": []}
+
+        urls = self._extract_resource_urls(text)
+        max_links = int(analysis_cfg.get("learning_resources_max_links_to_validate", 60))
+        timeout = float(analysis_cfg.get("learning_resources_link_timeout_seconds", 8))
+        urls_to_check = urls[:max(0, max_links)]
+        invalid = []
+        valid_count = 0
+        for url in urls_to_check:
+            ok, status = self._url_is_reachable(url, timeout=timeout)
+            if ok:
+                valid_count += 1
+            else:
+                invalid.append({"url": url, "status": status})
+
+        cleaned = self._remove_invalid_resource_links(text, [item["url"] for item in invalid])
+        if urls_to_check:
+            summary = (
+                f"\n\n> [!info] Resource link validation: checked {len(urls_to_check)} URL(s), "
+                f"{valid_count} reachable"
+            )
+            if invalid:
+                summary += f", removed {len(invalid)} unreachable or invalid link(s)"
+            if len(urls) > len(urls_to_check):
+                summary += f"; {len(urls) - len(urls_to_check)} additional URL(s) were not checked because of the configured validation limit"
+            summary += "."
+            cleaned = cleaned.rstrip() + summary
+        return cleaned, {"checked": len(urls_to_check), "valid": valid_count, "invalid": invalid}
 
     def _maybe_refine_analysis_note(self, paper, draft_note, paper_text, models_to_try, extra_params):
         analysis_cfg = self.config.get('analysis', {})
@@ -1127,8 +1244,9 @@ Your task: find the page that contains the **model / method architecture diagram
         max_iterations = max(1, max_iterations)
 
         r2_content = ""
+        used_model_round2 = None
         if max_iterations >= 2:
-            logger.info(f"  [Round 2] Knowledge graph and connections...")
+            logger.info(f"  [Round 2] Connections, learning roadmap, and verified resources...")
 
             context_notes = rag_context if rag_context else ', '.join(existing_notes_list[:50])
 
@@ -1173,6 +1291,16 @@ Your task: find the page that contains the **model / method architecture diagram
             - A concrete experiment design that could be executed in 1-2 weeks.
             - The primary risk that could invalidate this direction and an early diagnostic to detect it.
             - How this direction connects to broader trends in the field.
+
+            **Task 4: Learning Roadmap & Resources**
+            Identify 4-6 knowledge points a student should learn to deeply understand this paper, ordered from beginner-friendly foundations to advanced implementation details.
+            For each knowledge point:
+            - Explain why it matters for this paper in 2-4 sentences.
+            - Provide high-quality learning links when they genuinely help. Do not force every resource type under every knowledge point.
+            - Across the whole roadmap, try to include a rich mix of blogs/tutorials, videos or public course lectures, open textbooks/lecture notes/e-books, official docs, official project pages, datasets, benchmark pages, and code repositories.
+            - Prefer stable, reputable sources: university course pages, MIT/Stanford/CMU/Berkeley/ETH lecture materials, official docs, official project pages, well-known technical blogs, open textbooks, canonical YouTube lectures/playlists from universities or recognized educators, datasets, benchmark pages, and code repositories.
+            - Use exact Markdown links only when you are confident the URL is real. Do not invent URLs, do not use placeholder links, and do not use search-result URLs.
+            - If a narrow concept lacks reliable exact URLs, choose fewer but better resources or use a broader prerequisite concept that still helps with this paper.
             """)
             round2_prompt = round2_template.format(context_notes=context_notes)
 
@@ -1183,9 +1311,10 @@ Your task: find the page that contains the **model / method architecture diagram
                 {"role": "user", "content": round2_prompt}
             ]
 
+            round2_models_to_try = self._learning_resource_model_candidates()
             response_r2, used_model_round2 = self._run_with_model_fallback(
-                label="Round 2",
-                models=models_to_try,
+                label="Round 2 Learning Resources",
+                models=round2_models_to_try,
                 messages=messages_r2,
                 extra_params=extra_params,
             )
@@ -1200,6 +1329,13 @@ Your task: find the page that contains the **model / method architecture diagram
                 r2_content = re.sub(r'^###\s+Task\s+\d+[^\n]*\n', '', r2_content, flags=re.MULTILINE)
                 r2_content = re.sub(r'^\*\*Task\s+\d+[^\n]*\n', '', r2_content, flags=re.MULTILINE)
                 r2_content = re.sub(r'\n{3,}', '\n\n', r2_content).strip()
+                r2_content, link_validation = self._validate_learning_resource_links(r2_content)
+                logger.info(
+                    "  [Round 2] Resource link validation: checked=%s valid=%s invalid=%s",
+                    link_validation["checked"],
+                    link_validation["valid"],
+                    len(link_validation["invalid"]),
+                )
 
         # --- Final Compilation ---
         connections_section = ""
@@ -1207,7 +1343,8 @@ Your task: find the page that contains the **model / method architecture diagram
             connections_section = f"\n\n## Knowledge Graph & Connections\n\n{r2_content.strip()}"
 
         refinement_note = f"; refinement: {refinement_model}" if refinement_model else ""
-        final_report = f"{r1_content.strip()}{connections_section}\n\n---\n*Analysis by PaperBrain ({used_model_round1}{refinement_note})*"
+        round2_note = f"; round2: {used_model_round2}" if r2_content and used_model_round2 else ""
+        final_report = f"{r1_content.strip()}{connections_section}\n\n---\n*Analysis by PaperBrain ({used_model_round1}{refinement_note}{round2_note})*"
         return final_report
 
     def generate_paper_aliases(self, paper, analysis_text=""):

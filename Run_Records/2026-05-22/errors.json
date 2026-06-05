@@ -1,0 +1,13 @@
+{
+  "run_id": "2026-05-22",
+  "date": "2026-05-22",
+  "provider": "openrouter",
+  "providers": [
+    "openrouter"
+  ],
+  "run_modes": [
+    "daily"
+  ],
+  "stage": "completed",
+  "errors": []
+}
