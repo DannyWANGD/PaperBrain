@@ -4,35 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "c833fd300cda950c",
+        "id": "b494c1589649eb98",
         "type": "tabs",
         "children": [
           {
-            "id": "656d58f6fbd29039",
+            "id": "cc46444db5edc956",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Research_Notes/OVOSBench.md",
-                "mode": "preview",
+                "file": "Research_Briefs/2026-W23-ResearchBrief.md",
+                "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "OVOSBench"
-            }
-          },
-          {
-            "id": "f43d120e16f8c1d3",
-            "type": "leaf",
-            "state": {
-              "type": "webviewer",
-              "state": {
-                "url": "https://internlm.github.io/OVO-S-Bench/",
-                "title": "OVO-S-Bench",
-                "mode": "webview"
-              },
-              "icon": "globe-2",
-              "title": "OVO-S-Bench"
+              "title": "2026-W23-ResearchBrief"
             }
           }
         ]
@@ -92,8 +78,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200,
-    "collapsed": true
+    "width": 386.50390243530273
   },
   "right": {
     "id": "6f4f27bfa99de3fa",
@@ -237,12 +222,12 @@
       "paperbrain:PaperBrain Console": false
     }
   },
-  "active": "656d58f6fbd29039",
+  "active": "cc46444db5edc956",
   "lastOpenFiles": [
+    "Podcasts/Cosmos 3 Omnimodal World Models for Physical AI_Podcast.mp3",
     "Research_Notes/OVOSBench.md",
     "Daily_Papers/2026-06-04-PaperDigest.md",
     "Research_Notes/Cosmos 3.md",
-    "Podcasts/Cosmos 3 Omnimodal World Models for Physical AI_Podcast.mp3",
     "Run_Records/2026-06-04/state.json.tmp",
     "Assets/OVOSBench A Hierarchical Benchmark for Streaming Spatial Intelligence in Multimodal LLMs_arch.png",
     "PDFs/OVOSBench A Hierarchical Benchmark for Streaming Spatial Intelligence in Multimodal LLMs.pdf",

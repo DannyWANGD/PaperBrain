@@ -592,7 +592,7 @@
             "path": "D:\\PaperBrain\\Cache\\arxiv\\rate_limit_cooldown.json",
             "active": false,
             "remaining_seconds": 0.0,
-            "reason": "HTTP 429 from arXiv API"
+            "reason": "HTTP 429 from arXiv API endpoint http://export.arxiv.org/api/query"
           }
         },
         {
@@ -648,6 +648,14 @@
           "category": "arxiv",
           "message": "live arXiv probe skipped",
           "suggestion": "Run `paperbrain doctor arxiv --live` for a network probe."
+        },
+        {
+          "name": "arxiv_pdf_live_probe",
+          "ok": true,
+          "severity": "info",
+          "category": "arxiv",
+          "message": "live arXiv PDF probe skipped",
+          "suggestion": "Run `paperbrain doctor arxiv --live` to verify PDF download."
         }
       ]
     },
@@ -1430,7 +1438,7 @@
         "path": "D:\\PaperBrain\\Cache\\arxiv\\rate_limit_cooldown.json",
         "active": false,
         "remaining_seconds": 0.0,
-        "reason": "HTTP 429 from arXiv API"
+        "reason": "HTTP 429 from arXiv API endpoint http://export.arxiv.org/api/query"
       }
     },
     {
@@ -1486,6 +1494,14 @@
       "category": "arxiv",
       "message": "live arXiv probe skipped",
       "suggestion": "Run `paperbrain doctor arxiv --live` for a network probe."
+    },
+    {
+      "name": "arxiv_pdf_live_probe",
+      "ok": true,
+      "severity": "info",
+      "category": "arxiv",
+      "message": "live arXiv PDF probe skipped",
+      "suggestion": "Run `paperbrain doctor arxiv --live` to verify PDF download."
     },
     {
       "name": "doubao_api_key",
@@ -1702,5 +1718,5 @@
       }
     }
   ],
-  "written_at": "2026-06-04T13:09:52"
+  "written_at": "2026-06-05T20:36:53"
 }
