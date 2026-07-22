@@ -309,3 +309,9 @@ graph LR
 - **Local PDF**: [[AffordVLA ActionAligned Visual Planning via Internalized Affordance.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2605.24203v1)
 - [ArXiv Link](http://arxiv.org/abs/2605.24203v1)
+
+
+## Related Work Updates
+- [ ] **2026-06-09**: New paper [[ARVLA]] discusses *generalist robot manipulation*. Innovation: "Introduces a standalone autoregressive action expert with persistent memory and a re-anchoring mechanism that mathematically accounts for perception staleness, enabling asynchronous vision-language conditioning and continuous context-aware action generation."
+- [ ] **2026-06-12**: New paper [[EmbodiedR15]] discusses *internalized affordance*. Innovation: "A unified Embodied Foundation Model with integrated reasoning, planning, and self-correction, trained with multi-task balanced RL and automated data pipelines, achieving strong zero-shot real-robot performance."
+- [ ] **2026-06-15**: New paper [[Diffusion Policy]] discusses *visual planning for manipulation*. Innovation: "Introduces a diffusion-based visuomotor policy that leverages receding horizon control and a time-series diffusion transformer to model multimodal action distributions for robot manipulation."

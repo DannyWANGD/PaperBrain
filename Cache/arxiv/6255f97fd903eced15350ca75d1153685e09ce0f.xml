@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://arxiv.org/api/wN8aOe7rvxHJSmmmWDTDKwzv3Jg</id>
+  <title>arXiv Query: search_query=&amp;id_list=2302.05636&amp;start=0&amp;max_results=1</title>
+  <updated>2026-06-16T09:18:02Z</updated>
+  <link href="https://arxiv.org/api/query?search_query=&amp;start=0&amp;max_results=1&amp;id_list=2302.05636" type="application/atom+xml"/>
+  <opensearch:itemsPerPage>1</opensearch:itemsPerPage>
+  <opensearch:totalResults>1</opensearch:totalResults>
+  <opensearch:startIndex>0</opensearch:startIndex>
+  <entry>
+    <id>http://arxiv.org/abs/2302.05636v4</id>
+    <title>A GNN-Guided Predict-and-Search Framework for Mixed-Integer Linear Programming</title>
+    <updated>2023-03-06T08:03:03Z</updated>
+    <link href="https://arxiv.org/abs/2302.05636v4" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2302.05636v4" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Mixed-integer linear programming (MILP) is widely employed for modeling combinatorial optimization problems. In practice, similar MILP instances with only coefficient variations are routinely solved, and machine learning (ML) algorithms are capable of capturing common patterns across these MILP instances. In this work, we combine ML with optimization and propose a novel predict-and-search framework for efficiently identifying high-quality feasible solutions. Specifically, we first utilize graph neural networks to predict the marginal probability of each variable, and then search for the best feasible solution within a properly defined ball around the predicted solution. We conduct extensive experiments on public datasets, and computational results demonstrate that our proposed framework achieves 51.1% and 9.9% performance improvements to MILP solvers SCIP and Gurobi on primal gaps, respectively.</summary>
+    <category term="math.OC" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-02-11T09:38:26Z</published>
+    <arxiv:comment>9 pages,ICLR2023</arxiv:comment>
+    <arxiv:primary_category term="math.OC"/>
+    <author>
+      <name>Qingyu Han</name>
+    </author>
+    <author>
+      <name>Linxin Yang</name>
+    </author>
+    <author>
+      <name>Qian Chen</name>
+    </author>
+    <author>
+      <name>Xiang Zhou</name>
+    </author>
+    <author>
+      <name>Dong Zhang</name>
+    </author>
+    <author>
+      <name>Akang Wang</name>
+    </author>
+    <author>
+      <name>Ruoyu Sun</name>
+    </author>
+    <author>
+      <name>Xiaodong Luo</name>
+    </author>
+  </entry>
+</feed>

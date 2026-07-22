@@ -220,3 +220,6 @@ graph LR
 - **Local PDF**: [[MALLVI A MultiAgent Framework for Integrated Generalized Robotics Manipulation.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2602.16898v3)
 - [ArXiv Link](http://arxiv.org/abs/2602.16898v3)
+
+## Related Work Updates
+- [ ] **2026-06-12**: New paper [[EmbodiedR15]] discusses *mallvi: a multi-agent framework for integrated generalized robotics manipulation*. Innovation: "A unified Embodied Foundation Model with integrated reasoning, planning, and self-correction, trained with multi-task balanced RL and automated data pipelines, achieving strong zero-shot real-robot performance."

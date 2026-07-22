@@ -241,3 +241,4 @@ graph LR
 
 ## Related Work Updates
 - [ ] **2026-06-03**: New paper [[QwenVLA Unified VLA for Manipulation and Navigation]] discusses *world_action_models_are_zero_shot_policies*. Innovation: "Unifies manipulation, navigation, and trajectory prediction into a single VLA model using embodiment-aware prompts and a DiT-based action decoder."
+- [ ] **2026-06-11**: New paper [[World Pilot]] discusses *world action models are zero shot policies*. Innovation: "Introduces dual-pathway injection of world-action model priors into VLA: latent steering for scene evolution and action steering for trajectory prior."

@@ -184,3 +184,8 @@ abla \mathcal{L}_{\text{ce}}$在共享Transformer层上的余弦相似度与范�
 - **Local PDF**: [[HybridVLA Collaborative Diffusion and Autoregression in a Unified VisionLanguageAction Model.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2503.10631v3)
 - [ArXiv Link](http://arxiv.org/abs/2503.10631v3)
+
+
+## Related Work Updates
+- [ ] **2026-06-06**: New paper [[WLA]] discusses *diffusion autoregressive vla*. Innovation: "Proposes a unified autoregressive model that predicts both high-level textual subtasks and low-level physical dynamics to guide action synthesis, enabling optional world prediction for test-time scaling."
+- [ ] **2026-06-09**: New paper [[ARVLA]] discusses *diffusion autoregressive vla*. Innovation: "Introduces a standalone autoregressive action expert with persistent memory and a re-anchoring mechanism that mathematically accounts for perception staleness, enabling asynchronous vision-language conditioning and continuous context-aware action generation."

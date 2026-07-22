@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://arxiv.org/api/V8phVwYUD1Mg3jP0ycvq59SY+K4</id>
+  <title>arXiv Query: search_query=&amp;id_list=2603.24033&amp;start=0&amp;max_results=1</title>
+  <updated>2026-06-15T12:50:06Z</updated>
+  <link href="https://arxiv.org/api/query?search_query=&amp;start=0&amp;max_results=1&amp;id_list=2603.24033" type="application/atom+xml"/>
+  <opensearch:itemsPerPage>1</opensearch:itemsPerPage>
+  <opensearch:totalResults>1</opensearch:totalResults>
+  <opensearch:startIndex>0</opensearch:startIndex>
+  <entry>
+    <id>http://arxiv.org/abs/2603.24033v2</id>
+    <title>SRG: Score-based Relaxation-guided Generation for Mixed Integer Linear Programming</title>
+    <updated>2026-05-12T05:22:55Z</updated>
+    <link href="https://arxiv.org/abs/2603.24033v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2603.24033v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We propose Score-based Relaxation-guided Generation (SRG), a generative framework based on an approximate formulation of relaxation-guided stochastic differential equations (SDEs) for mixed-integer linear programming. SRG employs a Transformer-based score network that incorporates feasibility and optimality signals into score modeling, encouraging the learned generative model to place more probability mass on feasible, high-quality regions of the solution space. At inference time, SRG directly samples diverse candidate solutions from the learned score model without requiring any additional guidance module. These candidates are then used to construct compact trust-region subproblems for standard MILP solvers. Across multiple public benchmarks, SRG matches or improves upon the solution quality of the strongest learning-based baselines, with particularly strong gains in challenging candidate-generation settings. Moreover, SRG shows promising zero-shot transferability to unseen cross-scale and cross-problem instances, improving solver objectives and reducing search time in several cases through higher-quality initial candidates and compact trust-region search.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-03-25T07:48:01Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Ruobing Wang</name>
+    </author>
+    <author>
+      <name>Xin Li</name>
+    </author>
+    <author>
+      <name>Yujie Fang</name>
+    </author>
+    <author>
+      <name>Mingzhong Wang</name>
+    </author>
+  </entry>
+</feed>

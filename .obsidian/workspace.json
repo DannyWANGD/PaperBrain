@@ -4,21 +4,17 @@
     "type": "split",
     "children": [
       {
-        "id": "b494c1589649eb98",
+        "id": "c4f06e035713d08f",
         "type": "tabs",
         "children": [
           {
-            "id": "cc46444db5edc956",
+            "id": "a25df0088f207575",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Research_Briefs/2026-W23-ResearchBrief.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "2026-W23-ResearchBrief"
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "关系图谱"
             }
           }
         ]
@@ -53,12 +49,12 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "LeJEPA",
+                "query": "CPO",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
                 "extraContext": false,
-                "sortOrder": "alphabetical"
+                "sortOrder": "byCreatedTime"
               },
               "icon": "lucide-search",
               "title": "搜索"
@@ -78,7 +74,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 386.50390243530273
+    "width": 386.50390243530273,
+    "collapsed": true
   },
   "right": {
     "id": "6f4f27bfa99de3fa",
@@ -154,13 +151,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "PDFs/Solaris Building a Multiplayer Video World Model in Minecraft.pdf",
+                "file": "灵巧手专项/SRG 1.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Solaris Building a Multiplayer Video World Model in Minecraft 的大纲"
+              "title": "SRG 1 的大纲"
             }
           },
           {
@@ -192,14 +189,23 @@
               "icon": "brain-circuit",
               "title": "PaperBrain Console"
             }
+          },
+          {
+            "id": "8a28e72fb46edf6c",
+            "type": "leaf",
+            "state": {
+              "type": "claudian-view",
+              "state": {},
+              "icon": "bot",
+              "title": "Claudian"
+            }
           }
         ],
         "currentTab": 7
       }
     ],
     "direction": "horizontal",
-    "width": 682.5,
-    "collapsed": true
+    "width": 669.5
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -219,55 +225,57 @@
       "smart-connections:Smart Connections: Open random connection": false,
       "obsidian42-brat:BRAT": false,
       "copilot:Open Copilot Chat": false,
-      "paperbrain:PaperBrain Console": false
+      "paperbrain:PaperBrain Console": false,
+      "realclaudian:Open Claudian": false
     }
   },
-  "active": "cc46444db5edc956",
+  "active": "7fa81f2d42b667aa",
   "lastOpenFiles": [
-    "Podcasts/Cosmos 3 Omnimodal World Models for Physical AI_Podcast.mp3",
-    "Research_Notes/OVOSBench.md",
-    "Daily_Papers/2026-06-04-PaperDigest.md",
-    "Research_Notes/Cosmos 3.md",
-    "Run_Records/2026-06-04/state.json.tmp",
-    "Assets/OVOSBench A Hierarchical Benchmark for Streaming Spatial Intelligence in Multimodal LLMs_arch.png",
-    "PDFs/OVOSBench A Hierarchical Benchmark for Streaming Spatial Intelligence in Multimodal LLMs.pdf",
-    "Assets/Cosmos 3 Omnimodal World Models for Physical AI_arch.png",
-    "PDFs/Cosmos 3 Omnimodal World Models for Physical AI.pdf",
-    "Run_Records/2026-06-04/screening_report.md",
-    "Cache/pdfs/2606.00825.pdf",
-    "Cache/temp_pdfs/SuperMemoryVQA An Egocentric Visual QuestionAnswering Benchmark for LongHorizon Memory.pdf",
-    "Cache/pdfs/2606.06467.pdf",
-    "Cache/temp_pdfs/You Only Index Once CrossLayer Sparse Attention with Shared Routing.pdf",
-    "Cache/pdfs/2606.06453.pdf",
-    "Cache/temp_pdfs/Vortex Efficient and Programmable Sparse Attention Serving for AI Agents.pdf",
-    "obsidian-plugin/paperbrain/README.md",
-    "Daily_Papers/2026-06-01-PaperDigest.md",
-    "Run_Records/2026-06-04/log_summary.md",
-    "Research_Briefs/2026-W23-ResearchBrief.md",
-    "Research_Briefs/2026-W10-ResearchBrief.md",
-    "Research_Notes/HideandSeek Failure Detection for VLA.md",
-    "Hide-and-Seek in Trajectories Discovering Failure Signals for VLA Runtime Monitoring.md",
-    "Daily_Papers/2026-02-17-PaperDigest.md",
-    "Daily_Papers/2026-05-27-PaperDigest.md",
-    "Run_Records/_legacy/2026-05-29/2026-05-29-openrouter-screening-results.md",
-    "Run_Records/_legacy/2026-06-03/2026-06-03-single/screening_report.md",
-    "Run_Records/_legacy/2026-06-03/2026-06-03-single/log_summary.md",
-    "Run_Records/_legacy/2026-06-03/2026-06-03-openrouter/log_summary.md",
-    "Run_Records/_legacy/2026-06-03/2026-06-03-openrouter/screening_report.md",
-    "Run_Records/_legacy/2026-06-03/2026-06-03-openrouter-screening-results.md",
-    "Run_Records/2026-06-03/log_summary.md",
-    "Run_Records/2026-06-03/screening_report.md",
-    "Run_Records/_legacy/2026-06-02/2026-06-02-openrouter-screening-results.md",
-    "Run_Records/2026-06-02/screening_report.md",
-    "Run_Records/2026-06-02/log_summary.md",
-    "Run_Records/_legacy/2026-06-01/2026-06-01-openrouter-screening-results.md",
-    "Assets/AffordVLA ActionAligned Visual Planning via Internalized Affordance_arch.png",
-    "Assets/When Does LeJEPA Learn a World Model_arch.png",
-    "Assets/Rethinking VLM Representation for VLA Initialization_arch.png",
-    "Assets/HideandSeek in Trajectories Discovering Failure Signals for VLA Runtime Monitoring_arch.png",
-    "Assets/GEM Generative Supervision Helps Embodied Intelligence_arch.png",
-    "Pasted image 20260303220300.png",
-    "Pasted image 20260303220437.png",
-    "Pasted image 20260303220453.png"
+    "Podcasts/Appleπ Benchmarking Thinking with Video Towards La_Podcast.mp3",
+    "Daily_Papers/2026-07-21-PaperDigest.md",
+    "Research_Notes/Appleπ.md",
+    "PDFs/Appleπ Benchmarking Thinking with Video Towards LawGrounded Physical Intelligence.pdf",
+    "Cache/pdfs/2607.17423.pdf",
+    "Cache/temp_pdfs/TimeLens2 Generalist Video Temporal Grounding with Multimodal LLMs.pdf",
+    "Cache/pdfs/2607.18171.pdf",
+    "Cache/temp_pdfs/FlashRT Agent Harness for Guiding Agents to Deploy RealTime Multimodal Applications.pdf",
+    "Cache/pdfs/2607.18110.pdf",
+    "Cache/temp_pdfs/LLMasaCoach Experiential Learning for NonVerifiable Tasks.pdf",
+    "Cache/pdfs/2607.16900.pdf",
+    "Cache/temp_pdfs/Environmentfree Synthetic Data Generation for APICalling Agents.pdf",
+    "Cache/pdfs/2607.16401.pdf",
+    "Run_Records/2026-07-21/log_summary.md",
+    "Research_Notes/CPO.md",
+    "灵巧手专项/灵巧手物理约束注入Diffusion论文清单.md",
+    "灵巧手专项/CPO核心算法理论逐步推导.md",
+    "Research_Notes/Act2Answer.md",
+    "Run_Records/2017-05-30/screening_report.md",
+    "Run_Records/2017-05-30/log_summary.md",
+    "Daily_Papers/2026-06-17-PaperDigest.md",
+    "Research_Notes/EmbodiedR15.md",
+    "Research_Notes/RynnBrain.md",
+    "Daily_Papers/2026-06-11-PaperDigest.md",
+    "Daily_Papers/2026-06-12-PaperDigest.md",
+    "灵巧手专项/Diffusion安全抓取创新构想/05-接触规范场：低功耗高精度抓取的可重构力封闭理论.md",
+    "Run_Records/2026-06-22/log_summary.md",
+    "灵巧手专项/C3-Diffuser算法创新点与可行性验证.md",
+    "灵巧手专项/ABCD物理约束注入Diffusion数学推导.md",
+    "灵巧手专项/DexGraspNet 1.md",
+    "灵巧手专项/SRG 1.md",
+    "灵巧手专项/SRG 约束信息融入机制详解.md",
+    "Research_Notes/OneCanvas.md",
+    "Assets/OneCanvas 3D Scene Understanding via Panoramic Reprojection_arch.png",
+    "Assets/Does VLA Even Know the Basics Measuring Commonsense and World Knowledge Retention in VisionLanguageA_arch.png",
+    "Run_Records/2026-06-17/screening_report.md",
+    "Run_Records/2026-06-17/log_summary.md",
+    "Research_Notes/GNN Predict and Search for MILP.md",
+    "Assets/A GNNGuided PredictandSearch Framework for MixedInteger Linear Programming_arch.png",
+    "Assets/DexGraspNet A LargeScale Robotic Dexterous Grasp Dataset for General Objects Based on Simulation_arch.png",
+    "Assets/Diffusion Policy Visuomotor Policy Learning via Action Diffusion_arch.png",
+    "Assets/EmbodiedR15 Evolving Physical Intelligence via Embodied Foundation Models_arch.png",
+    "Assets/World Pilot Steering VisionLanguageAction Models with WorldAction Priors_arch.png",
+    "Assets/LightWAM Efficient World Action Models with StateFusion Action Decoding_arch.png",
+    "Assets/Dynamic Execution Horizon Prediction for Chunkbased Robot Policies_arch.png",
+    "Assets/ACEBrain0 Spatial Intelligence as a Shared Scaffold for Universal Embodiments_arch.png"
   ]
 }

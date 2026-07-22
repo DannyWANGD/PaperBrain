@@ -79,3 +79,7 @@ Analysis Failed: All models unavailable.
 - **Local PDF**: [[VistaBot ViewRobust Robot Manipulation via SpatiotemporalAware View Synthesis.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2604.21914v1)
 - [ArXiv Link](http://arxiv.org/abs/2604.21914v1)
+
+
+## Related Work Updates
+- [ ] **2026-06-09**: New paper [[ARVLA]] discusses *video diffusion robotics*. Innovation: "Introduces a standalone autoregressive action expert with persistent memory and a re-anchoring mechanism that mathematically accounts for perception staleness, enabling asynchronous vision-language conditioning and continuous context-aware action generation."

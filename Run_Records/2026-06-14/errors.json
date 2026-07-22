@@ -1,0 +1,25 @@
+{
+  "run_id": "2026-06-14",
+  "date": "2026-06-14",
+  "provider": "openrouter",
+  "providers": [
+    "openrouter"
+  ],
+  "run_modes": [
+    "single"
+  ],
+  "stage": "failed",
+  "errors": [
+    {
+      "created_at": "2026-06-15T18:38:46",
+      "code": "write_failure",
+      "message": "[WinError 5] 拒绝访问。: 'D:\\\\PaperBrain\\\\Run_Records\\\\2022-10-06\\\\errors.json.tmp' -> 'D:\\\\PaperBrain\\\\Run_Records\\\\2022-10-06\\\\errors.json'",
+      "suggestion": "Check vault, Cache, Run_Records, and PDF directory write permissions.",
+      "stage": "initialized",
+      "paper_id": "",
+      "title": "",
+      "exception": "PermissionError",
+      "retryable": false
+    }
+  ]
+}

@@ -547,3 +547,7 @@ graph LR
 - **Local PDF**: [[Chain of World World Model Thinking in Latent Motion.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2603.03195.pdf)
 - [ArXiv Link](https://huggingface.co/papers/2603.03195)
+
+## Related Work Updates
+- [ ] **2026-06-11**: New paper [[World Pilot]] discusses *chain of world: world model thinking in latent motion*. Innovation: "Introduces dual-pathway injection of world-action model priors into VLA: latent steering for scene evolution and action steering for trajectory prior."
+- [ ] **2026-07-22**: New paper [[Appleπ]] discusses *chain of world*. Innovation: "Introduces the first benchmark that evaluates video models as world models through a three-stage law-grounded reasoning protocol (Perception, Formulation, Deduction) with hybrid physics-law and MLLM metrics."

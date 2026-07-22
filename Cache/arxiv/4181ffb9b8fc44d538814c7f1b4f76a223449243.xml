@@ -1,0 +1,1410 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://arxiv.org/api/Aduow0okIpzCDxdWXOa3WptlscI</id>
+  <title>arXiv Query: search_query=(cat:cs.RO OR cat:cs.AI OR cat:cs.LG OR cat:cs.CV) AND submittedDate:"202605190000 TO 202605192359"&amp;id_list=&amp;start=0&amp;max_results=50</title>
+  <updated>2026-06-09T03:26:35Z</updated>
+  <link href="https://arxiv.org/api/query?search_query=(cat:cs.RO+OR+(cat:cs.AI+OR+(cat:cs.LG+OR+cat:cs.CV)))+AND+submittedDate:%22202605190000+TO+202605192359%22&amp;start=0&amp;max_results=50&amp;id_list=" type="application/atom+xml"/>
+  <opensearch:itemsPerPage>50</opensearch:itemsPerPage>
+  <opensearch:totalResults>542</opensearch:totalResults>
+  <opensearch:startIndex>0</opensearch:startIndex>
+  <entry>
+    <id>http://arxiv.org/abs/2606.00065v1</id>
+    <title>Beyond Text and Tables: Vision-Language Model Integration in ComProScanner for Extracting Materials Data from Scientific Figures with High Accuracy</title>
+    <updated>2026-05-19T23:55:19Z</updated>
+    <link href="https://arxiv.org/abs/2606.00065v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2606.00065v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Automated extraction of materials composition-property data from scientific literature has advanced considerably with the development of large language model-based pipelines; however, existing frameworks remain limited to textual and tabular content, overlooking the substantial proportion of quantitative property data reported exclusively in scientific figures. Here, we extend ComProScanner, a fully end-to-end multi-agent framework for automated composition-property database construction, with a native vision-language model (VLM) based figure extraction capability. The extension introduces a FigureExtractor utility for caption-keyword-based figure filtering across all supported publishers, and a GraphExtractorTool agent that passes extracted figures to a configurable VLM to recover composition-property pairs from scientific charts and plots. Four VLMs are selected for evaluation on the basis of the LMArena Diagram leaderboard with an input cost criterion of less than \$1.50 per million tokens. Benchmarking on 50 piezoelectric ceramic articles from the established $d_{33}$ test corpus demonstrates that Gemini-3-Flash-Preview achieves the highest performance with a composition accuracy of 0.97 and a normalised F1 score of 0.97, whilst remaining the most cost-effective model among the four evaluated. We additionally introduce a range-based value error threshold parameter into the evaluation framework, providing a more physically meaningful assessment of numeric property values extracted from figures than exact value matching. These contributions establish VLM-integrated ComProScanner as the first materials-specific, fully automated, multimodal literature mining platform capable of extracting structured composition-property data from text, tables, and figures within a single unified pipeline.</summary>
+    <category term="cs.IR" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cond-mat.mtrl-sci" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T23:55:19Z</published>
+    <arxiv:comment>18 pages, 3 figures</arxiv:comment>
+    <arxiv:primary_category term="cs.IR"/>
+    <author>
+      <name>Aritra Roy</name>
+    </author>
+    <author>
+      <name>Enrico Grisan</name>
+    </author>
+    <author>
+      <name>Chiara Gattinoni</name>
+    </author>
+    <author>
+      <name>John Buckeridge</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20566v1</id>
+    <title>Conflict-Aware Active Perception and Control in 3D Gaussian Splatting Fields via Control Barrier Functions</title>
+    <updated>2026-05-19T23:51:23Z</updated>
+    <link href="https://arxiv.org/abs/2605.20566v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20566v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Active perception in uncertain environments requires robots to navigate safely while acquiring informative observations to reduce map uncertainty. These objectives inherently conflict, as informative viewpoints often lie near uncertain regions with higher collision risk. To address this challenge, we develop a conflict-aware active perception and control framework for robotic systems operating in environments represented by 3D Gaussian Splatting (3DGS). Safety is enforced using a Control Barrier Function (CBF) derived from an Average Value-at-Risk AV@R collision-risk metric that accounts for geometric uncertainty and guarantees forward invariance of a safe set. To improve perception, we propose a risk-aware Expected Information Gain (EIG) formulation for selecting the next-best-view and introduce perception barrier functions that align the camera orientation with the local information-ascent direction. To obtain a tractable formulation for these conflicting safety and perception objectives, we propose a unified safety-critical, perception-aware quadratic program that enforces safety as a hard constraint while relaxing perception constraints through slack variables. Simulation results demonstrate that the proposed method improves both safety and information acquisition compared to existing 3DGS-based approaches.</summary>
+    <category term="cs.RO" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T23:51:23Z</published>
+    <arxiv:comment>Project website: https://sircesoc.github.io/Conflict_Aware_Active_Perception/</arxiv:comment>
+    <arxiv:primary_category term="cs.RO"/>
+    <author>
+      <name>Amirhossein Mollaei Khass</name>
+    </author>
+    <author>
+      <name>Athanasios Cosse</name>
+    </author>
+    <author>
+      <name>Vivek Pandey</name>
+    </author>
+    <author>
+      <name>Nader Motee</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20563v1</id>
+    <title>Multi-agent Collaboration with State Management</title>
+    <updated>2026-05-19T23:45:33Z</updated>
+    <link href="https://arxiv.org/abs/2605.20563v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20563v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Recent advances in multi-agent systems have shown great potential for solving complex tasks. However, when multiple agents edit a shared codebase concurrently, their changes can silently conflict and inconsistent views lead to integration failures. Existing multi-agent systems address this through workspace isolation (e.g., one git worktree per agent), but this defers conflict resolution to a post-hoc merge step where recovery is expensive. In this paper, we propose STORM, i.e., STate-ORiented Management for multi-agent collaboration. Specifically, STORM manages agent states by mediating their interactions with the shared workspace, ensuring that each agent operates on a consistent view of the codebase and that conflicting edits are detected and resolved at write time. We evaluate STORM on Commit0 and PaperBench across multiple LLMs. STORM outperforms the git-worktree-based multi-agent baseline by +18.7 on Commit0-Lite and +1.4 on PaperBench, while achieving comparable or better cost efficiency. Combined with single-agent runs, STORM reaches highest scores of 87.6 and 78.2 on the two benchmarks respectively, suggesting that explicit state management is a more effective foundation for multi-agent collaboration than workspace isolation. STORM can also be plugged into any multi-agent system seamlessly.</summary>
+    <category term="cs.MA" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T23:45:33Z</published>
+    <arxiv:primary_category term="cs.MA"/>
+    <author>
+      <name>Mengyang Liu</name>
+    </author>
+    <author>
+      <name>Taozhi Chen</name>
+    </author>
+    <author>
+      <name>Zhenhua Xu</name>
+    </author>
+    <author>
+      <name>Xue Jiang</name>
+    </author>
+    <author>
+      <name>Yihong Dong</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20561v1</id>
+    <title>Fault-Tolerant, Rigidity-Preserving Control of Inflatable Truss Robots</title>
+    <updated>2026-05-19T23:39:55Z</updated>
+    <link href="https://arxiv.org/abs/2605.20561v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20561v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Isoperimetric robotic trusses can adapt to different tasks and environments because they have a high strength-to-weight ratio, can change their own shape dramatically, and can be reconfigured into a variety of different shapes. However, motor failures in operational environments can severely limit operational capabilities if not properly addressed. This paper presents a fault-tolerant control framework for an inflatable robotic truss that maintains functionality despite motor failures, shown through three key contributions. First, we extend the kinematic optimization to handle arbitrary combinations of motor failures by imposing equality constraints to ensure failed actuators are not used. Second, we introduce discrete-time control barrier function (DTCBF) constraints that mathematically guarantee structural rigidity while maximizing workspace utilization, a critical requirement for reliable operation of truss robots under discrete-time control. Third, we implement closed-loop position control using onboard encoder feedback and a forward kinematics-based state estimator, improving positional accuracy in the presence of disturbances. We validate our approach through simulation and hardware experiments on a 2D isoperimetric truss testbed. For a 2D configuration with 6 actuators, we demonstrate &gt;69% workspace preservation under single-motor failures and a &gt;25% improvement in tracking accuracy with closed-loop control. These results establish a foundation for more robust and resilient isoperimetric truss robots operating under degraded actuation.</summary>
+    <category term="cs.RO" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T23:39:55Z</published>
+    <arxiv:primary_category term="cs.RO"/>
+    <author>
+      <name>James Wade</name>
+    </author>
+    <author>
+      <name>Isaac Weaver</name>
+    </author>
+    <author>
+      <name>Mihai Stanciu</name>
+    </author>
+    <author>
+      <name>Nathan Usevitch</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20559v1</id>
+    <title>Group-Aware Matrix Estimation and Latent Subspace Recovery</title>
+    <updated>2026-05-19T23:22:32Z</updated>
+    <link href="https://arxiv.org/abs/2605.20559v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20559v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Modern matrix completion problems often involve heterogeneous data whose rows simultaneously belong to many meta-categories, such as demographic and age groups in recommendation systems, or region and recording session labels in neural electrophysiological experiments. Standard low-rank estimators impose a single global latent geometry, which can recover average structure but may smooth away subgroup-specific variation, especially when observations are unevenly distributed across groups. We introduce Group-Aware Matrix Estimation (GAME), a convex estimator for overlapping subgroup-wise low-rank matrix estimation. GAME regularizes category-specific submatrices through overlapping nuclear-norm penalties, allowing related groups to borrow information while preserving local latent structure in a shared coordinate system. We provide finite-sample guarantees for both reconstruction error and subgroup-specific subspace recovery, showing how performance depends on sampling density, subgroup rank, and overlap structure. Experiments on synthetic, recommendation, ecological, and neuroscience datasets show that GAME is most beneficial in structured missingness regimes, where subgroup-aware regularization improves both reconstruction accuracy and latent subspace fidelity. Across these benchmarks, GAME is competitive or best among global low-rank, side-information, and modern imputation baselines, with the largest gains when subgroups exhibit distinct low-rank structure.</summary>
+    <category term="stat.ML" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="stat.AP" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="stat.ME" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T23:22:32Z</published>
+    <arxiv:comment>12 pages, 6 main figures, 1 main algorithm</arxiv:comment>
+    <arxiv:primary_category term="stat.ML"/>
+    <author>
+      <name>Hamza Golubovic</name>
+    </author>
+    <author>
+      <name>Matthew Shen</name>
+    </author>
+    <author>
+      <name>Genevera I. Allen</name>
+    </author>
+    <author>
+      <name>Tarek M. Zikry</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20555v1</id>
+    <title>Complementing reinforcement learning with SFT through logit averaging in the post training of LLMs</title>
+    <updated>2026-05-19T23:15:18Z</updated>
+    <link href="https://arxiv.org/abs/2605.20555v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20555v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We introduce a novel method that averages the logits of a frozen reference policy (e.g., SFT) and a trainable policy, and incorporate the method into Group Relative Policy Optimization (GRPO). In contrast to Reinforcement Learning with Verifiable Rewards (RLVR) methods, our proposal does not involve a Kullback Leibler (KL) regularization or critic; the trainable policy and the reference anchor are coupled through the logit averaging structure to leverage the reasoning expertise of the trainable policy while maintaining the formatting advantage of SFT. Our method is evaluated on MATH, cn-k12, and MMLU, and the results show a higher accuracy or at least comparable accuracy relative to the canonical KL-regularized GRPO.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T23:15:18Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Xingwei Gan</name>
+    </author>
+    <author>
+      <name>Ying Zhu</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20554v1</id>
+    <title>Personality Engineering with AI Agents: A New Methodology for Negotiation Research</title>
+    <updated>2026-05-19T23:11:19Z</updated>
+    <link href="https://arxiv.org/abs/2605.20554v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20554v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>According to canonical negotiation theory, people's success in a negotiation depends on how well they balance competing demands--empathizing and asserting, demonstrating concern for other and concern for self, being soft on the people and hard on the problem. Yet people struggle to manage these tensions, so researchers have lacked the ability to rigorously test the field's prescriptions under controlled conditions. AI agents do not face the same limitations, and their precision, repertoire, consistency, and scalability enable a new class of experiments to contribute to negotiation theory. In this article, we introduce personality engineering: a methodology that uses AI agents to precisely parameterize, manipulate, and evaluate negotiator personality. We propose using the interpersonal circumplex--and its two core dimensions of warmth and dominance--as a foundational coordinate system for the field. This approach offers both a rigorous methodology for testing classic negotiation theories and a practical guide for designing the personalities of AI negotiation agents.</summary>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.HC" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.SI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T23:11:19Z</published>
+    <arxiv:primary_category term="cs.AI"/>
+    <author>
+      <name>Michelle A. Vaccaro</name>
+    </author>
+    <author>
+      <name>Jared R. Curhan</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20552v1</id>
+    <title>Spectral bandits for smooth graph functions with applications in recommender systems</title>
+    <updated>2026-05-19T23:07:21Z</updated>
+    <link href="https://arxiv.org/abs/2605.20552v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20552v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Smooth functions on graphs have wide applications in manifold and semi-supervised learning. In this paper, we study a bandit problem where the payoffs of arms are smooth on a graph. This framework is suitable for solving online learning problems that involve graphs, such as content-based recommendation. In this problem, each recommended item is a node and its expected rating is similar to its neighbors. The goal is to recommend items that have high expected ratings. We aim for the algorithms where the cumulative regret would not scale poorly with the number of nodes. In particular, we introduce the notion of an effective dimension, which is small in real-world graphs, and propose two algorithms for solving our problem that scale linearly in this dimension. Our experiments on real-world content recommendation problem show that a good estimator of user preferences for thousands of items can be learned from just tens nodes evaluations.</summary>
+    <category term="stat.ML" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T23:07:21Z</published>
+    <arxiv:comment>Published at AAAI 2014 - SDMBD</arxiv:comment>
+    <arxiv:primary_category term="stat.ML"/>
+    <author>
+      <name>Tomáš Kocák</name>
+    </author>
+    <author>
+      <name>Michal Valko</name>
+    </author>
+    <author>
+      <name>Rémi Munos</name>
+    </author>
+    <author>
+      <name>Branislav Kveton</name>
+    </author>
+    <author>
+      <name>Shipra Agrawal</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20551v1</id>
+    <title>Faster or Stronger: Towards Flexible Visual Place Recognition via Weighted Aggregation and Token Pruning</title>
+    <updated>2026-05-19T23:01:57Z</updated>
+    <link href="https://arxiv.org/abs/2605.20551v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20551v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Visual Place Recognition (VPR) aims to match a query image to reference images of the same place in a large-scale database. Recent state-of-the-art methods employ Vision Transformers (ViTs) as backbone foundation models to extract patch-level features that are robust to viewpoint, illumination, and seasonal variations, which are then aggregated into a compact global descriptor for retrieval. Most existing aggregation methods uniformly pool patch tokens into learned clusters, despite the fact that different clusters often encode distinct spatial or semantic patterns and contribute unequally to VPR performance. To address this limitation, we propose Weighted Aggregated Descriptor (WeiAD), which assigns weights to clusters during aggregation, producing more discriminative global representations. Beyond accuracy, retrieval latency is a critical concern for large-scale deployments and resource-constrained edge devices. Prior work mainly reduces latency by compressing global descriptors, while overlooking the cost of feature extraction, an issue exacerbated by ViT-based backbones. We therefore introduce WeiToP, a VPR-oriented token pruning framework that reduces feature extraction cost via self-distillation, where aggregation-induced token importance supervises a lightweight pruning module attached to an early transformer layer, enabling inference-time token pruning. After a single joint training phase, WeiToP enables plug-and-play token pruning at inference time, allowing flexible and on-demand control over the accuracy-efficiency trade-off without additional training. Moreover, WeiToP outperforms existing token pruning methods adapted from general vision tasks.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.RO" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T23:01:57Z</published>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Zichao Zeng</name>
+    </author>
+    <author>
+      <name>June Moh Goo</name>
+    </author>
+    <author>
+      <name>Junwei Zheng</name>
+    </author>
+    <author>
+      <name>Weijia Fan</name>
+    </author>
+    <author>
+      <name>Jiaming Zhang</name>
+    </author>
+    <author>
+      <name>Rainer Stiefelhagen</name>
+    </author>
+    <author>
+      <name>Jan Boehm</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20549v1</id>
+    <title>MAPS: A Synthetic Dataset for Probing Vision Models in a Controlled 3D Scene Space</title>
+    <updated>2026-05-19T22:51:54Z</updated>
+    <link href="https://arxiv.org/abs/2605.20549v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20549v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Modern vision models achieve strong performance on standard benchmarks, yet their aggregate accuracy reveals little about which scene properties drive their predictions. Existing robustness benchmarks provide important stress tests, but typically manipulate global 2D image properties, rely on entangled real-world variation, or cover only a limited set of 3D objects and scene parameters. We introduce MAPS (Manifolds of Artificial Parametric Scenes), a scalable instrument for controlled attribution of vision model behavior to scene parameters. MAPS comprises 2,618 curated photorealistic 3D meshes validated for recognizability across 560 ImageNet classes and provides a Blender-based rendering pipeline for on-demand image generation under continuous variation of nine independent scene-factors spanning background, camera, and lighting, extensible to other factors. To showcase its applicability, we use MAPS to evaluate 20 convolutional and transformer-based models by quantifying their reliance on these scene factors through regression-based sensitivity analysis. We find a near-universal failure axis across all tested architectures: camera distance and elevation consistently dominate recognition failure regardless of ImageNet accuracy. However, the full sensitivity structure reveals that modern CNNs and transformers cluster together, distinct from older architectures, suggesting that fine-grained architectural design choices, rather than the coarse CNN-versus-transformer distinction, are the stronger determinant of sensitivity profiles.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T22:51:54Z</published>
+    <arxiv:comment>33 pages, 20 figures</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Santiago Galella</name>
+    </author>
+    <author>
+      <name>Pamela Osuna-Vargas</name>
+    </author>
+    <author>
+      <name>Maren Wehrheim</name>
+    </author>
+    <author>
+      <name>Martina G. Vilas</name>
+    </author>
+    <author>
+      <name>Gemma Roig</name>
+    </author>
+    <author>
+      <name>Matthias Kaschube</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20547v1</id>
+    <title>Latent Process Generator Matching</title>
+    <updated>2026-05-19T22:49:05Z</updated>
+    <link href="https://arxiv.org/abs/2605.20547v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20547v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Many recent flow-matching and diffusion-style generative models rely on auxiliary stochastic dynamics during training: a richer process is simulated to define conditional targets, but the auxiliary state is either intractable to sample at generation time or simply not part of the desired output. Existing Generator Matching theory formalises conditioning on static latent random variables, and several recent papers prove special cases of projection results for particular augmented-state constructions. We introduce latent process generator matching, a general framework that treats the observed generative state as a deterministic image $X_t=Φ(Y_t)$ of a tractable Markov process $Y_t$. We show that in this setting one may learn the generator of a stochastic process on the image space which has the same one-time marginal distributions as the projected process. This generalizes and subsumes the discrete latent process results from the literature, and extends Generator Matching from static latent variables to a rich family of time-dependent latent conditional processes.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="stat.ML" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T22:49:05Z</published>
+    <arxiv:comment>18 pages, 1 figure</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Lukas Billera</name>
+    </author>
+    <author>
+      <name>Hedwig Nora Nordlinder</name>
+    </author>
+    <author>
+      <name>Ben Murrell</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20545v1</id>
+    <title>Sample Complexity of Transfer Learning: An Optimal Transport Approach</title>
+    <updated>2026-05-19T22:39:03Z</updated>
+    <link href="https://arxiv.org/abs/2605.20545v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20545v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Transfer learning is an essential technique for many machine learning/AI models of complex structures such as large language models and generative AI. The essence of transfer learning is to leverage knowledge from resolved source tasks for a new target task, especially when the sample size $m$ of the training data for the latter is low. In this work, we rigorously analyze the potential benefit of transfer learning in terms of sample efficiency. Specifically, taking an optimal transport viewpoint of transfer learning, we find that when the data dimension $d$ is higher than $3$, the sample complexity for transfer learning is $O(m^{-(α+1)/d})$, with $α$ indicating the smoothness of the data distribution, as opposed to the $O(m^{-p/d})$ sample complexity for direct learning with $p$ indicating the smoothness of the optimal target model. Our finding theoretically supports a better sample efficiency for transfer learning, when the target task is optimizing over a family of not-so-smooth models (i.e., highly complex networks with the possible use of non-smooth activation functions). Using image classification as an example, we numerically demonstrate the sample efficiency for transfer learning, that is, in the data hungry regime, the model performance can be significantly improved by transfer learning.</summary>
+    <category term="stat.ML" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T22:39:03Z</published>
+    <arxiv:primary_category term="stat.ML"/>
+    <author>
+      <name>Haoyang Cao</name>
+    </author>
+    <author>
+      <name>Xin Guo</name>
+    </author>
+    <author>
+      <name>Wenpin Tang</name>
+    </author>
+    <author>
+      <name>Guan Wang</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20544v1</id>
+    <title>The Yes-Man Syndrome: Benchmarking Abstention in Embodied Robotic Agents</title>
+    <updated>2026-05-19T22:32:44Z</updated>
+    <link href="https://arxiv.org/abs/2605.20544v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20544v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Vision-language models (VLMs) are used as high-level planners for embodied agents, translating natural language instructions and visual observations into action plans. While prior work has studied abstention in LLMs, existing benchmarks are largely text-only and do not capture the perceptual grounding and physical constraints inherent to embodied robotics environments. In such settings, abstention requires recognizing when instructions are ambiguous, physically infeasible, based on false premises, or otherwise unresolvable given the available sensory modalities and context. To address this gap, we introduce a taxonomy to categorize abstention in the context of embodied robotics and present RoboAbstention, a scalable and auditable framework for generating abstention instructions grounded in images gathered from five robotics datasets. RoboAbstention instantiates the taxonomy through a three-phase pipeline: (1) structured visual grounding, (2) deterministic constraint derivation, and (3) controlled instruction generation via category-specific templates. This enables the construction of a diverse dataset with verifiable abstention conditions. We evaluate several frontier VLMs and find that all models exhibit significant weaknesses in abstention, including those with advanced reasoning capabilities. The best-performing model, Gemini 2.5 Flash, abstains on only 39.0% of our 6,069 benchmark instructions, while the embodied planner Gemini Robotics ER 1.6 Preview abstains on just 16.5%. We further explore methods for improving abstention in VLM planners, such as defensive prompting and in-context learning, and find that these interventions substantially improve performance, reaching 93.6% abstention rate for Gemini Robotics ER 1.6 Preview and 88.6% for GPT 5.4 Mini, yet no approach fully solves the problem. We open-source RoboAbstention at https://purseclab.github.io/RoboAbstention/.</summary>
+    <category term="cs.RO" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T22:32:44Z</published>
+    <arxiv:primary_category term="cs.RO"/>
+    <author>
+      <name>Doguhan Yeke</name>
+    </author>
+    <author>
+      <name>Elif Su Temirel</name>
+    </author>
+    <author>
+      <name>Ananth Shreekumar</name>
+    </author>
+    <author>
+      <name>Brandon Lee</name>
+    </author>
+    <author>
+      <name>Dongyan Xu</name>
+    </author>
+    <author>
+      <name>Z Berkay Celik</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20543v1</id>
+    <title>Uncertainty-Guided Conservative Propagation for Structured Inference in Vessel Segmentation</title>
+    <updated>2026-05-19T22:31:13Z</updated>
+    <link href="https://arxiv.org/abs/2605.20543v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20543v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Accurate vessel segmentation is essential for medical image analysis, yet remains challenging due to complex vascular patterns and imaging ambiguity. Most deep models rely on single-pass prediction, limiting their ability to refine uncertain or disconnected regions during inference. To address this limitation, we propose Uncertainty-Guided Conservative Propagation (UGCP), a general plug-in module for vessel segmentation. Instead of directly using a one-shot output as the final prediction, UGCP performs a small number of logit-space update steps to refine the segmentation through local predictions interaction. Predictive uncertainty guides reliable regions to support ambiguous regions, while structure-aware modulation and source-based stabilization reduce unreliable propagation and excessive drift. The module is differentiable and can be trained end-to-end with different segmentation networks. We evaluate UGCP on four public vessel segmentation datasets covering 2D and 3D tasks, including retinal vessel, coronary artery, and cerebral vessel segmentation. Experiments with convolutional neural network-based and Transformer-based backbones show consistent improvements in Dice similarity coefficient, centerline Dice, and 95th percentile Hausdorff distance. Further analysis demonstrates that UGCP reduces vessel disconnections and improves structural consistency with limited additional computation. The code will be made available at https://github.com/chenzhao2023/UGC_PR.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T22:31:13Z</published>
+    <arxiv:comment>Pattern Recognition submission. 35 pages, 6 figures</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Huan Huang</name>
+    </author>
+    <author>
+      <name>Michele Esposito</name>
+    </author>
+    <author>
+      <name>Chen Zhao</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20539v1</id>
+    <title>OpenSeisML: Open Large-Scale Real Seismic and well-log Dataset for Generative AI</title>
+    <updated>2026-05-19T22:22:46Z</updated>
+    <link href="https://arxiv.org/abs/2605.20539v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20539v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>The advent of machine learning (ML) and computer vision has significantly accelerated seismic inversion workflows by reducing the computational cost of traditionally expensive iterative methods. However, the development and evaluation of ML methods remain limited by the scarcity of realistic velocity models, as most high-quality data are privately owned by oil and gas companies. To address this gap, we present OpenSeisML, a collection of real seismic datasets designed to support generative AI (Gen-AI) workflows for seismic inversion. The datasets are curated from publicly available surveys in the UK National Data Repository (NDR). When seismic volumes are in the time domain and wells are in depth, a time-to-depth conversion is required. We use checkshot data to establish the time-depth relationship and construct a velocity model through interpolation for accurate conversion of post-stack seismic data. Here, we present an automated data curation pipeline that enables seismic data preparation while ensuring reproducibility. The objective is to train a generative model that captures the statistical distribution of subsurface properties, enabling the synthesis of multiple statistically consistent realizations for uncertainty quantification which can act as a prior for seismic inversion.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T22:22:46Z</published>
+    <arxiv:comment>5 pages, 8 figures</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Ipsita Bhar</name>
+    </author>
+    <author>
+      <name>Huseyin Tuna Erdinc</name>
+    </author>
+    <author>
+      <name>Thales Souza</name>
+    </author>
+    <author>
+      <name>Charles Jones</name>
+    </author>
+    <author>
+      <name>Felix J. Herrmann</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20538v1</id>
+    <title>Continual Segmentation under Joint Nonstationarity</title>
+    <updated>2026-05-19T22:20:00Z</updated>
+    <link href="https://arxiv.org/abs/2605.20538v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20538v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Evolving data streams induce joint nonstationarity in continual semantic segmentation, where semantic classes, input distributions, and supervision availability change simultaneously over time. This setting reflects practical structured prediction systems, yet remains largely unexplored in prior continual learning work, which typically studies these factors in isolation. We formalize continual segmentation under coupled class, domain, and label shifts and investigate learning in heterogeneous dense prediction environments with limited annotations and abundant unlabeled data. To address instability and overfitting arising from few-shot supervision under distribution drift, we introduce gradient-adaptive stabilization, a parameter-wise regularization mechanism implemented via gradient-scaled stochastic perturbations that promotes a principled stability-plasticity tradeoff. We further leverage unlabeled data through semi-supervised learning and introduce prototype anchored supervision that validates pseudo-labels via joint confidence and prototype consistency. Together, these mechanisms enable learning under joint nonstationarity in continual segmentation. Extensive empirical evaluation across class-incremental, domain-incremental, and few-shot regimes demonstrates consistent improvements over prior methods in heterogeneous structured prediction settings. Our results expose fundamental failure modes of existing continual segmentation approaches and provide insight into learning robust dense predictors in dynamically evolving environments.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T22:20:00Z</published>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Prashant Pandey</name>
+    </author>
+    <author>
+      <name>Himanshu Kumar</name>
+    </author>
+    <author>
+      <name>Devineni Sri Venkatraya Chowdary</name>
+    </author>
+    <author>
+      <name>Brejesh Lall</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20536v1</id>
+    <title>HADS-Net:A Hybrid Attention-Augmented Dual-Stream Network with Physics-Informed Augmentation for Breast Ultrasound Image Classification</title>
+    <updated>2026-05-19T22:16:24Z</updated>
+    <link href="https://arxiv.org/abs/2605.20536v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20536v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Accurate classification of breast ultrasound images into benign, malignant, and normal categories is a critical clinical task complicated by speckle noise, acoustic shadowing, and inter-class visual ambiguity. Existing deep learning methods rely on single-stream architectures with generic augmentation that ignores ultrasound acquisition physics, and no prior method dedicates a stream to the lesion boundary features identified as the most diagnostically significant visual cue. We propose HADS-Net, a Hybrid Attention-Augmented Dual-Stream Network exploiting global texture and local boundary cues through two parallel pathways. Stream 1 applies physics-informed augmentation simulating speckle noise, acoustic shadowing, and gain variation before extracting features via pretrained EfficientNet-B3 projected to 512 dimensions. Stream 2 extracts Sobel edge maps processed by a lightweight CNN projected to the same 512-dimensional space. A cross-attention fusion module allows the texture stream to selectively query boundary features, producing a jointly optimised representation classified by an MLP trained with adaptive class-weighted focal loss. Five-fold stratified cross-validation with cosine annealing over 50 epochs is used, with the globally best checkpoint selected by lowest validation loss evaluated on a held-out test set. On the BUSI dataset, HADS-Net achieves 96.58% accuracy, macro ROC-AUC of 0.9978, macro F1 of 0.9654, and per-class F1-scores of 0.970, 0.951, and 0.976 for benign, malignant, and normal. No malignant lesion is misclassified as normal. These results confirm that modality-specific augmentation with cross-modal attention fusion is an effective strategy for ultrasound-based breast cancer diagnosis.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T22:16:24Z</published>
+    <arxiv:comment>7 pages, 4 figures</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Chinedu Emmanuel Mbonu</name>
+    </author>
+    <author>
+      <name>Blessing Nwamaka Iduh</name>
+    </author>
+    <author>
+      <name>Joseph Ikechukwu Odo</name>
+    </author>
+    <author>
+      <name>Doris Chinedu Asogwa</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20534v1</id>
+    <title>Axiomatizing Neural Networks via Pursuit of Subspaces</title>
+    <updated>2026-05-19T22:12:58Z</updated>
+    <link href="https://arxiv.org/abs/2605.20534v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20534v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>While deep neural networks have achieved remarkable success across a wide range of domains, their underlying mechanisms remain poorly understood, and they are often regarded as black boxes. This gap between empirical performance and theoretical understanding poses a challenge analogous to the pre-axiomatic stage of classical geometry. In this work, we introduce the Pursuit of Subspaces (PoS) hypothesis, an axiomatic framework that formulates neural network behavior through a set of geometric postulates. These axioms, together with their derived consequences, provide a unified perspective on representation, computation, and generalization in both shallow and deep architectures. We show that this framework yields geometric explanations for fundamental questions in deep learning, including representation structure, architectural mechanisms, and generalization behavior, offering a principled step toward a coherent theoretical foundation.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="stat.ML" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T22:12:58Z</published>
+    <arxiv:comment>43 pages, 25 figures. Code and additional materials will be released</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Mehmet Yamac</name>
+    </author>
+    <author>
+      <name>Mert Duman</name>
+    </author>
+    <author>
+      <name>Ugur Akpinar</name>
+    </author>
+    <author>
+      <name>Felix Rojas Casadiego</name>
+    </author>
+    <author>
+      <name>Serkan Kiranyaz</name>
+    </author>
+    <author>
+      <name>Marcel van Gerven</name>
+    </author>
+    <author>
+      <name>Moncef Gabbouj</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.22869v1</id>
+    <title>FuRA: Full-Rank Parameter-Efficient Fine-Tuning with Spectral Preconditioning</title>
+    <updated>2026-05-19T22:11:25Z</updated>
+    <link href="https://arxiv.org/abs/2605.22869v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.22869v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Both full fine-tuning (Full FT) and parameter-efficient fine-tuning methods such as LoRA introduce weight updates without accounting for the spectral structure established during pretraining. As a result, noisy gradients from limited fine-tuning data can perturb robust pretrained features. We identify spectral preconditioning as the missing ingredient: reparameterizing each weight matrix through its full-rank singular value decomposition (SVD) and freezing one singular basis constrains updates to the pretrained column space, yielding a preconditioned optimization scheme that outperforms unconstrained Full FT at the same trainable parameter count. Building on this insight, we propose FuRA (Full-Rank Adaptation), an efficient full-rank adaptation framework based on a block tensor-train factorization W = LSR, where the large core L is fixed to the pretrained block-wise SVD basis, while only the compact core R and the block-wise singular values S are optimized. This design simultaneously provides full-rank spectral preconditioning, preserves full-rank update expressivity, and achieves parameter, memory, and step-time efficiency comparable to LoRA. FuRA consistently outperforms Full FT across multiple settings, including LLM fine-tuning (+1.37 on LLaMA-3-8B commonsense reasoning), LLM reinforcement learning for mathematical reasoning, and visual instruction tuning for VLMs. Furthermore, the 4-bit quantized variant, QFuRA, also surpasses QLoRA. Code is available at https://github.com/olokevin/FuRA-NIPS</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T22:11:25Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Yequan Zhao</name>
+    </author>
+    <author>
+      <name>Ruijie Zhang</name>
+    </author>
+    <author>
+      <name>Liyan Tan</name>
+    </author>
+    <author>
+      <name>Niall Moran</name>
+    </author>
+    <author>
+      <name>Tong Qin</name>
+    </author>
+    <author>
+      <name>Zheng Zhang</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20533v1</id>
+    <title>Ada2MS: A Hybrid Optimization Algorithm Based on Exponential Mixing of Elementwise and Global Second-Moment Estimates</title>
+    <updated>2026-05-19T22:11:04Z</updated>
+    <link href="https://arxiv.org/abs/2605.20533v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20533v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Optimization algorithms are core methods by which machine learning models iteratively minimize loss functions, update parameters, learn from data, and improve performance. Momentum SGD and AdamW represent two important optimization paradigms. AdamW produces stable updates and usually has strong robustness across training scenarios, but its generalization performance is sometimes weaker than that of momentum methods. Momentum SGD can often obtain better generalization after careful tuning, but it is more sensitive to gradient-scale variation and hyperparameter settings. To balance the strengths and weaknesses of the two paradigms, this paper proposes Ada2MS, an optimization algorithm that achieves a smooth transition between AdamW-like behavior and momentum-SGD-like behavior through continuous exponential interpolation between elementwise second-moment estimates and global second-moment estimates. On the visual tasks evaluated in this study, Ada2MS obtains competitive results under a unified optimizer-comparison protocol. The code will be released at https://github.com/mengzhu0308/Ada2MS</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T22:11:04Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Meng Zhu</name>
+    </author>
+    <author>
+      <name>Quan Xiao</name>
+    </author>
+    <author>
+      <name>Weidong Min</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20531v1</id>
+    <title>Pseudo-Formalization for Automatic Proof Verification</title>
+    <updated>2026-05-19T22:08:51Z</updated>
+    <link href="https://arxiv.org/abs/2605.20531v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20531v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Reliable verification of proofs remains a bottleneck for training and evaluating AI systems on hard mathematical reasoning. Fully formal proofs, in languages like Lean, are easy to verify because they are unambiguous and modular. Most proofs, particularly those written by AI systems, have neither property, and translating them into formal languages remains challenging in many frontier math settings. We propose Pseudo-Formalization (PF), a proof format that captures the modularity and precision of formal proofs while retaining the flexibility of natural language. A Pseudo-Formal proof is decomposed into self-contained modules, each stating its premises, conclusion, and proof in natural language. To verify the correctness of a regular natural language proof, an LLM translates it to Pseudo-Formal and then verifies each module independently, an algorithm we call Block Verification (BV). We evaluate PF+BV on two benchmarks spanning olympiad and research-level mathematics, where it pareto-dominates LLM-as-judge baselines on error-finding precision and recall. To support future work, we release our research-level proof verification benchmark ArxivMathGradingBench.</summary>
+    <category term="cs.LO" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T22:08:51Z</published>
+    <arxiv:comment>31 pages, code available at https://github.com/Slim205/pseudo-formalization</arxiv:comment>
+    <arxiv:primary_category term="cs.LO"/>
+    <author>
+      <name>Slim Barkallah</name>
+    </author>
+    <author>
+      <name>Luke Bailey</name>
+    </author>
+    <author>
+      <name>Kaiyue Wen</name>
+    </author>
+    <author>
+      <name>Mohammed Abouzaid</name>
+    </author>
+    <author>
+      <name>Tengyu Ma</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20530v2</id>
+    <title>AgentAtlas: Beyond Outcome Leaderboards for LLM Agents</title>
+    <updated>2026-05-26T15:53:21Z</updated>
+    <link href="https://arxiv.org/abs/2605.20530v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20530v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large language model agents now act on codebases, browsers, operating systems, calendars, files, and tool ecosystems, but their evaluations often collapse behavior into final task success. AgentAtlas reframes agent evaluation as a diagnostic vocabulary and audit protocol for separating outcome success from control-decision quality and trajectory quality. The paper contributes: (i) a six-state control-decision taxonomy (Act / Ask / Refuse / Stop / Confirm / Recover); (ii) a trajectory-failure vocabulary with primary error source and downstream impact; (iii) a 0/1/2 benchmark-coverage audit over fifteen agent benchmarks; and (iv) an illustrative protocol study on a synthetic 1,342-item set evaluated with eight models under taxonomy-aware and taxonomy-blind prompt formats. The synthetic demonstration is not a public benchmark release and should not be read as a definitive model comparison. Instead, it illustrates two measurement risks: mapped label agreement can change substantially when the explicit label menu is removed, and axis choice can change apparent rankings. AgentAtlas is intended to help benchmark designers state what behavior they cover, and to help evaluators diagnose failures that outcome-only leaderboards hide.</summary>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T22:05:12Z</published>
+    <arxiv:primary_category term="cs.AI"/>
+    <author>
+      <name>Parsa Mazaheri</name>
+    </author>
+    <author>
+      <name>Kasra Mazaheri</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20529v1</id>
+    <title>Collocational bootstrapping: A hypothesis about the learning of subject-verb agreement in humans and neural networks</title>
+    <updated>2026-05-19T22:05:05Z</updated>
+    <link href="https://arxiv.org/abs/2605.20529v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20529v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>In what ways might statistical signals in linguistic input assist with the acquisition of syntax? Here we hypothesize a mechanism called collocational bootstrapping, in which regularities in word co-occurrence patterns can provide cues to syntactic dependencies. We investigate whether this mechanism can support the acquisition of English subject-verb agreement. First, we simulate language acquisition by training neural networks on synthetic datasets that vary in how predictable their subject-verb pairings are. We find that there is a range of variability levels at which these statistical learners robustly learn subject-verb agreement. We then analyze the variability of subject-verb pairings in child-directed language, and we find that the variability in such data falls within the range that supported robust generalization in our computational simulations. Taken together, these results suggest that collocational bootstrapping is a viable learning strategy for the type of input that children receive.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T22:05:05Z</published>
+    <arxiv:comment>Accepted to CoNLL</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Claire Hobbs</name>
+    </author>
+    <author>
+      <name>R. Thomas McCoy</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.22868v1</id>
+    <title>FusionSense: Tri-Stage Near-Sensor Learning for Runtime-Adaptive Multimodal Edge Intelligence</title>
+    <updated>2026-05-19T21:59:32Z</updated>
+    <link href="https://arxiv.org/abs/2605.22868v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.22868v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Autonomous systems and smart-industry deployments increasingly split computation across near-sensor, edge, and cloud resources, where tight energy, latency, and reliability budgets demand run-time adaptivity. In practice, deciding what to compute and transmit at each point is pivotal; yet as multimodal sensor suites (cameras, LiDAR/depth, etc.) proliferate at the edge, most prior approaches either (i) fuse modalities on powerful servers or (ii) apply uni-modal near-sensor filters that ignore cross-modal dependencies, leading to redundant transmissions or missed events. We present FusionSense, a fusion-aware intelligent sensing framework for energy-constrained autonomous edge systems. Lightweight near-sensor classifiers are trained via a three-step procedure: (i) a server-side fusion model learns the downstream task, (ii) filter-out-safe (FoS) labels quantify each modality's necessity relative to the fused decision, and (iii) an edge-side fusion model is compacted by injecting near-sensor predictions as auxiliary signals. The result is a run-time decision layer that jointly reduces compute and communication while scaling linearly with sensor count. On a dual-modality (RGB+Depth/LiDAR) setup with SynDrone, FusionSense sustains task quality at substantially higher data-reduction rates than uni-modal filters and delivers large end-to-end gains: up to 33x lower energy at 1% FoI prevalence, 11x at 10%, a 92.3% reduction in quality loss at a fixed 30% data reduction, and roughly 1.5x higher energy savings than the best prior filtering baseline.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T21:59:32Z</published>
+    <arxiv:comment>Accepted to ISLPED 2026</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Sanggeon Yun</name>
+    </author>
+    <author>
+      <name>Ryozo Masukawa</name>
+    </author>
+    <author>
+      <name>Minhyoung Na</name>
+    </author>
+    <author>
+      <name>Hyunwoo Oh</name>
+    </author>
+    <author>
+      <name>Yoshiki Yamaguchi</name>
+    </author>
+    <author>
+      <name>Wenjun Huang</name>
+    </author>
+    <author>
+      <name>SungHeon Jeong</name>
+    </author>
+    <author>
+      <name>Mohsen Imani</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20525v1</id>
+    <title>NeuroQA: A Large-Scale Image-Grounded Benchmark for 3D Brain MRI Understanding</title>
+    <updated>2026-05-19T21:54:12Z</updated>
+    <link href="https://arxiv.org/abs/2605.20525v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20525v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We present NeuroQA, a large-scale benchmark for visual question answering in 3D brain magnetic resonance imaging (MRI), with 56,953 QA pairs from 12,977 subjects across 12 datasets. It spans ages 5-104 and five clinical domains: Alzheimer's, Parkinson's, tumors, white matter disease, and neurodevelopment. Unlike prior medical Visual Question Answering (VQA) efforts that operate on 2D slices or rely on narrow diagnostic labels, NeuroQA pairs every item with a full 3D volume. It evaluates 11 clinically grounded reasoning skills across Yes/No, multiple-choice, and open-ended formats. Of the 203 templates, 131 are image-grounded (answerable from a 3-plane viewer) and 72 are image-informed (ground truth from quantitative volumetry or clinical instruments). To remove text-only shortcuts, we apply answer-distribution refinement, reducing closed-format text-only accuracy from $&gt;$80% to 44.6%; image necessity is assessed separately through an image-grounding protocol released with the benchmark. A 38-rule deterministic pipeline and two rounds of expert review verify every QA pair against FreeSurfer measurements, metadata, or radiology report fields, with zero same-subject contradictions across templates. We conduct a clinician evaluation in which two clinicians independently assess 100 frozen test items on a three-plane viewer. On closed-format (Yes/No + multiple-choice) test-public items, the best zero-shot vision-language model and a supervised 3D CNN baseline reach 47.5% and 43.7% accuracy respectively, both below the 49.4% text-only majority-template floor. NeuroQA adopts a two-tier release with public QA pairs for open-access datasets and reproducible generation scripts for datasets restricted by data use agreements (DUAs), plus subject-level splits, a held-out private test set, and an online leaderboard.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="eess.IV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T21:54:12Z</published>
+    <arxiv:comment>30 pages, dataset and benchmark release</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Mohammad H. Abbasi</name>
+      <arxiv:affiliation>Stanford University</arxiv:affiliation>
+    </author>
+    <author>
+      <name>Favour Nerrise</name>
+      <arxiv:affiliation>Stanford University</arxiv:affiliation>
+    </author>
+    <author>
+      <name>Shaurnav Ghosh</name>
+      <arxiv:affiliation>Stanford University</arxiv:affiliation>
+    </author>
+    <author>
+      <name>Ridvan Yesiloglu</name>
+      <arxiv:affiliation>Stanford University</arxiv:affiliation>
+    </author>
+    <author>
+      <name>Yuncong Mao</name>
+      <arxiv:affiliation>Stanford University</arxiv:affiliation>
+    </author>
+    <author>
+      <name>Bailey Trang</name>
+      <arxiv:affiliation>Stanford University</arxiv:affiliation>
+    </author>
+    <author>
+      <name>Mohammad Asadi</name>
+      <arxiv:affiliation>Stanford University</arxiv:affiliation>
+    </author>
+    <author>
+      <name>Merryn Daniel</name>
+      <arxiv:affiliation>Stanford University</arxiv:affiliation>
+    </author>
+    <author>
+      <name>Gustavo Chau Loo Kung</name>
+      <arxiv:affiliation>Stanford University</arxiv:affiliation>
+    </author>
+    <author>
+      <name>Ken Chang</name>
+      <arxiv:affiliation>Stanford University</arxiv:affiliation>
+    </author>
+    <author>
+      <name>Pavan Pinkesh Shah</name>
+      <arxiv:affiliation>Stanford University</arxiv:affiliation>
+    </author>
+    <author>
+      <name>Adam Turnbull</name>
+      <arxiv:affiliation>Stanford University</arxiv:affiliation>
+    </author>
+    <author>
+      <name>Kyan Younes</name>
+      <arxiv:affiliation>Stanford University</arxiv:affiliation>
+    </author>
+    <author>
+      <name>Seena Dehkharghani</name>
+      <arxiv:affiliation>Stanford University</arxiv:affiliation>
+    </author>
+    <author>
+      <name>Ehsan Adeli</name>
+      <arxiv:affiliation>Stanford University</arxiv:affiliation>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20523v1</id>
+    <title>Machine-Learning-Enhanced Non-Invasive Testing for MASLD Fibrosis: Shallow-Deep Neural Networks Versus FIB-4, Tabular Foundation Models, and Large Language Models</title>
+    <updated>2026-05-19T21:51:02Z</updated>
+    <link href="https://arxiv.org/abs/2605.20523v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20523v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Advanced fibrosis is a major determinant of liver-related morbidity in metabolic dysfunction-associated steatotic liver disease (MASLD). FIB-4 is widely used as a first-line non-invasive test, but its fixed formula may underuse diagnostic information contained in age, aspartate aminotransferase, alanine aminotransferase, and platelet count. We evaluated whether machine-learning-enhanced non-invasive testing (MLE-NIT) can improve advanced fibrosis detection while preserving this FIB-4 variable space.
+  We used three biopsy-confirmed MASLD cohorts from China, Malaysia, and India (n=784). The Chinese cohort was split into 486 training and 54 internal validation/tuning patients; final performance was reported only on the Malaysian and Indian external cohorts. Models used five variables: age, FIB-4, aspartate aminotransferase, platelet count, and alanine aminotransferase. We compared FIB-4 with a shallow-deep neural network (s-DNN), TabPFN, and gpt-4o-2024-08-06.
+  FIB-4 achieved external ROC-AUCs of 0.75 and 0.60 in Malaysia and India, respectively. TabPFN achieved 0.69 and 0.66, fine-tuned GPT-4o achieved 0.75 and 0.63, and the s-DNN achieved 0.77 and 0.67, respectively. The s-DNN contained only 354 trainable parameters, compared with 7,244,554 for TabPFN, yet provided a more balanced external operating profile. Calibration showed s-DNN Brier scores of 0.18 and 0.22, and permutation importance identified AST and FIB-4 as dominant variables. Compact non-linear MLE-NITs may enhance FIB-4-based fibrosis assessment without increasing clinical data requirements.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="q-bio.QM" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T21:51:02Z</published>
+    <arxiv:comment>26 pages, 4 figures, 3 tables. Preprint</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Athanasios Angelakis</name>
+    </author>
+    <author>
+      <name>Gabriele De Vito</name>
+    </author>
+    <author>
+      <name>Eleni-Myrto Trifylli</name>
+    </author>
+    <author>
+      <name>Filomena Ferrucci</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20521v1</id>
+    <title>An exponential mechanism based on quadratic approximations for fine-tuning machine learning models with privacy guarantees</title>
+    <updated>2026-05-19T21:43:22Z</updated>
+    <link href="https://arxiv.org/abs/2605.20521v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20521v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Fine-tuning adapts a pretrained machine learning model to a small, sensitive dataset, but this process risks memorizing individual new data points, making the model vulnerable to adversaries who seek to extract sensitive information. In this work, we develop a randomized algorithm based on the exponential mechanism for fine-tuning while ensuring differential privacy. Our key idea is to construct a simple utility function that combines a local quadratic approximation of the pretrained model with information from the new dataset. The resulting exponential mechanism admits exact sampling from a multivariate normal distribution in closed form. We establish theoretical privacy guarantees, sensitivity bounds, and accuracy estimations for our method. We further introduce a random-projection strategy that makes the approach scalable to high-dimensional models. Numerical experiments on the MNIST benchmark and the MIMIC clinical dataset demonstrate competitive performance against existing differentially private fine-tuning techniques.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T21:43:22Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Hoang Tran</name>
+    </author>
+    <author>
+      <name>Jorge Ramirez</name>
+    </author>
+    <author>
+      <name>Jiayi Wang</name>
+    </author>
+    <author>
+      <name>Alberto Bocchinfuso</name>
+    </author>
+    <author>
+      <name>Christopher Stanley</name>
+    </author>
+    <author>
+      <name>M. Paul Laiu</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20520v1</id>
+    <title>Open-World Evaluations for Measuring Frontier AI Capabilities</title>
+    <updated>2026-05-19T21:42:32Z</updated>
+    <link href="https://arxiv.org/abs/2605.20520v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20520v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Benchmark-based evaluation remains important for tracking frontier AI progress. But it can both overstate and understate deployed capability because it privileges tasks that can be precisely specified, automatically graded, easy to optimize for, and run with low budgets and short time horizons. We advocate for a complementary class of evaluations, which we term open-world evaluations: long-horizon, messy, real-world tasks assessed through small-sample qualitative analysis rather than benchmark-scale automation. In this paper we survey recent open-world evaluations, identify their strengths and limitations, and introduce CRUX (Collaborative Research for Updating AI eXpectations), a project for conducting such evaluations regularly. As a first instance, we task an AI agent with developing and publishing a simple iOS application to the Apple App Store. The agent completed the task with only a single avoidable manual intervention, suggesting that open-world evaluations can provide early warning of capabilities that may soon become widespread. We conclude with recommendations for designing and reporting open-world evals.</summary>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T21:42:32Z</published>
+    <arxiv:primary_category term="cs.AI"/>
+    <author>
+      <name>Sayash Kapoor</name>
+    </author>
+    <author>
+      <name>Peter Kirgis</name>
+    </author>
+    <author>
+      <name>Andrew Schwartz</name>
+    </author>
+    <author>
+      <name>Stephan Rabanser</name>
+    </author>
+    <author>
+      <name>J. J. Allaire</name>
+    </author>
+    <author>
+      <name>Rishi Bommasani</name>
+    </author>
+    <author>
+      <name>Harry Coppock</name>
+    </author>
+    <author>
+      <name>Magda Dubois</name>
+    </author>
+    <author>
+      <name>Gillian K Hadfield</name>
+    </author>
+    <author>
+      <name>Andrew B. Hall</name>
+    </author>
+    <author>
+      <name>Sara Hooker</name>
+    </author>
+    <author>
+      <name>Seth Lazar</name>
+    </author>
+    <author>
+      <name>Steve Newman</name>
+    </author>
+    <author>
+      <name>Dimitris Papailiopoulos</name>
+    </author>
+    <author>
+      <name>Shoshannah Tekofsky</name>
+    </author>
+    <author>
+      <name>Helen Toner</name>
+    </author>
+    <author>
+      <name>Cozmin Ududec</name>
+    </author>
+    <author>
+      <name>Arvind Narayanan</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20519v2</id>
+    <title>Codec-Robust Attacks on Audio LLMs</title>
+    <updated>2026-05-21T17:49:53Z</updated>
+    <link href="https://arxiv.org/abs/2605.20519v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20519v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Prior attacks on Audio Large Language Models (Audio LLMs) demonstrated that carefully crafted waveform-domain perturbations can force targeted adversarial outputs. As a defense mechanism against these attacks, real-world codec compression preprocessing has been studied to both detect and remove the perturbations. Yet no existing attack has demonstrated robustness against these compressions. We introduce CodecAttack, which optimizes a perturbation in a neural audio codec's continuous latent space rather than directly perturbing the audio waveform. We show that the codec's compression channel, which discards waveform perturbations, transmits perturbations crafted in its own latent space. To further harden the attack across real-world compression channels, we apply multi-bitrate straight-through Expectation-over-Transformation (EoT), all without modifying the target model. Across three realistic Audio LLM deployment scenarios and three target models, CodecAttack achieves an average 85.5% target-substring attack success rate (ASR) on Opus at moderate bitrates, while the waveform baseline trained with identical EoT hardening does not exceed 26% at any bitrate. The attack transfers to held-out codecs, reaching up to 100% ASR on MP3 and 84% on AAC-LC without retraining. A per-band energy analysis shows that the latent perturbation concentrates below 4kHz, exactly where codecs allocate the most bits, while the waveform baseline spreads into higher frequencies that codecs discard. These results demonstrate that lossy compression is not a reliable defense against adversarial audio and that codec-aware attacks pose a practical threat to deployed Audio LLM systems.</summary>
+    <category term="cs.SD" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T21:39:52Z</published>
+    <arxiv:primary_category term="cs.SD"/>
+    <author>
+      <name>Jaechul Roh</name>
+    </author>
+    <author>
+      <name>Jean-Philippe Monteuuis</name>
+    </author>
+    <author>
+      <name>Jonathan Petit</name>
+    </author>
+    <author>
+      <name>Amir Houmansadr</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20515v1</id>
+    <title>Online Conformal Prediction with Corrupted Feedback</title>
+    <updated>2026-05-19T21:34:37Z</updated>
+    <link href="https://arxiv.org/abs/2605.20515v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20515v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Modern artificial intelligence systems require calibrated uncertainty estimates that remain reliable in sequential and non-stationary environments. Online conformal prediction (OCP) addresses this challenge through adaptively updated prediction sets that provide deterministic long-run miscoverage guarantees. These guarantees, however, hinge on the assumption of perfect feedback about the coverage of past prediction sets. In practice, the observed miscoverage indicator may be corrupted by noise, communication failures, or adversarial manipulation, which can severely degrade OCP's calibration guarantees. In this paper, we study OCP under corrupted feedback. We first model feedback corruption as an arbitrary binary flip sequence, and analyze how feedback corruption affects and degrades the miscoverage performance of standard OCP. We then propose two robust schemes: robust OCP via filtering, which leverages the structural properties of the predicted threshold to filter corrupted feedback, and robust OCP via active compensation, which incorporates an active compensation mechanism to mitigate the effect of corrupted feedback. For both methods, we establish explicit miscoverage guarantees, which are further specialized for an independent stochastic flip model and for an arbitrary error model with memory bounds. Experiments on real-world datasets validate the proposed approach, showing markedly improved calibration and significantly smaller prediction sets compared with baseline OCP methods under corrupted feedback.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="eess.SP" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T21:34:37Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Bowen Wang</name>
+    </author>
+    <author>
+      <name>Matteo Zecchin</name>
+    </author>
+    <author>
+      <name>Osvaldo Simeone</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20514v1</id>
+    <title>Fast Reconstruction of Exact Maxwell Dynamics from Sparse Data</title>
+    <updated>2026-05-19T21:34:11Z</updated>
+    <link href="https://arxiv.org/abs/2605.20514v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20514v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We introduce FLASH-MAX, a shallow, exact-by-construction neural network architecture for predicting homogeneous electromagnetic fields from sparse pointwise observations. Each hidden neuron represents a separate exact solution to Maxwell's equations, so that the network satisfies the governing equations symbolically by construction and can be trained end-to-end from sparse data within seconds. We prove a universal approximation result showing that this exact model class remains universal on arbitrary domains. FLASH-MAX reaches sub-1% relative validation error from about 1K sparse pointwise observations in seconds, all while maintaining a zero PDE residual, and keeps single-digit errors even for only 100 observations sampled from 3D space. These results suggest that moving governing structure from the loss into the hypothesis class can dramatically improve the trade-off between precision and optimization speed in scientific machine learning.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="math.NA" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="stat.ML" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T21:34:11Z</published>
+    <arxiv:comment>31 pages, 8 figures</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Dan DeGenaro</name>
+    </author>
+    <author>
+      <name>Xin Li</name>
+    </author>
+    <author>
+      <name>Obed Amo</name>
+    </author>
+    <author>
+      <name>Michael Pokojovy</name>
+    </author>
+    <author>
+      <name>Sarah Adel Bargal</name>
+    </author>
+    <author>
+      <name>Markus Lange-Hegermann</name>
+    </author>
+    <author>
+      <name>Bogdan Raiţă</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20510v1</id>
+    <title>ShadeBench: A Benchmark Dataset for Building Shade Simulation in Sustainable Society</title>
+    <updated>2026-05-19T21:28:02Z</updated>
+    <link href="https://arxiv.org/abs/2605.20510v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20510v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Urban heat exposure is becoming an increasingly critical challenge due to the intensifying urban heat island effect. Fine-grained shade patterns, especially those induced by urban buildings, strongly influence pedestrians' thermal exposure and outdoor activity planning. However, accurately modeling and analyzing urban shade at scale remains difficult because of the lack of large-scale datasets and systematic evaluation frameworks. To address this challenge, we present ShadeBench, a comprehensive dataset and benchmark for urban shade understanding. ShadeBench contains geographically diverse urban scenes with temporally varying simulated shade maps and textual descriptions, together with aligned satellite imagery, building skeleton representations, and 3D building meshes. Built upon this multimodal dataset, ShadeBench supports a range of downstream tasks, including shade generation, shade segmentation, and 3D building reconstruction. We further establish standardized evaluation protocols and baseline methods for these tasks. By enabling scalable and fine-grained shade analysis, ShadeBench provides a foundation for data-driven urban climate research and supports future studies in heat-resilient urban planning and decision-making. The code and dataset are publicly available at https://darl-genai.github.io/shadebench/.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CY" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T21:28:02Z</published>
+    <arxiv:comment>12 pages, 13 figures, 2 tables. Accepted by KDD 2026 AI for Sciences Track</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Longchao Da</name>
+    </author>
+    <author>
+      <name>Mithun Shivakoti</name>
+    </author>
+    <author>
+      <name>Xiangrui Liu</name>
+    </author>
+    <author>
+      <name>T Pranav Kutralingam</name>
+    </author>
+    <author>
+      <name>Yezhou Yang</name>
+    </author>
+    <author>
+      <name>Hua Wei</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20506v1</id>
+    <title>Reinforcing Human Behavior Simulation via Verbal Feedback</title>
+    <updated>2026-05-19T21:23:24Z</updated>
+    <link href="https://arxiv.org/abs/2605.20506v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20506v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Humans learn social norms and behaviors from verbal feedback (e.g., a parent saying "that was rude" or a friend explaining "here's why that hurt"). Yet, learning from feedback for LLMs has largely focused on domains like code and math, where RL rewards are directly verifiable and condensed into scalar values. As LLMs are increasingly used to simulate human behavior, e.g., standing in for users, patients, students, and other personas, there is a pressing need to make them more human-like, which requires embracing a fundamentally different kind of signal: feedback that is verbal, subjective, and multi-faceted. We present DITTO, a model trained by treating verbal feedback as a first-class signal in reinforcement learning. After each rollout, DITTO receives verbal feedback and generates a feedback-conditioned improved rollout; both outputs are jointly optimized with GRPO, distilling verbal guidance into the base policy without requiring feedback at test time. We also introduce SOUL (Simulation gym Of hUman-Like behavior), a unified benchmark and training data suite spanning 10 tasks across six categories: Theory of Mind, character role play, social skill, learner simulation, user simulation, and persona simulation. DITTO achieves an average 36% improvement over the base model and exceeds GPT-5.4 on 6 of 10 SOUL benchmarks, demonstrating that RL with verbal feedback is a promising direction for training LLMs to simulate human behavior.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T21:23:24Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Weiwei Sun</name>
+    </author>
+    <author>
+      <name>Xuhui Zhou</name>
+    </author>
+    <author>
+      <name>Jiarui Liu</name>
+    </author>
+    <author>
+      <name>Weihua Du</name>
+    </author>
+    <author>
+      <name>Haojia Sun</name>
+    </author>
+    <author>
+      <name>Yiqing Xie</name>
+    </author>
+    <author>
+      <name>Qianou Ma</name>
+    </author>
+    <author>
+      <name>Sihao Chen</name>
+    </author>
+    <author>
+      <name>Mengting Wan</name>
+    </author>
+    <author>
+      <name>Longqi Yang</name>
+    </author>
+    <author>
+      <name>Pei Zhou</name>
+    </author>
+    <author>
+      <name>Sherry Wu</name>
+    </author>
+    <author>
+      <name>Sean Welleck</name>
+    </author>
+    <author>
+      <name>Graham Neubig</name>
+    </author>
+    <author>
+      <name>Yiming Yang</name>
+    </author>
+    <author>
+      <name>Maarten Sap</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20502v1</id>
+    <title>Tippett-minimum Fusion of Representation-space Diffusion Models for Multi-Encoder Out-of-Distribution Detection</title>
+    <updated>2026-05-19T21:18:49Z</updated>
+    <link href="https://arxiv.org/abs/2605.20502v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20502v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We address out-of-distribution (OOD) detection across the full spectrum of distribution shifts -- global domain changes, semantic divergence, texture differences, and covariate corruptions -- through a multi-encoder fusion of per-encoder representation-space diffusion models (RDMs). We statistically identify each encoder's sensitivity to specific shift types from ID data alone and introduce EncMin2L -- an encoder-agnostic two-level $\min(\cdot)$-gate that combines and calibrates per-encoder diffusion-based likelihood detectors without OOD labels, outperforming monolithic multi-encoder baselines at $2.3\times$ lower parameter cost. Two ID-data diagnostics: $η^2$ (class-conditional F-test) and $Δμ$ (log-likelihood shift under synthetic corruptions) -- quantify encoder specialization, while a Tippett minimum $p$-value combination aggregates per-encoder scores into a single, calibration-stable OOD signal. EncMin2L achieves $\geq 0.94$ AUROC across all four shift types simultaneously, outperforming the state-of-the-art representation-space diffusion OOD detectors across overlapping benchmarks.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="stat.AP" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="stat.ML" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T21:18:49Z</published>
+    <arxiv:comment>14 pages</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Neelkamal Bhuyan</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20496v1</id>
+    <title>Platonic Representations in the Human Brain: Unsupervised Recovery of Universal Geometry</title>
+    <updated>2026-05-19T21:04:15Z</updated>
+    <link href="https://arxiv.org/abs/2605.20496v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20496v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>The Strong Platonic Representation Hypothesis suggests that representational convergence in artificial neural networks can be harnessed constructively: embeddings can be translated across models through a universal latent space without paired data. We ask whether an analogous geometry can be recovered across human brains. Using fMRI data from the Natural Scenes Dataset, we propose a self-supervised encoder that learns subject-specific embeddings from brain data alone by exploiting repeated stimulus presentations. We show that these independently learned spaces can be translated across subjects using unsupervised orthogonal rotations, without paired cross-subject samples or intermediate model representations. Synchronizing pairwise rotations into a single shared latent space further improves cross-subject retrieval, indicating that subject-specific spaces are mutually compatible with a common coordinate system. These results provide evidence for a shared neural geometry in the human visual cortex: subject-specific fMRI representations are approximately isometric across individuals and can be translated through purely geometric transformations.</summary>
+    <category term="q-bio.NC" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T21:04:15Z</published>
+    <arxiv:comment>Code available at https://github.com/memory-formation/platonic-representations-fmri</arxiv:comment>
+    <arxiv:primary_category term="q-bio.NC"/>
+    <author>
+      <name>Pablo Marcos-Manchón</name>
+    </author>
+    <author>
+      <name>Rishi Jha</name>
+    </author>
+    <author>
+      <name>Lluís Fuentemilla</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20495v1</id>
+    <title>A Human-in-the-Loop Framework for Efficient Prompt Selection in Microscopy Vision-Language Models</title>
+    <updated>2026-05-19T21:02:43Z</updated>
+    <link href="https://arxiv.org/abs/2605.20495v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20495v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Deep-learning pipelines for microscopy image classification often require expensive, labor- and time-intensive expert annotation to produce high-quality ground truth for training. Recent work has shown that prompt tuning of vision-language models (VLMs) can reduce manual annotation by constructing a small prompt set of expert-verified image-caption exemplars that is reused as few-shot context to classify all remaining images at inference time. To further reduce effort, the VLM can draft captions for candidate exemplars, which experts then verify and lightly edit instead of writing text de novo. However, two practical questions remain unaddressed: (1) which unlabeled images should be prioritized for verification, and (2) how many verified exemplars are needed to reach a performance target. In this work, we address these questions by formulating prompt-set construction as a target-driven active learning problem that prioritizes which images to annotate. We study three complementary selection criteria under strict low-resource constraints with small unlabeled pools. Experiments show that our methods reach the target performance with substantially fewer expert-verified images than random selection, achieving 100% test accuracy with as few as 20 annotated images on average. More broadly, our human-in-the-loop framework demonstrates a human-centered use of generative AI in biomedical image analysis, where experts remain actively involved in verifying and refining model output while significantly reducing annotation cost. Code and data will be publicly available.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T21:02:43Z</published>
+    <arxiv:comment>Accepted to CVPR workshops, 2026</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Abhiram Kandiyana</name>
+    </author>
+    <author>
+      <name>Ankur Mali</name>
+    </author>
+    <author>
+      <name>Lawrence O. Hall</name>
+    </author>
+    <author>
+      <name>Peter R. Mouton</name>
+    </author>
+    <author>
+      <name>Dmitry Goldgof</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20494v1</id>
+    <title>A 10,000-Year Global Stochastic Tropical Cyclone Catalog with Wind-Dependent Track Transitions (WHITS)</title>
+    <updated>2026-05-19T20:58:36Z</updated>
+    <link href="https://arxiv.org/abs/2605.20494v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20494v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Reliable assessment of tropical cyclone (TC) risk is limited by the brevity and spatial sparsity of the historical record, particularly for the rare, high-intensity landfalls that dominate insured loss. We present WHITS (Wind-focused Hurricane Interactive Track Simulator), a non-parametric semi-Markov track generator that extends the HITS framework of Nakamura et al. (2015) in three ways: transitions between historical track segments are conditioned on local wind speed in addition to position, age, and forward vector; the kernel selection on the comparative-vector term is sharpened to suppress dynamically inconsistent jumps; and a short smoothing window is applied across each transition to remove the position and wind discontinuities reported by downstream surge users. WHITS is fit to the full available best-track record in each of six basins in IBTrACS, extending in the North Atlantic to 1851 and in other basins to the earliest year of reliable best-track data. The resulting 10,000-yr global synthetic catalog reproduces observed track density and the annual hurricane/typhoon-force wind-hit probability across all basins. The catalog is intended for catastrophe-risk applications where a large, low-bias sample of physically plausible tracks is more useful than a small, statistically corrected one.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="physics.ao-ph" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="stat.AP" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T20:58:36Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Jennifer Nakamura</name>
+    </author>
+    <author>
+      <name>Upmanu Lall</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20490v3</id>
+    <title>ECUAS$_n$: A family of metrics for principled evaluation of uncertainty-augmented systems</title>
+    <updated>2026-05-22T20:08:09Z</updated>
+    <link href="https://arxiv.org/abs/2605.20490v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20490v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>In high-stakes automated decision-making, access to predictive uncertainty is essential for enabling users -- human or downstream systems -- to accept or reject predictions based on application-specific cost trade-offs. Such uncertainty-augmented (UA) systems -- i.e., systems that output both predictions and uncertainty scores -- are currently being assessed in the literature in a variety of ways, using separate metrics to evaluate the predictions and the uncertainty scores, setting a cost function with a fixed rejection cost or integrating over a coverage-risk curve. We argue that these evaluation approaches are inadequate for assessing overall performance of the UA system for decision making under uncertainty and propose a novel family of metrics, ECUAS$_n$, formulated as proper scoring rules for the task of interest. The parameter $n$ controls the trade-off between the cost of incorrect predictions and imperfect uncertainties depending on the needs of the use-case. We demonstrate the advantages of the ECUAS$_n$ metrics both theoretically and empirically, through experiments on diverse classification and generation datasets, including a manually annotated subset of TriviaQA.</summary>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T20:55:41Z</published>
+    <arxiv:comment>pre-print, 9-pages paper, 25 pages total</arxiv:comment>
+    <arxiv:primary_category term="cs.AI"/>
+    <author>
+      <name>Lautaro Estienne</name>
+    </author>
+    <author>
+      <name>Erik Ernst</name>
+    </author>
+    <author>
+      <name>Matías Vera</name>
+    </author>
+    <author>
+      <name>Pablo Piantanida</name>
+    </author>
+    <author>
+      <name>Luciana Ferrer</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20485v1</id>
+    <title>ZEBRA: Zero-shot Budgeted Resource Allocation for LLM Orchestration</title>
+    <updated>2026-05-19T20:50:05Z</updated>
+    <link href="https://arxiv.org/abs/2605.20485v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20485v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>As autonomous agents increasingly execute end-to-end tasks under fixed monetary budgets, the pressing open question shifts from whether the budget is respected, to how to spend it effectively. Existing budget-aware methods typically control reasoning step-by-step within a single agent, or learn resource allocation policies via RL. None address how to split a budget across the composing phases of a multi-agent pipeline at inference time. We propose ZEBRA, a zero-shot framework that reduces multi-phase budget allocation to a continuous nonlinear knapsack problem: an LLM controller estimates per-phase utility curves, and a water-filling search on the Lagrange multiplier returns the per-phase split. Additive and multiplicative aggregations are unified under the same solver. On a $150$-task APPS coding benchmark, both ZEBRA variants outperform LLM-direct (budget allocation directly by an LLM) on every aggregate metric. At a budget of $α= 0.5$ of the unconstrained spend, ZEBRA recovers $94.4\%$ of unconstrained quality, versus $88.1\%$ for LLM-direct. The advantage is statistically significant and transfers beyond coding: on a $3$-phase HotpotQA pipeline, ZEBRA beats LLM-direct by $14.3$pp, with allocations empirically robust to curve-estimation noise. On HotpotQA, ZEBRA arrives at a different budget split (near-balanced) compared to the APPS one (skewed towards a refinement phase), showing adaptation to the pipeline structure. More broadly, we show that lightweight algorithmic guidance at inference time can improve the economic behavior of autonomous multi-agent systems.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T20:50:05Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>May Hamri</name>
+    </author>
+    <author>
+      <name>Inbal Talgam-Cohen</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20484v1</id>
+    <title>Enhancing Graph-Based SLAM in GNSS-Denied environments by leveraging leg odometry</title>
+    <updated>2026-05-19T20:48:35Z</updated>
+    <link href="https://arxiv.org/abs/2605.20484v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20484v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Autonomous navigation in GNSS-denied environments remains a core challenge for legged robots, where exteroceptive sensors such as LiDAR are prone to elevation drift in geometrically sparse or repetitive scenes. We present a factor graph architecture that augments the LIO-SAM framework with a parallel kinematic lane driven by proprioceptive leg odometry, coupled to the main LiDAR-inertial lane via an identity relative pose constraint with a selective noise model. Applied to a Linxai D50 quadruped platform across two outdoor loops totaling over one kilometer, our approach reduces elevation drift from over 30m to under 30cm and enables convergence in a scene where the baseline pipeline fails entirely. These results suggest that proprioceptive data, already computed onboard for gait control, constitutes a lightweight and effective vertical anchor for SLAM in GNSS-denied settings.</summary>
+    <category term="cs.RO" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T20:48:35Z</published>
+    <arxiv:comment>4 pages, 3 figures, 2 tables, for ICRA workshop on Robot Meets GNSS and Ranging for Seamless Autonomy</arxiv:comment>
+    <arxiv:primary_category term="cs.RO"/>
+    <author>
+      <name>Léon Perruchot-Triboulet</name>
+    </author>
+    <author>
+      <name>Luc Jaulin</name>
+    </author>
+    <author>
+      <name>Kai Xiao</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20482v1</id>
+    <title>Quadratic Characterizations for Reachability Analysis of Neural Networks</title>
+    <updated>2026-05-19T20:45:31Z</updated>
+    <link href="https://arxiv.org/abs/2605.20482v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20482v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Quadratic constraints (QCs) are widely used to characterize nonlinearities and uncertainties, but generic analytical characterizations can be conservative on bounded domains. This paper develops a framework for constructing verified quadratic characterizations of scalar relations in the two-dimensional real plane. Candidate quadratic inequalities are locally generated by solving convex quadratic programs using samples from the relation and exterior sample points. They are then verified globally using sum-of-squares certificates over an exact semialgebraic description or, in the case of nonpolynomial relations, over relaxed polynomial descriptions. The resulting verified constraints define a sound overapproximation of the scalar relations over the considered domains. These constraints are directly compatible with existing analysis frameworks based on QCs and pointwise integral quadratic constraints (IQCs) for static nonlinearities and uncertainties, and they can also be embedded in QC-based semidefinite programs for reachability and safety analysis of feedforward neural networks. For smooth activations such as $\tanh$, the method yields domain-dependent quadratic characterizations that constitute an alternative to generic sector- or slope-based descriptions. For ReLU networks, we give methods to reduce conservatism in QC-based reachability analysis of feedforward networks by exploiting dependencies between neurons and tighter local bounds. Numerical examples demonstrate improved reachability results for smooth activations, reduced conservatism for ReLU networks, and applicability beyond neural networks through an example involving saturation.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="eess.SY" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T20:45:31Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Elias Khalife</name>
+    </author>
+    <author>
+      <name>Mazen Farhood</name>
+    </author>
+    <author>
+      <name>Pierre-Loic Garoche</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20479v1</id>
+    <title>Oracle Supervision Transfers for Hyperparameter Prediction in Model-Based Image Denoising</title>
+    <updated>2026-05-19T20:41:44Z</updated>
+    <link href="https://arxiv.org/abs/2605.20479v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20479v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Hyperparameter prediction is a critical practical bottleneck for model-based image denoisers, ranging from classical TV/TGV variational solvers to modern diffusion-based models such as DiffPIR. While existing learned predictors can achieve near-oracle performance, this approach scales poorly: each new configuration conventionally requires its own oracle-labeled training set, and each label requires a hierarchical grid search evaluated against clean ground truth. We therefore ask whether oracle supervision collected on source configurations can transfer to target configurations with few or no target oracle labels. We propose HyperDn, a single configuration-conditioned predictor that pools oracle supervision across source configurations and predicts heterogeneous hyperparameters for new denoiser--noise configurations. In a cross-paradigm experiment, HyperDn transfers from relatively cheap TV/TGV variational sources to more expensive diffusion-based DiffPIR. With only $2$ target oracle labels, it reaches $30.23$\,dB, within $0.90$\,dB of the oracle, and outperforms the $64$-label per-configuration predictor trained from scratch, using $1/32$ as many target labels as that baseline point. Without any target oracle labels, HyperDn also reaches near-oracle PSNR on two unseen mixtures of seen noise types and on transfer from relatively cheap $96\times 96$ source images to $512\times 768$ targets. Together, these results show that expensive oracle supervision for hyperparameter prediction can be transferred from source to new target configurations, reducing the need to rebuild oracle labels for each new denoising configuration.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T20:41:44Z</published>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Jianmin Liao</name>
+    </author>
+    <author>
+      <name>Lixin Shen</name>
+    </author>
+    <author>
+      <name>Yuesheng Xu</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20477v1</id>
+    <title>Training Language Agents to Learn from Experience</title>
+    <updated>2026-05-19T20:41:12Z</updated>
+    <link href="https://arxiv.org/abs/2605.20477v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20477v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Language agents can adapt from experience in interactive environments, but current reflection-based methods can only self-correct within a single task instance. Whether such experience can be distilled into reusable lessons that improve performance on future unseen tasks remains unclear. We address this problem by introducing the In-context Training (ICT) task, a framework for evaluating cross-task self-improvement in language agents. In ICT, a reflector model observes trajectories collected by an actor model and generates system prompts intended to improve the actor's performance on future unseen tasks. We then propose an RL-based training pipeline for learning such reflections directly from experience, without human-provided examples. Across ALFWorld and MiniHack, our trained reflectors outperform an untrained baseline on most held-out task families, showing that the ability to learn from experience can itself be learned. In some cases, we observe generalisation beyond the benchmark on which the reflector was trained, to substantially different environments. Finally, we introduce MetaGym, a generic Python library for constructing meta-environments, enabling future research on self-improving language agents.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T20:41:12Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Yuval Shalev</name>
+    </author>
+    <author>
+      <name>Zifeng Ding</name>
+    </author>
+    <author>
+      <name>Mateja Jamnik</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20476v1</id>
+    <title>Goodbye Drift: Anchored Tree Sampling for Long-Horizon Video-to-Video Generation</title>
+    <updated>2026-05-19T20:40:48Z</updated>
+    <link href="https://arxiv.org/abs/2605.20476v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20476v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Long-horizon video generation suffers from two intertwined issues. First, there is drift, where video quality degrades over time. Second, there are continuity issues which manifest as object permanence issues, or improperly rendering transient content (e.g., an object that appears in non-consecutive frames changing color/style). Recent work has focused on autoregressive distillation techniques that attack both problems simultaneously. We instead choose to focus on drift directly and introduce \textbf{Anchored Tree Sampling (ATS)}: a training-free inference-time scheduler that replaces left-to-right rollout with sparse-to-dense, anchor-bounded imputation organized as a tree. A root call produces sparse anchors over the full horizon, recursive refinement generates intermediate anchors, and final leaf spans are synthesized between neighboring anchors. This reduces the critical path from $K$ sequential rollout steps to $L+1$ tree-hierarchical steps and converts horizon-compounding drift into anchor-bounded drift. We focus on V2V generation in the \emph{static-camera} regime, where sparse anchors over the horizon are well approximated by the dense conditioning signal, and the base model can produce them without retraining. We evaluate ATS against two contemporary autoregressive baselines on Wan $2.1$ $+$ VACE, across five conditioning modalities (inpainting, outpainting, edge, pose, depth). We show that ATS outperforms both competitors in overall quality, as well as in drift prevention. We additionally demonstrate stable $\geq 40$-minute generation on LTX-$2.3$ across the same five modalities. We conclude by proposing a path forward to extend ATS to arbitrarily long T2V generation, as well as the dynamic-camera and multi-shot regimes.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T20:40:48Z</published>
+    <arxiv:comment>30 pages, 23 figures</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Matthew Bendel</name>
+    </author>
+    <author>
+      <name>Stephen W. Bailey</name>
+    </author>
+    <author>
+      <name>Mithilesh Vaidya</name>
+    </author>
+    <author>
+      <name>Sumukh Badam</name>
+    </author>
+    <author>
+      <name>Xingzhe He</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20473v1</id>
+    <title>Code Generation by Differential Test Time Scaling</title>
+    <updated>2026-05-19T20:39:14Z</updated>
+    <link href="https://arxiv.org/abs/2605.20473v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20473v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Test-time scaling has emerged as a promising approach for improving code generation by exploring large solution spaces at inference time. However, existing methods often rely on public test cases that are unavailable in practice, or require extensive LLM inference for candidate selection, leading to significant token consumption and time overhead. We present DiffCodeGen, a novel test-time scaling method for code generation based on coverage-guided differential analysis. DiffCodeGen generates diverse code candidates using various sampling and prompting strategies, then applies coverage-guided fuzzing to synthesize inputs without requiring any existing tests or large language models. By executing all candidates on these inputs, DiffCodeGen captures their dynamic behavior and clusters candidates based on behavioral similarity. DiffCodeGen selects the medoid of the largest cluster as the final output. Unlike prior test-time scaling methods that invoke additional LLM inference for candidate selection, DiffCodeGen performs selection without any extra model calls, incurring little to no additional token consumption. DiffCodeGen is fully asynchronous, naturally suited to the current trend of agentic coding, and is thus efficient and highly scalable. We evaluate DiffCodeGen across 4 large language models, demonstrating consistent improvements over baselines. Compared to state-of-the-art test-time scaling methods, DiffCodeGen achieves competitive or superior performance while using only a fraction of time and tokens. DiffCodeGen is model-agnostic and can be combined with reasoning models to further boost performance.</summary>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T20:39:14Z</published>
+    <arxiv:comment>16 main text, 21 pages with references</arxiv:comment>
+    <arxiv:primary_category term="cs.SE"/>
+    <author>
+      <name>Yifeng He</name>
+    </author>
+    <author>
+      <name>Ethan Wang</name>
+    </author>
+    <author>
+      <name>Jicheng Wang</name>
+    </author>
+    <author>
+      <name>Xuanxin Ouyang</name>
+    </author>
+    <author>
+      <name>Hao Chen</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20470v1</id>
+    <title>EPC-3D-Diff: Equivariant Physics Consistent Conditional 3D Latent Diffusion for CBCT to CT Synthesis</title>
+    <updated>2026-05-19T20:34:09Z</updated>
+    <link href="https://arxiv.org/abs/2605.20470v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20470v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Cone-beam CT (CBCT) is routinely acquired during radiotherapy for patient setup, but its quantitative reliability is degraded by scatter, noise, and reconstruction artifacts, limiting Hounsfield Unit (HU) accuracy. We propose EPC-3D-Diff, a novel conditional 3D latent diffusion framework for volumetric CBCT to CT synthesis that introduces a projection domain equivariance loss derived from acquisition physics. Unlike common image domain equivariance, we exploit the fact that an in plane rotation of the volume corresponds to an angular shift in its projections. During training, we enforce this relationship by forward projecting rotated synthesized CT volumes and matching them to appropriately angle shifted projections of the paired target CT, yielding a physics consistent equivariance constraint integrated into the diffusion objective. To capture full 3D context efficiently, conditional diffusion is performed in a compact latent space learnt by a lightweight 3D autoencoder, preserving axial depth while downsampling in plane resolution for stable training. We validate on a paired head CBCT/CT phantom dataset, including repeat scans, and paired clinical data using patient wise splits, and perform single and mixed domain training, ablations, and comparisons with diffusion and CycleGAN. EPC-3D-Diff generalizes well and achieved substantial improvements, +7.4 dB (phantom) and +1.8 dB (clinical data) in PSNR compared to state of the art methods, alongside improved SSIM and HU accuracy, within tissue boundaries. Overall, EPC-3D-Diff improves robustness and physics consistency, supporting HU aware synthesis for downstream radiotherapy workflows.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="physics.med-ph" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T20:34:09Z</published>
+    <arxiv:comment>10 pages, 4 figures</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Alzahra Altalib</name>
+    </author>
+    <author>
+      <name>Chunhui Li</name>
+    </author>
+    <author>
+      <name>Haytham Al Ewaidat</name>
+    </author>
+    <author>
+      <name>Khaled Alawneh</name>
+    </author>
+    <author>
+      <name>Ahmad Qendel</name>
+    </author>
+    <author>
+      <name>Alessandro Perelli</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20469v1</id>
+    <title>HalluCXR: Benchmarking and Mitigating Hallucinations in Medical Vision-Language Models for Chest Radiograph Interpretation</title>
+    <updated>2026-05-19T20:30:32Z</updated>
+    <link href="https://arxiv.org/abs/2605.20469v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20469v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Vision-language models (VLMs) are increasingly used for medical image interpretation, yet they frequently hallucinate, generating clinically plausible but factually incorrect findings that pose direct patient safety risks. We introduce HalluCXR, a benchmark evaluating six architecturally diverse VLMs across 856 stratified MIMIC-CXR chest radiographs and three query types, yielding 15,408 model evaluations. An eight-category hallucination taxonomy with clinical severity ratings and a two-layer detection pipeline are validated against 250 human annotations (auto-detection F1=0.959; LLM judge F1=0.907). We find that 61.9--82.3% of outputs contain hallucinations, with clinically dangerous errors in up to 80.2%. Three key patterns emerge: normal radiographs paradoxically attract the most severe hallucinations, common findings are systematically over-fabricated while rare findings go under-detected, and response length alone predicts hallucination risk (AUC up to 0.908). A six-model ensemble reduces fabrication by up to 84.8% at the cost of increased omission; a three-model subset retains comparable performance at half the cost. These results establish that hallucination auditing, verbosity-based risk monitoring, and ensemble-based safety layers are prerequisites for clinical deployment.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T20:30:32Z</published>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Haoyu Wang</name>
+    </author>
+    <author>
+      <name>Zitong Li</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20468v2</id>
+    <title>CASCADE Conformal Prediction: Uncertainty-Adaptive Prediction Intervals for Two-Stage Clinical Decision Support</title>
+    <updated>2026-06-03T15:45:32Z</updated>
+    <link href="https://arxiv.org/abs/2605.20468v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20468v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Effective medication management in Parkinson's Disease (PD) is challenging due to heterogeneous disease progression, variable patient response, and medication side effects. While AI models can forecast levodopa equivalent daily dose (LEDD) as a measure of medication needs, standard uncertainty quantification often fails to communicate the reliability of these predictions, treating high and low confidence clinical decisions identically. We introduce CASCADE (Calibrated Adaptive Scaling via Conformal And Distributional Estimation), a novel conformal prediction framework that propagates epistemic uncertainty from a screening classifier to adapt downstream predictions. Unlike standard conformal methods that rely on auxiliary residual regression, we leverage epistemic uncertainty from a primary classification task (identifying whether a medication change is needed) to dynamically scale the prediction intervals of a secondary regression task (predicting how much change). By mapping Venn-Abers multi-probabilistic uncertainty directly to non-conformity scores, our framework achieves continuous risk adaptation. We demonstrate that this ``cascade effect'' produces highly efficient intervals for confident patients (38.9% narrower than standard conformal baselines) while automatically expanding intervals to ensure robust coverage for uncertain cases, bridging the gap between discrete clinical decision-making and continuous dose forecasting in PD.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="stat.ME" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="stat.ML" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T20:30:10Z</published>
+    <arxiv:comment>Accepted to ICML 2026 AgenticUQ Workshop. 14 Pages, 3 Figures</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Ricardo Diaz-Rincon</name>
+    </author>
+    <author>
+      <name>Muxuan Liang</name>
+    </author>
+    <author>
+      <name>Adolfo Ramirez-Zamora</name>
+    </author>
+    <author>
+      <name>Benjamin Shickel</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20467v1</id>
+    <title>High Quality Embeddings for Horn Logic Reasoning</title>
+    <updated>2026-05-19T20:30:00Z</updated>
+    <link href="https://arxiv.org/abs/2605.20467v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20467v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Neural networks can be trained to rank the choices made by logical reasoners, resulting in more efficient searches for answers. A key step in this process is creating useful embeddings, i.e., numeric representations of logical statements. This paper introduces and evaluates several approaches to creating embeddings that result in better downstream results. We train embeddings using triplet loss, which requires examples consisting of an anchor, a positive example, and a negative example. We introduce three ideas: generating anchors that are more likely to have repeated terms, generating positive and negative examples in a way that ensures a good balance between easy, medium, and hard examples, and periodically emphasizing the hardest examples during training. We conduct several experiments to evaluate this approach, including a comparison of different embeddings across different knowledge bases, in an attempt to identify what characteristics make an embedding well-suited to a particular reasoning task.</summary>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T20:30:00Z</published>
+    <arxiv:primary_category term="cs.AI"/>
+    <arxiv:journal_ref>Proceedings of Machine Learning Research 284:1-14, 2025</arxiv:journal_ref>
+    <author>
+      <name>Yifan Zhang</name>
+    </author>
+    <author>
+      <name>Yasir White</name>
+    </author>
+    <author>
+      <name>Dean Clark</name>
+    </author>
+    <author>
+      <name>Joseph Sanchez</name>
+    </author>
+    <author>
+      <name>Jevon Lipsey</name>
+    </author>
+    <author>
+      <name>Ashely Hirst</name>
+    </author>
+    <author>
+      <name>Jeff Heflin</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20461v1</id>
+    <title>Understanding Model Behavior in Monocular Polyp Sizing</title>
+    <updated>2026-05-19T20:14:14Z</updated>
+    <link href="https://arxiv.org/abs/2605.20461v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20461v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Accurate polyp size stratification guides surveillance decisions, with lesions larger than 5 mm typically requiring closer follow-up. However, monocular colonoscopy lacks a reliable metric reference. We present a diagnostic audit of binary polyp size classification (&lt;=5 mm vs. &gt;5 mm) across multiple public multi-center datasets, model families, and patient-stratified cross-validation. Across architectures and input modalities, including RGB appearance, relative depth, and photometry, model performance is moderately consistent, suggesting reliance on cues correlated with examination behavior rather than true metric scales. By providing ground-truth scale at varying granularities, we quantify the potential improvement from perfect scale information and show that current depth estimation and global calibration offer limited gains. We further demonstrate that segmentation errors under distribution shift eliminate most of this potential, with oracle scale under predicted masks recovering only baseline performance. These results highlight metric scale and mask robustness as two independent bottlenecks and provide reusable evaluation tools such as oracle scale ladders, shortcut partitions, and mask substitution for auditing future polyp sizing pipelines. Our code is publicly accessible at https://github.com/anaxqx/polyp-sizing-audit.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T20:14:14Z</published>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Xinqi Xiong</name>
+    </author>
+    <author>
+      <name>Andrea Dunn Beltran</name>
+    </author>
+    <author>
+      <name>Junmyeong Choi</name>
+    </author>
+    <author>
+      <name>Sarah K. McGill</name>
+    </author>
+    <author>
+      <name>Marc Niethammer</name>
+    </author>
+    <author>
+      <name>Roni Sengupta</name>
+    </author>
+  </entry>
+</feed>

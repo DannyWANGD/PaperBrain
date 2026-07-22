@@ -290,3 +290,4 @@ graph LR
 
 ## Related Work Updates
 - [ ] **2026-06-04**: New paper [[Pion]] discusses *controlled vla design*. Innovation: "Proposes Pion, a high-pass Newton-Schulz iteration that anchors dominant singular values at 1 while suppressing noisy tail components, with per-head mode for preserving pretrained heterogeneity."
+- [ ] **2026-06-12**: New paper [[EmbodiedR15]] discusses *vlm for vla*. Innovation: "A unified Embodied Foundation Model with integrated reasoning, planning, and self-correction, trained with multi-task balanced RL and automated data pipelines, achieving strong zero-shot real-robot performance."

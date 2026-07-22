@@ -1,0 +1,354 @@
+{
+  "run_id": "2026-06-22",
+  "date": "2026-06-22",
+  "provider": "openrouter",
+  "providers": [
+    "openrouter"
+  ],
+  "single_paper": false,
+  "run_modes": [
+    "daily"
+  ],
+  "created_at": "2026-06-23T09:33:08",
+  "updated_at": "2026-06-23T09:33:20",
+  "stage": "fetched",
+  "papers": [
+    {
+      "title": "PerceptionDLM: Parallel Region Perception with Multimodal Diffusion Language Models",
+      "abstract": "Multimodal large language models (MLLMs) have achieved remarkable progress in visual understanding tasks. However, most existing MLLMs rely on autoregressive generation, which limits their efficiency for perception tasks that require captioning multiple regions. In this work, we propose PerceptionDLM, a multimodal diffusion language model optimized for efficient parallel region perception. Built upon PerceptionDLM-Base, a strong foundational baseline that achieves state-of-the-art performance among open-source diffusion MLLMs, our architecture fully leverages the parallel decoding nature of DLMs. Specifically, we introduce efficient prompting and structured attention masking to enable simultaneous perception of multiple masked regions, allowing the model to generate region descriptions in parallel at both the sequence and token levels. This design significantly improves inference efficiency compared with existing approaches that process regions sequentially. To systematically evaluate the parallelism property of visual perception capability for DLMs, we construct a new Parallel Detailed Localized Captioning Benchmark (ParaDLC-Bench) by scaling the DLC-Bench to include multiple region masks per image, enabling joint evaluation of both caption quality and inference efficiency. Experiments demonstrate that PerceptionDLM maintains competitive performance in region captioning while achieving substantial speed improvements for multi-region perception tasks. Our results highlight the potential of multimodal diffusion language models for efficient, parallel visual perception. To the best of our knowledge, we are the first to achieve parallel region caption and perception by leveraging the advantages of diffusion language models. Code, models, and datasets are released.",
+      "url": "https://huggingface.co/papers/2606.19534",
+      "pdf_url": "https://arxiv.org/pdf/2606.19534.pdf",
+      "published": "2026-06-22",
+      "publication_date": "2026-06-22",
+      "source": "HuggingFace",
+      "authors": [
+        "Yueyi Sun",
+        "Yuhao Wang",
+        "Jason Li",
+        "Ye Tian",
+        "Tao Zhang",
+        "Jacky Mai",
+        "Yihan Wang",
+        "Haochen Wang",
+        "Jinbin Bai",
+        "Ling Yang",
+        "Yunhai Tong"
+      ],
+      "arxiv_id": "2606.19534",
+      "paper_id": "arxiv:2606.19534",
+      "paper_sources": [
+        "daily"
+      ],
+      "provider_sources": [
+        "openrouter"
+      ],
+      "coarse_score": 4.4,
+      "coarse_relevance": 2.0,
+      "coarse_evidence": 6.0,
+      "coarse_method_completeness": 7.0,
+      "should_rescreen": false,
+      "coarse_reason": "The paper is about parallel region captioning using diffusion language models, which does not align with the target interests in robot manipulation, VLA, world models, RL, or embodied AI.",
+      "coarse_model": "deepseek/deepseek-v4-flash",
+      "short_title": "PerceptionDLM",
+      "in_daily_digest": false,
+      "selected_for_deep_analysis": false,
+      "forced_deep": false,
+      "forced_digest": false,
+      "preserved_deep": false,
+      "deep_analysis_completed": false,
+      "best_score_source": "daily"
+    },
+    {
+      "title": "GateMem: Benchmarking Memory Governance in Multi-Principal Shared-Memory Agents",
+      "abstract": "Memory benchmarks for LLM agents largely assume single-user settings, leaving shared assistants for hospitals, workplaces, campuses, and households understudied. In these deployments, multiple principals write to a common memory pool and query it under different roles, scopes, and relationships, so memory quality requires governance as well as recall. We introduce GateMem, a benchmark for multi-principal shared-memory agents. GateMem jointly evaluates utility for legitimate long-horizon requests with state updates, access control across contextual authorization boundaries, and agent-facing active forgetting after explicit deletion requests. It spans medical, office, education, and household domains, with long-form multi-party episodes, incremental memory injection, hidden checkpoints, structured judging, and leak-target annotations. Across diverse baselines and backbone models, no method simultaneously achieves strong utility, robust access control, and reliable forgetting. Long-context prompting often yields the best governance score at high token cost, while retrieval-based and external-memory methods reduce cost yet still leak unauthorized or deleted information. These results show current memory agents remain far from reliable shared institutional deployment.",
+      "url": "https://huggingface.co/papers/2606.18829",
+      "pdf_url": "https://arxiv.org/pdf/2606.18829.pdf",
+      "published": "2026-06-22",
+      "publication_date": "2026-06-22",
+      "source": "HuggingFace",
+      "authors": [
+        "Zhe Ren",
+        "Yibo Yang",
+        "Yimeng Chen",
+        "Zijun Zhao",
+        "Benshuo Fu",
+        "Zhihao Shu",
+        "Bingjie Zhang",
+        "Yangyang Xu",
+        "Dandan Guo",
+        "Shuicheng Yan"
+      ],
+      "arxiv_id": "2606.18829",
+      "paper_id": "arxiv:2606.18829",
+      "paper_sources": [
+        "daily"
+      ],
+      "provider_sources": [
+        "openrouter"
+      ],
+      "coarse_score": 4.3,
+      "coarse_relevance": 1.5,
+      "coarse_evidence": 7.0,
+      "coarse_method_completeness": 6.0,
+      "should_rescreen": false,
+      "coarse_reason": "The paper focuses on memory governance benchmarks for LLM agents in shared settings, with no connection to robot manipulation, VLA, world models, reinforcement learning, diffusion models, or embodied AI.",
+      "coarse_model": "deepseek/deepseek-v4-flash",
+      "short_title": "GateMem",
+      "in_daily_digest": false,
+      "selected_for_deep_analysis": false,
+      "forced_deep": false,
+      "forced_digest": false,
+      "preserved_deep": false,
+      "deep_analysis_completed": false,
+      "best_score_source": "daily"
+    },
+    {
+      "title": "MCompassRAG: Topic Metadata as a Semantic Compass for Paragraph-Level Retrieval",
+      "abstract": "Retrieval-augmented generation (RAG) systems depend critically on how documents are chunked and searched. Fine-grained chunks can improve retrieval precision but expand the search space, increasing latency and cost; larger chunks reduce the number of candidates but make dense similarity less reliable, as the representation for each chunk mixes multiple topics and introduces more semantic noise. This trade-off becomes especially limiting in deep research tasks, where retrieval must be both fast and precise across large, heterogeneous corpora. We introduce MCompassRAG, a metadata-guided retrieval framework that uses topic-level signals as a semantic compass for selecting relevant evidence. Instead of relying only on cosine similarity between queries and noisy chunk embeddings, MCompassRAG enriches chunk representations with topic metadata in the same embedding space and trains a lightweight retriever through LLM-teacher distillation. At inference time, MCompassRAG performs topic-aware retrieval without additional LLM calls, improving both efficiency and evidence quality. Across six complex retrieval benchmarks, MCompassRAG improves information efficiency (IE) by 8.24% on average with over 5 times lower latency than the strongest efficient RAG baselines. Code is available on https://github.com/AmirAbaskohi/MCompassRAG.",
+      "url": "https://huggingface.co/papers/2606.18508",
+      "pdf_url": "https://arxiv.org/pdf/2606.18508.pdf",
+      "published": "2026-06-22",
+      "publication_date": "2026-06-22",
+      "source": "HuggingFace",
+      "authors": [
+        "Amirhossein Abaskohi",
+        "Raymond Li",
+        "Gaetano Cimino",
+        "Peter West",
+        "Giuseppe Carenini",
+        "Issam H. Laradji"
+      ],
+      "arxiv_id": "2606.18508",
+      "paper_id": "arxiv:2606.18508",
+      "paper_sources": [
+        "daily"
+      ],
+      "provider_sources": [
+        "openrouter"
+      ],
+      "coarse_score": 4.3,
+      "coarse_relevance": 1.5,
+      "coarse_evidence": 7.0,
+      "coarse_method_completeness": 6.0,
+      "should_rescreen": false,
+      "coarse_reason": "Paper focuses on general RAG retrieval efficiency, not on robot manipulation, VLA, world models, or embodied AI.",
+      "coarse_model": "deepseek/deepseek-v4-flash",
+      "short_title": "MCompassRAG",
+      "in_daily_digest": false,
+      "selected_for_deep_analysis": false,
+      "forced_deep": false,
+      "forced_digest": false,
+      "preserved_deep": false,
+      "deep_analysis_completed": false,
+      "best_score_source": "daily"
+    },
+    {
+      "title": "Multi-Turn Reflective Masking Elicits Reasoning in Mask Diffusion Models",
+      "abstract": "While reasoning on autoregressive (AR) models is often performed by chain-of-thought reasoning and reflection, their refinement of previous outputs still relies on fully sequential generation, even when only local edits are needed. In contrast, the masking mechanism in Mask Diffusion Models (MDMs) naturally supports explicit local edits on previous outputs, allowing selective refinement without discarding previous answers and generating another from scratch. While this property more closely aligns with how humans correct mistakes by iterative local refinement, existing MDMs do not support multi-turn masking and denoising. We propose Reflective Masking (RM), which elicits such an intrinsic reasoning capability in MDMs via lightweight post-training. RM provides a native test-time scaling, where an MDM iteratively revisits and revises its prior outputs based on evolving context. To exploit insights from previous turns like AR reasoning, we further introduce History Reference, a parameter-free mechanism that leverages intermediate denoising states during revision. Our approach requires no architectural changes and is easily applicable to existing MDMs. Across diverse tasks and modalities, including text generation, Sudoku, and image editing, Reflective Masking consistently outperforms standard masking-based baselines and demonstrates strong generality, positioning RM as a fundamental primitive for reasoning on MDMs.",
+      "url": "https://huggingface.co/papers/2606.16700",
+      "pdf_url": "https://arxiv.org/pdf/2606.16700.pdf",
+      "published": "2026-06-22",
+      "publication_date": "2026-06-22",
+      "source": "HuggingFace",
+      "authors": [
+        "Yanming Zhang",
+        "Yihan Bian",
+        "Jingyuan Qi",
+        "Yuguang Yao",
+        "Lifu Huang",
+        "Tianyi Zhou"
+      ],
+      "arxiv_id": "2606.16700",
+      "paper_id": "arxiv:2606.16700",
+      "paper_sources": [
+        "daily"
+      ],
+      "provider_sources": [
+        "openrouter"
+      ]
+    },
+    {
+      "title": "SproutRAG: Attention-Guided Tree Search with Progressive Embeddings for Long-Document RAG",
+      "abstract": "Retrieval-augmented generation (RAG) systems must balance retrieval granularity with contextual coherence, a challenge that existing methods address through LLM-guided chunking, single-level context expansion, or hierarchical summarization. These approaches variously depend on costly LLM calls during indexing or retrieval, limit context aggregation to a single granularity level, or introduce information loss through summarization. We present SproutRAG, an attention-guided hierarchical RAG framework that addresses this trade-off by organizing sentence-level chunks into progressively larger but semantically coherent units, using learned inter-sentence attention to construct a binary chunking tree. Unlike prior approaches that rely on external LLMs, fixed context expansion, or lossy summarization, SproutRAG learns which attention heads and layers best capture semantic document structure, enabling multi-granularity retrieval without additional LLM calls or compressed summaries. At retrieval time, SproutRAG uses hierarchical beam search to retrieve candidates at multiple granularities, capturing multi-sentence relevance beyond flat retrieval. The framework is trained end-to-end with a joint objective that improves both embeddings and tree structure. Experiments across four benchmarks spanning scientific, legal, and open-domain settings demonstrate that SproutRAG improves information efficiency (IE) by 6.1% on average over the strongest baseline. Code is available on https://github.com/AmirAbaskohi/SproutRAG.",
+      "url": "https://huggingface.co/papers/2606.18381",
+      "pdf_url": "https://arxiv.org/pdf/2606.18381.pdf",
+      "published": "2026-06-22",
+      "publication_date": "2026-06-22",
+      "source": "HuggingFace",
+      "authors": [
+        "Amirhossein Abaskohi",
+        "Issam H. Laradji",
+        "Peter West",
+        "Giuseppe Carenini"
+      ],
+      "arxiv_id": "2606.18381",
+      "paper_id": "arxiv:2606.18381",
+      "paper_sources": [
+        "daily"
+      ],
+      "provider_sources": [
+        "openrouter"
+      ]
+    },
+    {
+      "title": "GeneralVLA-2: Geometry-Aware Reconstruction and Governed Memory for Robot Planning",
+      "abstract": "Generalist vision-language-action systems need object-centric 3D evidence and reusable manipulation experience to plan reliable robot trajectories. GeneralVLA provides a hierarchical interface for converting language and RGB-D observations into 3D end-effector paths, but two bottlenecks remain. First, monocular SAM3D-style object reconstruction can hallucinate pose and unseen geometry, while manipulation benefits from stable object shape when calibrated multi-view observations are available. Second, the original KnowledgeBank mainly retrieves semantically similar snippets and appends new knowledge, which makes it difficult to control memory quality, conflicts, confidence, and geometric relevance. To address the first challenge, we introduce GeoFuse-MV3D, a geometry-prior-guided MV-SAM3D reconstruction branch that verifies external geometry cues with input-view masks, applies soft visual-hull support, performs axis-wise refinement, and fuses only geometry while preserving appearance. To address the second challenge, we upgrade KnowledgeBank into a governed long-term memory system with explicit quality, confidence, lifecycle, verifier, and conflict metadata, together with precision-oriented retrieval. Finally, we evaluate the reconstruction branch on GSO-30 and the memory module on Terminal-Bench 2.0 and SWE-Bench Verified; GeoFuse-MV3D improves over the MV-SAM3D baseline by reducing CD and LPIPS by 2.20% and 2.02% while increasing PSNR and SSIM by 2.36% and 1.03%, and KnowledgeBank improves over ReasoningBank by 4.53% on Terminal-Bench SR and 3.73% on SWE-Bench resolve rate, while reducing AS by 4.95% and 5.65%, respectively. Code: https://github.com/AIGeeksGroup/GeneralVLA-2. Website: https://aigeeksgroup.github.io/GeneralVLA-2.",
+      "url": "https://huggingface.co/papers/2606.17480",
+      "pdf_url": "https://arxiv.org/pdf/2606.17480.pdf",
+      "published": "2026-06-22",
+      "publication_date": "2026-06-22",
+      "source": "HuggingFace",
+      "authors": [
+        "Haoyu Wang",
+        "Guoqing Ma",
+        "Zeyu Zhang",
+        "Yandong Guo",
+        "Boxin Shi",
+        "Hao Tang"
+      ],
+      "arxiv_id": "2606.17480",
+      "paper_id": "arxiv:2606.17480",
+      "paper_sources": [
+        "daily"
+      ],
+      "provider_sources": [
+        "openrouter"
+      ]
+    },
+    {
+      "title": "StylisticBias: A Few Human Visual Cues Drive Most Social Biases in MLLMs",
+      "abstract": "Multimodal large language models (MLLMs) are increasingly deployed in personally and societally consequential settings, yet the visual cues that shape how these models judge people remain poorly understood. Prior work often compares different (groups of) individuals, making it difficult to separate appearance effects from identity differences. We introduce StylisticBias, a controlled benchmark for evaluating attribute-level social bias in MLLMs. We generate 500 photorealistic base faces and create about 50 single-attribute variations per face, producing about 25K images. This design keeps identity fixed and changes one visual attribute at a time. It lets us measure how specific cues shift model judgments. We evaluate six MLLMs across 25 binary social judgment scenarios. We find that age and body type dominate identity-level effects, while fashion style and other visual cues drive the largest attribute-level shifts. We further find that about 15 attributes account for nearly 80\\% of the total variation, showing that bias is concentrated in a small set of visual cues. Sensitivity is strongest in judgments that are semantically aligned with appearance, especially socioeconomic and style-related judgments. We release StylisticBias as a benchmark for fine-grained bias evaluation in multimodal models. Code and dataset: https://github.com/timo-cavelius/StylisticBias and https://hf.co/datasets/shaghayegh/stylistic-bias-dataset.",
+      "url": "https://huggingface.co/papers/2606.20527",
+      "pdf_url": "https://arxiv.org/pdf/2606.20527.pdf",
+      "published": "2026-06-22",
+      "publication_date": "2026-06-22",
+      "source": "HuggingFace",
+      "authors": [
+        "Shaghayegh Kolli",
+        "Timo Cavelius",
+        "Nafiseh Nikeghbal",
+        "Samantha Dalal",
+        "Jana Diesner"
+      ],
+      "arxiv_id": "2606.20527",
+      "paper_id": "arxiv:2606.20527",
+      "paper_sources": [
+        "daily"
+      ],
+      "provider_sources": [
+        "openrouter"
+      ]
+    },
+    {
+      "title": "Characterizing Narrative Content in Web-scale LLM Pretraining Data",
+      "abstract": "The narrative composition of web-scale LLM pretraining corpora remains largely unexplored even though narrative is a fundamental mode of human communication. We present the first fine-grained study of narrative features in Dolma, a 3-trillion-token open pretraining corpus. Drawing on narrative theory, we design a framework spanning three core narrative elements (agency, setting, and events) operationalized as 11 interpretable dimensions. After sampling and annotating a diverse set of 400 passages, we finetune and validate NarraBERT, a RoBERTa-based model for fine-grained narrative prediction. We apply NarraBERT to 3M passages, resulting in a new dataset, NarraDolma. We find (i) narrative structure is measurable at scale across extremely heterogeneous data, (ii) we uncover a continuous, multidimensional narrative structure underlying web text, and (iii) narrative qualities are unequally distributed across pretraining sources and topics in ways that current curation practices neither measure nor account for. Our framework, dataset, and analyses provide a foundation for understanding how narrative qualities are distributed in LLM pretraining data and for studying how data composition affects narrative reasoning tasks. We publicly release NarraDolma and NarraBERT.",
+      "url": "https://huggingface.co/papers/2606.19468",
+      "pdf_url": "https://arxiv.org/pdf/2606.19468.pdf",
+      "published": "2026-06-22",
+      "publication_date": "2026-06-22",
+      "source": "HuggingFace",
+      "authors": [
+        "Teagan Johnson",
+        "Elliott Ash",
+        "Andrew Piper",
+        "Maria Antoniak"
+      ],
+      "arxiv_id": "2606.19468",
+      "paper_id": "arxiv:2606.19468",
+      "paper_sources": [
+        "daily"
+      ],
+      "provider_sources": [
+        "openrouter"
+      ]
+    }
+  ],
+  "selection": {
+    "force_preserved_deep": {
+      "count": 0,
+      "paper_ids": []
+    }
+  },
+  "artifacts": {},
+  "errors": [],
+  "logs": [
+    {
+      "schema_version": 1,
+      "event_type": "queue_updated",
+      "status": "updated",
+      "created_at": "2026-06-23T09:33:10",
+      "ts": "2026-06-23T09:33:10",
+      "stage": "fetched",
+      "paper_id": "",
+      "title": "",
+      "provider": "openrouter",
+      "model": "",
+      "elapsed_ms": null,
+      "retry_count": 0,
+      "artifact_path": "",
+      "message": "papers=8",
+      "details": {}
+    },
+    {
+      "schema_version": 1,
+      "event_type": "paper_updated",
+      "status": "updated",
+      "created_at": "2026-06-23T09:33:14",
+      "ts": "2026-06-23T09:33:14",
+      "stage": "fetched",
+      "paper_id": "arxiv:2606.19534",
+      "title": "PerceptionDLM",
+      "provider": "openrouter",
+      "model": "",
+      "elapsed_ms": null,
+      "retry_count": 0,
+      "artifact_path": "",
+      "message": "paper_updated",
+      "details": {}
+    },
+    {
+      "schema_version": 1,
+      "event_type": "paper_updated",
+      "status": "updated",
+      "created_at": "2026-06-23T09:33:17",
+      "ts": "2026-06-23T09:33:17",
+      "stage": "fetched",
+      "paper_id": "arxiv:2606.18829",
+      "title": "GateMem",
+      "provider": "openrouter",
+      "model": "",
+      "elapsed_ms": null,
+      "retry_count": 0,
+      "artifact_path": "",
+      "message": "paper_updated",
+      "details": {}
+    },
+    {
+      "schema_version": 1,
+      "event_type": "paper_updated",
+      "status": "updated",
+      "created_at": "2026-06-23T09:33:20",
+      "ts": "2026-06-23T09:33:20",
+      "stage": "fetched",
+      "paper_id": "arxiv:2606.18508",
+      "title": "MCompassRAG",
+      "provider": "openrouter",
+      "model": "",
+      "elapsed_ms": null,
+      "retry_count": 0,
+      "artifact_path": "",
+      "message": "paper_updated",
+      "details": {}
+    }
+  ],
+  "merged_from": [],
+  "paths": {
+    "run_dir": "D:\\PaperBrain\\Run_Records\\2026-06-22",
+    "state": "D:\\PaperBrain\\Run_Records\\2026-06-22\\state.json",
+    "legacy_state": "D:\\PaperBrain\\Run_Records\\2026-06-22-run-state.json",
+    "screening_report": "D:\\PaperBrain\\Run_Records\\2026-06-22\\screening_report.md",
+    "log_summary": "D:\\PaperBrain\\Run_Records\\2026-06-22\\log_summary.md",
+    "errors": "D:\\PaperBrain\\Run_Records\\2026-06-22\\errors.json"
+  },
+  "target_date_source": "manual"
+}

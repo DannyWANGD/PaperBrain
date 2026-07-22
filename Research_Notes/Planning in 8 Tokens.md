@@ -423,3 +423,4 @@ CompACT is currently validated only within MPC-CEM planning loops. A high-value 
 
 ## Related Work Updates
 - [ ] **2026-06-04**: New paper [[AffordVLA]] discusses *planning in 8 tokens*. Innovation: "Internalizing task-conditioned affordance as learnable tokens that decode masks and directly condition action generation in a tightly coupled VLA framework."
+- [ ] **2026-06-12**: New paper [[EmbodiedR15]] discusses *planning in 8 tokens*. Innovation: "A unified Embodied Foundation Model with integrated reasoning, planning, and self-correction, trained with multi-task balanced RL and automated data pipelines, achieving strong zero-shot real-robot performance."

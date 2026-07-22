@@ -1,0 +1,207 @@
+<!--A Design by W3layouts Author: W3layout Author URL: http://w3layouts.com License: Creative Commons Attribution 3.0 Unported License URL: http://creativecommons.org/licenses/by/3.0/-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="keywords" content="网络准入认证系统" />
+    <title>深澜软件</title>
+    <link type="images/x-icon" rel="shortcut icon" href="/static/images/basic/favicon.ico">
+    <link rel="stylesheet" href="./static/bit/css/reset.css">
+    <link rel="stylesheet" href="./static/bit/css/pc.css">
+    
+    <script src="/static/js/device.min.js"></script>
+    <script>
+        if (device.mobile()) {
+            locationURI("/srun_portal_phone")
+        }
+        function locationURI(uri) { return location.href = uri + location.search; }
+    </script>
+</head>
+
+<body>
+    <input type="hidden" name="ac_id" id="ac_id" value="43">
+    <input type="hidden" name="user_ip" id="user_ip" value="10.195.143.104">
+    <input type="hidden" name="nas_ip" id="nas_ip" value="">
+    <input type="hidden" name="user_mac" id="user_mac" value="">
+    <input type="hidden" name="url" id="url" value="">
+    <input type="hidden" name="viewType" id="viewType" value="one">
+    <div class="navbar">
+        <div class="logo">
+            <img src="./static/bit/images/logo2.jpg" alt="">
+        </div>
+        <a class="btn-text-download" href="/download/download_client.html" target="_blank">
+            <img class="icon-download" src="./static/bit/images/icon-download.png" alt="">
+            客户端下载
+        </a>
+        <div class="tip">
+            <span>上网不涉密 涉密不上网</span>
+            <a href="https://login.bit.edu.cn/authserver/login?service=https://zhunru.bit.edu.cn:8087">有线网哑终端自助登记</a>
+        </div>
+    </div>
+    <div class="container" id="pc-bg-container">
+        <div class="contain">
+            <div class="float_l waps lft">
+                <div class="con">
+                    <p>
+                        <a href="http://10.0.0.54:8800/news" target="_blank" class="notice-heading">通知公告</a>
+                        <br>
+                    </p>
+                    <div id="notice-title" class="title"></div>
+                    <div id="notice-content" class="text"></div>
+                    <div class="report">
+                        <div style="font-weight: bold;">网络故障报修</div>
+                        <div>线上：i北理App -> IT服务 -> 网信报修</div>
+                        <div>电话：中关村68914833，良乡81382068</div>
+                        <div>大厅：中关村信息中心楼一层，良乡文萃楼L座201</div>
+                    </div>
+                </div>
+            </div>
+            <div class="float_r" style="margin-top: 145px;">
+                <ul class="login">
+                    <li>
+                        <p class="margbt">用户名/username</p>
+                        <div class="input">
+                            <input type="text" id="username">
+                        </div>
+                    </li>
+                    <li id="input-password">
+                        <p class="margbt">密码/password</p>
+                        <div class="input">
+                            <input type="password" id="password">
+                        </div>
+                    </li>
+                    <li>
+                        <label class="margbt" for="remember" style="position: relative;
+                        font-size: 15px;
+                        width: auto;
+                        height: auto;
+                        text-align: left;
+                        cursor: pointer;">
+                            <input type="checkbox" id="remember" style="width: auto; height: auto;">记住密码
+
+                        </label>
+                        <label onclick="window.open('https://login.bit.edu.cn/campus-account/resetPassword')"
+                            style="font-weight:bold;text-decoration:underline;margin-left: 20px">忘记密码
+                        </label>
+
+                        
+                    </li>
+                    <li class="btm">
+                        <ul class="btm_au">
+                            <li class="an_ml">
+                                <button type="submit" id="login" class="grn">登录</button>
+                            </li>
+                            
+                            <li>
+                                <a href="javascript:void(0)" id="self-service"
+                                    class="server">自助服务
+                                </a>
+                            </li>
+                        </ul>
+                        <ul class="btm_au">
+                            <li class="an_ml">
+
+                                <a href="https://netpay.bit.edu.cn:8091/client/pay/visitor-user" target="_blank"
+                                    class="chongzhi" id="goto_services">在线充值
+                                </a>
+                            </li>
+                            <br>
+                            <li>
+
+                                    <a href="https://netpay.bit.edu.cn:8091" target="_blank" class="chongzhi"
+                                    id="goto_services">经费卡充值</a> 
+
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <div class="float_l" style="width:auto;">北京理工大学 Copyright © 2022 www.bit.edu.cn All rights reserved</div>
+        <div class="float_r">
+            
+            <a href="http://itc.bit.edu.cn/zxgk/its/"> 技术支持: NITC_ITS
+        </div>
+    </div>
+    <script src="/static/bower/all/1.0.0/all.min.js?v=20180302?v=2.00.20220802"></script>
+
+    <script>
+        var isIPV6 =  false ;
+        var portal = {"AuthIP":"","AuthIP6":"","ServiceIP":"http://10.0.0.54:8800","DoubleStackPC":false,"DoubleStackMobile":false,"AuthMode":false,"CloseLogout":false,"MacAuth":false,"RedirectUrl":true,"OtherPCStack":"IPV4","OtherMobileStack":"IPV4","MsgApi":"new","PublicSuccessPages":true};
+        var lang = "zh-CN" || "zh-CN";
+    </script>
+    <script src="/static/js/srun.portal.lang.js?v=2.00.20220802"></script>
+    <script src="/static/js/jquery.srun.portal.js?v=2.00.20220802"></script>
+    <script src="/static/js/main.js?v=2.00.20220802"></script>
+    <script>
+        (function () {
+            
+
+            var setCookie = function (name, value, day) {
+                if (day === undefined) day = 7;
+                var date = new Date();
+                date.setDate(date.getDate() + day);
+                document.cookie = name + '=' + value + ';expires=' + date;
+            };
+
+            
+
+            var getCookie = function (name) {
+                var reg = RegExp(name + '=([^;]+)'),
+                    arr = document.cookie.match(reg);
+
+                if (arr) {
+                    return arr[1];
+                } else {
+                    return false;
+                }
+            };
+
+            
+
+            var delCookie = function (name) {
+                setCookie(name, '', -1);
+            };
+
+            var cookie = {
+                user: getCookie('user'),
+                pass: getCookie('pass')
+            };
+
+            if (cookie.user) {
+                $('#username').val(cookie.user);
+                $.base64.setAlpha('LVoJPiCN2R8G90yg+hmFHuacZ1OWMnrsSTXkYpUq/3dlbfKwv6xztjI7DeBE45QA');
+                $('#password').val($.base64.decode(cookie.pass));
+                $('#remember').get(0).checked = true;
+            }
+
+            $('#login').click(function () {
+                var remember = document.getElementById('remember');
+                if (remember) {
+                    $.base64.setAlpha('LVoJPiCN2R8G90yg+hmFHuacZ1OWMnrsSTXkYpUq/3dlbfKwv6xztjI7DeBE45QA');
+                    var login = {
+                        remember: $('#remember').get(0).checked,
+                        user: $('#username').val(),
+                        pass: $.base64.encode($('#password').val())
+                    };
+                    if (login.remember) {
+                        setCookie('user', login.user);
+                        setCookie('pass', login.pass);
+                    } else {
+                        delCookie('user');
+                        delCookie('pass');
+                    }
+                }
+            });
+        })()
+    </script>
+</body>
+
+</html>

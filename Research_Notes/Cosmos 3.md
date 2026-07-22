@@ -554,3 +554,12 @@ graph LR
 - **Local PDF**: [[Cosmos 3 Omnimodal World Models for Physical AI.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2606.02800.pdf)
 - [ArXiv Link](https://huggingface.co/papers/2606.02800)
+
+
+## Related Work Updates
+- [ ] **2026-06-06**: New paper [[WLA]] discusses *physical ai*. Innovation: "Proposes a unified autoregressive model that predicts both high-level textual subtasks and low-level physical dynamics to guide action synthesis, enabling optional world prediction for test-time scaling."
+- [ ] **2026-06-09**: New paper [[StableVLA]] discusses *physical ai*. Innovation: "Proposes an Information Bottleneck Adapter that selectively filters visual noise without extra data, improving VLA robustness by 30% on average."
+- [ ] **2026-06-12**: New paper [[EmbodiedR15]] discusses *physical ai*. Innovation: "A unified Embodied Foundation Model with integrated reasoning, planning, and self-correction, trained with multi-task balanced RL and automated data pipelines, achieving strong zero-shot real-robot performance."
+- [ ] **2026-06-15**: New paper [[Diffusion Policy]] discusses *physical ai*. Innovation: "Introduces a diffusion-based visuomotor policy that leverages receding horizon control and a time-series diffusion transformer to model multimodal action distributions for robot manipulation."
+- [ ] **2026-06-18**: New paper [[Act2Answer]] discusses *physical ai*. Innovation: "Proposes Act2Answer, an action-grounded protocol that evaluates VLA knowledge retention by requiring agents to answer benchmark questions through physical object-placement actions, decoupling knowledge from control."
+- [ ] **2026-07-22**: New paper [[Appleπ]] discusses *physical ai*. Innovation: "Introduces the first benchmark that evaluates video models as world models through a three-stage law-grounded reasoning protocol (Perception, Formulation, Deduction) with hybrid physics-law and MLLM metrics."

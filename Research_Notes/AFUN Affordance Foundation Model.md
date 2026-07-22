@@ -291,3 +291,7 @@ graph LR
 - **Local PDF**: [[AFUN Towards an Affordance Foundation Model for Functionality Understanding.pdf]]
 - [Online PDF](https://arxiv.org/pdf/2606.02551.pdf)
 - [ArXiv Link](https://huggingface.co/papers/2606.02551)
+
+
+## Related Work Updates
+- [ ] **2026-06-12**: New paper [[EmbodiedR15]] discusses *affordance foundation model*. Innovation: "A unified Embodied Foundation Model with integrated reasoning, planning, and self-correction, trained with multi-task balanced RL and automated data pipelines, achieving strong zero-shot real-robot performance."

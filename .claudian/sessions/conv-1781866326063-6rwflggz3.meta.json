@@ -1,0 +1,30 @@
+{
+  "id": "conv-1781866326063-6rwflggz3",
+  "providerId": "codex",
+  "title": "Fork: Explain SRG paper in plain terms (#15)",
+  "createdAt": 1781866326064,
+  "updatedAt": 1783097467257,
+  "lastResponseAt": 1781886345574,
+  "sessionId": "019edf82-e820-7331-a21c-ddbce3a164ae",
+  "providerState": {
+    "threadId": "019edf82-e820-7331-a21c-ddbce3a164ae",
+    "sessionFilePath": "C:\\Users\\wzj31\\.codex\\sessions\\2026\\06\\19\\rollout-2026-06-19T18-52-43-019edf82-e820-7331-a21c-ddbce3a164ae.jsonl",
+    "transcriptRootPath": "C:\\Users\\wzj31\\.codex\\sessions",
+    "forkSource": {
+      "sessionId": "019ece45-b644-7e31-94b0-2d023c6ee8c8",
+      "resumeAt": "019edf76-59fb-7881-86f2-7c7e1d52e28c"
+    },
+    "forkSourceSessionFilePath": "C:\\Users\\wzj31\\.codex\\sessions\\2026\\06\\16\\rollout-2026-06-16T10-32-20-019ece45-b644-7e31-94b0-2d023c6ee8c8.jsonl",
+    "forkSourceTranscriptRootPath": "C:\\Users\\wzj31\\.codex\\sessions"
+  },
+  "usage": {
+    "inputTokens": 160049,
+    "cacheCreationInputTokens": 0,
+    "cacheReadInputTokens": 145280,
+    "contextWindow": 258400,
+    "contextWindowIsAuthoritative": true,
+    "contextTokens": 160049,
+    "percentage": 62,
+    "model": "gpt-5.5"
+  }
+}

@@ -16,8 +16,13 @@ Use this page when you want a practical implementation, benchmark, or protocol-r
 | [[Chain of World]] | 8.0 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#domain/world_model` | 2026-03-03 |
 | [[World Reasoning Arena]] | 8.0 | `#domain/embodied_ai` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#domain/world_model` `#method/benchmark` | Unknown |
 | [[VisualThinkVLA]] | 8.6 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/robot_manipulation` `#domain/vla` `#method/benchmark` `#method/foundation_model` | 2026-06-01 |
+| [[World Pilot]] | 8.0 | `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#domain/world_model` `#method/benchmark` | 2026-06-11 |
 | [[Vega]] | 8.0 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/vla` `#domain/world_model` `#method/benchmark` | Unknown |
+| [[DEHP]] | 8.2 | `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#method/diffusion_policy` `#method/foundation_model` | 2026-06-09 |
+| [[Appleπ]] | 8.1 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/sim2real` `#domain/world_model` | 2026-07-21 |
 | [[GEM Generative Supervision for Embodied VLM]] | 8.1 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#method/benchmark` | 2026-05-28 |
+| [[EmbodiedR15]] | 8.0 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#method/benchmark` | 2026-06-11 |
+| [[ARVLA]] | 8.0 | `#domain/multimodal_perception` `#domain/robot_manipulation` `#domain/vla` `#method/diffusion_policy` `#method/foundation_model` `#method/memory` | 2026-05-19 |
 | [[Generation Models Know Space]] | 8.0 | `#domain/3d_perception` `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/world_model` | 2026-03-19 |
 | [[ProbeFlow]] | 8.0 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/sim2real` `#domain/vla` | 2026-03-18 |
 | [[DreamPlan]] | 8.0 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/world_model` `#method/foundation_model` | 2026-03-17 |
@@ -35,17 +40,12 @@ Use this page when you want a practical implementation, benchmark, or protocol-r
 | [[VistaBot]] | 8.0 | `#domain/3d_perception` `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/world_model` | Unknown |
 | [[HideandSeek Failure Detection for VLA]] | 8.1 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#method/foundation_model` | 2026-06-01 |
 | [[DynaFLIP DynamicsAware Visual Pretraining]] | 8.1 | `#domain/3d_perception` `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` | 2026-05-29 |
+| [[StableVLA]] | 8.1 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#method/benchmark` | 2026-05-19 |
+| [[Act2Answer]] | 8.0 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#method/benchmark` | 2026-06-17 |
 | [[Pion]] | 8.0 | `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#method/foundation_model` `#method/imitation_learning` | 2026-05-25 |
 | [[SoftMimicGen]] | 8.0 | `#domain/embodied_ai` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/sim2real` `#method/benchmark` `#method/imitation_learning` | 2026-03-26 |
 | [[DreamerAD]] | 8.0 | `#domain/3d_perception` `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/world_model` `#method/diffusion_policy` | 2026-03-25 |
 | [[TAG]] | 8.0 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/robot_manipulation` `#domain/vla` `#method/benchmark` `#method/foundation_model` | 2026-03-25 |
-| [[FASTER]] | 8.0 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#method/diffusion_policy` | 2026-03-19 |
-| [[Kinema4D]] | 8.0 | `#domain/3d_perception` `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/sim2real` | 2026-03-17 |
-| [[MetaWorldX]] | 8.0 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/world_model` `#method/foundation_model` | 2026-03-09 |
-| [[Latent Particle World Models]] | 8.0 | `#domain/embodied_ai` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/world_model` `#method/benchmark` `#method/imitation_learning` | 2026-03-04 |
-| [[RoboMME]] | 8.0 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/robot_manipulation` `#domain/vla` `#method/benchmark` `#method/foundation_model` | 2026-03-04 |
-| [[ULTRA]] | 8.0 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/sim2real` `#method/imitation_learning` | 2026-03-03 |
-| [[HydroShear]] | 8.0 | `#domain/embodied_ai` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/sim2real` `#method/reinforcement_learning` `#method/simulation` | 2026-02-28 |
 
 ```dataview
 TABLE priority_score, score, paper_type, domains, methods, tasks, github, project_page, next_action

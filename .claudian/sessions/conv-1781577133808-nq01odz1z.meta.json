@@ -1,0 +1,25 @@
+{
+  "id": "conv-1781577133808-nq01odz1z",
+  "providerId": "codex",
+  "title": "Explain SRG paper in plain terms",
+  "titleGenerationStatus": "success",
+  "createdAt": 1781577133809,
+  "updatedAt": 1781866326071,
+  "lastResponseAt": 1781866034428,
+  "sessionId": "019ece45-b644-7e31-94b0-2d023c6ee8c8",
+  "providerState": {
+    "threadId": "019ece45-b644-7e31-94b0-2d023c6ee8c8",
+    "sessionFilePath": "C:\\Users\\wzj31\\.codex\\sessions\\2026\\06\\16\\rollout-2026-06-16T10-32-20-019ece45-b644-7e31-94b0-2d023c6ee8c8.jsonl",
+    "transcriptRootPath": "C:\\Users\\wzj31\\.codex\\sessions"
+  },
+  "usage": {
+    "inputTokens": 93081,
+    "cacheCreationInputTokens": 0,
+    "cacheReadInputTokens": 92032,
+    "contextWindow": 258400,
+    "contextWindowIsAuthoritative": true,
+    "contextTokens": 93081,
+    "percentage": 36,
+    "model": "gpt-5.5"
+  }
+}

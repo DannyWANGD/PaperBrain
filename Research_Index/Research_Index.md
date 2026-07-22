@@ -6,13 +6,13 @@
 
 | 指标 | 数值 |
 |---|---:|
-| Total papers | 88 |
-| High impact (score >= 8) | 54 |
+| Total papers | 104 |
+| High impact (score >= 8) | 62 |
 | Must read (score >= 9) | 4 |
-| Unread | 83 |
-| Needs tag review | 3 |
-| Reproduction candidates | 84 |
-| Average score | 7.53 |
+| Unread | 99 |
+| Needs tag review | 4 |
+| Reproduction candidates | 98 |
+| Average score | 7.49 |
 
 ## Core Views
 
@@ -27,40 +27,40 @@
 
 | Tag | Count |
 |---|---:|
-| `#domain/reinforcement_learning` | 78 |
-| `#domain/embodied_ai` | 75 |
-| `#domain/multimodal_perception` | 66 |
-| `#domain/robot_manipulation` | 62 |
-| `#domain/vla` | 43 |
-| `#domain/world_model` | 28 |
-| `#domain/3d_perception` | 24 |
-| `#domain/sim2real` | 15 |
+| `#domain/reinforcement_learning` | 91 |
+| `#domain/embodied_ai` | 84 |
+| `#domain/multimodal_perception` | 76 |
+| `#domain/robot_manipulation` | 75 |
+| `#domain/vla` | 51 |
+| `#domain/world_model` | 31 |
+| `#domain/3d_perception` | 25 |
+| `#domain/sim2real` | 16 |
 
 ## Method Map
 
 | Tag | Count |
 |---|---:|
-| `#method/reinforcement_learning` | 78 |
-| `#method/foundation_model` | 45 |
-| `#method/benchmark` | 43 |
-| `#method/planning` | 43 |
-| `#method/simulation` | 38 |
-| `#method/imitation_learning` | 18 |
-| `#method/memory` | 12 |
-| `#method/diffusion_policy` | 6 |
+| `#method/reinforcement_learning` | 91 |
+| `#method/foundation_model` | 53 |
+| `#method/benchmark` | 52 |
+| `#method/planning` | 50 |
+| `#method/simulation` | 41 |
+| `#method/imitation_learning` | 20 |
+| `#method/memory` | 15 |
+| `#method/diffusion_policy` | 7 |
 | `#method/latent_world_model` | 4 |
 
 ## Task Map
 
 | Tag | Count |
 |---|---:|
-| `#task/scene_understanding` | 67 |
-| `#task/manipulation` | 62 |
-| `#task/planning_reasoning` | 43 |
-| `#task/navigation` | 29 |
-| `#task/dexterous_contact` | 13 |
-| `#task/video_prediction` | 12 |
-| `#task/loco_manipulation` | 7 |
+| `#task/scene_understanding` | 77 |
+| `#task/manipulation` | 75 |
+| `#task/planning_reasoning` | 50 |
+| `#task/navigation` | 30 |
+| `#task/dexterous_contact` | 15 |
+| `#task/video_prediction` | 13 |
+| `#task/loco_manipulation` | 8 |
 
 ## Top Papers
 
@@ -72,29 +72,29 @@
 | [[RISE]] | 9.0 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#domain/world_model` | 2026-02-11 |
 | [[Cosmos 3]] | 8.9 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/vla` `#domain/world_model` `#method/benchmark` | 2026-06-04 |
 | [[VisualThinkVLA]] | 8.6 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/robot_manipulation` `#domain/vla` `#method/benchmark` `#method/foundation_model` | 2026-06-01 |
+| [[DEHP]] | 8.2 | `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#method/diffusion_policy` `#method/foundation_model` | 2026-06-09 |
 | [[Rethinking VLM Representation for VLA Initialization]] | 8.2 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/vla` `#method/foundation_model` `#method/reinforcement_learning` | 2026-05-27 |
 | [[LeJEPA]] | 8.2 | `#domain/3d_perception` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/world_model` `#method/planning` | 2026-05-25 |
+| [[Appleπ]] | 8.1 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/sim2real` `#domain/world_model` | 2026-07-21 |
+| [[TRQAM]] | 8.1 | `#domain/embodied_ai` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#method/diffusion_policy` `#method/foundation_model` `#method/memory` | 2026-06-05 |
 | [[HideandSeek Failure Detection for VLA]] | 8.1 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#method/foundation_model` | 2026-06-01 |
-| [[DynaFLIP DynamicsAware Visual Pretraining]] | 8.1 | `#domain/3d_perception` `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` | 2026-05-29 |
-| [[GEM Generative Supervision for Embodied VLM]] | 8.1 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#method/benchmark` | 2026-05-28 |
-| [[AHEAD for Dynamic VLA Manipulation]] | 8.0 | `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#domain/world_model` `#method/latent_world_model` | 2026-06-01 |
 
 ## Recent Papers
 
 | Paper | Score | Tags | Date |
 |---|---:|---|---|
+| [[Appleπ]] | 8.1 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/sim2real` `#domain/world_model` | 2026-07-21 |
+| [[Act2Answer]] | 8.0 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#method/benchmark` | 2026-06-17 |
+| [[OneCanvas]] | 7.6 | `#domain/3d_perception` `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#method/foundation_model` `#method/planning` | 2026-06-17 |
+| [[EmbodiedR15]] | 8.0 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#method/benchmark` | 2026-06-11 |
+| [[World Pilot]] | 8.0 | `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#domain/world_model` `#method/benchmark` | 2026-06-11 |
+| [[DEHP]] | 8.2 | `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#method/diffusion_policy` `#method/foundation_model` | 2026-06-09 |
+| [[LightWAM]] | 7.5 | `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#domain/world_model` `#method/foundation_model` `#method/imitation_learning` | 2026-06-09 |
+| [[TRQAM]] | 8.1 | `#domain/embodied_ai` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#method/diffusion_policy` `#method/foundation_model` `#method/memory` | 2026-06-05 |
+| [[WLA]] | 7.5 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#domain/world_model` | 2026-06-05 |
 | [[Cosmos 3]] | 8.9 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/vla` `#domain/world_model` `#method/benchmark` | 2026-06-04 |
 | [[OVOSBench]] | 7.8 | `#domain/embodied_ai` `#domain/multimodal_perception` `#method/benchmark` `#method/foundation_model` `#method/imitation_learning` `#method/planning` | 2026-06-04 |
 | [[Target Viewpoint Reproduction TVR Benchmark]] | 7.9 | `#domain/3d_perception` `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/vla` `#method/benchmark` | 2026-06-02 |
-| [[AFUN Affordance Foundation Model]] | 7.5 | `#domain/3d_perception` `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#method/benchmark` | 2026-06-02 |
-| [[VisualThinkVLA]] | 8.6 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/robot_manipulation` `#domain/vla` `#method/benchmark` `#method/foundation_model` | 2026-06-01 |
-| [[HideandSeek Failure Detection for VLA]] | 8.1 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#method/foundation_model` | 2026-06-01 |
-| [[AHEAD for Dynamic VLA Manipulation]] | 8.0 | `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#domain/world_model` `#method/latent_world_model` | 2026-06-01 |
-| [[DynaFLIP DynamicsAware Visual Pretraining]] | 8.1 | `#domain/3d_perception` `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` | 2026-05-29 |
-| [[QwenVLA Unified VLA for Manipulation and Navigation]] | 7.5 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#method/benchmark` | 2026-05-29 |
-| [[GEM Generative Supervision for Embodied VLM]] | 8.1 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/vla` `#method/benchmark` | 2026-05-28 |
-| [[Rethinking VLM Representation for VLA Initialization]] | 8.2 | `#domain/embodied_ai` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/vla` `#method/foundation_model` `#method/reinforcement_learning` | 2026-05-27 |
-| [[LeJEPA]] | 8.2 | `#domain/3d_perception` `#domain/multimodal_perception` `#domain/reinforcement_learning` `#domain/robot_manipulation` `#domain/world_model` `#method/planning` | 2026-05-25 |
 
 ## Dataview Queries
 
@@ -135,4 +135,4 @@ SORT score DESC
 ```
 
 ---
-Generated by `script/build_research_index.py` at 2026-06-05 15:59.
+Generated by `script/build_research_index.py` at 2026-07-22 10:39.

@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://arxiv.org/api/qCPthFCqmnm9ZHvpmFtriNku+7o</id>
+  <title>arXiv Query: search_query=&amp;id_list=2303.04137&amp;start=0&amp;max_results=1</title>
+  <updated>2026-06-15T09:45:16Z</updated>
+  <link href="https://arxiv.org/api/query?search_query=&amp;start=0&amp;max_results=1&amp;id_list=2303.04137" type="application/atom+xml"/>
+  <opensearch:itemsPerPage>1</opensearch:itemsPerPage>
+  <opensearch:totalResults>1</opensearch:totalResults>
+  <opensearch:startIndex>0</opensearch:startIndex>
+  <entry>
+    <id>http://arxiv.org/abs/2303.04137v5</id>
+    <title>Diffusion Policy: Visuomotor Policy Learning via Action Diffusion</title>
+    <updated>2024-03-14T04:36:31Z</updated>
+    <link href="https://arxiv.org/abs/2303.04137v5" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2303.04137v5" rel="related" type="application/pdf" title="pdf"/>
+    <summary>This paper introduces Diffusion Policy, a new way of generating robot behavior by representing a robot's visuomotor policy as a conditional denoising diffusion process. We benchmark Diffusion Policy across 12 different tasks from 4 different robot manipulation benchmarks and find that it consistently outperforms existing state-of-the-art robot learning methods with an average improvement of 46.9%. Diffusion Policy learns the gradient of the action-distribution score function and iteratively optimizes with respect to this gradient field during inference via a series of stochastic Langevin dynamics steps. We find that the diffusion formulation yields powerful advantages when used for robot policies, including gracefully handling multimodal action distributions, being suitable for high-dimensional action spaces, and exhibiting impressive training stability. To fully unlock the potential of diffusion models for visuomotor policy learning on physical robots, this paper presents a set of key technical contributions including the incorporation of receding horizon control, visual conditioning, and the time-series diffusion transformer. We hope this work will help motivate a new generation of policy learning techniques that are able to leverage the powerful generative modeling capabilities of diffusion models. Code, data, and training details is publicly available diffusion-policy.cs.columbia.edu</summary>
+    <category term="cs.RO" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-03-07T18:50:03Z</published>
+    <arxiv:comment>An extended journal version of the original RSS2023 paper</arxiv:comment>
+    <arxiv:primary_category term="cs.RO"/>
+    <author>
+      <name>Cheng Chi</name>
+    </author>
+    <author>
+      <name>Zhenjia Xu</name>
+    </author>
+    <author>
+      <name>Siyuan Feng</name>
+    </author>
+    <author>
+      <name>Eric Cousineau</name>
+    </author>
+    <author>
+      <name>Yilun Du</name>
+    </author>
+    <author>
+      <name>Benjamin Burchfiel</name>
+    </author>
+    <author>
+      <name>Russ Tedrake</name>
+    </author>
+    <author>
+      <name>Shuran Song</name>
+    </author>
+  </entry>
+</feed>
