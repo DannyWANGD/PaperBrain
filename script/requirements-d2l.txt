@@ -1,7 +1,0 @@
--r requirements.txt
-
-# d2l 1.0.3 requires requests 2.31; this compatible arXiv stack avoids
-# pip upgrading requests when installing PaperBrain into that environment.
-requests==2.31.0
-arxiv==2.1.0
-feedparser==6.0.10

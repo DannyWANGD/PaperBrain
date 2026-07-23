@@ -43,7 +43,7 @@ REQUIRED_DEPENDENCIES = {
     "dotenv": "python-dotenv",
 }
 
-BACKEND_VERSION_FALLBACK = "0.3.3"
+BACKEND_VERSION_FALLBACK = "0.3.4"
 
 
 def backend_version() -> str:

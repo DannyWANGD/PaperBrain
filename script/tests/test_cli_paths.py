@@ -63,7 +63,7 @@ class CliAndPathsTest(unittest.TestCase):
         self.assertTrue(payload["ok"])
         self.assertEqual(payload["command"], "fetch")
         self.assertEqual(payload["stop_after"], "fetch")
-        self.assertEqual(payload["backend_version"], "0.3.3")
+        self.assertEqual(payload["backend_version"], "0.3.4")
         self.assertFalse(fake.calls[0]["generate_podcast"])
         self.assertFalse(fake.calls[0]["resume"])
         self.assertEqual(fake.calls[0]["provider"], "openrouter")
@@ -359,18 +359,13 @@ class CliAndPathsTest(unittest.TestCase):
         self.assertTrue(paths.cache_dir.is_relative_to(Path(cwd).resolve()))
         self.assertFalse(paths.cache_dir.is_relative_to(script_dir.resolve()))
 
-    def test_d2l_compatibility_requirements_pin_only_the_overlay(self):
+    def test_runtime_requirements_match_the_package_contract(self):
         root = Path(__file__).resolve().parents[2]
-        overlay = (root / "script" / "requirements-d2l.txt").read_text(encoding="utf-8")
         requirements = (root / "script" / "requirements.txt").read_text(encoding="utf-8")
         pyproject = (root / "pyproject.toml").read_text(encoding="utf-8")
 
-        self.assertIn("-r requirements.txt", overlay)
-        self.assertIn("requests==2.31.0", overlay)
-        self.assertIn("arxiv==2.1.0", overlay)
-        self.assertIn("feedparser==6.0.10", overlay)
         self.assertIn("arxiv>=2.1.0", requirements)
-        self.assertIn('version = "0.3.3"', pyproject)
+        self.assertIn('version = "0.3.4"', pyproject)
         self.assertIn('"urllib3>=1.26.18,<3"', pyproject)
 
     @staticmethod
