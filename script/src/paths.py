@@ -6,12 +6,22 @@ subfolders are resolved from the configured Obsidian vault root.
 
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass
 from pathlib import Path
 
 
 def _normalize(path: Path) -> str:
     return str(path.expanduser().resolve())
+
+
+def _is_source_checkout(repo_root: Path, script_dir: Path | None = None) -> bool:
+    script_dir = script_dir or repo_root / "script"
+    return (repo_root / "pyproject.toml").is_file() and script_dir.name == "script"
+
+
+def _relative_base(repo_root: Path, script_dir: Path | None = None) -> Path:
+    return repo_root if _is_source_checkout(repo_root, script_dir) else Path.cwd()
 
 
 @dataclass(frozen=True)
@@ -39,10 +49,11 @@ class PaperBrainPaths:
     @classmethod
     def default(cls, config_path: str | Path | None = None, config: dict | None = None) -> "PaperBrainPaths":
         script_dir = Path(__file__).resolve().parents[1]
-        repo_root = script_dir.parent
-        config_path = cls.resolve_config_path(config_path, repo_root=repo_root, script_dir=script_dir)
-        prompts_path = cls.resolve_prompts_path(None, repo_root=repo_root, script_dir=script_dir)
-        vault_path = cls.resolve_vault_path(config or {}, repo_root=repo_root)
+        package_root = script_dir.parent
+        repo_root = _relative_base(package_root, script_dir)
+        config_path = cls.resolve_config_path(config_path, repo_root=package_root, script_dir=script_dir)
+        prompts_path = cls.resolve_prompts_path(None, repo_root=package_root, script_dir=script_dir)
+        vault_path = cls.resolve_vault_path(config or {}, repo_root=package_root)
         return cls.from_roots(repo_root, script_dir, config_path, prompts_path, vault_path, config or {})
 
     @classmethod
@@ -53,10 +64,11 @@ class PaperBrainPaths:
         prompts_path: str | Path | None = None,
     ) -> "PaperBrainPaths":
         script_dir = Path(__file__).resolve().parents[1]
-        repo_root = script_dir.parent
-        config_path = cls.resolve_config_path(config_path, repo_root=repo_root, script_dir=script_dir)
-        prompts_path = cls.resolve_prompts_path(prompts_path, repo_root=repo_root, script_dir=script_dir)
-        vault_path = cls.resolve_vault_path(config, repo_root=repo_root)
+        package_root = script_dir.parent
+        repo_root = _relative_base(package_root, script_dir)
+        config_path = cls.resolve_config_path(config_path, repo_root=package_root, script_dir=script_dir)
+        prompts_path = cls.resolve_prompts_path(prompts_path, repo_root=package_root, script_dir=script_dir)
+        vault_path = cls.resolve_vault_path(config, repo_root=package_root)
         return cls.from_roots(repo_root, script_dir, config_path, prompts_path, vault_path, config)
 
     @classmethod
@@ -95,18 +107,24 @@ class PaperBrainPaths:
 
     @staticmethod
     def resolve_config_path(
-        value: str | Path | None,
+        value: str | Path | None = None,
         repo_root: Path | None = None,
         script_dir: Path | None = None,
     ) -> Path:
         script_dir = script_dir or Path(__file__).resolve().parents[1]
         repo_root = repo_root or script_dir.parent
-        if value:
-            path = Path(value).expanduser()
-            return path.resolve() if path.is_absolute() else (repo_root / path).resolve()
+        selected = value or os.getenv("PAPERBRAIN_CONFIG_PATH")
+        if selected:
+            path = Path(selected).expanduser()
+            return path.resolve() if path.is_absolute() else (_relative_base(repo_root, script_dir) / path).resolve()
         preferred = script_dir / "config" / "config.yaml"
+        installed_resource = script_dir / "paperbrain_config" / "config.yaml"
         fallback = script_dir / "config.yaml"
-        return preferred.resolve() if preferred.exists() else fallback.resolve()
+        if preferred.exists():
+            return preferred.resolve()
+        if installed_resource.exists():
+            return installed_resource.resolve()
+        return fallback.resolve()
 
     @staticmethod
     def resolve_prompts_path(
@@ -118,18 +136,23 @@ class PaperBrainPaths:
         repo_root = repo_root or script_dir.parent
         if value:
             path = Path(value).expanduser()
-            return path.resolve() if path.is_absolute() else (repo_root / path).resolve()
+            return path.resolve() if path.is_absolute() else (_relative_base(repo_root, script_dir) / path).resolve()
         preferred = script_dir / "config" / "prompts.yaml"
+        installed_resource = script_dir / "paperbrain_config" / "prompts.yaml"
         fallback = script_dir / "prompts.yaml"
-        return preferred.resolve() if preferred.exists() else fallback.resolve()
+        if preferred.exists():
+            return preferred.resolve()
+        if installed_resource.exists():
+            return installed_resource.resolve()
+        return fallback.resolve()
 
     @staticmethod
     def resolve_vault_path(config: dict, repo_root: Path | None = None) -> Path:
         repo_root = repo_root or Path(__file__).resolve().parents[2]
         obsidian = config.get("obsidian", {}) if isinstance(config, dict) else {}
-        raw = obsidian.get("vault_path") or "."
+        raw = os.getenv("PAPERBRAIN_VAULT_PATH") or obsidian.get("vault_path") or "."
         path = Path(str(raw)).expanduser()
-        return path.resolve() if path.is_absolute() else (repo_root / path).resolve()
+        return path.resolve() if path.is_absolute() else (_relative_base(repo_root) / path).resolve()
 
     @classmethod
     def from_config_dict(cls, config: dict) -> "PaperBrainPaths":

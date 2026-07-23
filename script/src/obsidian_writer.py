@@ -1,10 +1,15 @@
+import hashlib
+import json
+import logging
 import os
 import re
-import json
 from datetime import datetime
-import logging
+from urllib.parse import urlsplit, urlunsplit
+
 import yaml
+
 from src import scoring as scoring_utils
+from src.file_io import atomic_write_text
 from src.paper_identity import canonical_arxiv_id, identity_key, normalize_paper_identity, paper_id_from_arxiv_id
 from src.paths import PaperBrainPaths
 
@@ -83,34 +88,35 @@ class ObsidianWriter:
 
     def _find_note_by_arxiv_id(self, arxiv_id, exclude=""):
         """Returns filename of an existing note with the same arXiv ID, or empty string."""
-        if not os.path.exists(self.notes_folder):
+        arxiv_id = canonical_arxiv_id(arxiv_id)
+        if not arxiv_id or not os.path.exists(self.notes_folder):
             return ""
-        for fn in os.listdir(self.notes_folder):
+        for fn in sorted(os.listdir(self.notes_folder)):
             if not fn.endswith(".md") or fn == exclude:
                 continue
-            try:
-                with open(os.path.join(self.notes_folder, fn), "r", encoding="utf-8") as f:
-                    content = f.read(2000)  # only need frontmatter
-                if arxiv_id in content:
-                    return fn
-            except Exception:
-                continue
+            note_path = os.path.join(self.notes_folder, fn)
+            _, note_arxiv_id = self._canonical_identity(self._read_note_frontmatter(note_path))
+            if note_arxiv_id == arxiv_id:
+                return fn
         return ""
 
     def _find_note_path_for_paper(self, paper):
         """Returns the path of an existing detailed note for this paper, if any."""
+        paper = normalize_paper_identity(paper)
         note_name = self.get_filename_from_paper(paper) if paper.get("title") else ""
         if note_name:
             note_path = os.path.join(self.notes_folder, f"{note_name}.md")
-            if os.path.exists(note_path):
+            if os.path.exists(note_path) and self._note_matches_paper(note_path, paper):
                 return note_path
 
-        for key in ("url", "pdf_url", "arxiv_id", "paper_id"):
-            arxiv_id = self._extract_arxiv_id(paper.get(key, ""))
-            if arxiv_id:
-                existing = self._find_note_by_arxiv_id(arxiv_id)
-                if existing:
-                    return os.path.join(self.notes_folder, existing)
+        if not os.path.isdir(self.notes_folder):
+            return ""
+        for filename in sorted(os.listdir(self.notes_folder)):
+            if not filename.endswith(".md"):
+                continue
+            note_path = os.path.join(self.notes_folder, filename)
+            if self._note_matches_paper(note_path, paper):
+                return note_path
         return ""
 
     def _read_note_frontmatter(self, note_path):
@@ -124,6 +130,74 @@ class ObsidianWriter:
             return frontmatter if isinstance(frontmatter, dict) else {}
         except Exception:
             return {}
+
+    def _canonical_identity(self, metadata):
+        normalized = normalize_paper_identity(metadata or {})
+        arxiv_id = canonical_arxiv_id(
+            normalized.get("arxiv_id")
+            or normalized.get("paper_id")
+            or normalized.get("url")
+            or normalized.get("pdf_url")
+        )
+        if arxiv_id:
+            paper_id = paper_id_from_arxiv_id(arxiv_id)
+        else:
+            external_url = self._canonical_external_url(normalized.get("url") or normalized.get("pdf_url"))
+            paper_id = (
+                f"url:{hashlib.sha1(external_url.encode('utf-8')).hexdigest()[:12]}"
+                if external_url
+                else str(normalized.get("paper_id") or "").strip()
+            )
+        return paper_id, arxiv_id
+
+    def _canonical_external_url(self, value):
+        try:
+            parsed = urlsplit(str(value or "").strip())
+            port = parsed.port
+        except ValueError:
+            return ""
+        if parsed.scheme.lower() not in {"http", "https"} or not parsed.hostname:
+            return ""
+        host = parsed.hostname.lower()
+        if port:
+            host = f"{host}:{port}"
+        return urlunsplit((parsed.scheme.lower(), host, parsed.path.rstrip("/"), parsed.query, ""))
+
+    def _note_matches_paper(self, note_path, paper):
+        paper_id, arxiv_id = self._canonical_identity(paper)
+        note_paper_id, note_arxiv_id = self._canonical_identity(self._read_note_frontmatter(note_path))
+
+        if arxiv_id or note_arxiv_id:
+            return bool(arxiv_id and note_arxiv_id and arxiv_id == note_arxiv_id)
+        return bool(paper_id and note_paper_id and paper_id == note_paper_id)
+
+    def _identity_filename_suffix(self, paper):
+        paper_id, arxiv_id = self._canonical_identity(paper)
+        if arxiv_id:
+            return arxiv_id
+        if paper_id.startswith("title:"):
+            return paper_id.split(":", 1)[1][:12]
+        identity = paper_id or str((paper or {}).get("title") or "paper")
+        return hashlib.sha1(identity.encode("utf-8")).hexdigest()[:12]
+
+    def _allocate_note_path(self, paper, safe_title):
+        """Choose a deterministic path without claiming a different paper's note."""
+        safe_title = safe_title or "Paper"
+        base_path = os.path.join(self.notes_folder, f"{safe_title}.md")
+        if not os.path.exists(base_path) or self._note_matches_paper(base_path, paper):
+            return base_path
+
+        suffix = self._identity_filename_suffix(paper)
+        candidate = os.path.join(self.notes_folder, f"{safe_title} - {suffix}.md")
+        if not os.path.exists(candidate) or self._note_matches_paper(candidate, paper):
+            return candidate
+
+        index = 2
+        while True:
+            candidate = os.path.join(self.notes_folder, f"{safe_title} - {suffix}-{index}.md")
+            if not os.path.exists(candidate) or self._note_matches_paper(candidate, paper):
+                return candidate
+            index += 1
 
     def _ensure_clean_list(self, value):
         if value is None:
@@ -363,8 +437,7 @@ class ObsidianWriter:
         )])
         content = self._update_digest_summary_counts(content, total_count, high_count)
 
-        with open(filepath, "w", encoding="utf-8") as f:
-            f.write(content)
+        atomic_write_text(filepath, content)
         logger.info(f"Inserted single paper into daily digest: {filepath}")
         return filepath
 
@@ -417,6 +490,9 @@ class ObsidianWriter:
         return f"---\n{frontmatter}\n{key}: \"{value}\"\n---\n{body}"
 
     def _supplement_existing_note(self, filepath, paper, analysis_content, local_pdf_path=None):
+        if not self._note_matches_paper(filepath, paper):
+            raise ValueError(f"Refusing to supplement a note with a different paper identity: {filepath}")
+
         with open(filepath, "r", encoding="utf-8") as f:
             raw = f.read()
 
@@ -446,8 +522,7 @@ class ObsidianWriter:
         updated = self._ensure_frontmatter_scalar(updated, "arxiv_id", arxiv_id)
         updated = self._ensure_frontmatter_scalar(updated, "local_pdf", pdf_link)
 
-        with open(filepath, "w", encoding="utf-8") as f:
-            f.write(updated)
+        atomic_write_text(filepath, updated)
         logger.info(f"Detailed note supplemented at {filepath}")
         return filepath
 
@@ -499,8 +574,7 @@ class ObsidianWriter:
                                 .replace("{{high_impact_count}}", str(len(high_impact))) \
                                 .replace("{{content}}", content)
 
-        with open(filepath, "w", encoding="utf-8") as f:
-            f.write(final_content)
+        atomic_write_text(filepath, final_content)
         
         logger.info(f"Daily digest written to {filepath}")
         return filepath
@@ -509,33 +583,23 @@ class ObsidianWriter:
         """Writes a detailed note for a high-value paper."""
         paper = normalize_paper_identity(paper)
         safe_title = self.get_filename_from_paper(paper)
-        filename = f"{safe_title}.md"
-        filepath = os.path.join(self.notes_folder, filename)
+        base_filename = f"{safe_title or 'Paper'}.md"
+        existing_note = self._find_note_path_for_paper(paper)
 
-        if paper.get("forced_deep"):
-            existing_note = self._find_note_path_for_paper(paper)
-            if existing_note:
-                return self._supplement_existing_note(existing_note, paper, analysis_content, local_pdf_path=local_pdf_path)
+        if paper.get("forced_deep") and existing_note:
+            return self._supplement_existing_note(existing_note, paper, analysis_content, local_pdf_path=local_pdf_path)
 
-        # Dedup check: scan existing notes for same arXiv ID
-        paper_url = paper.get('url', '')
-        arxiv_id = self._extract_arxiv_id(paper_url)
-        if arxiv_id:
-            existing = self._find_note_by_arxiv_id(arxiv_id, exclude=filename)
-            if existing:
-                if paper.get("forced_deep"):
-                    return self._supplement_existing_note(
-                        os.path.join(self.notes_folder, existing),
-                        paper,
-                        analysis_content,
-                        local_pdf_path=local_pdf_path,
-                    )
-                logger.warning(
-                    f"[DEDUP] Skipping write for '{filename}': "
-                    f"arXiv ID {arxiv_id} already exists as '{existing}'. "
-                    f"Delete the old file first if you want to overwrite."
-                )
-                return os.path.join(self.notes_folder, existing)
+        if existing_note:
+            logger.warning(
+                f"[DEDUP] Skipping write for '{base_filename}': "
+                f"the same paper already exists as '{os.path.basename(existing_note)}'."
+            )
+            return existing_note
+
+        # Dedup identity is established from all canonical metadata, not URL alone.
+        arxiv_id = canonical_arxiv_id(
+            paper.get("arxiv_id") or paper.get("paper_id") or paper.get("url") or paper.get("pdf_url")
+        )
         
         pdf_link = ""
         if local_pdf_path:
@@ -552,9 +616,11 @@ class ObsidianWriter:
                 img_name = f"{base_name}_arch.{ext}"
                 if os.path.exists(os.path.join(self.assets_folder, img_name)):
                     arch_image_link = f"![[{img_name}]]"
-                    # Only append caption if provided and not empty (Requirement 4: Remove caption)
+                    # The caption distinguishes architecture, representative, and cover fallbacks.
                     if image_caption:
-                        arch_image_link += f"\n*{image_caption}*"
+                        clean_caption = " ".join(str(image_caption).split()).replace("*", "").strip()
+                        if clean_caption:
+                            arch_image_link += f"\n*{clean_caption}*"
                     break
 
         # Add metadata frontmatter
@@ -563,9 +629,8 @@ class ObsidianWriter:
             tags = ['paper', 'robotics', 'AI']
         else:
             tags = ['paper'] + tags
-        safe_tags = [t.strip().replace(' ', '_').replace('-', '_') for t in tags]
-        score = self._format_score(paper.get('score', 0))
-        tags_yaml = "\n".join([f"  - {t}" for t in safe_tags])
+        safe_tags = list(dict.fromkeys(str(t).strip().replace(' ', '_').replace('-', '_') for t in tags if str(t).strip()))
+        score = self._numeric_score(paper.get('score', 0))
 
         # Build aliases: original title + AI-generated aliases
         all_aliases = [paper['title']]
@@ -573,8 +638,7 @@ class ObsidianWriter:
         for a in ai_aliases:
             if a and a not in all_aliases:
                 all_aliases.append(a)
-        aliases_yaml = "\n".join([f'  - "{a}"' for a in all_aliases])
-        authors_yaml = "\n".join([f'  - "{a}"' for a in self._paper_authors(paper)])
+        authors = self._paper_authors(paper) or ["Unknown"]
 
         # arxiv_id for dedup
         arxiv_id_val = canonical_arxiv_id(arxiv_id or paper.get("arxiv_id") or paper.get("pdf_url") or paper.get("url"))
@@ -592,9 +656,6 @@ class ObsidianWriter:
         paper['institutions'] = institutions
         paper['github'] = github
         paper['project_page'] = project_page
-        institutions_yaml = ""
-        if institutions:
-            institutions_yaml = "\ninstitutions:" + "".join([f"\n  - \"{i}\"" for i in institutions])
 
         abstract_block = paper.get('abstract', '')
         analysis_clean = analysis_content or ""
@@ -620,23 +681,32 @@ class ObsidianWriter:
         abstract_block = self._sanitize_obsidian_text(abstract_block)
         analysis_clean = self._sanitize_obsidian_text(analysis_clean)
 
+        frontmatter = {
+            "tags": safe_tags,
+            "aliases": [str(alias) for alias in all_aliases],
+            "authors": [str(author) for author in authors],
+            "paper_id": str(paper_id_val or ""),
+            "arxiv_id": str(arxiv_id_val or ""),
+            "url": str(paper.get("url") or ""),
+            "pdf_url": str(paper.get("pdf_url") or ""),
+            "local_pdf": pdf_link,
+            "github": str(github),
+            "project_page": str(project_page),
+            "publication_date": str(pub_date),
+            "metadata_publication_date": str(metadata_pub_date),
+            "score": score,
+        }
+        if institutions:
+            frontmatter["institutions"] = [str(institution) for institution in institutions]
+        frontmatter_yaml = yaml.safe_dump(
+            frontmatter,
+            allow_unicode=True,
+            sort_keys=False,
+            default_flow_style=False,
+        ).strip()
+
         content = f"""---
-tags:
-{tags_yaml}
-aliases:
-{aliases_yaml}
-authors:
-{authors_yaml or '  - "Unknown"'}
-paper_id: "{paper_id_val}"
-arxiv_id: "{arxiv_id_val}"
-url: {paper.get('url')}
-pdf_url: {paper.get('pdf_url')}
-local_pdf: "{pdf_link}"
-github: "{github}"
-project_page: "{project_page}"{institutions_yaml}
-publication_date: "{pub_date}"
-metadata_publication_date: "{metadata_pub_date}"
-score: {score}
+{frontmatter_yaml}
 ---
 
 # {paper['title']}
@@ -655,8 +725,8 @@ score: {score}
 - [Online PDF]({paper.get('pdf_url')})
 - [ArXiv Link]({paper.get('url')})
 """
-        with open(filepath, "w", encoding="utf-8") as f:
-            f.write(content)
+        filepath = self._allocate_note_path(paper, safe_title)
+        atomic_write_text(filepath, content)
 
         logger.info(f"Detailed note written to {filepath}")
         return filepath

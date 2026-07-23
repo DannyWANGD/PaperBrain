@@ -8,54 +8,14 @@ doubao:
 
 openrouter:
   api_key: "${OPENROUTER_API_KEY}"
+  # Task-specific primary models. Compatible fallbacks are managed internally.
   model_flash: "deepseek/deepseek-v4-flash"
-  model_flash_fallbacks:
-    - "stepfun/step-3.7-flash"
-    - "qwen/qwen3.6-flash"
-    - "z-ai/glm-4.7-flash"
-    - "deepseek/deepseek-v3.2"
-  model_screening_pro: "deepseek/deepseek-v4-pro"
-  model_screening_pro_fallbacks:
-    - "x-ai/grok-4.3"
-    - "qwen/qwen3.7-max"
-    - "minimax/minimax-m3"
-    - "qwen/qwen3-max-thinking"
-    - "z-ai/glm-5.1"
-    - "moonshotai/kimi-k2.6"
-  model_pro: "deepseek/deepseek-v4-pro"
-  model_pro_fallbacks:
-    - "x-ai/grok-4.3"
-    - "qwen/qwen3.7-max"
-    - "minimax/minimax-m3"
-    - "z-ai/glm-5.1"
-    - "moonshotai/kimi-k2.6"
-    - "qwen/qwen3-max-thinking"
-  model_learning_resources: "deepseek/deepseek-v4-pro"
-  model_learning_resources_fallbacks:
-    - "qwen/qwen3.7-max"
-    - "x-ai/grok-4.3"
-    - "moonshotai/kimi-k2.6"
-    - "minimax/minimax-m3"
-    - "z-ai/glm-5.1"
-    - "qwen/qwen3-max-thinking"
-    - "deepseek/deepseek-v3.2"
-  model_podcast: "moonshotai/kimi-k2.6"
-  model_podcast_fallbacks:
-    - "x-ai/grok-4.3"
-    - "qwen/qwen3.7-max"
-    - "minimax/minimax-m3"
-    - "deepseek/deepseek-v4-pro"
-    - "z-ai/glm-5.1"
-  model_vision: "qwen/qwen3-vl-30b-a3b-thinking"
-  model_vision_fallbacks:
-    - "perceptron/perceptron-mk1"
-    - "minimax/minimax-m3"
-    - "stepfun/step-3.7-flash"
-    - "qwen/qwen3.5-plus-20260420"
-    - "z-ai/glm-5v-turbo"
-    - "moonshotai/kimi-k2.5"
+  model_screening_pro: "z-ai/glm-5.2"
+  model_pro: "moonshotai/kimi-k3"
+  model_learning_resources: "x-ai/grok-4.5"
+  model_podcast: "moonshotai/kimi-k3"
+  model_vision: "moonshotai/kimi-k3"
   routing_sort: "throughput"
-  routing_partition: "none"
   reasoning_effort_screening: "medium"
   reasoning_effort_analysis: "high"
   reasoning_effort_vision: "medium"
@@ -68,10 +28,9 @@ analysis:
   refinement_pass_enabled: true
   refinement_max_chars: 45000
   refinement_paper_excerpt_chars: 12000
-  learning_resources_enabled: true
+  # Rich resources use web search and canonical-link validation.
+  learning_resources_web_search_enabled: true
   learning_resources_validate_links: true
-  learning_resources_link_timeout_seconds: 8
-  learning_resources_max_links_to_validate: 60
   max_papers_per_day: 2
   daily_deep_analysis_min: 1
   daily_deep_analysis_base_max: 2
@@ -142,7 +101,6 @@ search:
   arxiv_api_endpoints:
     - "https://export.arxiv.org/api/query"
     - "https://arxiv.org/api/query"
-    - "http://export.arxiv.org/api/query"
   arxiv_cache_enabled: true
   arxiv_cache_ttl_hours: 72
   arxiv_rate_limit_cooldown_minutes: 60

@@ -123,7 +123,6 @@ class ResearchBriefGenerator:
             innovation = self._digest_field(body, "Innovation")
             limitations = self._digest_field(body, "Limitations")
             link_text = self._digest_field(body, "Link")
-            authors = self._split_csv(self._digest_field(body, "Authors"))
             institutions = self._split_csv(self._digest_field(body, "Institutions"))
             tags = self._digest_tags(body)
             arxiv_id = canonical_arxiv_id(link_text)

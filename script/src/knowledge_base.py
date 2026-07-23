@@ -48,17 +48,25 @@ class KnowledgeBase:
 
         defaults = [
             "deepseek/deepseek-v4-flash",
-            "stepfun/step-3.7-flash",
             "qwen/qwen3.6-flash",
-            "z-ai/glm-4.7-flash",
-            "deepseek/deepseek-v3.2",
+            "stepfun/step-3.7-flash",
+            "qwen/qwen3.7-plus",
+            "minimax/minimax-m3",
         ]
 
         candidates = []
         for m in [primary_model, *fallbacks, *defaults]:
-            if m and m not in candidates:
+            if m and m not in candidates and not self._is_disallowed_openrouter_model(m):
                 candidates.append(m)
         return candidates
+
+    @staticmethod
+    def _is_disallowed_openrouter_model(model):
+        value = str(model or "").strip().lower().lstrip("~")
+        author = value.split("/", 1)[0] if "/" in value else ""
+        return author in {"anthropic", "openai", "google", "google-ai", "googleai"} or any(
+            term in value for term in ("claude", "gpt", "openai", "gemini")
+        )
 
     def _chat_with_fallback(self, models, messages, **kwargs):
         last_err = None

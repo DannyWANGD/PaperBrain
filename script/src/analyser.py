@@ -1,9 +1,9 @@
 import os
-import time
 import logging
 import json
 import fitz  # PyMuPDF
 import re
+import math
 import requests
 from openai import OpenAI
 from pypdf import PdfReader
@@ -16,12 +16,18 @@ logger = logging.getLogger(__name__)
 import base64
 
 import yaml # Ensure yaml is imported
+from src.network_safety import UnsafeUrlError, request_public_url
 from src.scoring import (
     calibrated_screening_score,
     clamp_score,
     coarse_screening_score,
     normalize_red_flags,
 )
+
+
+class DeepAnalysisError(RuntimeError):
+    """Raised when a deep-analysis artifact cannot be produced safely."""
+
 
 class PaperAnalyser:
     def __init__(self, config, provider='doubao', prompts=None):
@@ -34,10 +40,10 @@ class PaperAnalyser:
             self.api_key = config['openrouter']['api_key']
             self.base_url = "https://openrouter.ai/api/v1"
             self.model_flash = config['openrouter'].get('model_flash', 'deepseek/deepseek-v4-flash')
-            self.model_screening_pro = config['openrouter'].get('model_screening_pro', self.model_flash)
-            self.model_pro = config['openrouter'].get('model_pro', 'deepseek/deepseek-v4-pro')
-            self.model_learning_resources = config['openrouter'].get('model_learning_resources', self.model_pro)
-            self.model_vision = config['openrouter'].get('model_vision', 'qwen/qwen3-vl-30b-a3b-thinking')
+            self.model_screening_pro = config['openrouter'].get('model_screening_pro', 'z-ai/glm-5.2')
+            self.model_pro = config['openrouter'].get('model_pro', 'moonshotai/kimi-k3')
+            self.model_learning_resources = config['openrouter'].get('model_learning_resources', 'x-ai/grok-4.5')
+            self.model_vision = config['openrouter'].get('model_vision', 'moonshotai/kimi-k3')
             logger.info(f"Using OpenRouter Provider. Flash: {self.model_flash}, Screening-Pro: {self.model_screening_pro}, Pro: {self.model_pro}, Learning: {self.model_learning_resources}, Vision: {self.model_vision}")
         else:
             self.api_key = config['doubao']['api_key']
@@ -59,6 +65,7 @@ class PaperAnalyser:
             script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
             candidate_paths = [
                 os.path.join(script_dir, "config", "tags.yaml"),
+                os.path.join(script_dir, "paperbrain_config", "tags.yaml"),
                 os.path.join(script_dir, "tags.yaml"),
             ]
             tags_path = next((p for p in candidate_paths if os.path.exists(p)), candidate_paths[0])
@@ -82,51 +89,46 @@ class PaperAnalyser:
         if kind == "model_flash":
             defaults = [
                 "deepseek/deepseek-v4-flash",
-                "stepfun/step-3.7-flash",
                 "qwen/qwen3.6-flash",
-                "z-ai/glm-4.7-flash",
-                "deepseek/deepseek-v3.2",
+                "stepfun/step-3.7-flash",
+                "qwen/qwen3.7-plus",
+                "minimax/minimax-m3",
             ]
         elif kind == "model_screening_pro":
             defaults = [
+                "z-ai/glm-5.2",
                 "deepseek/deepseek-v4-pro",
-                "x-ai/grok-4.3",
                 "qwen/qwen3.7-max",
                 "minimax/minimax-m3",
-                "qwen/qwen3-max-thinking",
-                "z-ai/glm-5.1",
-                "moonshotai/kimi-k2.6",
+                "moonshotai/kimi-k3",
+                "x-ai/grok-4.5",
             ]
         elif kind == "model_pro":
             defaults = [
-                "deepseek/deepseek-v4-pro",
-                "x-ai/grok-4.3",
+                "moonshotai/kimi-k3",
+                "x-ai/grok-4.5",
+                "z-ai/glm-5.2",
                 "qwen/qwen3.7-max",
+                "deepseek/deepseek-v4-pro",
                 "minimax/minimax-m3",
-                "z-ai/glm-5.1",
-                "moonshotai/kimi-k2.6",
-                "qwen/qwen3-max-thinking",
             ]
         elif kind == "model_learning_resources":
             defaults = [
-                "deepseek/deepseek-v4-pro",
-                "qwen/qwen3.7-max",
-                "x-ai/grok-4.3",
-                "moonshotai/kimi-k2.6",
+                "x-ai/grok-4.5",
+                "moonshotai/kimi-k3",
+                "qwen/qwen3.7-plus",
                 "minimax/minimax-m3",
-                "z-ai/glm-5.1",
-                "qwen/qwen3-max-thinking",
-                "deepseek/deepseek-v3.2",
+                "z-ai/glm-5.2",
+                "deepseek/deepseek-v4-pro",
             ]
         elif kind == "model_vision":
             defaults = [
-                "qwen/qwen3-vl-30b-a3b-thinking",
-                "perceptron/perceptron-mk1",
+                "moonshotai/kimi-k3",
+                "x-ai/grok-4.5",
+                "meta/muse-spark-1.1",
                 "minimax/minimax-m3",
+                "qwen/qwen3.7-plus",
                 "stepfun/step-3.7-flash",
-                "qwen/qwen3.5-plus-20260420",
-                "z-ai/glm-5v-turbo",
-                "moonshotai/kimi-k2.5",
             ]
 
         candidates = []
@@ -136,21 +138,23 @@ class PaperAnalyser:
         if self._openrouter_banned_authors:
             filtered = []
             for m in candidates:
-                author = (m.split("/", 1)[0] if "/" in m else "").strip().lower()
+                author = (m.split("/", 1)[0] if "/" in m else "").strip().lower().lstrip("~")
                 if author and author in self._openrouter_banned_authors:
                     continue
                 filtered.append(m)
             candidates = filtered
-        if kind == "model_learning_resources":
-            candidates = [m for m in candidates if not self._is_disallowed_learning_model(m)]
+        candidates = [m for m in candidates if not self._is_disallowed_openrouter_model(m)]
         return candidates
 
-    def _is_disallowed_learning_model(self, model):
-        value = str(model or "").strip().lower()
+    def _is_disallowed_openrouter_model(self, model):
+        value = str(model or "").strip().lower().lstrip("~")
         author = value.split("/", 1)[0] if "/" in value else ""
         disallowed_authors = {"anthropic", "openai", "google", "google-ai", "googleai"}
         disallowed_terms = ("claude", "gpt", "openai", "gemini")
         return author in disallowed_authors or any(term in value for term in disallowed_terms)
+
+    def _is_disallowed_learning_model(self, model):
+        return self._is_disallowed_openrouter_model(model)
 
     def _learning_resource_model_candidates(self):
         primary = getattr(self, "model_learning_resources", self.model_pro)
@@ -243,6 +247,61 @@ class PaperAnalyser:
     def _clamp_score(self, value, default=5.0):
         return clamp_score(value, default=default)
 
+    @staticmethod
+    def _reject_json_constant(value):
+        raise ValueError(f"Non-finite JSON numeric constant is not allowed: {value}")
+
+    def _parse_screening_json(self, content, stage):
+        data = json.loads(
+            self._sanitize_json(content),
+            strict=False,
+            parse_constant=self._reject_json_constant,
+        )
+        if not isinstance(data, dict):
+            raise ValueError(f"{stage} screening response must be a JSON object")
+
+        if stage == "coarse":
+            numeric_fields = ("coarse_score", "relevance", "evidence", "method_completeness")
+            string_fields = ("reason",)
+            list_fields = ()
+            bool_fields = ("should_rescreen",)
+        else:
+            numeric_fields = (
+                "score",
+                "relevance",
+                "novelty",
+                "rigor",
+                "evidence",
+                "reproducibility",
+                "confidence",
+            )
+            string_fields = ("innovation", "limitations", "reason", "short_title")
+            list_fields = ("red_flags", "tags")
+            bool_fields = ()
+
+        required_fields = (*numeric_fields, *string_fields, *list_fields, *bool_fields)
+        missing = [field for field in required_fields if field not in data]
+        if missing:
+            raise ValueError(f"{stage} screening response is missing required fields: {', '.join(missing)}")
+
+        for field in numeric_fields:
+            value = data[field]
+            if isinstance(value, bool) or not isinstance(value, (int, float)):
+                raise ValueError(f"{stage} screening field '{field}' must be a JSON number")
+            if not math.isfinite(float(value)):
+                raise ValueError(f"{stage} screening field '{field}' must be finite")
+        for field in string_fields:
+            if not isinstance(data[field], str) or not data[field].strip():
+                raise ValueError(f"{stage} screening field '{field}' must be a non-empty string")
+        for field in list_fields:
+            value = data[field]
+            if not isinstance(value, list) or any(not isinstance(item, str) for item in value):
+                raise ValueError(f"{stage} screening field '{field}' must be a list of strings")
+        for field in bool_fields:
+            if not isinstance(data[field], bool):
+                raise ValueError(f"{stage} screening field '{field}' must be a boolean")
+        return data
+
     def _short_title_from_title(self, title):
         title = title or ""
         short_title = title.split(':')[0].strip() if ':' in title else title.strip()
@@ -294,6 +353,31 @@ class PaperAnalyser:
         }
         extra_params.update(self._openrouter_quality_params(stage))
         return extra_params
+
+    def _learning_resource_extra_params(self, base_params=None):
+        params = dict(base_params or {})
+        if self.provider != 'openrouter':
+            return params
+
+        analysis_cfg = self.config.get('analysis', {})
+        if not analysis_cfg.get("learning_resources_web_search_enabled", False):
+            return params
+
+        search_params = {
+            "max_results": 6,
+            "max_total_results": 18,
+            "search_context_size": "medium",
+        }
+
+        body = dict(params.get("extra_body") or {})
+        tools = list(body.get("tools") or [])
+        if not any(tool.get("type") == "openrouter:web_search" for tool in tools if isinstance(tool, dict)):
+            tools.append({"type": "openrouter:web_search", "parameters": search_params})
+        body["tools"] = tools
+        body["max_tool_calls"] = 3
+        params["extra_body"] = body
+        params["max_tokens"] = 12000
+        return params
 
     def _run_with_model_fallback(self, label, models, messages, extra_params=None, **kwargs):
         call_kwargs = {}
@@ -385,12 +469,11 @@ class PaperAnalyser:
         }
         for method in ("head", "get"):
             try:
-                response = requests.request(
-                    method.upper(),
+                response = request_public_url(
+                    method,
                     url,
                     headers=headers,
                     timeout=timeout,
-                    allow_redirects=True,
                     stream=(method == "get"),
                 )
                 try:
@@ -404,6 +487,8 @@ class PaperAnalyser:
                 if method == "head" and status in (401, 403, 405, 429):
                     continue
                 return False, status
+            except UnsafeUrlError:
+                return False, "unsafe_url"
             except requests.RequestException:
                 if method == "head":
                     continue
@@ -507,6 +592,7 @@ class PaperAnalyser:
 
     def _screening_fallback_payload(self, paper, reason, stage="detailed"):
         short_title_fallback = self._short_title_from_title(paper.get('title', ''))
+        error_code = "llm_coarse_screening_failed" if stage == "coarse" else "llm_detailed_screening_failed"
         base = {
             "score": 0.0,
             "relevance": 0.0,
@@ -522,6 +608,12 @@ class PaperAnalyser:
             "tags": [],
             "short_title": short_title_fallback,
             "screening_stage": stage,
+            "screening_error": {
+                "code": error_code,
+                "message": str(reason),
+                "exception": reason.__class__.__name__ if isinstance(reason, BaseException) else "",
+                "retryable": True,
+            },
         }
         if stage == "coarse":
             base.update({
@@ -592,7 +684,7 @@ class PaperAnalyser:
                 **self._screening_extra_params()
             )
 
-            data = json.loads(self._sanitize_json(self._message_content_text(response)), strict=False)
+            data = self._parse_screening_json(self._message_content_text(response), "coarse")
             relevance = self._clamp_score(data.get("relevance", data.get("coarse_score", 5)))
             evidence = self._clamp_score(data.get("evidence", data.get("coarse_score", 5)))
             method_completeness = self._clamp_score(data.get("method_completeness", data.get("coarse_score", 5)))
@@ -717,8 +809,7 @@ class PaperAnalyser:
             )
 
             content = self._message_content_text(response)
-            cleaned_content = self._sanitize_json(content)
-            data = json.loads(cleaned_content, strict=False)
+            data = self._parse_screening_json(content, "detailed")
 
             relevance = self._clamp_score(data.get("relevance", data.get("score", 5)))
             novelty = self._clamp_score(data.get("novelty", data.get("score", 5)))
@@ -853,13 +944,14 @@ class PaperAnalyser:
 
     def extract_images_from_pdf(self, pdf_path, output_folder):
         """
-        Intelligently extracts the model/logic architecture diagram from a research paper PDF.
+        Selects an architecture diagram, representative visual, or labeled cover preview.
 
         Strategy:
           Phase 1 — Full-text scan with two-tier keyword scoring to rank pages by
                     likelihood of containing an architecture figure.
           Phase 2 — Render top candidate pages as high-res images and ask a Vision LLM
-                    to pick the best architecture/framework diagram.
+                    to pick the best architecture diagram or representative fallback.
+          Phase 3 — Use the first page only when no useful visual was identified.
 
         Returns (saved_path, caption) or (None, "").
         """
@@ -913,24 +1005,29 @@ class PaperAnalyser:
             # ── Phase 2: Render candidate pages ──────────────────────────────
             candidates = []
             for page_num in target_pages:
-                page = doc.load_page(page_num)
-                pix = page.get_pixmap(matrix=fitz.Matrix(2.5, 2.5))
-                img_bytes = pix.tobytes("png")
-                candidates.append({
-                    "bytes": img_bytes,
-                    "ext": "png",
-                    "source": f"Page {page_num + 1}",
-                    "type": "rendered_page"
-                })
+                try:
+                    page = doc.load_page(page_num)
+                    pix = page.get_pixmap(matrix=fitz.Matrix(2.5, 2.5))
+                    img_bytes = pix.tobytes("png")
+                    candidates.append({
+                        "bytes": img_bytes,
+                        "ext": "png",
+                        "source": f"Page {page_num + 1}",
+                        "type": "rendered_page"
+                    })
+                except Exception as e:
+                    logger.warning(f"Could not render candidate page {page_num + 1}: {e}")
 
             if not candidates:
-                logger.warning("No candidate pages could be rendered.")
-                return None, ""
+                logger.warning("No candidate visual pages could be rendered. Using the first page preview.")
+                return self._save_cover_preview(doc, pdf_path, output_folder)
 
             # ── Phase 3: Vision LLM selection ────────────────────────────────
             vision_prompt = self.prompts.get('analysis', {}).get('vision_select_user', """You are an expert at reading research papers. I will show you several rendered pages from a PDF.
 
-Your task: find the page that contains the **model / method architecture diagram** — the figure that shows the overall structure of the proposed approach, with components, modules, data flow arrows, and technical labels.
+First, find the page that contains the **model / method architecture diagram** — the figure that shows the overall structure of the proposed approach, with components, modules, data flow arrows, and technical labels.
+
+If no candidate contains a clear architecture diagram, select the most informative representative visual page instead. Prefer a task overview, method setup, training or inference illustration, system embodiment, or informative teaser. Do not use a result-only chart, table, or author/title page as the representative fallback.
 
 **What counts as an architecture diagram:**
 - Block diagrams showing model components and their connections
@@ -938,7 +1035,7 @@ Your task: find the page that contains the **model / method architecture diagram
 - System schematics with named modules, arrows, and tensor/data annotations
 - Training/inference pipeline overviews
 
-**What does NOT count (reject these):**
+**What does NOT count as an architecture diagram:**
 - Teaser/splash images showing qualitative results, photos, or 3D renders
 - Bar charts, line plots, scatter plots, or any quantitative result figures
 - Tables (comparison tables, ablation tables)
@@ -947,11 +1044,11 @@ Your task: find the page that contains the **model / method architecture diagram
 
 **Rules:**
 1. If multiple pages contain architecture-like figures, prefer the one showing the OVERALL method (not a sub-module detail).
-2. If NO page contains a clear architecture diagram, return index -1.
-3. Do NOT guess — only select a page if you can clearly see a structural diagram.
+2. If NO page contains a clear architecture diagram, return index -1 and select the most informative representative visual page as fallback_index.
+3. Do NOT guess whether a figure is an architecture diagram.
 
 **Output:** Return ONLY a JSON object:
-{"index": <int or -1>, "caption": "<figure caption if readable, else brief description>"}""")
+{"index": <int or -1>, "caption": "<architecture caption or description>", "fallback_index": <int or -1>, "fallback_caption": "<representative visual caption or description>"}""")
 
             vision_messages = [{
                 "role": "user",
@@ -995,27 +1092,64 @@ Your task: find the page that contains the **model / method architecture diagram
                 data = json.loads(cleaned_json, strict=False)
 
                 best_idx = data.get("index", -1)
-                caption = data.get("caption", "Architecture Diagram")
+                fallback_idx = data.get("fallback_index", -1)
+                best_idx = best_idx if isinstance(best_idx, int) and not isinstance(best_idx, bool) else -1
+                fallback_idx = fallback_idx if isinstance(fallback_idx, int) and not isinstance(fallback_idx, bool) else -1
 
                 if 0 <= best_idx < len(candidates):
                     chosen = candidates[best_idx]
                     logger.info(f"Vision selected {chosen['source']} as architecture diagram.")
                     saved_path = self._save_image(chosen, pdf_path, output_folder)
-                    return saved_path, caption
+                    return saved_path, self._visual_caption("architecture", data.get("caption"))
                 elif best_idx == -1:
                     logger.info("Vision LLM determined no architecture diagram exists in this paper.")
-                    return None, ""
+                    if 0 <= fallback_idx < len(candidates):
+                        chosen = candidates[fallback_idx]
+                        logger.info(f"Vision selected {chosen['source']} as the representative visual fallback.")
+                        saved_path = self._save_image(chosen, pdf_path, output_folder)
+                        return saved_path, self._visual_caption("representative", data.get("fallback_caption"))
+                    logger.info("No representative visual was identified. Using the first page preview.")
+                    return self._save_cover_preview(doc, pdf_path, output_folder)
 
             except Exception as e:
                 logger.error(f"Vision selection error: {e}")
 
-            # Fallback: save the highest-scored page
-            logger.info("Vision selection failed. Saving top-scored page as fallback.")
+            # A ranked candidate is more informative than an unlabeled cover when vision is unavailable.
+            logger.info("Vision selection failed. Saving the top-ranked candidate as a representative fallback.")
             saved_path = self._save_image(candidates[0], pdf_path, output_folder)
-            return saved_path, "Architecture Diagram (fallback)"
+            return saved_path, self._visual_caption("selection_unavailable")
 
         except Exception as e:
             logger.error(f"Error extracting images from PDF: {e}")
+            return None, ""
+
+    @staticmethod
+    def _visual_caption(kind, caption=""):
+        detail = " ".join(str(caption or "").split()).strip(" .")
+        if kind == "architecture":
+            return f"Architecture diagram: {detail}." if detail else "Architecture diagram."
+        if kind == "representative":
+            prefix = "Representative figure (no architecture diagram detected)"
+            return f"{prefix}: {detail}." if detail else f"{prefix}."
+        if kind == "cover":
+            return "Paper preview: first page (no architecture or representative figure detected)."
+        return "Representative page: automatic fallback because visual selection was unavailable."
+
+    def _save_cover_preview(self, doc, pdf_path, output_folder):
+        try:
+            if len(doc) < 1:
+                return None, ""
+            page = doc.load_page(0)
+            pix = page.get_pixmap(matrix=fitz.Matrix(2.5, 2.5))
+            cover = {
+                "bytes": pix.tobytes("png"),
+                "ext": "png",
+                "source": "Page 1",
+                "type": "paper_preview",
+            }
+            return self._save_image(cover, pdf_path, output_folder), self._visual_caption("cover")
+        except Exception as e:
+            logger.warning(f"Could not render the paper first-page preview: {e}")
             return None, ""
 
     def _save_image(self, img_data, pdf_path, output_folder):
@@ -1135,7 +1269,7 @@ Your task: find the page that contains the **model / method architecture diagram
         base_messages = [{"role": "user", "content": user_content}]
 
         # --- Round 1: Comprehensive Analysis ---
-        logger.info(f"  [Round 1] Academic quality & innovation assessment...")
+        logger.info("  [Round 1] Academic quality & innovation assessment...")
 
         system_role = self.prompts.get('analysis', {}).get('system_role') or \
                       self.config.get('analysis', {}).get('prompts', {}).get('system_role', '')
@@ -1181,9 +1315,11 @@ Your task: find the page that contains the **model / method architecture diagram
 
         if response_r1 is None:
             logger.error("[Round 1] All models failed. Aborting.")
-            return "Analysis Failed: All models unavailable."
+            raise DeepAnalysisError("Deep analysis failed because all candidate models were unavailable")
 
         r1_content = self._message_content_text(response_r1)
+        if not r1_content.strip():
+            raise DeepAnalysisError("Deep analysis model returned an empty response")
 
         # Extract Metadata JSON (robust matching for various malformed formats)
         metadata = {}
@@ -1246,7 +1382,7 @@ Your task: find the page that contains the **model / method architecture diagram
         r2_content = ""
         used_model_round2 = None
         if max_iterations >= 2:
-            logger.info(f"  [Round 2] Connections, learning roadmap, and verified resources...")
+            logger.info("  [Round 2] Connections, learning roadmap, and verified resources...")
 
             context_notes = rag_context if rag_context else ', '.join(existing_notes_list[:50])
 
@@ -1293,12 +1429,17 @@ Your task: find the page that contains the **model / method architecture diagram
             - How this direction connects to broader trends in the field.
 
             **Task 4: Learning Roadmap & Resources**
-            Identify 4-6 knowledge points a student should learn to deeply understand this paper, ordered from beginner-friendly foundations to advanced implementation details.
+            Identify 5-7 knowledge points a student should learn to deeply understand this paper, ordered from beginner-friendly foundations to advanced implementation details. Use the available web-search tool to verify resource titles and canonical URLs before recommending them.
             For each knowledge point:
-            - Explain why it matters for this paper in 2-4 sentences.
-            - Provide high-quality learning links when they genuinely help. Do not force every resource type under every knowledge point.
+            - State the learning objective and any prerequisite knowledge.
+            - Explain why it matters for this paper in 2-4 sentences, including the exact method, equation, experiment, or implementation choice it unlocks.
+            - Give a short study sequence: what to learn first, what to inspect in the paper next, and what to implement or reproduce last.
+            - Add one small checkpoint exercise that verifies practical understanding.
+            - Include 2-4 resources in a compact Markdown table with columns: `Type`, `Resource`, `Why this one`, `Use it for`.
             - Across the whole roadmap, try to include a rich mix of blogs/tutorials, videos or public course lectures, open textbooks/lecture notes/e-books, official docs, official project pages, datasets, benchmark pages, and code repositories.
+            - Provide 12-20 distinct resources overall. Prefer one authoritative foundation resource and one practical resource per major concept, without duplicates.
             - Prefer stable, reputable sources: university course pages, MIT/Stanford/CMU/Berkeley/ETH lecture materials, official docs, official project pages, well-known technical blogs, open textbooks, canonical YouTube lectures/playlists from universities or recognized educators, datasets, benchmark pages, and code repositories.
+            - Prefer primary and canonical sources, and verify that each page matches the displayed title and claimed use.
             - Use exact Markdown links only when you are confident the URL is real. Do not invent URLs, do not use placeholder links, and do not use search-result URLs.
             - If a narrow concept lacks reliable exact URLs, choose fewer but better resources or use a broader prerequisite concept that still helps with this paper.
             """)
@@ -1316,7 +1457,7 @@ Your task: find the page that contains the **model / method architecture diagram
                 label="Round 2 Learning Resources",
                 models=round2_models_to_try,
                 messages=messages_r2,
-                extra_params=extra_params,
+                extra_params=self._learning_resource_extra_params(extra_params),
             )
 
             if response_r2 is None:
@@ -1355,9 +1496,6 @@ Your task: find the page that contains the **model / method architecture diagram
         title = paper.get('title', '')
         abstract = paper.get('abstract', '')
         innovation = paper.get('innovation', '')
-
-        # Take first 500 chars of analysis if provided
-        analysis_snippet = analysis_text[:500] if analysis_text else ""
 
         user_template = self.prompts.get('analysis', {}).get('alias_generation_user', """
         Given the following paper, generate 5-10 concise, searchable aliases that other researchers might use to refer to this work.
@@ -1410,7 +1548,7 @@ Your task: find the page that contains the **model / method architecture diagram
         logger.info("  Using full-page vision fallback mode...")
         images = self.pdf_to_base64_images(pdf_path, max_pages=8)
         if not images:
-            return "Failed to read PDF."
+            raise DeepAnalysisError("Deep analysis failed because the PDF could not be rendered")
 
         vision_messages = [{
             "role": "user",
@@ -1454,9 +1592,11 @@ Your task: find the page that contains the **model / method architecture diagram
         )
 
         if response_r1 is None:
-            return "Analysis Failed: All models unavailable."
+            raise DeepAnalysisError("Deep analysis failed because all candidate vision models were unavailable")
 
         r1_content = self._message_content_text(response_r1)
+        if not r1_content.strip():
+            raise DeepAnalysisError("Deep analysis vision model returned an empty response")
 
         metadata = {}
         try:

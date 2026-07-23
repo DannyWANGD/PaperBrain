@@ -88,6 +88,86 @@ class RunStateTest(unittest.TestCase):
         self.assertIn("status", data["logs"][-1])
         self.assertIn("ts", data["logs"][-1])
 
+    def test_resume_clears_retryable_errors_and_can_complete_successfully(self):
+        state = RunState(self.config, date(2026, 6, 1), "openrouter")
+        state.add_error(
+            "llm_coarse_screening_failed",
+            "provider unavailable",
+            stage="coarse",
+            paper_id="arxiv:2606.02486",
+            retryable=True,
+        )
+        state.mark_stage("failed")
+
+        resumed = RunState(self.config, date(2026, 6, 1), "openrouter")
+        self.assertEqual(resumed.clear_retryable_errors(), 1)
+        resumed.mark_stage("completed")
+
+        self.assertEqual(resumed.data["errors"], [])
+        self.assertTrue(resumed.summary()["ok"])
+        self.assertEqual(resumed.summary()["stage"], "completed")
+
+    def test_resume_keeps_non_retryable_errors_and_deduplicates_active_failure(self):
+        state = RunState(self.config, date(2026, 6, 2), "openrouter")
+        for _ in range(2):
+            state.add_error(
+                "invalid_config",
+                "configuration is invalid",
+                stage="initialized",
+                retryable=False,
+            )
+
+        self.assertEqual(len(state.data["errors"]), 1)
+        self.assertEqual(state.clear_retryable_errors(), 0)
+        self.assertEqual(len(state.data["errors"]), 1)
+
+    def test_resolve_errors_clears_only_the_operation_that_succeeded(self):
+        state = RunState(self.config, date(2026, 6, 3), "openrouter")
+        state.add_error(
+            "llm_coarse_screening_failed",
+            "first failure",
+            stage="coarse",
+            paper_id="arxiv:2606.00001",
+            retryable=True,
+        )
+        state.add_error(
+            "llm_coarse_screening_failed",
+            "other paper failure",
+            stage="coarse",
+            paper_id="arxiv:2606.00002",
+            retryable=True,
+        )
+        state.add_error(
+            "source_degraded",
+            "arXiv unavailable",
+            stage="fetch",
+            paper_id="source:arxiv",
+            retryable=True,
+        )
+
+        removed = state.resolve_errors(
+            code="llm_coarse_screening_failed",
+            stage="coarse",
+            paper_id="arxiv:2606.00001",
+        )
+
+        self.assertEqual(removed, 1)
+        self.assertEqual(
+            {(error["code"], error["paper_id"]) for error in state.data["errors"]},
+            {
+                ("llm_coarse_screening_failed", "arxiv:2606.00002"),
+                ("source_degraded", "source:arxiv"),
+            },
+        )
+
+    def test_repeated_failure_updates_active_error_instead_of_duplicating(self):
+        state = RunState(self.config, date(2026, 6, 4), "openrouter")
+        state.add_error("source_degraded", "timeout", stage="fetch", paper_id="source:arxiv", retryable=True)
+        state.add_error("source_degraded", "HTTP 503", stage="fetch", paper_id="source:arxiv", retryable=True)
+
+        self.assertEqual(len(state.data["errors"]), 1)
+        self.assertEqual(state.data["errors"][0]["message"], "HTTP 503")
+
     def test_loads_legacy_state_and_writes_new_state_json(self):
         legacy_dir = Path(self.tmp) / "Run_Records"
         legacy_dir.mkdir()

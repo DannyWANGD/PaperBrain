@@ -15,6 +15,7 @@ import time
 import traceback
 import unittest
 from importlib import metadata
+from importlib.resources import files
 from datetime import datetime, timedelta
 from enum import IntEnum
 from pathlib import Path
@@ -28,17 +29,31 @@ REQUIRED_DEPENDENCIES = {
     "feedparser": "feedparser",
     "arxiv": "arxiv",
     "requests": "requests",
+    "urllib3": "urllib3",
     "yaml": "pyyaml",
     "schedule": "schedule",
     "tqdm": "tqdm",
     "bs4": "beautifulsoup4",
     "pypdf": "pypdf",
     "fitz": "pymupdf",
+    "PIL": "Pillow",
     "openai": "openai",
     "edge_tts": "edge-tts",
     "nest_asyncio": "nest_asyncio",
     "dotenv": "python-dotenv",
 }
+
+BACKEND_VERSION_FALLBACK = "0.3.1"
+
+
+def backend_version() -> str:
+    repo_pyproject = Path(__file__).resolve().parents[2] / "pyproject.toml"
+    if repo_pyproject.is_file():
+        return BACKEND_VERSION_FALLBACK
+    try:
+        return metadata.version("paperbrain")
+    except metadata.PackageNotFoundError:
+        return BACKEND_VERSION_FALLBACK
 
 
 class ExitCode(IntEnum):
@@ -49,6 +64,7 @@ class ExitCode(IntEnum):
     PDF_UNAVAILABLE = 5
     WRITE_FAILURE = 6
     VALIDATION_FAILED = 7
+    CANCELLED = 8
     UNEXPECTED_ERROR = 70
 
 
@@ -107,6 +123,10 @@ def build_parser() -> argparse.ArgumentParser:
 
     bridge_parser = subparsers.add_parser("bridge", help="Run a PaperBrain command from a JSON request file.")
     bridge_parser.add_argument("--request-file", required=True, help="Path to a JSON request file.")
+
+    bootstrap_parser = subparsers.add_parser("bootstrap", help="Create a user-owned PaperBrain configuration directory.")
+    bootstrap_parser.add_argument("--config-dir", required=True, help="Directory that will contain config and .env files.")
+    bootstrap_parser.add_argument("--vault", required=True, help="Absolute Obsidian vault path written to config.yaml.")
 
     index_parser = subparsers.add_parser("index", help="Rebuild the Obsidian research index.")
     index_parser.add_argument(
@@ -196,6 +216,8 @@ def main(argv: list[str] | None = None, pipeline_module=None) -> int:
             payload = _run_dry_run(args)
         elif args.command == "bridge":
             payload = _run_bridge(args, pipeline_module=pipeline_module)
+        elif args.command == "bootstrap":
+            payload = _run_bootstrap(args)
         elif args.command == "index":
             payload = _run_index(args)
         elif args.command == "brief":
@@ -208,7 +230,7 @@ def main(argv: list[str] | None = None, pipeline_module=None) -> int:
             parser.error(f"unknown command: {args.command}")
 
         if payload.get("ok") is False:
-            exit_code = ExitCode.VALIDATION_FAILED if args.command == "check" else ExitCode.CONFIG_ERROR
+            exit_code = _exit_code_for_failed_payload(payload, args.command)
             payload.setdefault("command", args.command)
             payload["elapsed_ms"] = int((time.monotonic() - started) * 1000)
             payload["exit_code"] = int(exit_code)
@@ -228,11 +250,17 @@ def main(argv: list[str] | None = None, pipeline_module=None) -> int:
             "command": getattr(args, "command", ""),
             "exit_code": int(exit_code),
             "error": {
-                "code": exit_code.name.lower(),
+                "code": str(getattr(exc, "code", "") or exit_code.name.lower()),
                 "message": str(exc),
-                "suggestion": _suggestion_for_exit_code(exit_code),
+                "suggestion": str(getattr(exc, "suggestion", "") or _suggestion_for_exit_code(exit_code)),
                 "exception": exc.__class__.__name__,
-                "retryable": exit_code in (ExitCode.NETWORK_UNAVAILABLE, ExitCode.LLM_FAILURE, ExitCode.PDF_UNAVAILABLE),
+                "retryable": bool(
+                    getattr(
+                        exc,
+                        "retryable",
+                        exit_code in (ExitCode.NETWORK_UNAVAILABLE, ExitCode.LLM_FAILURE, ExitCode.PDF_UNAVAILABLE),
+                    )
+                ),
             },
             "elapsed_ms": int((time.monotonic() - started) * 1000),
         }
@@ -410,6 +438,56 @@ def _run_bridge(args, pipeline_module=None) -> dict:
         raise ValueError(f"Unsupported bridge command: {command}")
     payload["bridge_request"] = str(request_path)
     return payload
+
+
+def _run_bootstrap(args) -> dict:
+    """Create editable runtime config without changing packaged resources or secrets."""
+    config_dir = Path(args.config_dir).expanduser().resolve()
+    vault_path = Path(args.vault).expanduser().resolve()
+    if not vault_path.is_dir():
+        raise ValueError(f"Obsidian vault path does not exist: {vault_path}")
+    config_dir.mkdir(parents=True, exist_ok=True)
+
+    created = []
+    preserved = []
+    resources = files("paperbrain_config")
+    for name in ("config.yaml", "prompts.yaml", "tags.yaml"):
+        target = config_dir / name
+        if target.exists():
+            preserved.append(name)
+            continue
+        target.write_bytes(resources.joinpath(name).read_bytes())
+        created.append(name)
+
+    env_path = config_dir / ".env"
+    if env_path.exists():
+        preserved.append(".env")
+    else:
+        env_path.write_bytes(resources.joinpath(".env.example").read_bytes())
+        created.append(".env")
+
+    config_path = config_dir / "config.yaml"
+    import yaml
+
+    with config_path.open("r", encoding="utf-8") as stream:
+        config = yaml.safe_load(stream) or {}
+    obsidian = config.setdefault("obsidian", {})
+    if not isinstance(obsidian, dict):
+        raise ValueError("config.yaml must contain an obsidian mapping")
+    obsidian["vault_path"] = str(vault_path)
+    with config_path.open("w", encoding="utf-8", newline="\n") as stream:
+        yaml.safe_dump(config, stream, allow_unicode=True, sort_keys=False)
+
+    return {
+        "ok": True,
+        "command": "bootstrap",
+        "config_dir": str(config_dir),
+        "config_path": str(config_path),
+        "env_path": str(env_path),
+        "vault_path": str(vault_path),
+        "created": created,
+        "preserved": preserved,
+    }
 
 
 def _run_schedule(args, pipeline_module=None) -> dict:
@@ -847,6 +925,7 @@ def _import_core_modules() -> bool:
     modules = [
         "src.config_loader",
         "src.paths",
+        "src.network_safety",
         "src.paper_identity",
         "src.run_state",
         "src.scraper",
@@ -892,7 +971,7 @@ def _provider_model_checks(provider: str, config: dict, category: str = "config"
     cfg = config.get(provider, {})
     required = ["model_flash", "model_pro"]
     if provider == "openrouter":
-        required.extend(["model_screening_pro", "model_podcast", "model_vision"])
+        required.extend(["model_screening_pro", "model_learning_resources", "model_podcast", "model_vision"])
 
     checks = []
     for key in required:
@@ -907,7 +986,7 @@ def _provider_model_checks(provider: str, config: dict, category: str = "config"
             )
         )
 
-    for key in ("model_flash_fallbacks", "model_screening_pro_fallbacks", "model_pro_fallbacks", "model_podcast_fallbacks", "model_vision_fallbacks"):
+    for key in ("model_flash_fallbacks", "model_screening_pro_fallbacks", "model_pro_fallbacks", "model_learning_resources_fallbacks", "model_podcast_fallbacks", "model_vision_fallbacks"):
         if key in cfg:
             checks.append(
                 _check(
@@ -1175,7 +1254,7 @@ def _dependency_checks(severity: str, category: str = "") -> list[dict]:
                 "severity": severity,
                 "category": category,
                 "message": f"{package} is importable" if ok else f"{package} is not installed in this Python environment",
-                "suggestion": f"Install dependencies with `pip install -r script/requirements.txt`." if not ok else "",
+                "suggestion": "Install dependencies with `pip install -r script/requirements.txt`." if not ok else "",
                 "version": version,
             }
         )
@@ -1187,7 +1266,11 @@ def _run_ruff_checks(paths: PaperBrainPaths, skip=False, strict=False) -> dict:
         return {"ok": True, "status": "skipped", "strict": strict, "commands": []}
 
     ruff = shutil.which("ruff")
-    if not ruff:
+    if ruff:
+        ruff_command = [ruff]
+    elif importlib.util.find_spec("ruff") is not None:
+        ruff_command = [sys.executable, "-m", "ruff"]
+    else:
         return {
             "ok": not strict,
             "status": "missing",
@@ -1197,10 +1280,7 @@ def _run_ruff_checks(paths: PaperBrainPaths, skip=False, strict=False) -> dict:
             "suggestion": "Install dev tooling with `pip install ruff pre-commit`, or run without --strict-lint.",
         }
 
-    commands = [
-        [ruff, "check", "script"],
-        [ruff, "format", "--check", "script"],
-    ]
+    commands = [[*ruff_command, "check", "script"]]
     results = []
     all_ok = True
     for command in commands:
@@ -1241,10 +1321,21 @@ def _record_run_error_if_possible(args, error: dict) -> None:
 
         target_date = getattr(args, "date", None) or (datetime.now().date() - timedelta(days=1))
         state = RunState(config, target_date, getattr(args, "provider", "doubao"), single_paper=bool(getattr(args, "arxiv_url", "")))
+        code = error.get("code", "unexpected_error")
+        paper_id = ""
+        stage = ""
+        if str(code).startswith("single_paper_"):
+            from src.paper_identity import canonical_arxiv_id
+
+            arxiv_id = canonical_arxiv_id(getattr(args, "arxiv_url", ""))
+            paper_id = f"arxiv:{arxiv_id}" if arxiv_id else ""
+            stage = "fetch"
         state.add_error(
-            error.get("code", "unexpected_error"),
+            code,
             error.get("message", "PaperBrain command failed."),
             suggestion=error.get("suggestion", ""),
+            stage=stage,
+            paper_id=paper_id,
             exception=error.get("exception", ""),
             retryable=error.get("retryable", False),
         )
@@ -1254,6 +1345,9 @@ def _record_run_error_if_possible(args, error: dict) -> None:
 
 
 def _classify_exception(exc: Exception) -> ExitCode:
+    structured = _exit_code_for_structured_code(getattr(exc, "code", ""))
+    if structured is not None:
+        return structured
     text = f"{exc.__class__.__name__}: {exc}".lower()
     if "already running" in text or "already active" in text:
         return ExitCode.CONFIG_ERROR
@@ -1272,6 +1366,68 @@ def _classify_exception(exc: Exception) -> ExitCode:
     return ExitCode.UNEXPECTED_ERROR
 
 
+def _exit_code_for_structured_code(code) -> ExitCode | None:
+    code = str(code or "").strip().lower()
+    if not code:
+        return None
+    exact = {
+        "cancelled": ExitCode.CANCELLED,
+        "single_paper_invalid_id": ExitCode.CONFIG_ERROR,
+        "single_paper_not_found": ExitCode.NETWORK_UNAVAILABLE,
+        "single_paper_identity_mismatch": ExitCode.NETWORK_UNAVAILABLE,
+        "single_paper_source_unavailable": ExitCode.NETWORK_UNAVAILABLE,
+        "source_degraded": ExitCode.NETWORK_UNAVAILABLE,
+        "network_unavailable": ExitCode.NETWORK_UNAVAILABLE,
+        "write_failure": ExitCode.WRITE_FAILURE,
+        "validation_failed": ExitCode.VALIDATION_FAILED,
+    }
+    if code in exact:
+        return exact[code]
+    if code.startswith("pdf_"):
+        return ExitCode.PDF_UNAVAILABLE
+    if code.startswith("llm_"):
+        return ExitCode.LLM_FAILURE
+    if code.startswith(("network_", "source_")):
+        return ExitCode.NETWORK_UNAVAILABLE
+    if code.startswith(("write_", "permission_")):
+        return ExitCode.WRITE_FAILURE
+    return None
+
+
+def _exit_code_for_failed_payload(payload: dict, command: str) -> ExitCode:
+    if command == "check":
+        return ExitCode.VALIDATION_FAILED
+
+    details = []
+    top_error = payload.get("error")
+    if isinstance(top_error, dict):
+        details.append(top_error)
+    for error in payload.get("errors", []) or []:
+        details.append(error if isinstance(error, dict) else {"message": str(error)})
+
+    for detail in details:
+        structured = _exit_code_for_structured_code(detail.get("code"))
+        if structured is not None:
+            return structured
+
+    text = " ".join(
+        str(detail.get(key) or "")
+        for detail in details
+        for key in ("code", "message", "stage", "exception")
+    ).lower()
+    if payload.get("cancelled") or "cancel" in text:
+        return ExitCode.CANCELLED
+    if "network" in text or "source_unavailable" in text or "rate limit" in text or "timeout" in text:
+        return ExitCode.NETWORK_UNAVAILABLE
+    if "llm" in text or "openrouter" in text or "doubao" in text or "model" in text:
+        return ExitCode.LLM_FAILURE
+    if "pdf" in text:
+        return ExitCode.PDF_UNAVAILABLE
+    if "write" in text or "permission" in text:
+        return ExitCode.WRITE_FAILURE
+    return ExitCode.CONFIG_ERROR
+
+
 def _suggestion_for_exit_code(exit_code: ExitCode) -> str:
     suggestions = {
         ExitCode.CONFIG_ERROR: "Run `paperbrain doctor` and check script/config/config.yaml plus .env values.",
@@ -1280,11 +1436,13 @@ def _suggestion_for_exit_code(exit_code: ExitCode) -> str:
         ExitCode.PDF_UNAVAILABLE: "Retry with --resume later; deep analysis requires a usable local PDF.",
         ExitCode.WRITE_FAILURE: "Check vault, Cache, Run_Records, and PDF directory write permissions.",
         ExitCode.VALIDATION_FAILED: "Run `paperbrain check` locally and inspect the first failing test.",
+        ExitCode.CANCELLED: "Resume the same run when ready.",
     }
     return suggestions.get(exit_code, "Inspect stderr and the run-state errors.json file.")
 
 
 def _emit_json(payload: dict) -> None:
+    payload.setdefault("backend_version", backend_version())
     print(json.dumps(payload, ensure_ascii=False, indent=2, default=str))
 
 

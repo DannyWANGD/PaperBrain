@@ -16,7 +16,7 @@ except ModuleNotFoundError:
     sys.modules["feedparser"] = types.SimpleNamespace(parse=lambda raw: types.SimpleNamespace(entries=[]))
 
 try:
-    from src.scraper import PaperScraper  # noqa: E402
+    from src.scraper import NetworkUnavailableError, PaperScraper, PaperSourceError, SinglePaperFetchError  # noqa: E402
 except ModuleNotFoundError as exc:  # pragma: no cover - environment guard
     PaperScraper = None
     IMPORT_ERROR = exc
@@ -226,6 +226,87 @@ class ScraperCacheTest(unittest.TestCase):
         self.assertEqual(request_feed.call_count, 2)
         self.assertEqual(request_feed.call_args_list[0].args[0]["id_list"], "2605.25802")
         self.assertEqual(request_feed.call_args_list[1].args[0]["search_query"], "id:2605.25802")
+
+    def test_arxiv_source_failure_is_not_converted_to_empty_success(self):
+        scraper = PaperScraper(self.config)
+        with patch.object(scraper, "_request_arxiv_feed", side_effect=RuntimeError("network down")):
+            with self.assertRaises(PaperSourceError):
+                scraper.fetch_arxiv_papers(date(2026, 6, 1))
+
+    def test_all_source_failures_raise_network_unavailable(self):
+        scraper = PaperScraper(self.config)
+        with patch.object(scraper, "fetch_arxiv_papers", side_effect=PaperSourceError("arXiv down")), \
+             patch.object(scraper, "fetch_hf_daily_papers", side_effect=PaperSourceError("HF down")):
+            with self.assertRaises(NetworkUnavailableError):
+                scraper.get_all_papers(date(2026, 6, 1))
+
+    def test_one_source_failure_still_returns_other_source_results(self):
+        scraper = PaperScraper(self.config)
+        hf_paper = {
+            "title": "Robot Paper",
+            "url": "https://arxiv.org/abs/2606.02486",
+            "abstract": "robot manipulation",
+        }
+        with patch.object(scraper, "fetch_arxiv_papers", side_effect=PaperSourceError("arXiv down")), \
+             patch.object(scraper, "fetch_hf_daily_papers", return_value=[hf_paper]):
+            papers = scraper.get_all_papers(date(2026, 6, 1))
+
+        self.assertEqual(len(papers), 1)
+        self.assertEqual(papers[0]["paper_id"], "arxiv:2606.02486")
+
+    def test_one_source_failure_exposes_structured_degraded_report(self):
+        scraper = PaperScraper(self.config)
+        paper = {"title": "Robot Paper", "url": "https://arxiv.org/abs/2605.25802"}
+        with patch.object(scraper, "fetch_arxiv_papers", side_effect=PaperSourceError("arXiv down")), \
+             patch.object(scraper, "fetch_hf_daily_papers", return_value=[paper]):
+            scraper.get_all_papers(date(2026, 6, 1))
+
+        warning = scraper.last_source_report["warnings"][0]
+        self.assertEqual(warning["code"], "source_degraded")
+        self.assertEqual(warning["source"], "arxiv")
+        self.assertTrue(warning["retryable"])
+        self.assertTrue(scraper.last_source_report["sources"]["huggingface"]["ok"])
+
+    def test_arxiv_rejects_unexpected_http_200_payload(self):
+        self.config["search"]["arxiv_cache_enabled"] = False
+        scraper = PaperScraper(self.config)
+        with patch("src.scraper.requests.get", return_value=FakeResponse(status_code=200, text="<html>error</html>")):
+            with self.assertRaises(ValueError):
+                scraper._request_arxiv_feed({"search_query": "cat:cs.RO", "start": 0, "max_results": 1})
+
+    def test_hf_rejects_unexpected_http_200_payload(self):
+        self.config["search"].update({"hf_cache_enabled": False, "hf_max_attempts": 1})
+        scraper = PaperScraper(self.config)
+        with patch("src.scraper.requests.get", return_value=FakeResponse(status_code=200, json_data={"error": "oops"})):
+            with self.assertRaises(ValueError):
+                scraper._request_hf_daily_papers({"date": "2026-06-01"})
+
+    def test_single_paper_rejects_mismatched_feed_identity(self):
+        scraper = PaperScraper(self.config)
+        wrong_entry = {
+            "id": "https://arxiv.org/abs/2605.99999",
+            "title": "Wrong Paper",
+            "summary": "Robot paper.",
+            "links": [],
+        }
+        with patch.object(scraper, "_request_arxiv_feed", return_value="feed"), \
+             patch("src.scraper.feedparser.parse", return_value=types.SimpleNamespace(entries=[wrong_entry])), \
+             patch.object(scraper, "_fetch_single_arxiv_abs_page", return_value=None):
+            with self.assertRaises(SinglePaperFetchError) as raised:
+                scraper.fetch_single_arxiv_paper("2605.25802")
+
+        self.assertEqual(raised.exception.code, "single_paper_identity_mismatch")
+
+    def test_single_paper_empty_result_is_typed_failure(self):
+        scraper = PaperScraper(self.config)
+        with patch.object(scraper, "_request_arxiv_feed", return_value="feed"), \
+             patch("src.scraper.feedparser.parse", return_value=types.SimpleNamespace(entries=[])), \
+             patch.object(scraper, "_fetch_single_arxiv_abs_page", return_value=None):
+            with self.assertRaises(SinglePaperFetchError) as raised:
+                scraper.fetch_single_arxiv_paper("2605.25802")
+
+        self.assertEqual(raised.exception.code, "single_paper_not_found")
+        self.assertFalse(raised.exception.retryable)
 
 
 if __name__ == "__main__":

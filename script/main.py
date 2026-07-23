@@ -1,18 +1,17 @@
-import yaml
 import time
-import requests
 import os
 import logging
+import hashlib
 from copy import deepcopy
 from src.config_loader import load_config, load_prompts
 from src import scoring as scoring_utils
 from src import run_control
 from src.paper_identity import canonical_arxiv_id, identity_key, normalize_paper_identity
+from src.network_safety import UnsafeUrlError, request_public_url
 from src.paths import PaperBrainPaths
 from src.run_state import RunState
 from datetime import datetime, timedelta
 from tqdm import tqdm # Import tqdm for progress bars
-import argparse
 import json
 
 try:
@@ -27,6 +26,7 @@ SAVED_PAPER_STAGES = (
     "digest_written",
     "deep_analyzed",
     "completed",
+    "failed",
 )
 COARSE_READY_STAGES = (
     "coarse_screened",
@@ -57,13 +57,18 @@ logger = logging.getLogger(__name__)
 import shutil
 
 PDF_RATE_LIMIT_COOLDOWN_MINUTES = 60
+PDF_MAX_DOWNLOAD_BYTES = 100 * 1024 * 1024
 PDF_CACHE_DIR = str(DEFAULT_PATHS.pdf_cache_dir)
 PDF_COOLDOWN_PATH = str(DEFAULT_PATHS.pdf_cooldown_path)
 TEMP_PDF_DIR = str(DEFAULT_PATHS.temp_pdf_dir)
 
-def _safe_pdf_filename(title):
+def _safe_pdf_filename(title, paper_identity=""):
     safe_title = "".join([c for c in title if c.isalpha() or c.isdigit() or c == ' ']).strip()
-    return f"{safe_title[:100]}.pdf"
+    identity = str(paper_identity or "").strip().lower()
+    arxiv_id = canonical_arxiv_id(identity)
+    identity_suffix = f"arxiv-{arxiv_id}" if arxiv_id else hashlib.sha256(identity.encode("utf-8")).hexdigest()[:16]
+    title_prefix = safe_title[:72] or "paper"
+    return f"{title_prefix}-{identity_suffix}.pdf"
 
 def _looks_like_pdf_url(url):
     value = str(url or "").strip()
@@ -159,21 +164,68 @@ def _copy_pdf(src, dest_folder, filename):
         shutil.copy2(src, dest)
     return dest
 
-def download_pdf(url, title, destination_folder=None, retries=3, cache_paths=None):
+class PDFDownloadError(RuntimeError):
+    code = "pdf_unavailable"
+    retryable = True
+
+    def __init__(self, message, *, status_code=None):
+        super().__init__(message)
+        self.status_code = status_code
+
+
+class PDFUnsafeUrlError(PDFDownloadError):
+    code = "pdf_unsafe_url"
+    retryable = False
+
+
+class PDFDownloadTooLargeError(PDFDownloadError):
+    """Raised when a remote PDF exceeds the configured download limit."""
+
+    code = "pdf_too_large"
+    retryable = False
+
+
+class PDFNotFoundError(PDFDownloadError):
+    code = "pdf_not_found"
+    retryable = False
+
+
+class PDFInvalidContentError(PDFDownloadError):
+    code = "pdf_invalid_content"
+    retryable = False
+
+
+class PDFHTTPError(PDFDownloadError):
+    code = "pdf_http_error"
+    retryable = False
+
+
+class PDFNetworkError(PDFDownloadError):
+    code = "pdf_network_error"
+    retryable = True
+
+
+class PDFRateLimitedError(PDFNetworkError):
+    code = "pdf_rate_limited"
+
+
+def download_pdf(
+    url,
+    title,
+    destination_folder=None,
+    retries=3,
+    cache_paths=None,
+    max_bytes=PDF_MAX_DOWNLOAD_BYTES,
+    paper_identity=None,
+):
     """Downloads PDF to a file with retries and robust headers."""
-    # Security Check: Validate URL scheme and domain whitelist
     if not url.startswith(('http://', 'https://')):
-        logger.warning(f"[SECURITY] Skipped unsafe URL scheme: {url}")
-        return None
-        
-    # Optional: strict domain checking (commented out to allow flexibility, but recommended for strict security)
-    # trusted_domains = ['arxiv.org', 'huggingface.co', 'aclweb.org', 'openreview.net']
-    # if not any(domain in url for domain in trusted_domains):
-    #     logger.warning(f"[SECURITY] URL not in trusted domains: {url}")
-    #     # return None # Uncomment to enforce
+        raise PDFUnsafeUrlError(f"Unsupported PDF URL scheme: {url}")
+
+    max_bytes = max(1024, int(max_bytes or PDF_MAX_DOWNLOAD_BYTES))
 
     folder = destination_folder or TEMP_PDF_DIR
-    filename = _safe_pdf_filename(title)
+    filename = _safe_pdf_filename(title, paper_identity or url)
     direct_path = os.path.join(folder, filename)
     if _is_usable_local_pdf(direct_path):
         logger.info(f"  [CACHE] Reusing existing PDF: {direct_path}")
@@ -217,33 +269,66 @@ def download_pdf(url, title, destination_folder=None, retries=3, cache_paths=Non
                 f"[WARN] arXiv PDF downloads are in local cooldown for {cooldown_remaining / 60:.1f} more minutes. "
                 f"Skipping network PDF download for {title}."
             )
-            return None
+            raise PDFRateLimitedError(
+                f"arXiv PDF downloads are in local cooldown for {cooldown_remaining / 60:.1f} more minutes"
+            )
 
     arxiv_429_url = ""
+    failures = []
     for attempt in range(retries):
         for target_url in deduped_urls:
+            response = None
+            part_path = ""
             try:
-                # logger.info(f"Downloading from {target_url} (Attempt {attempt+1})...")
-                response = requests.get(target_url, headers=headers, stream=True, timeout=60) # Increased timeout
+                response = request_public_url(
+                    "GET",
+                    target_url,
+                    headers=headers,
+                    stream=True,
+                    timeout=60,
+                )
                 
                 if response.status_code == 200:
-                    if not os.path.exists(folder):
-                        os.makedirs(folder)
+                    content_length = 0
+                    try:
+                        content_length = int((response.headers or {}).get("Content-Length") or 0)
+                    except (TypeError, ValueError):
+                        content_length = 0
+                    if content_length > max_bytes:
+                        raise PDFDownloadTooLargeError(
+                            f"PDF response declared {content_length} bytes; limit is {max_bytes} bytes"
+                        )
+
+                    os.makedirs(folder, exist_ok=True)
                         
                     filepath = os.path.join(folder, filename)
-                    
-                    with open(filepath, "wb") as f:
+                    part_path = f"{filepath}.part"
+                    try:
+                        os.remove(part_path)
+                    except FileNotFoundError:
+                        pass
+
+                    bytes_written = 0
+                    with open(part_path, "wb") as f:
                         for chunk in response.iter_content(chunk_size=8192):
                             if chunk:
+                                if bytes_written + len(chunk) > max_bytes:
+                                    raise PDFDownloadTooLargeError(
+                                        f"PDF response exceeded the {max_bytes}-byte download limit"
+                                    )
                                 f.write(chunk)
+                                bytes_written += len(chunk)
 
-                    if not _is_usable_local_pdf(filepath):
+                    if not _is_usable_local_pdf(part_path):
                         logger.warning(f"[WARN] Downloaded file from {target_url} is not a usable PDF.")
+                        failures.append(PDFInvalidContentError(f"HTTP 200 response from {target_url} was not a usable PDF"))
                         try:
-                            os.remove(filepath)
+                            os.remove(part_path)
                         except Exception:
                             pass
                         continue
+
+                    os.replace(part_path, filepath)
 
                     if arxiv_id_for_cache:
                         os.makedirs(PDF_CACHE_DIR, exist_ok=True)
@@ -254,23 +339,76 @@ def download_pdf(url, title, destination_folder=None, retries=3, cache_paths=Non
                     return filepath
                 else:
                     logger.warning(f"[WARN] Failed to download from {target_url} (Status: {response.status_code})")
-                    if response.status_code == 429 and canonical_arxiv_id(target_url):
-                        arxiv_429_url = target_url
+                    response_url = getattr(response, "url", "") or target_url
+                    if response.status_code == 429 and canonical_arxiv_id(response_url):
+                        arxiv_429_url = response_url
+                        failures.append(
+                            PDFRateLimitedError(
+                                f"PDF endpoint rate-limited the request: {response_url}",
+                                status_code=response.status_code,
+                            )
+                        )
                         continue
-                    
+                    if response.status_code == 404:
+                        failures.append(
+                            PDFNotFoundError(
+                                f"PDF was not found at {response_url}",
+                                status_code=response.status_code,
+                            )
+                        )
+                    elif response.status_code >= 500 or response.status_code in (408, 425, 429):
+                        failures.append(
+                            PDFNetworkError(
+                                f"Retryable HTTP {response.status_code} while downloading {response_url}",
+                                status_code=response.status_code,
+                            )
+                        )
+                    else:
+                        failures.append(
+                            PDFHTTPError(
+                                f"Permanent HTTP {response.status_code} while downloading {response_url}",
+                                status_code=response.status_code,
+                            )
+                        )
+
+            except UnsafeUrlError as e:
+                logger.warning(f"[SECURITY] Blocked unsafe PDF URL {target_url}: {e}")
+                raise PDFUnsafeUrlError(str(e)) from e
+            except PDFDownloadTooLargeError as e:
+                logger.warning(f"[SECURITY] Skipped oversized PDF from {target_url}: {e}")
+                raise
+            except PDFDownloadError:
+                raise
             except Exception as e:
                 logger.warning(f"[WARN] Connection error on {target_url}: {e}")
-                time.sleep(2) # Backoff
+                failures.append(PDFNetworkError(f"Connection error while downloading {target_url}: {e}"))
+                if attempt + 1 < retries:
+                    time.sleep(2) # Backoff
+            finally:
+                if part_path and os.path.exists(part_path):
+                    try:
+                        os.remove(part_path)
+                    except OSError:
+                        pass
+                if response is not None:
+                    close = getattr(response, "close", None)
+                    if callable(close):
+                        close()
 
         if arxiv_429_url:
             _mark_pdf_cooldown(f"HTTP 429 while downloading {arxiv_429_url}")
             logger.warning("[WARN] arXiv PDF endpoint is rate-limited after trying PDF URL variants. Stopping arXiv PDF retries for now.")
-            return None
+            raise PDFRateLimitedError(f"HTTP 429 while downloading {arxiv_429_url}", status_code=429)
         
-        time.sleep(5) # Wait longer between retry sets
+        if attempt + 1 < retries:
+            time.sleep(5) # Wait longer between retry sets
 
     logger.error(f"[ERR] All download attempts failed for {title}")
-    return None
+    if any(error.retryable for error in failures):
+        raise next(error for error in reversed(failures) if error.retryable)
+    if failures:
+        raise failures[-1]
+    raise PDFNetworkError(f"All PDF download attempts failed for {title}")
 
 def _paper_pdf_url_candidates(paper):
     urls = []
@@ -306,11 +444,33 @@ def _paper_pdf_url_candidates(paper):
 def download_paper_pdf(paper, destination_folder, cache_paths=None):
     """Download a paper PDF locally before any PDF-dependent analysis."""
     title = paper.get("title") or paper.get("short_title") or "paper"
+    arxiv_id = canonical_arxiv_id(paper.get("paper_id") or paper.get("arxiv_id") or paper.get("url") or paper.get("pdf_url"))
+    if arxiv_id:
+        paper_identity = f"arxiv:{arxiv_id}"
+    else:
+        external_identity = paper.get("doi") or paper.get("pdf_url") or paper.get("url")
+        paper_identity = f"external:{external_identity}" if external_identity else (paper.get("paper_id") or identity_key(paper))
+    failures = []
     for url in _paper_pdf_url_candidates(paper):
-        pdf_path = download_pdf(url, title, destination_folder=destination_folder, cache_paths=cache_paths)
+        try:
+            pdf_path = download_pdf(
+                url,
+                title,
+                destination_folder=destination_folder,
+                cache_paths=cache_paths,
+                paper_identity=paper_identity,
+            )
+        except PDFDownloadError as exc:
+            failures.append(exc)
+            continue
         if _is_usable_local_pdf(pdf_path):
             return pdf_path
-    return None
+        failures.append(PDFInvalidContentError(f"Downloaded path was not a usable PDF for {paper_identity}"))
+    if any(error.retryable for error in failures):
+        raise next(error for error in reversed(failures) if error.retryable)
+    if failures:
+        raise failures[-1]
+    raise PDFNotFoundError(f"No usable PDF URL is available for {paper_identity or title}")
 
 def _extract_arxiv_id(raw_url):
     if not raw_url:
@@ -358,6 +518,72 @@ def _apply_coarse_screen_result(paper, result):
     paper['coarse_model'] = result.get('used_model', '')
     if not paper.get('short_title'):
         paper['short_title'] = result.get('short_title', '')
+
+
+def _record_screening_error(run_state, paper, result, stage):
+    error = result.get("screening_error") if isinstance(result, dict) else None
+    if not isinstance(error, dict):
+        code = "llm_coarse_screening_failed" if stage == "coarse" else "llm_detailed_screening_failed"
+        _resolve_run_errors(
+            run_state,
+            code=code,
+            stage=stage,
+            paper_id=paper.get("paper_id", ""),
+        )
+        return False
+    run_state.add_error(
+        error.get("code") or f"llm_{stage}_screening_failed",
+        error.get("message") or f"LLM {stage} screening failed.",
+        suggestion="Verify the provider API key and model availability, then retry the run.",
+        stage=stage,
+        paper_id=paper.get("paper_id", ""),
+        title=paper.get("title", ""),
+        exception=error.get("exception", ""),
+        retryable=bool(error.get("retryable", True)),
+    )
+    return True
+
+
+def _resolve_run_errors(run_state, **filters):
+    resolver = getattr(run_state, "resolve_errors", None)
+    if callable(resolver):
+        return resolver(**filters)
+    errors = list(run_state.data.get("errors", []))
+
+    def matches(error):
+        return all(value is None or error.get(key) == value for key, value in filters.items())
+
+    retained = [error for error in errors if not matches(error)]
+    run_state.data["errors"] = retained
+    return len(errors) - len(retained)
+
+
+def _record_source_report(run_state, scraper):
+    report = getattr(scraper, "last_source_report", None)
+    sources = report.get("sources", {}) if isinstance(report, dict) else {}
+    for source, status in sources.items():
+        if not isinstance(status, dict):
+            continue
+        source_id = f"source:{source}"
+        if status.get("ok"):
+            _resolve_run_errors(
+                run_state,
+                code="source_degraded",
+                stage="fetch",
+                paper_id=source_id,
+            )
+            continue
+        run_state.add_error(
+            status.get("code") or "source_degraded",
+            status.get("message") or f"Paper source {source} was unavailable.",
+            suggestion="Retry the fetch so this source can be verified before treating the run as healthy.",
+            stage="fetch",
+            paper_id=source_id,
+            title=source,
+            exception=status.get("exception", ""),
+            retryable=bool(status.get("retryable", True)),
+        )
+
 
 def _apply_coarse_as_final_result(paper):
     score = min(round(float(paper.get('coarse_score', 0) or 0), 1), 6.4)
@@ -731,23 +957,75 @@ def _mark_deep_selection(papers, high_value_papers):
 
 def _load_papers_for_run(scraper, run_state, target_date, arxiv_url, resume=True, force=False, single_paper=None):
     if arxiv_url:
+        requested_id = canonical_arxiv_id(arxiv_url)
+        if not requested_id:
+            from src.scraper import SinglePaperFetchError
+            raise SinglePaperFetchError(
+                "single_paper_invalid_id",
+                f"The requested value does not contain a valid modern arXiv ID: {arxiv_url}",
+                retryable=False,
+            )
         if single_paper is None:
             single_paper = scraper.fetch_single_arxiv_paper(arxiv_url)
-        if single_paper:
-            single_paper = normalize_paper_identity(single_paper)
-            single_paper["forced_deep"] = True
-            single_paper["forced_digest"] = True
-            single_paper["selected_for_deep_analysis"] = True
-            single_paper["in_daily_digest"] = True
-            single_paper["manual_requested_at"] = datetime.now().isoformat(timespec="seconds")
-            merged = run_state.merge_paper(single_paper, mode="single", forced_deep=True)
-            logger.info(f"[INFO] Injected manual single paper into daily state: {merged.get('paper_id') or merged.get('title')}")
-        papers = run_state.papers()
+        if not single_paper:
+            from src.scraper import SinglePaperFetchError
+            raise SinglePaperFetchError(
+                "single_paper_not_found",
+                f"No metadata was returned for requested arXiv ID {requested_id}",
+                retryable=False,
+            )
+        single_paper = normalize_paper_identity(single_paper)
+        actual_id = canonical_arxiv_id(single_paper.get("paper_id"))
+        if actual_id != requested_id:
+            from src.scraper import SinglePaperFetchError
+            raise SinglePaperFetchError(
+                "single_paper_identity_mismatch",
+                f"Fetched arXiv ID {actual_id or 'unknown'} while {requested_id} was requested",
+                retryable=True,
+            )
+        single_paper["forced_deep"] = True
+        single_paper["forced_digest"] = True
+        single_paper["selected_for_deep_analysis"] = True
+        single_paper["in_daily_digest"] = True
+        single_paper["manual_requested_at"] = datetime.now().isoformat(timespec="seconds")
+        merged = run_state.merge_paper(single_paper, mode="single", forced_deep=True)
+        for code in (
+            "single_paper_source_unavailable",
+            "single_paper_identity_mismatch",
+            "single_paper_not_found",
+            "single_paper_invalid_id",
+        ):
+            _resolve_run_errors(run_state, code=code)
+        logger.info(f"[INFO] Injected manual single paper into daily state: {merged.get('paper_id') or merged.get('title')}")
+        # A manual request processes only the requested identity, even though
+        # the canonical day state can also contain daily-run papers.
+        papers = [merged]
     elif resume and not force and run_state.data.get("stage") in SAVED_PAPER_STAGES:
         papers = run_state.papers()
         logger.info(f"[RESUME] Loaded {len(papers)} papers from {run_state.path}")
+        source_retry_needed = any(
+            error.get("code") == "source_degraded"
+            for error in run_state.data.get("errors", [])
+        )
+        if run_state.data.get("stage") == "failed" and source_retry_needed:
+            logger.info("[RESUME] Retrying degraded paper sources while preserving the saved paper set.")
+            fresh_papers = []
+            try:
+                fresh_papers = scraper.get_all_papers(target_date=target_date)
+            except Exception as exc:
+                if not papers:
+                    raise
+                logger.warning(f"[WARN] Source retry failed; continuing saved-paper recovery: {exc}")
+            finally:
+                _record_source_report(run_state, scraper)
+            for fresh_paper in fresh_papers:
+                run_state.merge_paper(fresh_paper, mode="daily")
+            papers = run_state.papers()
     else:
-        papers = scraper.get_all_papers(target_date=target_date)
+        try:
+            papers = scraper.get_all_papers(target_date=target_date)
+        finally:
+            _record_source_report(run_state, scraper)
 
     papers = [normalize_paper_identity(p) for p in papers if p]
     if papers and not arxiv_url and (run_state.data.get("stage") == "initialized" or not resume or force):
@@ -775,6 +1053,7 @@ def _run_coarse_screening(papers, analyser, run_state, resume=True, cancel_check
     for p in tqdm(pending, desc="Coarse Screening", unit="paper", ascii=True):
         _maybe_cancel(cancel_check)
         coarse_result = analyser.coarse_screen_paper(p)
+        _record_screening_error(run_state, p, coarse_result, "coarse")
         _apply_coarse_screen_result(p, coarse_result)
         p = normalize_paper_identity(p)
         if identity_key(p) not in known_keys:
@@ -847,7 +1126,11 @@ def _run_rigorous_screening(
             p.pop('screening_document_excerpt', None)
             if _paper_pdf_url_candidates(p):
                 logger.info(f"  [CTX] Building stage-2 document excerpt: {p['title']}")
-                tmp_pdf_path = download_paper_pdf(p, destination_folder=TEMP_PDF_DIR, cache_paths=cache_paths)
+                try:
+                    tmp_pdf_path = download_paper_pdf(p, destination_folder=TEMP_PDF_DIR, cache_paths=cache_paths)
+                except PDFDownloadError as exc:
+                    tmp_pdf_path = None
+                    logger.info(f"  [CTX] Optional screening PDF context unavailable ({exc.code}): {exc}")
                 if tmp_pdf_path:
                     try:
                         excerpt_text = analyser._extract_text_from_pdf_fitz(tmp_pdf_path, max_pages=pdf_context_pages)
@@ -867,6 +1150,7 @@ def _run_rigorous_screening(
                     logger.info("  [CTX] PDF unavailable or rate-limited; rigorous screening will use title/abstract only.")
 
         result = analyser.screen_paper(p)
+        _record_screening_error(run_state, p, result, "screen")
         _apply_final_screen_result(p, result)
         if p.get("forced_deep"):
             p["manual_screened_at"] = datetime.now().isoformat(timespec="seconds")
@@ -937,6 +1221,63 @@ def _job_summary(run_state, ok=True):
     summary["ok"] = bool(ok and not summary.get("errors"))
     return summary
 
+
+def _finalize_run(run_state):
+    run_state.mark_stage("failed" if run_state.data.get("errors") else "completed")
+    return _job_summary(run_state)
+
+
+def _finish_run(run_state, cache_cleanup_day_start=None, cache_paths=None):
+    summary = _finalize_run(run_state)
+    if summary["ok"] and cache_cleanup_day_start is not None:
+        _cleanup_completed_run_pdf_cache(cache_cleanup_day_start, cache_paths)
+    return summary
+
+
+PDF_ERROR_CODES = (
+    "pdf_unavailable",
+    "pdf_unsafe_url",
+    "pdf_too_large",
+    "pdf_not_found",
+    "pdf_invalid_content",
+    "pdf_http_error",
+    "pdf_network_error",
+    "pdf_rate_limited",
+)
+
+
+def _record_deep_pdf_error(run_state, paper, error):
+    if isinstance(error, PDFDownloadError):
+        code = error.code
+        message = str(error)
+        retryable = error.retryable
+        exception = error.__class__.__name__
+    else:
+        code = "pdf_unavailable"
+        message = str(error)
+        retryable = True
+        exception = ""
+    run_state.add_error(
+        code,
+        message,
+        suggestion="Verify the PDF URL or retry later; no deep-analysis note was written.",
+        stage="deep",
+        paper_id=paper.get("paper_id", ""),
+        title=paper.get("title", ""),
+        exception=exception,
+        retryable=retryable,
+    )
+
+
+def _resolve_deep_pdf_errors(run_state, paper):
+    for code in PDF_ERROR_CODES:
+        _resolve_run_errors(
+            run_state,
+            code=code,
+            stage="deep",
+            paper_id=paper.get("paper_id", ""),
+        )
+
 def _target_date_key(target_date):
     return target_date.strftime("%Y-%m-%d") if hasattr(target_date, "strftime") else str(target_date)
 
@@ -960,8 +1301,24 @@ def _resolve_target_date_for_run(scraper, target_date=None, arxiv_url=None):
         return target_date, "manual", None, "", ""
     if arxiv_url:
         single_paper = scraper.fetch_single_arxiv_paper(arxiv_url)
-        if single_paper:
-            single_paper = normalize_paper_identity(single_paper)
+        if not single_paper:
+            from src.scraper import SinglePaperFetchError
+            raise SinglePaperFetchError(
+                "single_paper_not_found",
+                f"No metadata was returned for requested arXiv paper {arxiv_url}",
+                retryable=False,
+            )
+        single_paper = normalize_paper_identity(single_paper)
+        requested_id = canonical_arxiv_id(arxiv_url)
+        actual_id = canonical_arxiv_id(single_paper.get("paper_id"))
+        if not requested_id or actual_id != requested_id:
+            from src.scraper import SinglePaperFetchError
+            code = "single_paper_invalid_id" if not requested_id else "single_paper_identity_mismatch"
+            raise SinglePaperFetchError(
+                code,
+                f"Fetched arXiv ID {actual_id or 'unknown'} while {requested_id or arxiv_url} was requested",
+                retryable=bool(requested_id),
+            )
         publication_date = _paper_publication_date(single_paper)
         if publication_date:
             return publication_date, "arxiv_v1", single_paper, publication_date.isoformat(), ""
@@ -1038,7 +1395,7 @@ def job(
         run_control.raise_if_cancelled(config)
 
     from src.scraper import PaperScraper
-    from src.analyser import PaperAnalyser
+    from src.analyser import DeepAnalysisError, PaperAnalyser
     from src.obsidian_writer import ObsidianWriter
     from src.gardener import KnowledgeGardener
     from src.knowledge_base import KnowledgeBase
@@ -1109,15 +1466,13 @@ def job(
             papers = run_state.papers()
         else:
             logger.info(f"No papers found for date {target_date}.")
-            run_state.mark_stage("completed")
-            return _job_summary(run_state)
+            return _finalize_run(run_state)
     if force_preserved_deep and stop_after == "fetch":
         fetched_papers = _merge_preserved_deep_papers(run_state.papers(), force_preserved_deep)
         run_state.set_papers(fetched_papers, stage=run_state.data.get("stage") or "fetched")
     if not papers:
         logger.info(f"No papers found for date {target_date}.")
-        run_state.mark_stage("completed")
-        return _job_summary(run_state)
+        return _finalize_run(run_state)
     check_cancel()
     if stop_after == "fetch":
         logger.info("[STOP] stop_after=fetch")
@@ -1191,32 +1546,67 @@ def job(
             check_cancel()
             logger.info(f"[{i+1}/{len(papers_for_deep)}] Analyzing: {p['title']} (Score: {p['score']})")
             
-            if not _paper_pdf_url_candidates(p):
-                logger.warning(f"[WARN] No PDF URL for {p['title']}, skipping.")
+            # Download PDF
+            logger.info("  [STEP] Downloading PDF...")
+            try:
+                pdf_path = download_paper_pdf(
+                    p,
+                    destination_folder=obsidian_writer.pdf_folder,
+                    cache_paths=run_pdf_cache_paths,
+                )
+            except PDFDownloadError as exc:
+                logger.error(f"  [ERR] {exc} Skipping deep analysis to avoid extra token cost.")
+                _record_deep_pdf_error(run_state, p, exc)
                 continue
             
-            # Download PDF
-            logger.info(f"  [STEP] Downloading PDF...")
-            pdf_path = download_paper_pdf(p, destination_folder=obsidian_writer.pdf_folder, cache_paths=run_pdf_cache_paths)
-            
             if pdf_path:
+                _resolve_deep_pdf_errors(run_state, p)
                 p["pdf_path"] = pdf_path
                 run_state.update_paper(p)
 
                 # Context-Aware RAG Retrieval (only after PDF is available to avoid unnecessary token usage)
-                logger.info(f"  [STEP] Retrieving Context from Knowledge Base...")
+                logger.info("  [STEP] Retrieving Context from Knowledge Base...")
                 rag_context = knowledge_base.retrieve_context(p['title'], p['abstract'])
 
                 # Extract images
-                logger.info(f"  [STEP] Extracting Architecture Images...")
+                logger.info("  [STEP] Extracting Architecture Images...")
                 _, img_caption = analyser.extract_images_from_pdf(pdf_path, obsidian_writer.assets_folder)
                 
                 # Analyze text iteratively (WITH RAG CONTEXT)
-                logger.info(f"  [STEP] Performing Deep AI Analysis (This may take a minute)...")
-                analysis_text = analyser.analyze_full_paper_iterative(p, pdf_path, existing_notes, rag_context=rag_context)
+                logger.info("  [STEP] Performing Deep AI Analysis (This may take a minute)...")
+                try:
+                    analysis_text = analyser.analyze_full_paper_iterative(
+                        p,
+                        pdf_path,
+                        existing_notes,
+                        rag_context=rag_context,
+                    )
+                    failure_text = str(analysis_text or "").strip().lower()
+                    if not failure_text or failure_text.startswith(("analysis failed", "failed to read pdf")):
+                        raise DeepAnalysisError("Deep analysis did not produce a usable note")
+                except DeepAnalysisError as exc:
+                    run_state.add_error(
+                        "llm_deep_analysis_failed",
+                        str(exc),
+                        suggestion="Verify model availability and retry; no note was written for this paper.",
+                        stage="deep",
+                        paper_id=p.get("paper_id", ""),
+                        title=p.get("title", ""),
+                        exception=exc.__class__.__name__,
+                        retryable=True,
+                    )
+                    logger.error(f"  [ERR] Deep analysis failed for '{p['title']}': {exc}")
+                    continue
+
+                _resolve_run_errors(
+                    run_state,
+                    code="llm_deep_analysis_failed",
+                    stage="deep",
+                    paper_id=p.get("paper_id", ""),
+                )
 
                 # Generate AI aliases for gardener matching
-                logger.info(f"  [STEP] Generating paper aliases...")
+                logger.info("  [STEP] Generating paper aliases...")
                 ai_aliases = analyser.generate_paper_aliases(p, analysis_text)
                 if ai_aliases:
                     p['ai_aliases'] = ai_aliases
@@ -1240,16 +1630,24 @@ def job(
                 if p.get("forced_deep"):
                     p["manual_deep_supplement_date"] = _target_date_key(target_date)
                     p["manual_deep_completed_at"] = datetime.now().isoformat(timespec="seconds")
-                note_path = obsidian_writer.write_detailed_note(p, analysis_text, local_pdf_path=pdf_path, image_caption=None)
+                note_path = obsidian_writer.write_detailed_note(
+                    p,
+                    analysis_text,
+                    local_pdf_path=pdf_path,
+                    image_caption=img_caption,
+                )
                 p["note_path"] = note_path
                 p["deep_analysis_completed"] = True
                 run_state.update_paper(p)
                 research_indexer.update_after_new_note(note_path)
                 
-                logger.info(f"  [DONE] Analysis complete and saved.")
+                logger.info("  [DONE] Analysis complete and saved.")
             else:
-                logger.error(f"  [ERR] PDF unavailable for '{p['title']}'. Skipping deep analysis to avoid extra token cost.")
-        run_state.mark_stage("deep_analyzed")
+                error = PDFInvalidContentError(f"PDF download returned no usable path for '{p['title']}'.")
+                logger.error(f"  [ERR] {error} Skipping deep analysis to avoid extra token cost.")
+                _record_deep_pdf_error(run_state, p, error)
+        if not run_state.data.get("errors"):
+            run_state.mark_stage("deep_analyzed")
 
     if stop_after == "deep":
         logger.info("[STOP] stop_after=deep")
@@ -1283,10 +1681,12 @@ def job(
         )
         run_state.update_artifacts(podcast=audio_path)
 
-    run_state.mark_stage("completed")
-    _cleanup_completed_run_pdf_cache(cache_cleanup_day_start, run_pdf_cache_paths)
-    logger.info("[SUCCESS] Job completed successfully.")
-    return _job_summary(run_state)
+    summary = _finish_run(run_state, cache_cleanup_day_start, run_pdf_cache_paths)
+    if summary["ok"]:
+        logger.info("[SUCCESS] Job completed successfully.")
+    else:
+        logger.error("[ERR] Job finished with recorded errors.")
+    return summary
 
 if __name__ == "__main__":
     import sys

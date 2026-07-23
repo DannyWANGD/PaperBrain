@@ -8,6 +8,7 @@ import hashlib
 import os
 import json
 import re
+import xml.etree.ElementTree as ET
 from src.paper_identity import canonical_arxiv_id, identity_key, normalize_paper_identity
 from src.paths import PaperBrainPaths
 
@@ -15,6 +16,29 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 from bs4 import BeautifulSoup
+
+
+class PaperSourceError(RuntimeError):
+    """Raised when one configured paper source cannot be queried."""
+
+    code = "source_unavailable"
+    retryable = True
+
+
+class NetworkUnavailableError(RuntimeError):
+    """Raised when all configured paper sources are unavailable."""
+
+    code = "network_unavailable"
+    retryable = True
+
+
+class SinglePaperFetchError(PaperSourceError):
+    """Raised when an explicitly requested arXiv paper cannot be identified."""
+
+    def __init__(self, code, message, retryable=False):
+        super().__init__(message)
+        self.code = str(code)
+        self.retryable = bool(retryable)
 
 
 def _date_key(value):
@@ -47,7 +71,6 @@ class PaperScraper:
         endpoints = config.get('search', {}).get('arxiv_api_endpoints') or [
             "https://export.arxiv.org/api/query",
             "https://arxiv.org/api/query",
-            "http://export.arxiv.org/api/query",
         ]
         self.arxiv_api_endpoints = [str(endpoint).strip() for endpoint in endpoints if str(endpoint).strip()]
         self.arxiv_cache_enabled = bool(config.get('search', {}).get('arxiv_cache_enabled', True))
@@ -87,8 +110,35 @@ class PaperScraper:
         self.hf_cooldown_path = os.path.join(self.hf_cache_dir, "failure_cooldown.json")
         self.last_arxiv_request_at = 0.0
         self.last_hf_request_at = 0.0
+        self.last_source_report = {"sources": {}, "warnings": []}
         os.makedirs(self.cache_dir, exist_ok=True)
         os.makedirs(self.hf_cache_dir, exist_ok=True)
+
+    @staticmethod
+    def _validate_arxiv_feed_payload(raw_feed):
+        if not isinstance(raw_feed, str) or not raw_feed.strip():
+            raise ValueError("arXiv returned an empty or non-text HTTP 200 payload")
+        try:
+            root = ET.fromstring(raw_feed)
+        except ET.ParseError as exc:
+            raise ValueError("arXiv returned malformed XML in an HTTP 200 response") from exc
+        root_name = str(root.tag).rsplit("}", 1)[-1].lower()
+        if root_name != "feed":
+            raise ValueError(f"arXiv returned unexpected HTTP 200 payload root: {root_name or 'unknown'}")
+        return raw_feed
+
+    @staticmethod
+    def _validate_hf_payload(data):
+        if isinstance(data, list):
+            return data
+        if isinstance(data, dict):
+            for key in ("papers", "daily_papers", "results"):
+                if key in data:
+                    value = data[key]
+                    if isinstance(value, list):
+                        return data
+                    raise ValueError(f"Hugging Face HTTP 200 field '{key}' is not a list")
+        raise ValueError("Hugging Face returned an unexpected HTTP 200 JSON payload")
 
     def _clean_html(self, text):
         return BeautifulSoup(text, "html.parser").get_text()
@@ -239,13 +289,19 @@ class PaperScraper:
 
         cached = self._read_cached_feed(params, allow_expired=False)
         if cached:
-            return cached
+            try:
+                return self._validate_arxiv_feed_payload(cached)
+            except ValueError as exc:
+                logger.warning("[WARN] Ignoring invalid cached arXiv payload: %s", exc)
 
         cooldown_remaining = self._cooldown_remaining_seconds()
         if cooldown_remaining > 0:
             expired = self._read_cached_feed(params, allow_expired=True)
             if expired:
-                return expired
+                try:
+                    return self._validate_arxiv_feed_payload(expired)
+                except ValueError as exc:
+                    logger.warning("[WARN] Ignoring invalid expired arXiv payload: %s", exc)
             raise RuntimeError(
                 f"arXiv API is in local cooldown for {cooldown_remaining / 60:.1f} more minutes after rate limiting."
             )
@@ -262,8 +318,14 @@ class PaperScraper:
                     )
                     self.last_arxiv_request_at = time.time()
                     if response.status_code == 200:
-                        self._write_cached_feed(params, response.text)
-                        return response.text
+                        try:
+                            raw_feed = self._validate_arxiv_feed_payload(response.text)
+                        except ValueError as exc:
+                            last_error = exc
+                            logger.warning("[WARN] Invalid arXiv HTTP 200 payload from %s: %s", url, exc)
+                            continue
+                        self._write_cached_feed(params, raw_feed)
+                        return raw_feed
 
                     if response.status_code in (429, 403, 503):
                         last_error = RuntimeError(f"HTTP {response.status_code} from arXiv API endpoint {url}")
@@ -294,8 +356,13 @@ class PaperScraper:
             self._mark_arxiv_cooldown(str(last_error))
         expired = self._read_cached_feed(params, allow_expired=True)
         if expired:
-            logger.warning("[WARN] Live arXiv API failed; falling back to expired arXiv cache.")
-            return expired
+            try:
+                expired = self._validate_arxiv_feed_payload(expired)
+            except ValueError as exc:
+                logger.warning("[WARN] Ignoring invalid expired arXiv payload: %s", exc)
+            else:
+                logger.warning("[WARN] Live arXiv API failed; falling back to expired arXiv cache.")
+                return expired
         if last_error:
             raise last_error
         raise RuntimeError("Unknown arXiv API error")
@@ -309,13 +376,19 @@ class PaperScraper:
 
         cached = self._read_cached_hf_daily_papers(params, allow_expired=False)
         if cached is not None:
-            return cached
+            try:
+                return self._validate_hf_payload(cached)
+            except ValueError as exc:
+                logger.warning("[WARN] Ignoring invalid cached Hugging Face payload: %s", exc)
 
         cooldown_remaining = self._hf_cooldown_remaining_seconds()
         if cooldown_remaining > 0:
             expired = self._read_cached_hf_daily_papers(params, allow_expired=True)
             if expired is not None:
-                return expired
+                try:
+                    return self._validate_hf_payload(expired)
+                except ValueError as exc:
+                    logger.warning("[WARN] Ignoring invalid expired Hugging Face payload: %s", exc)
             raise RuntimeError(
                 f"Hugging Face daily papers is in local cooldown for {cooldown_remaining / 60:.1f} more minutes."
             )
@@ -332,7 +405,12 @@ class PaperScraper:
                     )
                     self.last_hf_request_at = time.time()
                     if response.status_code == 200:
-                        data = response.json()
+                        try:
+                            data = self._validate_hf_payload(response.json())
+                        except (TypeError, ValueError) as exc:
+                            last_error = exc
+                            logger.warning("[WARN] Invalid Hugging Face HTTP 200 payload from %s: %s", url, exc)
+                            continue
                         self._write_cached_hf_daily_papers(params, data)
                         return data
 
@@ -361,8 +439,13 @@ class PaperScraper:
             self._mark_hf_cooldown(str(last_error))
         expired = self._read_cached_hf_daily_papers(params, allow_expired=True)
         if expired is not None:
-            logger.warning("[WARN] Live Hugging Face daily papers failed; falling back to expired cache.")
-            return expired
+            try:
+                expired = self._validate_hf_payload(expired)
+            except ValueError as exc:
+                logger.warning("[WARN] Ignoring invalid expired Hugging Face payload: %s", exc)
+            else:
+                logger.warning("[WARN] Live Hugging Face daily papers failed; falling back to expired cache.")
+                return expired
         if last_error:
             raise last_error
         raise RuntimeError("Unknown Hugging Face daily papers error")
@@ -517,9 +600,9 @@ class PaperScraper:
                     "Custom User-Agent and exponential backoff were attempted, but the endpoint is still refusing requests. "
                     "Skipping arXiv for this run."
                 )
-                return []
+                raise PaperSourceError(f"arXiv source unavailable: {e}") from e
             logger.error(f"[ERR] Error fetching arXiv: {e}")
-            return []
+            raise PaperSourceError(f"arXiv source unavailable: {e}") from e
 
         logger.info(f"  [INFO] Found {len(papers)} relevant papers from arXiv.")
         return papers
@@ -537,9 +620,9 @@ class PaperScraper:
         
         papers = []
         try:
-            data = self._request_hf_daily_papers(params)
+            data = self._validate_hf_payload(self._request_hf_daily_papers(params))
             if isinstance(data, dict):
-                data = data.get("papers") or data.get("daily_papers") or data.get("results") or []
+                data = next(data[key] for key in ("papers", "daily_papers", "results") if key in data)
             # data is usually a list of objects like [{"paper": {...}}, ...].
             for item in data or []:
                 paper_info = item.get('paper', item) if isinstance(item, dict) else {}
@@ -579,21 +662,55 @@ class PaperScraper:
                     }))
         except Exception as e:
             logger.error(f"Error fetching HF papers: {e}")
+            raise PaperSourceError(f"Hugging Face source unavailable: {e}") from e
         
         logger.info(f"Found {len(papers)} relevant papers from Hugging Face.")
         return papers
 
     def get_all_papers(self, target_date=None):
+        self.last_source_report = {"sources": {}, "warnings": []}
+        source_errors = []
         try:
             arxiv_papers = self.fetch_arxiv_papers(target_date)
         except Exception as e:
             logger.error(f"[ERR] Failed to fetch arXiv papers. Skipping arXiv for this run. {e}")
             arxiv_papers = []
+            source_errors.append(str(e))
+            warning = {
+                "code": "source_degraded",
+                "source": "arxiv",
+                "message": str(e),
+                "retryable": True,
+            }
+            self.last_source_report["sources"]["arxiv"] = {"ok": False, **warning}
+            self.last_source_report["warnings"].append(warning)
+        else:
+            self.last_source_report["sources"]["arxiv"] = {
+                "ok": True,
+                "count": len(arxiv_papers),
+            }
         try:
             hf_papers = self.fetch_hf_daily_papers(target_date)
         except Exception as e:
             logger.error(f"[ERR] Failed to fetch Hugging Face papers. {e}")
             hf_papers = []
+            source_errors.append(str(e))
+            warning = {
+                "code": "source_degraded",
+                "source": "huggingface",
+                "message": str(e),
+                "retryable": True,
+            }
+            self.last_source_report["sources"]["huggingface"] = {"ok": False, **warning}
+            self.last_source_report["warnings"].append(warning)
+        else:
+            self.last_source_report["sources"]["huggingface"] = {
+                "ok": True,
+                "count": len(hf_papers),
+            }
+
+        if len(source_errors) == 2:
+            raise NetworkUnavailableError("All paper sources are unavailable: " + " | ".join(source_errors))
         
         # Deduplicate by canonical paper identity, falling back to normalized title.
         seen_keys = set()
@@ -611,9 +728,14 @@ class PaperScraper:
     def fetch_single_arxiv_paper(self, arxiv_url_or_id):
         arxiv_id = self._extract_arxiv_id(arxiv_url_or_id)
         if not arxiv_id:
-            return None
+            raise SinglePaperFetchError(
+                "single_paper_invalid_id",
+                f"The requested value does not contain a valid modern arXiv ID: {arxiv_url_or_id}",
+                retryable=False,
+            )
         last_error = None
         saw_empty_result = False
+        mismatched_ids = []
         for params in self._single_arxiv_query_variants(arxiv_id):
             try:
                 raw_feed = self._request_arxiv_feed(params)
@@ -624,7 +746,19 @@ class PaperScraper:
                 continue
 
             if results:
-                return self._entry_to_paper(results[0], 'arXiv')
+                for entry in results:
+                    candidate = self._entry_to_paper(entry, 'arXiv')
+                    candidate_id = canonical_arxiv_id(candidate.get("paper_id"))
+                    if candidate_id == arxiv_id:
+                        return candidate
+                    if candidate_id:
+                        mismatched_ids.append(candidate_id)
+                logger.warning(
+                    "[WARN] arXiv single-paper query for %s returned only mismatched identities: %s",
+                    arxiv_id,
+                    ", ".join(mismatched_ids[-len(results):]) or "unknown",
+                )
+                continue
             saw_empty_result = True
 
         if last_error:
@@ -633,4 +767,29 @@ class PaperScraper:
             logger.error(f"[ERR] No arXiv paper found for id: {arxiv_id}")
 
         logger.info("[INFO] Trying arXiv abs page fallback for %s...", arxiv_id)
-        return self._fetch_single_arxiv_abs_page(arxiv_id)
+        fallback = self._fetch_single_arxiv_abs_page(arxiv_id)
+        if fallback:
+            fallback = normalize_paper_identity(fallback)
+            fallback_id = canonical_arxiv_id(fallback.get("paper_id"))
+            if fallback_id == arxiv_id:
+                return fallback
+            if fallback_id:
+                mismatched_ids.append(fallback_id)
+
+        if mismatched_ids:
+            raise SinglePaperFetchError(
+                "single_paper_identity_mismatch",
+                f"arXiv returned {', '.join(sorted(set(mismatched_ids)))} while {arxiv_id} was requested",
+                retryable=True,
+            )
+        if last_error and not saw_empty_result:
+            raise SinglePaperFetchError(
+                "single_paper_source_unavailable",
+                f"Unable to fetch requested arXiv paper {arxiv_id}: {last_error}",
+                retryable=True,
+            ) from last_error
+        raise SinglePaperFetchError(
+            "single_paper_not_found",
+            f"No arXiv paper was found for requested ID {arxiv_id}",
+            retryable=False,
+        )

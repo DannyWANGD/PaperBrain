@@ -67,39 +67,79 @@ The daily digest is broad: by default, it includes every paper with `score >= 7.
 
 ## <a id="quick-start"></a> ⚡ Quick Start
 
-```bash
-cd D:\PaperBrain
+PaperBrain supports Python 3.9 or later. For a fresh checkout, use the dedicated Python 3.10 `wd` environment below. Every backend command in this README assumes that `wd` is active.
+
+### 1. Create The Recommended Environment
+
+```powershell
+cd <path-to-PaperBrain>
 conda create -n wd python=3.10 -y
 conda activate wd
-pip install -r script/requirements.txt
+python -m pip install --upgrade pip
+python -m pip install -e .
 ```
 
-PaperBrain supports Python 3.9+; Python 3.10 is recommended for fresh environments. The local `wd` environment is the expected runtime environment for this vault.
+The editable install brings in the backend dependencies and registers the `paperbrain` command while keeping this checkout as the active source tree.
 
-Create an environment file from the example:
+For an exact release dependency graph, stay in the same `wd` environment and use these two commands instead of `python -m pip install -e .`:
+
+```powershell
+python -m pip install --require-hashes -r script/requirements.lock
+python -m pip install --no-deps -e .
+```
+
+### 2. Configure One LLM Provider
+
+Create `script/.env` from the template. On Windows PowerShell:
+
+```powershell
+Copy-Item script\config\.env.example script\.env
+```
+
+On macOS or Linux:
 
 ```bash
-copy script\config\.env.example script\.env
+cp script/config/.env.example script/.env
 ```
 
-Then fill in the keys:
+Add the key for the provider you intend to use. You do not need to configure both providers:
 
 ```env
-DOUBAO_API_KEY=your_doubao_api_key_here
 OPENROUTER_API_KEY=your_openrouter_api_key_here
+# DOUBAO_API_KEY=your_doubao_api_key_here
 ```
 
-Run today's pipeline:
+### 3. Validate Before Spending Tokens
 
-```bash
-python script/paperbrain.py run --provider openrouter
+```powershell
+paperbrain doctor config
+paperbrain doctor env
+paperbrain doctor llm --provider openrouter
 ```
 
-Run a known date:
+These checks are local by default. Add `--live` to the LLM check only when you explicitly want a low-cost provider call.
 
-```bash
-python script/paperbrain.py run --date 2026-06-01 --provider openrouter
+### 4. Run The Pipeline
+
+```powershell
+paperbrain run --provider openrouter
 ```
+
+To process a specific paper date instead of today:
+
+```powershell
+paperbrain run --date 2026-06-01 --provider openrouter
+```
+
+### 5. Connect Obsidian
+
+For this checkout on Windows, sync the built plugin files into the vault:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File obsidian-plugin\sync_plugin.ps1
+```
+
+Open the repository root as an Obsidian vault, enable **PaperBrain Console** under Community plugins, and set its backend checkout path to this repository. If Obsidian cannot find the CLI, run `where.exe paperbrain` inside the active `wd` environment and use that absolute path in the plugin settings.
 
 ## <a id="daily-usage"></a> 🗓️ Daily Usage
 
@@ -107,16 +147,16 @@ python script/paperbrain.py run --date 2026-06-01 --provider openrouter
 
 | Mode | Goal | Command |
 | --- | --- | --- |
-| 🗓️ Daily | Today | `python script/paperbrain.py run --provider openrouter` |
-| 📅 Calendar | Specific date | `python script/paperbrain.py run --date 2026-06-01 --provider openrouter` |
-| 🧰 Debug | Fetch only | `python script/paperbrain.py fetch --date 2026-06-01 --provider openrouter` |
-| 🧪 Debug | Screening only | `python script/paperbrain.py screen --date 2026-06-01 --provider openrouter` |
-| 📖 Debug | Deep analysis only path | `python script/paperbrain.py deep --date 2026-06-01 --provider openrouter` |
-| 🔁 Resume | Continue previous run | `python script/paperbrain.py run --date 2026-06-01 --provider openrouter --resume` |
-| ♻️ Reset | Clean rerun | `python script/paperbrain.py run --date 2026-06-01 --provider openrouter --force` |
-| 🎧 Audio | Skip podcast | `python script/paperbrain.py run --provider openrouter --no-podcast` |
-| 🎯 Focus | Single paper | `python script/paperbrain.py run --provider openrouter --arxiv-url https://arxiv.org/abs/2606.02486` |
-| 📰 Digest | Digest only | `python script/paperbrain.py digest --date 2026-05-22 --provider openrouter` |
+| 🗓️ Daily | Today | `paperbrain run --provider openrouter` |
+| 📅 Calendar | Specific date | `paperbrain run --date 2026-06-01 --provider openrouter` |
+| 🧰 Debug | Fetch only | `paperbrain fetch --date 2026-06-01 --provider openrouter` |
+| 🧪 Debug | Screening only | `paperbrain screen --date 2026-06-01 --provider openrouter` |
+| 📖 Debug | Deep analysis only path | `paperbrain deep --date 2026-06-01 --provider openrouter` |
+| 🔁 Resume | Continue previous run | `paperbrain run --date 2026-06-01 --provider openrouter --resume` |
+| ♻️ Reset | Clean rerun | `paperbrain run --date 2026-06-01 --provider openrouter --force` |
+| 🎧 Audio | Skip podcast | `paperbrain run --provider openrouter --no-podcast` |
+| 🎯 Focus | Single paper | `paperbrain run --provider openrouter --arxiv-url https://arxiv.org/abs/2606.02486` |
+| 📰 Digest | Digest only | `paperbrain digest --date 2026-05-22 --provider openrouter` |
 
 The unified CLI writes human logs and progress to stderr, and writes the final machine-readable JSON summary to stdout. The JSON includes `exit_code`, `run_dir`, `state_path`, `artifacts`, and any structured `errors`.
 
@@ -140,32 +180,32 @@ Each digest entry includes score, innovation, limitations, note/web link, author
 Rebuild the Obsidian index and normalize note frontmatter:
 
 ```bash
-python script/paperbrain.py index
+paperbrain index
 ```
 
 Regenerate index files without rewriting notes:
 
 ```bash
-python script/paperbrain.py index --no-update-notes
+paperbrain index --no-update-notes
 ```
 
 Generate a weekly brief:
 
 ```bash
-python script/generate_research_brief.py --week 2026-W23
+paperbrain brief --mode week --week 2026-W23
 ```
 
 Generate a monthly brief:
 
 ```bash
-python script/generate_research_brief.py --month 2026-06
+paperbrain brief --mode month --month 2026-06
 ```
 
 Generate a custom or rolling range:
 
 ```bash
-python script/generate_research_brief.py --from-date 2026-06-01 --to-date 2026-06-07
-python script/generate_research_brief.py --last-days 14 --date 2026-06-03
+paperbrain brief --mode range --from-date 2026-06-01 --to-date 2026-06-07
+paperbrain brief --mode range --last-days 14 --date 2026-06-03
 ```
 
 Briefs are written to `Research_Briefs/` and use this structure:
@@ -254,7 +294,7 @@ analysis:
   screening_second_stage_max_k: 20
 ```
 
-OpenRouter is configured to avoid Claude, OpenAI, and Gemini when they are region-restricted. The current fallback chain uses compatible DeepSeek, Qwen, Z.ai, xAI, MiniMax, StepFun, and related models.
+OpenRouter routing excludes Anthropic, Google, and OpenAI model families across every task. Fast screening uses low-latency DeepSeek/Qwen/StepFun models, while detailed screening, deep analysis, learning resources, podcast writing, and vision use task-specific GLM 5.2, Kimi K3, Grok 4.5, Qwen 3.7, MiniMax M3, and related fallbacks. Learning-resource generation can use OpenRouter web search and therefore may add a small provider-side search charge; control it with `analysis.learning_resources_web_search_enabled`.
 
 ## <a id="maintenance-commands"></a> 🛠️ Maintenance Commands
 
@@ -274,7 +314,8 @@ Primary command entry points:
 
 | Entry | Status | Use |
 | --- | --- | --- |
-| `script/paperbrain.py` | Recommended | Unified CLI: `run`, `fetch`, `screen`, `deep`, `digest`, `cancel`, `dry-run`, `bridge`, `index`, `doctor`, `check` |
+| `paperbrain` | Recommended | Installed unified CLI: `run`, `fetch`, `screen`, `deep`, `digest`, `cancel`, `dry-run`, `bridge`, `index`, `brief`, `doctor`, `check` |
+| `script/paperbrain.py` | Source fallback | Direct checkout entry point when the editable CLI is unavailable |
 | `script/main.py` | Compatibility wrapper | Old daily entry; prints a migration hint and forwards to `paperbrain.py run` |
 | `script/build_research_index.py` | Compatibility wrapper | Old index entry; prints a migration hint and forwards to `paperbrain.py index` |
 
@@ -303,9 +344,9 @@ powershell -ExecutionPolicy Bypass -File obsidian-plugin\sync_plugin.ps1
 The plugin calls commands such as:
 
 ```powershell
-python script\paperbrain.py digest --date 2026-05-22 --provider openrouter
-python script\paperbrain.py cancel --reason plugin_stop
-python script\paperbrain.py dry-run --mode digest --date 2026-05-22 --provider openrouter
+paperbrain digest --date 2026-05-22 --provider openrouter
+paperbrain cancel --reason plugin_stop
+paperbrain dry-run --mode digest --date 2026-05-22 --provider openrouter
 ```
 | `script/generate_research_brief.py` | Kept maintenance command | Weekly, monthly, and date-range briefs |
 | `script/generate_podcast.py` | Kept maintenance command | Podcast from an existing note |
@@ -317,28 +358,28 @@ Organized implementations live in `script/tools/`. The top-level `script/*.py` c
 ## <a id="development-checks"></a> ✅ Development Checks
 
 ```bash
-python script/paperbrain.py doctor
-python script/paperbrain.py check
-python script/paperbrain.py index --no-update-notes
+paperbrain doctor
+paperbrain check
+paperbrain index --no-update-notes
 ```
 
 Useful focused checks:
 
 ```bash
-python script/paperbrain.py check --skip-tests --skip-lint
-python script/paperbrain.py check --strict-lint
-python script/paperbrain.py doctor config
-python script/paperbrain.py doctor env
-python script/paperbrain.py doctor arxiv
-python script/paperbrain.py doctor llm --provider openrouter
-python script/paperbrain.py doctor obsidian
+paperbrain check --skip-tests --skip-lint
+paperbrain check --strict-lint
+paperbrain doctor config
+paperbrain doctor env
+paperbrain doctor arxiv
+paperbrain doctor llm --provider openrouter
+paperbrain doctor obsidian
 ```
 
 Live probes are opt-in:
 
 ```bash
-python script/paperbrain.py doctor arxiv --live
-python script/paperbrain.py doctor llm --provider openrouter --live
+paperbrain doctor arxiv --live
+paperbrain doctor llm --provider openrouter --live
 ```
 
 Tooling files:

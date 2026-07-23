@@ -1,3 +1,4 @@
+import re
 import shutil
 import sys
 import tempfile
@@ -5,6 +6,7 @@ import unittest
 from datetime import date, datetime
 from pathlib import Path
 
+import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
@@ -91,8 +93,32 @@ class DailyDigestUpsertTest(unittest.TestCase):
         }
         path = self.writer.write_detailed_note(paper, "## Abstract\nShort.\n\n## Method\nClear.")
         text = Path(path).read_text(encoding="utf-8")
-        self.assertIn('publication_date: "2026-06-02"', text)
-        self.assertIn('metadata_publication_date: "2026-05-31"', text)
+        match = re.match(r"^---\n([\s\S]*?)\n---\n", text)
+        self.assertIsNotNone(match)
+        frontmatter = yaml.safe_load(match.group(1))
+        self.assertEqual(str(frontmatter["publication_date"]), "2026-06-02")
+        self.assertEqual(str(frontmatter["metadata_publication_date"]), "2026-05-31")
+
+    def test_detailed_note_serializes_untrusted_metadata_as_valid_yaml(self):
+        paper = {
+            "title": 'Quoted: "Paper"',
+            "url": "https://arxiv.org/abs/2606.00009",
+            "pdf_url": "https://arxiv.org/pdf/2606.00009",
+            "score": 8.2,
+            "authors": ['Doe, Jane: "JJ"', "Line One\nLine Two"],
+            "ai_aliases": ['Alias: "quoted"'],
+            "metadata": {"institutions": ['Lab: "A"', "Second\nLab"]},
+        }
+
+        path = self.writer.write_detailed_note(paper, "Analysis body.")
+        text = Path(path).read_text(encoding="utf-8")
+        match = re.match(r"^---\n([\s\S]*?)\n---\n", text)
+        self.assertIsNotNone(match)
+        frontmatter = yaml.safe_load(match.group(1))
+
+        self.assertEqual(frontmatter["aliases"][1], 'Alias: "quoted"')
+        self.assertEqual(frontmatter["authors"][1], "Line One\nLine Two")
+        self.assertEqual(frontmatter["institutions"][0], 'Lab: "A"')
 
     def test_write_daily_digest_backfills_to_five_and_keeps_high_impact_count(self):
         papers = [

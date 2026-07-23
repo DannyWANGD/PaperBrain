@@ -5,12 +5,14 @@ from __future__ import annotations
 import json
 import os
 import shutil
+import time
 from copy import deepcopy
 from datetime import datetime
 from pathlib import Path
 
 from src.paper_identity import identity_key, normalize_paper_identity
 from src.paths import PaperBrainPaths
+from src.file_io import atomic_write_text
 
 
 STAGE_ORDER = {
@@ -39,6 +41,17 @@ OR_FIELDS = (
 
 def _now():
     return datetime.now().isoformat(timespec="seconds")
+
+
+def _atomic_write_with_retry(path, content, attempts=4):
+    for attempt in range(attempts):
+        try:
+            atomic_write_text(path, content)
+            return
+        except PermissionError:
+            if attempt + 1 >= attempts:
+                raise
+            time.sleep(0.02 * (2 ** attempt))
 
 
 def _safe_float(value, default=0.0):
@@ -296,10 +309,10 @@ class RunState:
 
     def save(self):
         self.data["updated_at"] = _now()
-        tmp_path = f"{self.path}.tmp"
-        with open(tmp_path, "w", encoding="utf-8") as f:
-            json.dump(self.data, f, ensure_ascii=False, indent=2)
-        os.replace(tmp_path, self.path)
+        _atomic_write_with_retry(
+            self.path,
+            json.dumps(self.data, ensure_ascii=False, indent=2),
+        )
         self._write_errors()
         self._write_log_summary()
 
@@ -473,6 +486,22 @@ class RunState:
             "exception": exception,
             "retryable": bool(retryable),
         }
+        duplicate = next(
+            (
+                existing
+                for existing in self.data.setdefault("errors", [])
+                if existing.get("code") == error["code"]
+                and existing.get("stage") == error["stage"]
+                and existing.get("paper_id") == error["paper_id"]
+                and existing.get("title") == error["title"]
+            ),
+            None,
+        )
+        if duplicate is not None:
+            duplicate.update(error)
+            if save:
+                self.save()
+            return duplicate
         self.data.setdefault("errors", []).append(error)
         self.add_log_event(
             event_type="error",
@@ -485,6 +514,76 @@ class RunState:
         )
         if save:
             self.save()
+        return error
+
+    def clear_retryable_errors(self):
+        errors = list(self.data.get("errors", []))
+        retained = [error for error in errors if not error.get("retryable")]
+        removed = len(errors) - len(retained)
+        if not removed:
+            return 0
+        self.data["errors"] = retained
+        self.add_log_event(
+            event_type="retry_errors_cleared",
+            status="cleared",
+            stage=self.data.get("stage", ""),
+            message=f"retryable_errors_cleared={removed}",
+            save=False,
+        )
+        self.save()
+        return removed
+
+    def resolve_errors(
+        self,
+        code=None,
+        stage=None,
+        paper_id=None,
+        title=None,
+        retryable=None,
+        save=True,
+    ):
+        """Resolve only errors whose failed operation has now succeeded."""
+        errors = list(self.data.get("errors", []))
+
+        def matches(error):
+            if code is not None and error.get("code") != code:
+                return False
+            if stage is not None and error.get("stage") != stage:
+                return False
+            if paper_id is not None and error.get("paper_id") != paper_id:
+                return False
+            if title is not None and error.get("title") != title:
+                return False
+            if retryable is not None and bool(error.get("retryable")) != bool(retryable):
+                return False
+            return True
+
+        retained = [error for error in errors if not matches(error)]
+        removed = len(errors) - len(retained)
+        if not removed:
+            return 0
+        self.data["errors"] = retained
+        self.add_log_event(
+            event_type="errors_resolved",
+            status="resolved",
+            stage=stage or self.data.get("stage", ""),
+            paper_id=paper_id or "",
+            title=title or "",
+            message=f"errors_resolved={removed};code={code or '*'}",
+            save=False,
+        )
+        if save:
+            self.save()
+        return removed
+
+    def resolve_error(self, code, stage="", paper_id="", title=None, save=True):
+        return self.resolve_errors(
+            code=code,
+            stage=stage or None,
+            paper_id=paper_id,
+            title=title,
+            save=save,
+        )
 
     def write_screening_report(self):
         report_path = self.screening_report_path
@@ -645,10 +744,10 @@ class RunState:
             "stage": self.data.get("stage", ""),
             "errors": self.data.get("errors", []),
         }
-        tmp_path = f"{self.errors_path}.tmp"
-        with open(tmp_path, "w", encoding="utf-8") as f:
-            json.dump(payload, f, ensure_ascii=False, indent=2)
-        os.replace(tmp_path, self.errors_path)
+        _atomic_write_with_retry(
+            self.errors_path,
+            json.dumps(payload, ensure_ascii=False, indent=2),
+        )
 
     def _write_log_summary(self):
         lines = [
@@ -685,7 +784,4 @@ class RunState:
                     message=message,
                 )
             )
-        tmp_path = f"{self.log_summary_path}.tmp"
-        with open(tmp_path, "w", encoding="utf-8") as f:
-            f.write("\n".join(lines).strip() + "\n")
-        os.replace(tmp_path, self.log_summary_path)
+        _atomic_write_with_retry(self.log_summary_path, "\n".join(lines).strip() + "\n")

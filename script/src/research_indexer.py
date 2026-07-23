@@ -1,11 +1,12 @@
 import os
 import re
-import json
 import logging
 from collections import Counter
 from datetime import datetime
 
 import yaml
+
+from src.file_io import atomic_write_text
 from src.paper_identity import canonical_arxiv_id, paper_id_from_metadata
 from src.paths import PaperBrainPaths
 
@@ -113,8 +114,10 @@ class ResearchIndexer:
             return {}, raw
         try:
             fm = yaml.safe_load(match.group(1)) or {}
-        except Exception:
-            fm = {}
+        except yaml.YAMLError as exc:
+            raise ValueError(f"invalid YAML frontmatter: {exc}") from exc
+        if not isinstance(fm, dict):
+            raise ValueError("frontmatter must be a YAML mapping")
         return fm, raw[match.end():]
 
     def _normalize_note(self, path, filename, fm, body, raw):
@@ -301,7 +304,6 @@ class ResearchIndexer:
         )
 
         method = self._question_focus(methods, paper_type or "method")
-        domain = self._question_focus(domains, "this domain")
         task = self._question_focus(tasks, "the target task")
         problem_clause = self._short_clause(problem, 150)
         contribution_clause = self._short_clause(contribution, 150)
@@ -336,7 +338,7 @@ class ResearchIndexer:
                     f"or could a simpler shortcut still score well: {problem_clause}?"
                 )
             return (
-                f"What failure mode would this benchmark or dataset reveal that current evaluations usually hide?"
+                "What failure mode would this benchmark or dataset reveal that current evaluations usually hide?"
             )
         if "diffusion_policy" in methods:
             if limitation_clause:
@@ -355,7 +357,7 @@ class ResearchIndexer:
                     f"benchmark reward structure under this limitation: {limitation_clause}?"
                 )
             return (
-                f"What small ablation would separate genuine policy improvement from reward-specific adaptation in this paper?"
+                "What small ablation would separate genuine policy improvement from reward-specific adaptation in this paper?"
             )
         if limitation_clause and contribution_clause:
             return (
@@ -473,12 +475,10 @@ class ResearchIndexer:
         updated = note["frontmatter_new"]
         if existing == updated:
             return
-        raw = note["raw"]
         body = note["body"]
         fm_yaml = yaml.safe_dump(updated, allow_unicode=True, sort_keys=False, default_flow_style=False).strip()
         new_raw = f"---\n{fm_yaml}\n---\n\n{body.lstrip()}"
-        with open(note["path"], "w", encoding="utf-8") as f:
-            f.write(new_raw)
+        atomic_write_text(note["path"], new_raw)
 
     def _write_index(self, notes):
         total = len(notes)
@@ -866,8 +866,7 @@ SORT priority_score DESC, score DESC
 
     def _write_file(self, filename, content):
         path = os.path.join(self.index_folder, filename)
-        with open(path, "w", encoding="utf-8") as f:
-            f.write(content)
+        atomic_write_text(path, content)
 
     def _ensure_list(self, value):
         if value is None:

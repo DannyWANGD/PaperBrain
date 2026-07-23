@@ -28,7 +28,7 @@ class Podcaster:
         if provider == 'openrouter':
             self.api_key = config['openrouter']['api_key']
             self.base_url = "https://openrouter.ai/api/v1"
-            self.model_pro = config['openrouter'].get('model_podcast', config['openrouter'].get('model_pro', 'moonshotai/kimi-k2.6'))
+            self.model_pro = config['openrouter'].get('model_podcast', config['openrouter'].get('model_pro', 'moonshotai/kimi-k3'))
         else:
             self.api_key = config['doubao']['api_key']
             self.base_url = "https://ark.cn-beijing.volces.com/api/v3"
@@ -50,19 +50,27 @@ class Podcaster:
             fallbacks = []
 
         defaults = [
-            "moonshotai/kimi-k2.6",
-            "x-ai/grok-4.3",
+            "moonshotai/kimi-k3",
+            "x-ai/grok-4.5",
             "qwen/qwen3.7-max",
+            "z-ai/glm-5.2",
             "minimax/minimax-m3",
             "deepseek/deepseek-v4-pro",
-            "z-ai/glm-5.1",
         ]
 
         candidates = []
         for m in [primary_model, *fallbacks, *defaults]:
-            if m and m not in candidates:
+            if m and m not in candidates and not self._is_disallowed_openrouter_model(m):
                 candidates.append(m)
         return candidates
+
+    @staticmethod
+    def _is_disallowed_openrouter_model(model):
+        value = str(model or "").strip().lower().lstrip("~")
+        author = value.split("/", 1)[0] if "/" in value else ""
+        return author in {"anthropic", "openai", "google", "google-ai", "googleai"} or any(
+            term in value for term in ("claude", "gpt", "openai", "gemini")
+        )
 
     def generate_script(self, paper_title, analysis_content, rag_context="", duration_minutes=5):
         """Generates a podcast script based on the paper analysis and RAG context."""

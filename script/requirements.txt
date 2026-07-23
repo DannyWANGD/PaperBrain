@@ -1,13 +1,15 @@
 openai>=1.0.0
 arxiv>=2.1.0
 requests>=2.31.0
+urllib3>=1.26.18,<3
 pyyaml>=6.0.1
 schedule>=1.2.1
-feedparser>=6.0.11
+feedparser>=6.0.10
 tqdm>=4.66.1
 beautifulsoup4>=4.12.3
 pypdf>=4.0.0
 pymupdf>=1.23.0
+Pillow>=10.0.0
 edge-tts>=6.1.9
 nest_asyncio>=1.5.8
 python-dotenv>=1.0.1

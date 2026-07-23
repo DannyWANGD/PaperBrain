@@ -129,10 +129,9 @@ analysis:
     }
     ```
 
-    Then write the note with exactly these section headers:
+    The surrounding Obsidian note already provides a dedicated "## 📌 Abstract" section. Do not create another Abstract heading or repeat the abstract inside this analysis.
 
-    ## Abstract
-    Include the original English abstract if available. After the abstract, add one short paragraph explaining the abstract in simpler words. Keep this section readable, not overly long.
+    Then write the analysis with exactly these section headers:
 
     ## 1. Core Snapshot
     This section must preserve and integrate the following three subsections exactly.
@@ -196,7 +195,8 @@ analysis:
 
     Mandatory formatting:
     - Do not output a top-level title like "# Deep Analysis Report".
-    - Start directly with the metadata JSON block, then "## Abstract".
+    - Start directly with the metadata JSON block, then "## 1. Core Snapshot".
+    - Do not create an Abstract section or repeat the paper abstract; the surrounding Obsidian note supplies it separately.
     - All prose must be in English.
     - Use the exact section headers requested above.
     - Preserve the "## 1. Core Snapshot" section and its three required subsections exactly: "### Problem Statement", "### Core Contribution", and "### Innovation Origin & Rationale".
@@ -239,7 +239,7 @@ analysis:
     - Does the Core Snapshot include the three required subsections?
     - Are formulas written in Obsidian-compatible math syntax and explained in words?
     - Are claims, evidence, interpretation, and uncertainty clearly separated?
-    - Does the final note begin with "## Abstract"?
+    - Does the final analysis begin with "## 1. Core Snapshot" and omit any duplicate Abstract section?
 
   round2_user: |
     Based on the reading note above, now add a connection and reflection section.
@@ -272,18 +272,22 @@ analysis:
     Write three thoughtful questions that I should keep in mind while reading future papers in this area. Each question should explain why it matters and what kind of evidence would answer it.
 
     ### Learning Roadmap And Verified Resources
-    Build a student-friendly learning roadmap for the paper. Choose 4-6 knowledge points that are genuinely needed to understand the paper, ordered from beginner-friendly foundations to advanced implementation details.
+    Build a student-friendly learning roadmap for the paper. Choose 5-7 knowledge points that are genuinely needed to understand the paper, ordered from beginner-friendly foundations to advanced implementation details. Use the available web-search tool to verify resource titles and canonical URLs before recommending them.
 
     For each knowledge point:
-    - Explain why this concept matters for the paper in 2-4 complete sentences.
-    - Give a short "study order" telling me what to learn first, next, and last.
-    - Include a compact Markdown table with these columns: `Type`, `Resource`, `Why this one`.
-    - Add high-quality learning links when they genuinely help. Do not force every resource type under every knowledge point.
+    - State the learning objective and any prerequisite knowledge.
+    - Explain why this concept matters for the paper in 2-4 complete sentences, including the exact method, equation, experiment, or implementation choice it unlocks.
+    - Give a short study sequence telling me what to learn first, what to inspect in the paper next, and what to implement or reproduce last.
+    - Add one small checkpoint exercise that can verify practical understanding.
+    - Include 2-4 high-quality resources in a compact Markdown table with these columns: `Type`, `Resource`, `Why this one`, `Use it for`.
     - Across the whole roadmap, try to include a rich and balanced mix of `Blog/Tutorial`, `Video/Public Course`, `Open Textbook/Lecture Notes/E-book`, `Code`, `Dataset`, `Benchmark`, `Documentation`, and `Project Page` resources when relevant.
+    - Across the whole roadmap, provide 12-20 distinct resources. Prefer one authoritative foundation resource and one practical resource for each major concept; do not repeat a resource under multiple knowledge points.
 
     Link quality rules:
     - Use exact Markdown links only, such as `[resource title](https://...)`.
     - Prefer stable, reputable sources: university course pages, MIT/Stanford/CMU/Berkeley/ETH materials, official documentation, official project pages, well-known technical blogs, open textbooks, lecture notes, canonical YouTube lectures/playlists from universities or recognized educators, datasets, benchmarks, and code repositories.
+    - Prefer primary and canonical sources over aggregators. A GitHub repository, dataset, benchmark, documentation site, or project page must be the official one.
+    - Confirm that each linked page matches the displayed title and the claimed use. Use a broader prerequisite resource rather than a weak or tangential result.
     - Do not invent URLs. Do not use placeholder links. Do not use search-result URLs.
     - If a very narrow concept lacks reliable exact URLs, choose fewer but better resources or use a broader prerequisite concept that still helps with this paper.
     - The generated links will be programmatically checked for reachability, so prefer canonical URLs that are likely to remain accessible.
@@ -310,7 +314,9 @@ analysis:
   vision_select_user: |
     You are an expert at reading research papers. I will show you several rendered pages from a PDF.
 
-    Your task is to find the page that contains the model or method architecture diagram. This is the figure that shows the overall structure of the proposed approach, with components, modules, data-flow arrows, and technical labels.
+    First, find the page that contains the model or method architecture diagram. This is the figure that shows the overall structure of the proposed approach, with components, modules, data-flow arrows, and technical labels.
+
+    If no candidate contains a clear architecture diagram, select the most informative representative visual page instead. Prefer a task overview, method setup, training or inference illustration, system embodiment, or informative teaser that helps a researcher understand the paper. Do not use a result-only chart, table, or author/title page as the representative fallback.
 
     What counts:
     - Block diagrams showing model components and connections.
@@ -318,20 +324,21 @@ analysis:
     - System schematics with named modules, arrows, or tensor/data annotations.
     - Training or inference pipeline overviews.
 
-    What does not count:
+    What does not count as an architecture diagram:
     - Teaser images or qualitative result photos.
     - Bar charts, line plots, scatter plots, or result-only figures.
     - Tables.
     - Title pages or author pages.
 
-    Return only JSON:
-    {"index": <int or -1>, "caption": "<caption if readable, otherwise brief description>"}
+    Return only JSON using zero-based candidate indices:
+    {"index": <architecture index or -1>, "caption": "<architecture caption or description>", "fallback_index": <representative visual index or -1>, "fallback_caption": "<representative visual caption or description>"}
 
   vision_fallback_suffix: |
     Visual context: The provided images are rendered PDF pages. Use them to interpret figures, tables, and architecture diagrams.
 
     Mandatory formatting:
-    - Start directly with the metadata JSON block, then "## Abstract".
+    - Start directly with the metadata JSON block, then "## 1. Core Snapshot".
+    - Do not create an Abstract section or repeat the paper abstract; the surrounding Obsidian note supplies it separately.
     - All prose must be in English.
     - Use the exact section headers requested in the main prompt.
     - Explain visual evidence in complete paragraphs.

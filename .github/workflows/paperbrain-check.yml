@@ -6,17 +6,79 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
   check:
-    runs-on: ubuntu-latest
+    name: ${{ matrix.os }} / Python ${{ matrix.python }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            python: "3.9"
+          - os: ubuntu-latest
+            python: "3.13"
+          - os: windows-latest
+            python: "3.11"
+          - os: macos-latest
+            python: "3.11"
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
         with:
-          python-version: "3.10"
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -r script/requirements.txt
+          python -m pip install -e ".[dev]"
       - name: Run local validation
-        run: python script/paperbrain.py check
+        run: python script/paperbrain.py check --strict-lint
+      - name: Check dependency consistency
+        run: python -m pip check
+
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Build wheel and source distribution
+        run: |
+          python -m pip install --upgrade pip build
+          python -m build
+      - name: Install the wheel with dependencies
+        run: python -m pip install dist/*.whl
+      - name: Smoke-test installed CLI and resources outside the checkout
+        shell: bash
+        run: |
+          smoke_dir="$(mktemp -d)"
+          cd "$smoke_dir"
+          paperbrain --help
+          python - <<'PY'
+          from importlib.resources import files
+          from pathlib import Path
+          import main
+          import src.cli
+          import src.network_safety
+
+          expected = ["config.yaml", "prompts.yaml", "tags.yaml", ".env.example"]
+          assert all(files("paperbrain_config").joinpath(name).is_file() for name in expected)
+          assert main.DEFAULT_PATHS.repo_root == Path.cwd()
+          assert main.DEFAULT_PATHS.vault_path == Path.cwd()
+          assert str(main.DEFAULT_PATHS.cache_dir).startswith(str(Path.cwd()))
+          print("installed wheel smoke test: OK")
+          PY
+      - name: Check installed dependency consistency
+        run: python -m pip check
