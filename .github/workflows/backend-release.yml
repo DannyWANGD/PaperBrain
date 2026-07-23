@@ -34,7 +34,7 @@ jobs:
         shell: bash
         run: |
           version="${GITHUB_REF_NAME#backend-}"
-          package_version="$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml", "rb"))["project"]["version"])')"
+          package_version="$(python -c 'from importlib import metadata; print(metadata.version("paperbrain"))')"
           test "$version" = "$package_version"
           wheel="dist/paperbrain-${version}-py3-none-any.whl"
           test -s "$wheel"
