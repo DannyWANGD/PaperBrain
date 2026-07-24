@@ -14,14 +14,7 @@ from src.podcaster import Podcaster  # noqa: E402
 class PodcasterProxyTest(unittest.TestCase):
     def test_edge_tts_receives_configured_http_proxy(self):
         with tempfile.TemporaryDirectory() as tmp:
-            config = {
-                "obsidian": {"vault_path": tmp},
-                "openrouter": {
-                    "api_key": "test-key",
-                    "model_podcast": "moonshotai/kimi-k3",
-                },
-            }
-            podcaster = Podcaster(config, provider="openrouter")
+            podcaster = object.__new__(Podcaster)
             communicator = unittest.mock.MagicMock()
             communicator.save = AsyncMock()
 
