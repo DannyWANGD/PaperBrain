@@ -1,0 +1,57 @@
+name: Plugin CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Test and build
+        run: npm run check
+      - name: Verify terminal installer syntax
+        shell: pwsh
+        run: |
+          bash -n installers/install-backend.sh
+          if ($LASTEXITCODE -ne 0) { throw "Bash installer syntax check failed." }
+          $tokens = $null
+          $errors = $null
+          [System.Management.Automation.Language.Parser]::ParseFile(
+            (Resolve-Path "installers/install-backend.ps1"),
+            [ref]$tokens,
+            [ref]$errors
+          ) | Out-Null
+          if ($errors.Count -ne 0) { throw ($errors | Out-String) }
+      - name: Verify release metadata
+        shell: bash
+        run: |
+          node - <<'NODE'
+          const fs = require("node:fs");
+          const manifest = JSON.parse(fs.readFileSync("manifest.json", "utf8"));
+          const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
+          const versions = JSON.parse(fs.readFileSync("versions.json", "utf8"));
+          if (!/^\d+\.\d+\.\d+$/.test(manifest.version)) throw new Error("manifest version must be x.y.z");
+          if (manifest.version !== pkg.version) throw new Error("manifest and package versions differ");
+          if (versions[manifest.version] !== manifest.minAppVersion) throw new Error("versions.json is not current");
+          for (const file of ["main.js", "manifest.json", "styles.css", "installers/install-backend.ps1", "installers/install-backend.sh"]) {
+            if (!fs.statSync(file).isFile() || fs.statSync(file).size === 0) throw new Error(`${file} is missing or empty`);
+          }
+          NODE

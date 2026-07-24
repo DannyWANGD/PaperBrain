@@ -1,0 +1,20 @@
+name: Feature request
+description: Propose a focused improvement to the Obsidian control surface.
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    attributes:
+      label: Problem
+      description: Describe the workflow problem, not only the proposed control.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Proposed behavior
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Alternatives considered

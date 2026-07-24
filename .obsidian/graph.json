@@ -3,20 +3,56 @@
   "search": "",
   "showTags": false,
   "showAttachments": true,
-  "hideUnresolved": false,
+  "hideUnresolved": true,
   "showOrphans": true,
-  "collapse-color-groups": false,
-  "colorGroups": [],
+  "collapse-color-groups": true,
+  "colorGroups": [
+    {
+      "query": "path:Daily_Papers  ",
+      "color": {
+        "a": 1,
+        "rgb": 14048348
+      }
+    },
+    {
+      "query": "path:Research_Notes  ",
+      "color": {
+        "a": 1,
+        "rgb": 14069084
+      }
+    },
+    {
+      "query": "path:Research_Briefs  ",
+      "color": {
+        "a": 1,
+        "rgb": 11392604
+      }
+    },
+    {
+      "query": "path:Research_Index  ",
+      "color": {
+        "a": 1,
+        "rgb": 6084269
+      }
+    },
+    {
+      "query": "path:Podcasts  ",
+      "color": {
+        "a": 1,
+        "rgb": 6084269
+      }
+    }
+  ],
   "collapse-display": false,
   "showArrow": false,
   "textFadeMultiplier": 0,
-  "nodeSizeMultiplier": 1.57478199562136,
-  "lineSizeMultiplier": 1.17001317523057,
-  "collapse-forces": false,
-  "centerStrength": 0.581208950239341,
-  "repelStrength": 10.959219266021,
-  "linkStrength": 0.566959812980074,
-  "linkDistance": 147,
-  "scale": 0.23687550410455313,
-  "close": false
+  "nodeSizeMultiplier": 1.1907677464841,
+  "lineSizeMultiplier": 1.69315002411963,
+  "collapse-forces": true,
+  "centerStrength": 0.111395599094586,
+  "repelStrength": 6.78763590485732,
+  "linkStrength": 0.705109651564066,
+  "linkDistance": 119,
+  "scale": 1.4351241366381517,
+  "close": true
 }

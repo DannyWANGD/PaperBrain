@@ -30,12 +30,44 @@
       "ok": true,
       "checks": [
         {
+          "name": "doubao_api_key",
+          "ok": true,
+          "severity": "warning",
+          "category": "llm",
+          "message": "API key is configured",
+          "suggestion": ""
+        },
+        {
+          "name": "doubao_model_flash",
+          "ok": true,
+          "severity": "error",
+          "category": "llm",
+          "message": "doubao.model_flash is configured",
+          "suggestion": ""
+        },
+        {
+          "name": "doubao_model_pro",
+          "ok": true,
+          "severity": "error",
+          "category": "llm",
+          "message": "doubao.model_pro is configured",
+          "suggestion": ""
+        },
+        {
+          "name": "doubao_live_probe",
+          "ok": true,
+          "severity": "info",
+          "category": "llm",
+          "message": "doubao live LLM probe skipped",
+          "suggestion": "Run `paperbrain doctor llm --provider doubao --live` for a low-cost live probe."
+        },
+        {
           "name": "openrouter_api_key",
           "ok": true,
           "severity": "warning",
           "category": "llm",
           "message": "API key is configured",
-          "suggestion": "Set OPENROUTER_API_KEY in script/.env or script/config/.env."
+          "suggestion": ""
         },
         {
           "name": "openrouter_model_flash",
@@ -43,7 +75,7 @@
           "severity": "error",
           "category": "llm",
           "message": "openrouter.model_flash is configured",
-          "suggestion": "Set openrouter.model_flash in config.yaml."
+          "suggestion": ""
         },
         {
           "name": "openrouter_model_pro",
@@ -51,7 +83,7 @@
           "severity": "error",
           "category": "llm",
           "message": "openrouter.model_pro is configured",
-          "suggestion": "Set openrouter.model_pro in config.yaml."
+          "suggestion": ""
         },
         {
           "name": "openrouter_model_screening_pro",
@@ -59,7 +91,15 @@
           "severity": "error",
           "category": "llm",
           "message": "openrouter.model_screening_pro is configured",
-          "suggestion": "Set openrouter.model_screening_pro in config.yaml."
+          "suggestion": ""
+        },
+        {
+          "name": "openrouter_model_learning_resources",
+          "ok": true,
+          "severity": "error",
+          "category": "llm",
+          "message": "openrouter.model_learning_resources is configured",
+          "suggestion": ""
         },
         {
           "name": "openrouter_model_podcast",
@@ -67,7 +107,7 @@
           "severity": "error",
           "category": "llm",
           "message": "openrouter.model_podcast is configured",
-          "suggestion": "Set openrouter.model_podcast in config.yaml."
+          "suggestion": ""
         },
         {
           "name": "openrouter_model_vision",
@@ -75,47 +115,7 @@
           "severity": "error",
           "category": "llm",
           "message": "openrouter.model_vision is configured",
-          "suggestion": "Set openrouter.model_vision in config.yaml."
-        },
-        {
-          "name": "openrouter_model_flash_fallbacks",
-          "ok": true,
-          "severity": "warning",
-          "category": "llm",
-          "message": "openrouter.model_flash_fallbacks is a list",
-          "suggestion": "Make openrouter.model_flash_fallbacks a YAML list of model IDs."
-        },
-        {
-          "name": "openrouter_model_screening_pro_fallbacks",
-          "ok": true,
-          "severity": "warning",
-          "category": "llm",
-          "message": "openrouter.model_screening_pro_fallbacks is a list",
-          "suggestion": "Make openrouter.model_screening_pro_fallbacks a YAML list of model IDs."
-        },
-        {
-          "name": "openrouter_model_pro_fallbacks",
-          "ok": true,
-          "severity": "warning",
-          "category": "llm",
-          "message": "openrouter.model_pro_fallbacks is a list",
-          "suggestion": "Make openrouter.model_pro_fallbacks a YAML list of model IDs."
-        },
-        {
-          "name": "openrouter_model_podcast_fallbacks",
-          "ok": true,
-          "severity": "warning",
-          "category": "llm",
-          "message": "openrouter.model_podcast_fallbacks is a list",
-          "suggestion": "Make openrouter.model_podcast_fallbacks a YAML list of model IDs."
-        },
-        {
-          "name": "openrouter_model_vision_fallbacks",
-          "ok": true,
-          "severity": "warning",
-          "category": "llm",
-          "message": "openrouter.model_vision_fallbacks is a list",
-          "suggestion": "Make openrouter.model_vision_fallbacks a YAML list of model IDs."
+          "suggestion": ""
         },
         {
           "name": "openrouter_live_probe",
@@ -130,12 +130,44 @@
   ],
   "checks": [
     {
+      "name": "doubao_api_key",
+      "ok": true,
+      "severity": "warning",
+      "category": "llm",
+      "message": "API key is configured",
+      "suggestion": ""
+    },
+    {
+      "name": "doubao_model_flash",
+      "ok": true,
+      "severity": "error",
+      "category": "llm",
+      "message": "doubao.model_flash is configured",
+      "suggestion": ""
+    },
+    {
+      "name": "doubao_model_pro",
+      "ok": true,
+      "severity": "error",
+      "category": "llm",
+      "message": "doubao.model_pro is configured",
+      "suggestion": ""
+    },
+    {
+      "name": "doubao_live_probe",
+      "ok": true,
+      "severity": "info",
+      "category": "llm",
+      "message": "doubao live LLM probe skipped",
+      "suggestion": "Run `paperbrain doctor llm --provider doubao --live` for a low-cost live probe."
+    },
+    {
       "name": "openrouter_api_key",
       "ok": true,
       "severity": "warning",
       "category": "llm",
       "message": "API key is configured",
-      "suggestion": "Set OPENROUTER_API_KEY in script/.env or script/config/.env."
+      "suggestion": ""
     },
     {
       "name": "openrouter_model_flash",
@@ -143,7 +175,7 @@
       "severity": "error",
       "category": "llm",
       "message": "openrouter.model_flash is configured",
-      "suggestion": "Set openrouter.model_flash in config.yaml."
+      "suggestion": ""
     },
     {
       "name": "openrouter_model_pro",
@@ -151,7 +183,7 @@
       "severity": "error",
       "category": "llm",
       "message": "openrouter.model_pro is configured",
-      "suggestion": "Set openrouter.model_pro in config.yaml."
+      "suggestion": ""
     },
     {
       "name": "openrouter_model_screening_pro",
@@ -159,7 +191,15 @@
       "severity": "error",
       "category": "llm",
       "message": "openrouter.model_screening_pro is configured",
-      "suggestion": "Set openrouter.model_screening_pro in config.yaml."
+      "suggestion": ""
+    },
+    {
+      "name": "openrouter_model_learning_resources",
+      "ok": true,
+      "severity": "error",
+      "category": "llm",
+      "message": "openrouter.model_learning_resources is configured",
+      "suggestion": ""
     },
     {
       "name": "openrouter_model_podcast",
@@ -167,7 +207,7 @@
       "severity": "error",
       "category": "llm",
       "message": "openrouter.model_podcast is configured",
-      "suggestion": "Set openrouter.model_podcast in config.yaml."
+      "suggestion": ""
     },
     {
       "name": "openrouter_model_vision",
@@ -175,47 +215,7 @@
       "severity": "error",
       "category": "llm",
       "message": "openrouter.model_vision is configured",
-      "suggestion": "Set openrouter.model_vision in config.yaml."
-    },
-    {
-      "name": "openrouter_model_flash_fallbacks",
-      "ok": true,
-      "severity": "warning",
-      "category": "llm",
-      "message": "openrouter.model_flash_fallbacks is a list",
-      "suggestion": "Make openrouter.model_flash_fallbacks a YAML list of model IDs."
-    },
-    {
-      "name": "openrouter_model_screening_pro_fallbacks",
-      "ok": true,
-      "severity": "warning",
-      "category": "llm",
-      "message": "openrouter.model_screening_pro_fallbacks is a list",
-      "suggestion": "Make openrouter.model_screening_pro_fallbacks a YAML list of model IDs."
-    },
-    {
-      "name": "openrouter_model_pro_fallbacks",
-      "ok": true,
-      "severity": "warning",
-      "category": "llm",
-      "message": "openrouter.model_pro_fallbacks is a list",
-      "suggestion": "Make openrouter.model_pro_fallbacks a YAML list of model IDs."
-    },
-    {
-      "name": "openrouter_model_podcast_fallbacks",
-      "ok": true,
-      "severity": "warning",
-      "category": "llm",
-      "message": "openrouter.model_podcast_fallbacks is a list",
-      "suggestion": "Make openrouter.model_podcast_fallbacks a YAML list of model IDs."
-    },
-    {
-      "name": "openrouter_model_vision_fallbacks",
-      "ok": true,
-      "severity": "warning",
-      "category": "llm",
-      "message": "openrouter.model_vision_fallbacks is a list",
-      "suggestion": "Make openrouter.model_vision_fallbacks a YAML list of model IDs."
+      "suggestion": ""
     },
     {
       "name": "openrouter_live_probe",
@@ -226,5 +226,5 @@
       "suggestion": "Run `paperbrain doctor llm --provider openrouter --live` for a low-cost live probe."
     }
   ],
-  "written_at": "2026-06-04T13:08:45"
+  "written_at": "2026-07-23T15:31:10"
 }

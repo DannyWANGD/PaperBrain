@@ -34,7 +34,7 @@
           "ok": true,
           "severity": "error",
           "category": "arxiv",
-          "message": "3 arXiv endpoint(s) configured",
+          "message": "2 arXiv endpoint(s) configured",
           "suggestion": ""
         },
         {
@@ -128,14 +128,6 @@
           "suggestion": ""
         },
         {
-          "name": "arxiv_endpoint_3",
-          "ok": true,
-          "severity": "error",
-          "category": "arxiv",
-          "message": "arXiv endpoint is a valid URL: http://export.arxiv.org/api/query",
-          "suggestion": ""
-        },
-        {
           "name": "arxiv_abs_fallback",
           "ok": true,
           "severity": "info",
@@ -168,7 +160,7 @@
       "ok": true,
       "severity": "error",
       "category": "arxiv",
-      "message": "3 arXiv endpoint(s) configured",
+      "message": "2 arXiv endpoint(s) configured",
       "suggestion": ""
     },
     {
@@ -262,14 +254,6 @@
       "suggestion": ""
     },
     {
-      "name": "arxiv_endpoint_3",
-      "ok": true,
-      "severity": "error",
-      "category": "arxiv",
-      "message": "arXiv endpoint is a valid URL: http://export.arxiv.org/api/query",
-      "suggestion": ""
-    },
-    {
       "name": "arxiv_abs_fallback",
       "ok": true,
       "severity": "info",
@@ -294,5 +278,5 @@
       "suggestion": "Run `paperbrain doctor arxiv --live` to verify PDF download."
     }
   ],
-  "written_at": "2026-07-22T10:01:53"
+  "written_at": "2026-07-24T15:32:37"
 }

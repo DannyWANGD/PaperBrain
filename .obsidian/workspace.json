@@ -11,10 +11,14 @@
             "id": "a25df0088f207575",
             "type": "leaf",
             "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "关系图谱"
+              "type": "markdown",
+              "state": {
+                "file": "Research_Notes/Act2Answer.md",
+                "mode": "preview",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Act2Answer"
             }
           }
         ]
@@ -74,7 +78,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 386.50390243530273,
+    "width": 224.50390243530273,
     "collapsed": true
   },
   "right": {
@@ -181,16 +185,6 @@
             }
           },
           {
-            "id": "7fa81f2d42b667aa",
-            "type": "leaf",
-            "state": {
-              "type": "paperbrain-console-view",
-              "state": {},
-              "icon": "brain-circuit",
-              "title": "PaperBrain Console"
-            }
-          },
-          {
             "id": "8a28e72fb46edf6c",
             "type": "leaf",
             "state": {
@@ -199,16 +193,28 @@
               "icon": "bot",
               "title": "Claudian"
             }
+          },
+          {
+            "id": "33383981703abb5d",
+            "type": "leaf",
+            "state": {
+              "type": "paperbrain-console-view",
+              "state": {},
+              "icon": "brain-circuit",
+              "title": "PaperBrain console"
+            }
           }
         ],
-        "currentTab": 7
+        "currentTab": 8
       }
     ],
     "direction": "horizontal",
-    "width": 669.5
+    "width": 804.5,
+    "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {
+      "paperbrain:PaperBrain console": false,
       "switcher:打开快速切换": false,
       "graph:查看关系图谱": false,
       "canvas:新建白板": false,
@@ -225,25 +231,34 @@
       "smart-connections:Smart Connections: Open random connection": false,
       "obsidian42-brat:BRAT": false,
       "copilot:Open Copilot Chat": false,
-      "paperbrain:PaperBrain Console": false,
       "realclaudian:Open Claudian": false
     }
   },
-  "active": "7fa81f2d42b667aa",
+  "active": "a25df0088f207575",
   "lastOpenFiles": [
-    "Podcasts/Appleπ Benchmarking Thinking with Video Towards La_Podcast.mp3",
-    "Daily_Papers/2026-07-21-PaperDigest.md",
+    "Daily_Papers/2026-06-17-PaperDigest.md",
     "Research_Notes/Appleπ.md",
-    "PDFs/Appleπ Benchmarking Thinking with Video Towards LawGrounded Physical Intelligence.pdf",
-    "Cache/pdfs/2607.17423.pdf",
-    "Cache/temp_pdfs/TimeLens2 Generalist Video Temporal Grounding with Multimodal LLMs.pdf",
-    "Cache/pdfs/2607.18171.pdf",
-    "Cache/temp_pdfs/FlashRT Agent Harness for Guiding Agents to Deploy RealTime Multimodal Applications.pdf",
-    "Cache/pdfs/2607.18110.pdf",
-    "Cache/temp_pdfs/LLMasaCoach Experiential Learning for NonVerifiable Tasks.pdf",
-    "Cache/pdfs/2607.16900.pdf",
-    "Cache/temp_pdfs/Environmentfree Synthetic Data Generation for APICalling Agents.pdf",
-    "Cache/pdfs/2607.16401.pdf",
+    "Daily_Papers/2026-07-21-PaperDigest.md",
+    "obsidian-plugin/paperbrain/README.md",
+    "obsidian-plugin/paperbrain/README_EN.md",
+    "obsidian-plugin/paperbrain/manual-installer-e2e.js",
+    "obsidian-plugin/paperbrain/manual-miniforge-e2e.ps1",
+    "dist/paperbrain-0.3.3-py3-none-any.whl",
+    "Cache/paperbrain_pipeline.lock.json",
+    "obsidian-plugin/paperbrain/tests/backend-installer.test.js",
+    "obsidian-plugin/paperbrain/src/miniforge-release.js",
+    "obsidian-plugin/paperbrain/src/backend-installer.js",
+    "obsidian-plugin/paperbrain/src/backend-release.js",
+    "dist/paperbrain-0.3.1-py3-none-any.whl",
+    "paperbrain-0.3.1/setup.cfg",
+    "paperbrain-0.3.1/README.md",
+    "obsidian-plugin/paperbrain/docs/COMPANION_PLUGINS.md",
+    "obsidian-plugin/paperbrain/node_modules/@esbuild/win32-x64/README.md",
+    "灵巧手专项/new_start/5_高斯热传播物理扩散-核心理论与自我审查.md",
+    "obsidian-plugin/paperbrain/SECURITY.md",
+    "obsidian-plugin/paperbrain/CONTRIBUTING.md",
+    "obsidian-plugin/paperbrain/CHANGELOG.md",
+    "Run_Records/2026-07-21/screening_report.md",
     "Run_Records/2026-07-21/log_summary.md",
     "Research_Notes/CPO.md",
     "灵巧手专项/灵巧手物理约束注入Diffusion论文清单.md",
@@ -251,24 +266,14 @@
     "Research_Notes/Act2Answer.md",
     "Run_Records/2017-05-30/screening_report.md",
     "Run_Records/2017-05-30/log_summary.md",
-    "Daily_Papers/2026-06-17-PaperDigest.md",
     "Research_Notes/EmbodiedR15.md",
     "Research_Notes/RynnBrain.md",
     "Daily_Papers/2026-06-11-PaperDigest.md",
     "Daily_Papers/2026-06-12-PaperDigest.md",
     "灵巧手专项/Diffusion安全抓取创新构想/05-接触规范场：低功耗高精度抓取的可重构力封闭理论.md",
     "Run_Records/2026-06-22/log_summary.md",
-    "灵巧手专项/C3-Diffuser算法创新点与可行性验证.md",
-    "灵巧手专项/ABCD物理约束注入Diffusion数学推导.md",
-    "灵巧手专项/DexGraspNet 1.md",
-    "灵巧手专项/SRG 1.md",
-    "灵巧手专项/SRG 约束信息融入机制详解.md",
-    "Research_Notes/OneCanvas.md",
     "Assets/OneCanvas 3D Scene Understanding via Panoramic Reprojection_arch.png",
     "Assets/Does VLA Even Know the Basics Measuring Commonsense and World Knowledge Retention in VisionLanguageA_arch.png",
-    "Run_Records/2026-06-17/screening_report.md",
-    "Run_Records/2026-06-17/log_summary.md",
-    "Research_Notes/GNN Predict and Search for MILP.md",
     "Assets/A GNNGuided PredictandSearch Framework for MixedInteger Linear Programming_arch.png",
     "Assets/DexGraspNet A LargeScale Robotic Dexterous Grasp Dataset for General Objects Based on Simulation_arch.png",
     "Assets/Diffusion Policy Visuomotor Policy Learning via Action Diffusion_arch.png",

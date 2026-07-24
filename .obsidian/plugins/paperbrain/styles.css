@@ -5,17 +5,20 @@
   --pb-border: var(--background-modifier-border);
   --pb-text: var(--text-normal);
   --pb-muted: var(--text-muted);
-  --pb-primary: #0284c7;
-  --pb-primary-soft: rgba(2, 132, 199, 0.12);
-  --pb-success: #2f9e44;
-  --pb-warning: #d97706;
-  --pb-danger: #dc2626;
+  --pb-primary: var(--interactive-accent);
+  --pb-primary-soft: var(--background-modifier-hover);
+  --pb-primary-text: var(--text-on-accent);
+  --pb-success: var(--text-success, var(--text-normal));
+  --pb-warning: var(--text-warning, var(--text-normal));
+  --pb-danger: var(--text-error, var(--text-normal));
   display: grid;
   grid-template-rows: auto auto 1fr;
   height: 100%;
   min-height: 0;
   background: var(--pb-bg);
   color: var(--pb-text);
+  container-type: inline-size;
+  container-name: paperbrain;
 }
 
 .paperbrain-console * {
@@ -76,7 +79,7 @@
 
 .paperbrain-tabs button.is-active {
   background: var(--pb-primary) !important;
-  color: white !important;
+  color: var(--pb-primary-text) !important;
 }
 
 .paperbrain-shell {
@@ -106,7 +109,6 @@
   font-size: 12px;
   font-weight: 700;
   line-height: 16px;
-  text-transform: uppercase;
   color: var(--pb-muted);
 }
 
@@ -160,7 +162,7 @@
 
 .paperbrain-icon-toggle.is-active {
   background: var(--pb-primary) !important;
-  color: white !important;
+  color: var(--pb-primary-text) !important;
 }
 
 .paperbrain-field input,
@@ -195,7 +197,15 @@
 
 .paperbrain-primary {
   background: var(--pb-primary) !important;
-  color: white !important;
+  color: var(--pb-primary-text) !important;
+}
+
+.paperbrain-console button:focus-visible,
+.paperbrain-console input:focus-visible,
+.paperbrain-console select:focus-visible,
+.paperbrain-settings-advanced summary:focus-visible {
+  outline: 2px solid var(--interactive-accent);
+  outline-offset: 2px;
 }
 
 .paperbrain-danger {
@@ -236,7 +246,7 @@
 
 .paperbrain-step span {
   color: var(--pb-muted);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .paperbrain-step-state {
@@ -354,8 +364,8 @@
   display: block;
   overflow: hidden;
   color: var(--pb-muted);
-  font-size: 11px;
-  line-height: 15px;
+  font-size: 12px;
+  line-height: 16px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -398,8 +408,8 @@
   display: block;
   overflow: hidden;
   color: var(--pb-muted);
-  font-size: 10px;
-  line-height: 13px;
+  font-size: 12px;
+  line-height: 16px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -459,7 +469,7 @@
 
 .paperbrain-quality-bar span {
   color: var(--pb-muted);
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .paperbrain-quality-track {
@@ -482,16 +492,16 @@
   border: 1px solid var(--pb-border);
   border-radius: 999px;
   color: var(--pb-muted);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .paperbrain-badge.is-good {
-  border-color: rgba(47, 158, 68, 0.35);
+  border-color: var(--pb-success);
   color: var(--pb-success);
 }
 
 .paperbrain-badge.is-warn {
-  border-color: rgba(217, 119, 6, 0.35);
+  border-color: var(--pb-warning);
   color: var(--pb-warning);
 }
 
@@ -539,7 +549,7 @@
 .paperbrain-review-item span {
   display: block;
   color: var(--pb-muted);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .paperbrain-review-item {
@@ -559,7 +569,7 @@
   background: var(--pb-panel);
   color: var(--pb-muted);
   font-family: var(--font-monospace);
-  font-size: 11px;
+  font-size: 12px;
   white-space: pre-wrap;
 }
 
@@ -584,6 +594,143 @@
   font-size: 12px;
 }
 
+.paperbrain-paper-cards {
+  display: none;
+  gap: 8px;
+}
+
+.paperbrain-paper-card {
+  display: grid;
+  gap: 8px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--pb-border);
+}
+
+.paperbrain-paper-card > strong {
+  overflow-wrap: anywhere;
+  line-height: 18px;
+}
+
+.paperbrain-paper-facts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.paperbrain-paper-facts div {
+  min-width: 0;
+}
+
+.paperbrain-paper-facts span,
+.paperbrain-paper-facts b {
+  display: block;
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 16px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.paperbrain-paper-facts span {
+  color: var(--pb-muted);
+}
+
+.paperbrain-setup > p {
+  margin: 0 0 12px;
+}
+
+.paperbrain-setup-step {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--pb-border);
+}
+
+.paperbrain-setup-step > strong {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--pb-border);
+  border-radius: 50%;
+}
+
+.paperbrain-setup-step b,
+.paperbrain-setup-step span {
+  display: block;
+  line-height: 18px;
+}
+
+.paperbrain-setup-step span,
+.paperbrain-setup-errors {
+  color: var(--pb-muted);
+  font-size: 12px;
+}
+
+.paperbrain-install-status {
+  display: grid;
+  gap: var(--size-4-2);
+  margin-top: var(--size-4-3);
+  padding-top: var(--size-4-3);
+  border-top: 1px solid var(--background-modifier-border);
+}
+
+.paperbrain-install-status pre {
+  max-height: 400px;
+  margin: 0;
+  padding: var(--size-4-2);
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: var(--text-muted);
+  background: var(--background-secondary);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-s);
+  font-size: var(--font-ui-small);
+}
+
+.paperbrain-manual-install-field {
+  display: grid;
+  gap: var(--size-4-1);
+  margin: var(--size-4-3) 0;
+}
+
+.paperbrain-manual-install-field label {
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+}
+
+.paperbrain-manual-install-field select {
+  width: 100%;
+}
+
+.paperbrain-manual-install-command {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 180px;
+  resize: vertical;
+  font-family: var(--font-monospace);
+  font-size: var(--font-ui-smaller);
+  white-space: pre;
+  overflow: auto;
+}
+
+.paperbrain-setup-errors {
+  padding: 10px 0;
+}
+
+.paperbrain-settings-advanced {
+  margin-top: 18px;
+}
+
+.paperbrain-settings-advanced > summary {
+  padding: 8px 0;
+  cursor: pointer;
+  font-weight: var(--font-semibold);
+}
+
 @keyframes paperbrain-pulse {
   0% {
     transform: scale(1);
@@ -601,7 +748,7 @@
   }
 }
 
-@media (max-width: 960px) {
+@container paperbrain (max-width: 960px) {
   .paperbrain-shell {
     grid-template-columns: 1fr;
   }
@@ -639,7 +786,7 @@
   }
 
   .paperbrain-table {
-    font-size: 11px;
+    font-size: 12px;
   }
 
   .paperbrain-table th,
@@ -648,39 +795,55 @@
   }
 }
 
-@media (max-width: 520px) {
-  .paperbrain-section {
-    overflow-x: auto;
-  }
-
+@container paperbrain (max-width: 760px) {
   .paperbrain-tabs {
-    min-width: 320px;
+    padding: 7px 8px;
   }
 
   .paperbrain-timeline {
-    min-width: 430px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .paperbrain-status-metrics,
   .paperbrain-queue-summary {
-    min-width: 430px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .paperbrain-brief-metrics {
-    min-width: 260px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .paperbrain-table {
-    min-width: 760px;
+    display: none;
+  }
+
+  .paperbrain-paper-cards {
+    display: grid;
+  }
+
+  .paperbrain-topbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .paperbrain-run-id {
+    overflow-wrap: anywhere;
   }
 
   .paperbrain-history-item,
   .paperbrain-brief-item,
   .paperbrain-retry-item {
-    min-width: 320px;
+    grid-template-columns: minmax(0, 1fr);
   }
+}
 
-  .paperbrain-inline-actions {
-    white-space: nowrap;
+@media (prefers-reduced-motion: reduce) {
+  .paperbrain-console *,
+  .paperbrain-console *::before,
+  .paperbrain-console *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

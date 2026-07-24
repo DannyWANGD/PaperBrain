@@ -1,0 +1,20 @@
+{
+  "paperbrainVersion": "0.5.0",
+  "required": [],
+  "testedOptional": [
+    { "id": "obsidian42-brat", "version": "2.0.2", "role": "release-installation" },
+    { "id": "dataview", "version": "0.5.68", "role": "research-queries" },
+    { "id": "obsidian-audio-player", "version": "0.1.1", "role": "podcast-playback" },
+    { "id": "floating-toc", "version": "2.7.1", "role": "long-note-navigation" },
+    { "id": "highlightr-plugin", "version": "1.2.2", "role": "manual-annotation" },
+    { "id": "obsidian-style-settings", "version": "1.0.9", "role": "theme-settings" },
+    { "id": "immersive-translate", "version": "0.0.2", "role": "note-translation" },
+    { "id": "smart-connections", "version": "4.1.8", "role": "semantic-exploration" },
+    { "id": "copilot", "version": "3.2.3", "role": "note-question-answering" },
+    { "id": "realclaudian", "version": "2.0.24", "role": "vault-development" }
+  ],
+  "installedOptional": [
+    { "id": "aqu-translay-translator", "version": "0.8.4", "role": "interface-translation" },
+    { "id": "components", "version": "3.1.260325", "role": "reusable-components" }
+  ]
+}

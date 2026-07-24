@@ -211,6 +211,14 @@
           "suggestion": ""
         },
         {
+          "name": "openrouter_model_learning_resources",
+          "ok": true,
+          "severity": "error",
+          "category": "config",
+          "message": "openrouter.model_learning_resources is configured",
+          "suggestion": ""
+        },
+        {
           "name": "openrouter_model_podcast",
           "ok": true,
           "severity": "error",
@@ -224,46 +232,6 @@
           "severity": "error",
           "category": "config",
           "message": "openrouter.model_vision is configured",
-          "suggestion": ""
-        },
-        {
-          "name": "openrouter_model_flash_fallbacks",
-          "ok": true,
-          "severity": "warning",
-          "category": "config",
-          "message": "openrouter.model_flash_fallbacks is a list",
-          "suggestion": ""
-        },
-        {
-          "name": "openrouter_model_screening_pro_fallbacks",
-          "ok": true,
-          "severity": "warning",
-          "category": "config",
-          "message": "openrouter.model_screening_pro_fallbacks is a list",
-          "suggestion": ""
-        },
-        {
-          "name": "openrouter_model_pro_fallbacks",
-          "ok": true,
-          "severity": "warning",
-          "category": "config",
-          "message": "openrouter.model_pro_fallbacks is a list",
-          "suggestion": ""
-        },
-        {
-          "name": "openrouter_model_podcast_fallbacks",
-          "ok": true,
-          "severity": "warning",
-          "category": "config",
-          "message": "openrouter.model_podcast_fallbacks is a list",
-          "suggestion": ""
-        },
-        {
-          "name": "openrouter_model_vision_fallbacks",
-          "ok": true,
-          "severity": "warning",
-          "category": "config",
-          "message": "openrouter.model_vision_fallbacks is a list",
           "suggestion": ""
         }
       ]
@@ -452,6 +420,14 @@
       "suggestion": ""
     },
     {
+      "name": "openrouter_model_learning_resources",
+      "ok": true,
+      "severity": "error",
+      "category": "config",
+      "message": "openrouter.model_learning_resources is configured",
+      "suggestion": ""
+    },
+    {
       "name": "openrouter_model_podcast",
       "ok": true,
       "severity": "error",
@@ -466,47 +442,7 @@
       "category": "config",
       "message": "openrouter.model_vision is configured",
       "suggestion": ""
-    },
-    {
-      "name": "openrouter_model_flash_fallbacks",
-      "ok": true,
-      "severity": "warning",
-      "category": "config",
-      "message": "openrouter.model_flash_fallbacks is a list",
-      "suggestion": ""
-    },
-    {
-      "name": "openrouter_model_screening_pro_fallbacks",
-      "ok": true,
-      "severity": "warning",
-      "category": "config",
-      "message": "openrouter.model_screening_pro_fallbacks is a list",
-      "suggestion": ""
-    },
-    {
-      "name": "openrouter_model_pro_fallbacks",
-      "ok": true,
-      "severity": "warning",
-      "category": "config",
-      "message": "openrouter.model_pro_fallbacks is a list",
-      "suggestion": ""
-    },
-    {
-      "name": "openrouter_model_podcast_fallbacks",
-      "ok": true,
-      "severity": "warning",
-      "category": "config",
-      "message": "openrouter.model_podcast_fallbacks is a list",
-      "suggestion": ""
-    },
-    {
-      "name": "openrouter_model_vision_fallbacks",
-      "ok": true,
-      "severity": "warning",
-      "category": "config",
-      "message": "openrouter.model_vision_fallbacks is a list",
-      "suggestion": ""
     }
   ],
-  "written_at": "2026-07-22T10:01:53"
+  "written_at": "2026-07-24T15:32:37"
 }

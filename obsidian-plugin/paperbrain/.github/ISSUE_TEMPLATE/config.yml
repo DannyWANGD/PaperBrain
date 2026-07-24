@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security report
+    url: https://github.com/DannyWANGD/obsidian-paperbrain/security/advisories/new
+    about: Report vulnerabilities privately. Do not open a public security issue.
+  - name: Python backend issues
+    url: https://github.com/DannyWANGD/Cutting-edge_Paper_Reading/issues
+    about: Report fetching, model, PDF, and note-generation issues to the backend project.

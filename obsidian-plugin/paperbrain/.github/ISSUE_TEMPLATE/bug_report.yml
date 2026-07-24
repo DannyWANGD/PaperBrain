@@ -1,0 +1,47 @@
+name: Bug report
+description: Report reproducible behavior in the Obsidian plugin.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: checkboxes
+    attributes:
+      label: Data safety
+      options:
+        - label: I removed API keys, private paper content, vault data, and personal paths.
+          required: true
+        - label: This report does not describe a security vulnerability.
+          required: true
+  - type: input
+    attributes:
+      label: Plugin version
+      placeholder: 0.2.0
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Obsidian and operating system versions
+      placeholder: Obsidian 1.x, Windows 11 / macOS 15 / Ubuntu 24.04
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Backend version and mode
+      placeholder: PaperBrain 0.3.0, installed command or local checkout
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Reproduction steps
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Actual behavior and redacted logs
+    validations:
+      required: true
