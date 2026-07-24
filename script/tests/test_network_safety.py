@@ -9,11 +9,14 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import main as pipeline  # noqa: E402
 from src.network_safety import (  # noqa: E402
+    TRUSTED_ARXIV_HOSTS,
     UnsafeUrlError,
     _PinnedHTTPAdapter,
     _PinnedHTTPConnection,
     _resolve_public_target,
+    configured_http_proxy,
     request_public_url,
+    request_trusted_https_url,
     validate_public_http_url,
 )
 
@@ -274,6 +277,67 @@ class DnsPinnedTransportTest(unittest.TestCase):
                 )
 
 
+class TrustedProxyTransportTest(unittest.TestCase):
+    class FakeSession:
+        def __init__(self, responses):
+            self.responses = iter(responses)
+            self.calls = []
+            self.closed = False
+
+        def request(self, method, url, **kwargs):
+            self.calls.append((method, url, kwargs))
+            return next(self.responses)
+
+        def close(self):
+            self.closed = True
+
+    def test_trusted_arxiv_redirect_stays_on_allowlist(self):
+        first = FakeResponse(status_code=302, headers={"Location": "https://arxiv.org/pdf/2605.25802.pdf"})
+        final = FakeResponse(status_code=200)
+        session = self.FakeSession([first, final])
+
+        with patch("src.network_safety.requests.Session", return_value=session):
+            response = request_trusted_https_url(
+                "GET",
+                "https://export.arxiv.org/pdf/2605.25802.pdf",
+                allowed_hosts=TRUSTED_ARXIV_HOSTS,
+            )
+
+        self.assertEqual([call[1] for call in session.calls], [
+            "https://export.arxiv.org/pdf/2605.25802.pdf",
+            "https://arxiv.org/pdf/2605.25802.pdf",
+        ])
+        self.assertTrue(first.closed)
+        self.assertFalse(session.closed)
+        response.close()
+        self.assertTrue(session.closed)
+
+    def test_trusted_arxiv_redirect_rejects_other_hosts(self):
+        first = FakeResponse(status_code=302, headers={"Location": "https://example.com/file.pdf"})
+        session = self.FakeSession([first])
+
+        with patch("src.network_safety.requests.Session", return_value=session), \
+             self.assertRaises(UnsafeUrlError):
+            request_trusted_https_url(
+                "GET",
+                "https://arxiv.org/pdf/2605.25802.pdf",
+                allowed_hosts=TRUSTED_ARXIV_HOSTS,
+            )
+
+        self.assertEqual(len(session.calls), 1)
+        self.assertTrue(first.closed)
+        self.assertTrue(session.closed)
+
+    def test_edge_proxy_selection_prefers_https_and_ignores_socks(self):
+        environment = {
+            "HTTP_PROXY": "http://http-proxy.test:8080",
+            "HTTPS_PROXY": "http://https-proxy.test:8081",
+            "ALL_PROXY": "socks5://socks-proxy.test:1080",
+        }
+        self.assertEqual(configured_http_proxy(environment), "http://https-proxy.test:8081")
+        self.assertIsNone(configured_http_proxy({"HTTPS_PROXY": "socks5://proxy.test:1080"}))
+
+
 class PdfDownloadLimitTest(unittest.TestCase):
     def test_pdf_download_rejects_private_target_before_request(self):
         with tempfile.TemporaryDirectory() as tmp, patch("src.network_safety.requests.Session") as session:
@@ -343,6 +407,25 @@ class PdfDownloadLimitTest(unittest.TestCase):
             self.assertFalse(Path(f"{result}.part").exists())
 
         self.assertTrue(response.closed)
+
+    def test_arxiv_pdf_uses_trusted_proxy_aware_transport(self):
+        payload = b"%PDF-1.4\n" + b"x" * 2048
+        response = FakeResponse(chunks=[payload])
+        with tempfile.TemporaryDirectory() as tmp, \
+             patch("main.PDF_CACHE_DIR", str(Path(tmp) / "cache")), \
+             patch("main.PDF_COOLDOWN_PATH", str(Path(tmp) / "cache" / "cooldown.json")), \
+             patch("main.request_trusted_https_url", return_value=response) as trusted, \
+             patch("main.request_public_url") as public:
+            result = pipeline.download_pdf(
+                "https://arxiv.org/pdf/2605.25802.pdf",
+                "Paper",
+                destination_folder=tmp,
+                retries=1,
+            )
+
+        self.assertTrue(Path(result).name.endswith(".pdf"))
+        trusted.assert_called_once()
+        public.assert_not_called()
 
 
 if __name__ == "__main__":

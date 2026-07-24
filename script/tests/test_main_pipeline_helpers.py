@@ -254,7 +254,7 @@ class MainPipelineHelperTest(unittest.TestCase):
         self.assertIsNone(scraper.target_date)
         self.assertEqual(state.data["errors"][0]["code"], "llm_coarse_screening_failed")
 
-    def test_source_retry_resolves_only_recovered_source_and_preserves_saved_papers(self):
+    def test_source_retry_clears_legacy_nonfatal_error_and_preserves_saved_papers(self):
         class ChangingSourceScraper(FakeScraper):
             def get_all_papers(self, target_date=None):
                 self.target_date = target_date
@@ -296,11 +296,12 @@ class MainPipelineHelperTest(unittest.TestCase):
             {paper["paper_id"] for paper in papers},
             {"arxiv:2606.00001", "arxiv:2606.00002"},
         )
-        self.assertEqual([(error["code"], error["paper_id"]) for error in state.data["errors"]], [
-            ("source_degraded", "source:huggingface")
-        ])
+        self.assertEqual(state.data["errors"], [])
+        warnings = [event for event in state.data["logs"] if event.get("status") == "warning"]
+        self.assertEqual(len(warnings), 1)
+        self.assertEqual(warnings[0]["paper_id"], "source:huggingface")
 
-    def test_degraded_source_with_zero_results_finalizes_as_failed(self):
+    def test_degraded_source_with_zero_results_finalizes_as_success(self):
         scraper = FakeScraper()
         scraper.last_source_report = {
             "sources": {
@@ -318,9 +319,27 @@ class MainPipelineHelperTest(unittest.TestCase):
         pipeline._record_source_report(state, scraper)
         summary = pipeline._finalize_run(state)
 
+        self.assertTrue(summary["ok"])
+        self.assertEqual(summary["stage"], "completed")
+        self.assertEqual(summary["errors"], [])
+        self.assertEqual(state.data["logs"][0]["status"], "warning")
+
+    def test_all_sources_failed_remains_fatal(self):
+        scraper = FakeScraper()
+        scraper.last_source_report = {
+            "sources": {
+                "arxiv": {"ok": False, "message": "arXiv unavailable", "retryable": True},
+                "huggingface": {"ok": False, "message": "HF unavailable", "retryable": True},
+            }
+        }
+        state = FakeRunState()
+
+        pipeline._record_source_report(state, scraper)
+        summary = pipeline._finalize_run(state)
+
         self.assertFalse(summary["ok"])
         self.assertEqual(summary["stage"], "failed")
-        self.assertEqual(summary["errors"][0]["code"], "source_degraded")
+        self.assertEqual(len(summary["errors"]), 2)
 
     def test_single_paper_none_never_reuses_other_saved_paper(self):
         class EmptySingleScraper(FakeScraper):

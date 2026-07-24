@@ -3,6 +3,7 @@ import asyncio
 import logging
 from openai import OpenAI
 import edge_tts
+from src.network_safety import configured_http_proxy
 from src.paths import PaperBrainPaths
 
 try:
@@ -169,7 +170,7 @@ class Podcaster:
         """Uses edge-tts to generate audio file."""
         # Voices: en-US-ChristopherNeural (Male), en-US-EricNeural (Male), en-US-AnaNeural (Female), en-US-AriaNeural (Female)
         voice = "en-US-ChristopherNeural" 
-        communicate = edge_tts.Communicate(text, voice)
+        communicate = edge_tts.Communicate(text, voice, proxy=configured_http_proxy())
         await communicate.save(output_path)
 
     def create_podcast(self, paper_title, analysis_content, rag_context="", duration_minutes=5):

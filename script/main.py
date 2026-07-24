@@ -7,7 +7,13 @@ from src.config_loader import load_config, load_prompts
 from src import scoring as scoring_utils
 from src import run_control
 from src.paper_identity import canonical_arxiv_id, identity_key, normalize_paper_identity
-from src.network_safety import UnsafeUrlError, request_public_url
+from src.network_safety import (
+    TRUSTED_ARXIV_HOSTS,
+    UnsafeUrlError,
+    is_trusted_https_url,
+    request_public_url,
+    request_trusted_https_url,
+)
 from src.paths import PaperBrainPaths
 from src.run_state import RunState
 from datetime import datetime, timedelta
@@ -280,12 +286,21 @@ def download_pdf(
             response = None
             part_path = ""
             try:
-                response = request_public_url(
+                request = (
+                    request_trusted_https_url
+                    if is_trusted_https_url(target_url, TRUSTED_ARXIV_HOSTS)
+                    else request_public_url
+                )
+                request_kwargs = {}
+                if request is request_trusted_https_url:
+                    request_kwargs["allowed_hosts"] = TRUSTED_ARXIV_HOSTS
+                response = request(
                     "GET",
                     target_url,
                     headers=headers,
                     stream=True,
                     timeout=60,
+                    **request_kwargs,
                 )
                 
                 if response.status_code == 200:
@@ -561,22 +576,44 @@ def _resolve_run_errors(run_state, **filters):
 def _record_source_report(run_state, scraper):
     report = getattr(scraper, "last_source_report", None)
     sources = report.get("sources", {}) if isinstance(report, dict) else {}
+    any_source_succeeded = any(
+        isinstance(status, dict) and status.get("ok")
+        for status in sources.values()
+    )
     for source, status in sources.items():
         if not isinstance(status, dict):
             continue
         source_id = f"source:{source}"
-        if status.get("ok"):
+        if status.get("ok") or any_source_succeeded:
             _resolve_run_errors(
                 run_state,
                 code="source_degraded",
                 stage="fetch",
                 paper_id=source_id,
             )
+        if status.get("ok"):
+            continue
+        if any_source_succeeded:
+            add_log_event = getattr(run_state, "add_log_event", None)
+            if callable(add_log_event):
+                add_log_event(
+                    event_type="source_degraded",
+                    status="warning",
+                    stage="fetch",
+                    paper_id=source_id,
+                    title=source,
+                    message=f"warning=source_degraded;source={source}",
+                    details={
+                        "code": status.get("code") or "source_degraded",
+                        "message": status.get("message") or f"Paper source {source} was unavailable.",
+                        "retryable": bool(status.get("retryable", True)),
+                    },
+                )
             continue
         run_state.add_error(
             status.get("code") or "source_degraded",
             status.get("message") or f"Paper source {source} was unavailable.",
-            suggestion="Retry the fetch so this source can be verified before treating the run as healthy.",
+            suggestion="Verify network access and retry; all configured paper sources were unavailable.",
             stage="fetch",
             paper_id=source_id,
             title=source,

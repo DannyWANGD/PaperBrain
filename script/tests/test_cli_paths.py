@@ -63,7 +63,7 @@ class CliAndPathsTest(unittest.TestCase):
         self.assertTrue(payload["ok"])
         self.assertEqual(payload["command"], "fetch")
         self.assertEqual(payload["stop_after"], "fetch")
-        self.assertEqual(payload["backend_version"], "0.3.5")
+        self.assertEqual(payload["backend_version"], "0.3.6")
         self.assertFalse(fake.calls[0]["generate_podcast"])
         self.assertFalse(fake.calls[0]["resume"])
         self.assertEqual(fake.calls[0]["provider"], "openrouter")
@@ -365,7 +365,7 @@ class CliAndPathsTest(unittest.TestCase):
         pyproject = (root / "pyproject.toml").read_text(encoding="utf-8")
 
         self.assertIn("arxiv>=2.1.0", requirements)
-        self.assertIn('version = "0.3.5"', pyproject)
+        self.assertIn('version = "0.3.6"', pyproject)
         self.assertIn('"urllib3>=1.26.18,<3"', pyproject)
 
     @staticmethod

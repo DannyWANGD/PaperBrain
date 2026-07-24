@@ -84,7 +84,7 @@ class PaperScraper:
             'hf_user_agent',
             self.arxiv_user_agent
         )
-        self.hf_connect_timeout = float(config.get('search', {}).get('hf_connect_timeout_seconds', 5))
+        self.hf_connect_timeout = float(config.get('search', {}).get('hf_connect_timeout_seconds', 15))
         self.hf_read_timeout = float(
             config.get('search', {}).get(
                 'hf_read_timeout_seconds',
@@ -93,11 +93,7 @@ class PaperScraper:
         )
         self.hf_max_attempts = int(config.get('search', {}).get('hf_max_attempts', 2))
         self.hf_min_interval = float(config.get('search', {}).get('hf_min_interval_seconds', 1.0))
-        hf_endpoints = config.get('search', {}).get('hf_daily_papers_endpoints') or [
-            "https://huggingface.co/api/daily_papers",
-            "https://hf.co/api/daily_papers",
-        ]
-        self.hf_daily_papers_endpoints = [str(endpoint).strip() for endpoint in hf_endpoints if str(endpoint).strip()]
+        self.hf_daily_papers_endpoints = ["https://huggingface.co/api/daily_papers"]
         self.hf_cache_enabled = bool(config.get('search', {}).get('hf_cache_enabled', True))
         self.hf_cache_ttl_hours = float(config.get('search', {}).get('hf_cache_ttl_hours', 72))
         self.hf_failure_cooldown_minutes = float(
@@ -653,7 +649,7 @@ class PaperScraper:
                     papers.append(normalize_paper_identity({
                         'title': title,
                         'abstract': summary,
-                        'url': f"https://huggingface.co/papers/{arxiv_id}",
+                        'url': f"https://arxiv.org/abs/{arxiv_id}",
                         'pdf_url': f"https://arxiv.org/pdf/{arxiv_id}.pdf",
                         'published': target_date, # Since we queried by date
                         'publication_date': _date_key(target_date),

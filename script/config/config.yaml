@@ -104,13 +104,12 @@ search:
   arxiv_cache_enabled: true
   arxiv_cache_ttl_hours: 72
   arxiv_rate_limit_cooldown_minutes: 60
-  hf_connect_timeout_seconds: 5
+  hf_connect_timeout_seconds: 15
   hf_read_timeout_seconds: 15
   hf_max_attempts: 2
   hf_min_interval_seconds: 1.0
   hf_daily_papers_endpoints:
     - "https://huggingface.co/api/daily_papers"
-    - "https://hf.co/api/daily_papers"
   hf_cache_enabled: true
   hf_cache_ttl_hours: 72
   hf_failure_cooldown_minutes: 20

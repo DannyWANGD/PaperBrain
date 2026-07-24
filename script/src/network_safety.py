@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import ipaddress
+import os
 import socket
 import sys
 from dataclasses import dataclass
@@ -16,6 +17,7 @@ from urllib3.exceptions import ConnectTimeoutError, NewConnectionError
 from urllib3.util.timeout import Timeout
 
 REDIRECT_STATUS_CODES = {301, 302, 303, 307, 308}
+TRUSTED_ARXIV_HOSTS = frozenset({"arxiv.org", "export.arxiv.org"})
 
 
 class UnsafeUrlError(ValueError):
@@ -141,6 +143,38 @@ def _resolve_public_target(url: str, resolver=None) -> _ValidatedTarget:
 def validate_public_http_url(url: str, resolver=None) -> str:
     """Validate that an HTTP(S) URL resolves exclusively to public IPs."""
     return _resolve_public_target(url, resolver=resolver).url
+
+
+def configured_http_proxy(environ=None):
+    """Return the configured HTTP(S) proxy without logging or exposing it."""
+    values = environ if environ is not None else os.environ
+    for key in ("HTTPS_PROXY", "https_proxy", "HTTP_PROXY", "http_proxy"):
+        value = str(values.get(key, "") or "").strip()
+        if not value:
+            continue
+        try:
+            parsed = urlsplit(value)
+        except ValueError:
+            continue
+        if parsed.scheme.lower() in {"http", "https"} and parsed.hostname:
+            return value
+    return None
+
+
+def is_trusted_https_url(url: str, allowed_hosts) -> bool:
+    """Return whether a URL is HTTPS and belongs to an exact trusted host."""
+    try:
+        parsed = urlsplit(str(url or "").strip())
+        hostname = _canonical_hostname(parsed.hostname)
+    except (TypeError, ValueError, UnsafeUrlError):
+        return False
+    normalized_hosts = {_canonical_hostname(host) for host in allowed_hosts}
+    return bool(
+        parsed.scheme.lower() == "https"
+        and parsed.username is None
+        and parsed.password is None
+        and hostname in normalized_hosts
+    )
 
 
 class _PinnedConnectionMixin:
@@ -351,4 +385,85 @@ def request_public_url(
             raise requests.TooManyRedirects(f"Exceeded {max_redirects} redirects")
         current_url = next_url
 
+    raise requests.TooManyRedirects(f"Exceeded {max_redirects} redirects")
+
+
+def request_trusted_https_url(
+    method: str,
+    url: str,
+    *,
+    allowed_hosts,
+    max_redirects: int = 5,
+    **kwargs,
+):
+    """Request a fixed trusted HTTPS service through the configured environment proxy.
+
+    Every redirect is checked against the same exact hostname allowlist. This helper is
+    intentionally separate from ``request_public_url`` so arbitrary URLs remain
+    DNS-pinned and proxy-free.
+    """
+    request_method = str(method or "").upper()
+    if request_method not in {"GET", "HEAD"}:
+        raise ValueError("request_trusted_https_url only supports GET and HEAD")
+    if not kwargs.get("verify", True):
+        raise ValueError("HTTPS certificate verification cannot be disabled")
+
+    normalized_hosts = frozenset(_canonical_hostname(host) for host in allowed_hosts)
+    if not normalized_hosts:
+        raise ValueError("allowed_hosts must not be empty")
+
+    current_url = str(url or "").strip()
+    seen = set()
+    max_redirects = max(0, int(max_redirects))
+    request_kwargs = dict(kwargs)
+    request_kwargs.pop("allow_redirects", None)
+    session = requests.Session()
+
+    def attach_session_close(response):
+        original_close = response.close
+        session_closed = False
+
+        def close_response_and_session():
+            nonlocal session_closed
+            try:
+                return original_close()
+            finally:
+                if not session_closed:
+                    session_closed = True
+                    session.close()
+
+        response.close = close_response_and_session
+        return response
+
+    try:
+        for redirect_count in range(max_redirects + 1):
+            if not is_trusted_https_url(current_url, normalized_hosts):
+                raise UnsafeUrlError("Trusted request URL must remain HTTPS on an allowed host")
+            if current_url in seen:
+                raise requests.TooManyRedirects("Redirect loop detected")
+            seen.add(current_url)
+
+            response = session.request(
+                request_method,
+                current_url,
+                allow_redirects=False,
+                **request_kwargs,
+            )
+            if response.status_code not in REDIRECT_STATUS_CODES:
+                return attach_session_close(response)
+
+            location = response.headers.get("Location") if getattr(response, "headers", None) else None
+            if not location:
+                return attach_session_close(response)
+
+            response.close()
+            next_url = urljoin(current_url, location)
+            if redirect_count >= max_redirects:
+                raise requests.TooManyRedirects(f"Exceeded {max_redirects} redirects")
+            current_url = next_url
+    except Exception:
+        session.close()
+        raise
+
+    session.close()
     raise requests.TooManyRedirects(f"Exceeded {max_redirects} redirects")

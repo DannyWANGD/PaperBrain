@@ -114,10 +114,11 @@ OPENROUTER_API_KEY=your_openrouter_api_key_here
 ```powershell
 paperbrain doctor config
 paperbrain doctor env
+paperbrain doctor network --live
 paperbrain doctor llm --provider openrouter
 ```
 
-These checks are local by default. Add `--live` to the LLM check only when you explicitly want a low-cost provider call.
+Diagnostics are local by default. `doctor network --live` checks Hugging Face and arXiv without invoking a model; the LLM live check is the only diagnostic that can incur provider usage.
 
 ### 4. Run The Pipeline
 
@@ -371,6 +372,7 @@ paperbrain check --strict-lint
 paperbrain doctor config
 paperbrain doctor env
 paperbrain doctor arxiv
+paperbrain doctor network
 paperbrain doctor llm --provider openrouter
 paperbrain doctor obsidian
 ```
@@ -379,6 +381,7 @@ Live probes are opt-in:
 
 ```bash
 paperbrain doctor arxiv --live
+paperbrain doctor network --live
 paperbrain doctor llm --provider openrouter --live
 ```
 

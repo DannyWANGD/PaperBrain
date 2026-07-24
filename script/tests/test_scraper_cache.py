@@ -109,7 +109,7 @@ class ScraperCacheTest(unittest.TestCase):
 
         self.assertEqual(raw, DEFAULT_FEED)
 
-    def test_hf_daily_papers_falls_back_to_second_endpoint(self):
+    def test_hf_daily_papers_uses_only_official_endpoint(self):
         self.config["search"]["hf_cache_enabled"] = False
         self.config["search"]["hf_max_attempts"] = 1
         self.config["search"]["hf_min_interval_seconds"] = 0
@@ -127,17 +127,18 @@ class ScraperCacheTest(unittest.TestCase):
             }
         }]
 
-        with patch("src.scraper.requests.get", side_effect=[
-            FakeResponse(status_code=503, text="down"),
-            FakeResponse(status_code=200, json_data=payload),
-        ]) as mocked_get:
+        with patch(
+            "src.scraper.requests.get",
+            return_value=FakeResponse(status_code=200, json_data=payload),
+        ) as mocked_get:
             papers = scraper.fetch_hf_daily_papers(date(2026, 6, 3))
 
         self.assertEqual(len(papers), 1)
         self.assertEqual(papers[0]["paper_id"], "arxiv:2605.25802")
-        self.assertEqual(mocked_get.call_count, 2)
-        self.assertEqual(mocked_get.call_args_list[0].args[0], "https://first.example/api/daily_papers")
-        self.assertEqual(mocked_get.call_args_list[1].args[0], "https://second.example/api/daily_papers")
+        self.assertEqual(papers[0]["url"], "https://arxiv.org/abs/2605.25802")
+        mocked_get.assert_called_once()
+        self.assertEqual(mocked_get.call_args.args[0], "https://huggingface.co/api/daily_papers")
+        self.assertEqual(mocked_get.call_args.kwargs["timeout"][0], 15)
 
     def test_hf_daily_papers_uses_cache_for_identical_date(self):
         self.config["search"]["hf_min_interval_seconds"] = 0

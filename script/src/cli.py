@@ -43,7 +43,7 @@ REQUIRED_DEPENDENCIES = {
     "dotenv": "python-dotenv",
 }
 
-BACKEND_VERSION_FALLBACK = "0.3.5"
+BACKEND_VERSION_FALLBACK = "0.3.6"
 
 
 def backend_version() -> str:
@@ -152,6 +152,15 @@ def build_parser() -> argparse.ArgumentParser:
     doctor_subparsers.add_parser("env", help="Check Python, dependencies, API keys, writable directories, and proxies.")
     arxiv_parser = doctor_subparsers.add_parser("arxiv", help="Check arXiv endpoints, cache, cooldown, and PDF settings.")
     arxiv_parser.add_argument("--live", action="store_true", help="Also perform a small live arXiv request.")
+    network_parser = doctor_subparsers.add_parser(
+        "network",
+        help="Check proxy state and trusted Hugging Face/arXiv connectivity.",
+    )
+    network_parser.add_argument(
+        "--live",
+        action="store_true",
+        help="Perform live Hugging Face and arXiv requests without invoking a model.",
+    )
     llm_parser = doctor_subparsers.add_parser("llm", help="Check provider keys, model names, and fallback chains.")
     llm_parser.add_argument("--provider", choices=["doubao", "openrouter"], help="Limit checks to one provider.")
     llm_parser.add_argument("--live", action="store_true", help="Also send a low-cost live LLM probe.")
@@ -588,6 +597,8 @@ def _run_doctor(args) -> dict:
         sections.append(_doctor_env(config, paths))
     if scope in ("all", "arxiv"):
         sections.append(_doctor_arxiv(config, paths, live=bool(getattr(args, "live", False))))
+    if scope in ("all", "network"):
+        sections.append(_doctor_network(config, live=bool(getattr(args, "live", False))))
     if scope in ("all", "llm"):
         sections.append(
             _doctor_llm(
@@ -724,7 +735,6 @@ def _doctor_env(config: dict, paths: PaperBrainPaths) -> dict:
     ):
         checks.append(_writable_dir_check(name, path, category="env"))
 
-    proxy_vars = {key: os.getenv(key, "") for key in ("HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY")}
     checks.append(
         _check(
             "proxy_environment",
@@ -733,10 +743,80 @@ def _doctor_env(config: dict, paths: PaperBrainPaths) -> dict:
             "proxy environment inspected",
             "",
             "env",
-            {key: bool(value) for key, value in proxy_vars.items()},
+            _proxy_environment_summary(),
         )
     )
     return _section("env", checks)
+
+
+def _proxy_environment_summary() -> dict:
+    keys = (
+        "HTTP_PROXY",
+        "HTTPS_PROXY",
+        "ALL_PROXY",
+        "NO_PROXY",
+        "http_proxy",
+        "https_proxy",
+        "all_proxy",
+        "no_proxy",
+    )
+    return {key: bool(os.getenv(key, "")) for key in keys}
+
+
+def _doctor_network(config: dict, live=False) -> dict:
+    checks = [
+        _check(
+            "network_proxy_environment",
+            True,
+            "info",
+            "proxy environment inspected without exposing values",
+            "",
+            "network",
+            _proxy_environment_summary(),
+        ),
+        _check(
+            "network_huggingface_endpoint",
+            True,
+            "info",
+            "Hugging Face uses the official huggingface.co endpoint",
+            "",
+            "network",
+            {"hostname": "huggingface.co", "connect_timeout_seconds": 15},
+        ),
+        _check(
+            "network_arxiv_hosts",
+            True,
+            "info",
+            "arXiv trusted requests are restricted to exact official hosts",
+            "",
+            "network",
+            {"hostnames": ["arxiv.org", "export.arxiv.org"]},
+        ),
+    ]
+    if live:
+        checks.extend((_live_huggingface_check(), _live_network_arxiv_check(config)))
+    else:
+        checks.extend(
+            (
+                _check(
+                    "huggingface_live_probe",
+                    True,
+                    "info",
+                    "live Hugging Face probe skipped",
+                    "Run `paperbrain doctor network --live` to test connectivity.",
+                    "network",
+                ),
+                _check(
+                    "network_arxiv_live_probe",
+                    True,
+                    "info",
+                    "live arXiv probe skipped",
+                    "Run `paperbrain doctor network --live` to test connectivity.",
+                    "network",
+                ),
+            )
+        )
+    return _section("network", checks)
 
 
 def _doctor_arxiv(config: dict, paths: PaperBrainPaths, live=False) -> dict:
@@ -1048,6 +1128,98 @@ def _cooldown_check(name: str, path: Path, category: str) -> dict:
         )
 
 
+def _live_huggingface_check() -> dict:
+    endpoint = "https://huggingface.co/api/daily_papers"
+    started = time.monotonic()
+    try:
+        import requests
+
+        target_date = (datetime.now().date() - timedelta(days=1)).isoformat()
+        response = requests.get(
+            endpoint,
+            params={"date": target_date},
+            headers={"User-Agent": "PaperBrain/1.0 network doctor"},
+            timeout=(15, 15),
+        )
+        payload = response.json() if response.status_code == 200 else None
+        if isinstance(payload, dict):
+            payload = next(
+                (payload[key] for key in ("papers", "daily_papers", "results") if key in payload),
+                None,
+            )
+        ok = response.status_code == 200 and isinstance(payload, list)
+        return _check(
+            "huggingface_live_probe",
+            ok,
+            "error",
+            f"live Hugging Face probe returned HTTP {response.status_code}",
+            "Check the selected proxy mode or retry when Hugging Face is available.",
+            "network",
+            {
+                "hostname": "huggingface.co",
+                "status_code": response.status_code,
+                "elapsed_ms": int((time.monotonic() - started) * 1000),
+            },
+        )
+    except Exception as exc:
+        return _check(
+            "huggingface_live_probe",
+            False,
+            "error",
+            "live Hugging Face probe completed",
+            "Check the selected proxy mode or retry when Hugging Face is available.",
+            "network",
+            {
+                "hostname": "huggingface.co",
+                "exception": exc.__class__.__name__,
+                "elapsed_ms": int((time.monotonic() - started) * 1000),
+            },
+        )
+
+
+def _live_network_arxiv_check(config: dict) -> dict:
+    endpoint = "https://export.arxiv.org/api/query"
+    started = time.monotonic()
+    try:
+        import requests
+
+        search = config.get("search", {})
+        response = requests.get(
+            endpoint,
+            params={"search_query": "id:2605.25802", "start": 0, "max_results": 1},
+            headers={"User-Agent": "PaperBrain/1.0 network doctor"},
+            timeout=(15, min(float(search.get("arxiv_timeout_seconds", 15) or 15), 45.0)),
+        )
+        ok = response.status_code == 200 and "<feed" in response.text[:1000].lower()
+        return _check(
+            "network_arxiv_live_probe",
+            ok,
+            "error",
+            f"live arXiv probe returned HTTP {response.status_code}",
+            "Check the selected proxy mode or retry when arXiv is available.",
+            "network",
+            {
+                "hostname": "export.arxiv.org",
+                "status_code": response.status_code,
+                "elapsed_ms": int((time.monotonic() - started) * 1000),
+            },
+        )
+    except Exception as exc:
+        return _check(
+            "network_arxiv_live_probe",
+            False,
+            "error",
+            "live arXiv probe completed",
+            "Check the selected proxy mode or retry when arXiv is available.",
+            "network",
+            {
+                "hostname": "export.arxiv.org",
+                "exception": exc.__class__.__name__,
+                "elapsed_ms": int((time.monotonic() - started) * 1000),
+            },
+        )
+
+
 def _live_arxiv_check(config: dict) -> dict:
     try:
         import requests
@@ -1079,17 +1251,19 @@ def _live_arxiv_check(config: dict) -> dict:
             "live arXiv probe completed",
             "Check network/proxy settings or retry without --live.",
             "arxiv",
-            {"exception": f"{exc.__class__.__name__}: {exc}"},
+            {"exception": exc.__class__.__name__},
         )
 
 
 def _live_arxiv_pdf_check() -> dict:
     url = "https://arxiv.org/pdf/2605.25802.pdf"
     try:
-        import requests
+        from src.network_safety import TRUSTED_ARXIV_HOSTS, request_trusted_https_url
 
-        response = requests.get(
+        response = request_trusted_https_url(
+            "GET",
             url,
+            allowed_hosts=TRUSTED_ARXIV_HOSTS,
             headers={"User-Agent": "PaperBrain/1.0 doctor", "Accept": "application/pdf"},
             stream=True,
             timeout=30,
@@ -1114,7 +1288,7 @@ def _live_arxiv_pdf_check() -> dict:
             "live arXiv PDF probe completed",
             "Check arXiv PDF reachability, rate limits, or retry without --live.",
             "arxiv",
-            {"url": url, "exception": f"{exc.__class__.__name__}: {exc}"},
+            {"url": url, "exception": exc.__class__.__name__},
         )
 
 
