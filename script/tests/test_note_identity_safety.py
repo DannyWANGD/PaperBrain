@@ -1,3 +1,4 @@
+import os
 import re
 import shutil
 import sys
@@ -151,7 +152,7 @@ class NoteIdentitySafetyTest(unittest.TestCase):
 
         path = Path(self.writer.write_detailed_note(paper, "New canonical supplement."))
 
-        self.assertEqual(path, existing)
+        self.assertTrue(os.path.samefile(path, existing))
         self.assertFalse((notes / "Generated Name.md").exists())
         text = existing.read_text(encoding="utf-8")
         self.assertIn("Keep this paragraph.", text)

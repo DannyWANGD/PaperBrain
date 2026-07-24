@@ -353,11 +353,11 @@ class CliAndPathsTest(unittest.TestCase):
                 vault,
                 {"obsidian": {"vault_path": "."}},
             )
-
-        self.assertEqual(paths.repo_root, Path(cwd).resolve())
-        self.assertEqual(paths.vault_path, Path(cwd).resolve())
-        self.assertTrue(paths.cache_dir.is_relative_to(Path(cwd).resolve()))
-        self.assertFalse(paths.cache_dir.is_relative_to(script_dir.resolve()))
+            canonical_cwd = Path(os.path.realpath(cwd))
+            self.assertTrue(os.path.samefile(paths.repo_root, cwd))
+            self.assertTrue(os.path.samefile(paths.vault_path, cwd))
+            self.assertTrue(Path(os.path.realpath(paths.cache_dir)).is_relative_to(canonical_cwd))
+            self.assertFalse(Path(os.path.realpath(paths.cache_dir)).is_relative_to(Path(os.path.realpath(script_dir))))
 
     def test_runtime_requirements_match_the_package_contract(self):
         root = Path(__file__).resolve().parents[2]
