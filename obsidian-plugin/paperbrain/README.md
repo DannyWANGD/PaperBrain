@@ -6,8 +6,8 @@ PaperBrain Console 是 [PaperBrain Python 流水线](https://github.com/DannyWAN
 的 Obsidian 桌面控制台，用于安装后端、启动或停止任务、查看运行状态，以及打开写入当前
 vault 的摘要、研究笔记、PDF、图像和音频。
 
-插件需要启动本地进程，因此仅支持 Obsidian 桌面版。插件 `0.5.0` 的安装器固定使用
-PaperBrain 后端 `0.3.6`。
+插件需要启动本地进程，因此仅支持 Obsidian 桌面版。插件 `0.5.1` 的初始安装器固定使用
+PaperBrain 后端 `0.3.6`；安装后可在设置中检查并更新两个组件的正式版。
 
 ## 快速开始
 
@@ -94,6 +94,9 @@ API Key 不会写入 Obsidian 的插件设置。**Validate setup** 会执行本�
 - **Network proxy**：默认继承启动 Obsidian 时的代理环境；也可填写无凭据、带端口的
   `http://` 或 `https://` 代理，或选择 Direct 清除代理。**Test connection** 会先测试
   插件下载器，检测到后端时再测试 Hugging Face 和 arXiv，不调用模型。
+- **Software updates**：一次检查 Console 和托管 wheel。Console 更新仅替换校验后的
+  `main.js`、`manifest.json`、`styles.css`，重启 Obsidian 后生效；后端通过 pip 更新同一
+  `wd` 环境并保留配置。Python 源码模式不会被覆盖。
 - **Default provider**：新任务默认使用的模型供应商。
 - **API key file**：随时打开本地 `.env` 文件；API Key 不写入 Obsidian 插件设置。
 - **Advanced**：源码后端、CLI、配置路径、vault、Podcast 和取消超时等高级选项。
@@ -113,7 +116,7 @@ API Key 不会写入 Obsidian 的插件设置。**Validate setup** 会执行本�
 
 | 插件 | 后端 | Obsidian |
 | --- | --- | --- |
-| 0.5.0 | 安装器固定 0.3.6；运行时接受 0.3.1 至小于 0.4.0 | 1.5.0 或更高版本，桌面版 |
+| 0.5.1 | 初始安装器固定 0.3.6；可更新兼容的 0.3.x wheel | 1.5.0 或更高版本，桌面版 |
 
 ## 故障排查
 

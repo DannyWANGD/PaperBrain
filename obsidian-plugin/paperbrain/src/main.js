@@ -1,4 +1,4 @@
-const { ItemView, Modal, Notice, Plugin, PluginSettingTab, Setting, normalizePath, setIcon } = require("obsidian");
+const { ItemView, Modal, Notice, Plugin, PluginSettingTab, Setting, normalizePath, requireApiVersion, setIcon } = require("obsidian");
 const childProcess = require("child_process");
 const fs = require("fs");
 const os = require("os");
@@ -12,7 +12,9 @@ const {
   detectBackendPath,
   detectVaultPath,
   detectWdPython,
+  isCompatibleBackendVersion,
   normalizeRuntimeSettings,
+  parsePayload,
   redactDiagnostics,
   resolveDependencyIndex,
   runConfirmationRequirements,
@@ -26,6 +28,7 @@ const { BackendInstaller } = require("./backend-installer");
 const { downloadHttpsBuffer } = require("./proxy-download");
 const { BACKEND_RELEASE } = require("./backend-release");
 const { MINIFORGE_RELEASE, resolveMiniforgeAsset } = require("./miniforge-release");
+const { UpdateManager, compareVersions, parseVersion } = require("./update-manager");
 const {
   MANUAL_PLATFORMS,
   buildManualInstallCommand,
@@ -35,6 +38,7 @@ const {
 } = require("./manual-install");
 
 const VIEW_TYPE = "paperbrain-console-view";
+const CONSOLE_VERSION = "0.5.1";
 
 const DEFAULT_SETTINGS = {
   settingsVersion: 6,
@@ -171,6 +175,18 @@ module.exports = class PaperBrainPlugin extends Plugin {
       spawn: childProcess.spawn,
       download: downloadHttpsBuffer,
     });
+    this.updateManager = new UpdateManager({
+      download: downloadHttpsBuffer,
+      pluginDir: __dirname,
+      supportsAppVersion: (version) => typeof requireApiVersion !== "function" || requireApiVersion(version),
+    });
+    this.softwareUpdates = {
+      checking: false,
+      checked: false,
+      console: null,
+      backend: null,
+      pendingConsoleVersion: "",
+    };
     const firstStart = !stored.settingsVersion;
     const migratedLegacyPath = Boolean(stored.repoPath && !stored.backendPath);
     const migratedSettings = stored.settingsVersion !== DEFAULT_SETTINGS.settingsVersion;
@@ -298,7 +314,6 @@ module.exports = class PaperBrainPlugin extends Plugin {
       }
       if (fs.existsSync(defaultConfigPath)) {
         this.settings.configPath = defaultConfigPath;
-        this.settings.installerManaged = true;
       }
     }
     if (condaPath) this.settings.condaPath = condaPath;
@@ -327,7 +342,221 @@ module.exports = class PaperBrainPlugin extends Plugin {
     return "";
   }
 
-  async installBackend() {
+  softwareUpdatesBusy() {
+    return Boolean(
+      this.softwareUpdates && (
+        this.softwareUpdates.checking
+        || (this.softwareUpdates.console && this.softwareUpdates.console.updating)
+        || (this.softwareUpdates.backend && this.softwareUpdates.backend.updating)
+      ),
+    ) || this.backendInstaller.snapshot().running || this.processManager.snapshot().running;
+  }
+
+  updateNetworkOptions() {
+    return {
+      proxyMode: this.settings.proxyMode,
+      proxyUrl: this.settings.proxyUrl,
+      env: buildManagedEnvironment(this.settings, process.env),
+    };
+  }
+
+  async detectInstalledBackendVersion() {
+    const invocation = buildInvocation(this.settings, ["doctor", "config"], { existsSync: fs.existsSync });
+    let version = "";
+    let source = "unknown";
+    try {
+      const result = await execFileResult(
+        invocation.executable,
+        invocation.args,
+        { ...buildSpawnOptions(this.settings, invocation), timeout: 15000 },
+      );
+      const payload = parsePayload(result.stdout);
+      if (payload && parseVersion(payload.backend_version)) {
+        version = payload.backend_version;
+        source = "runtime";
+      }
+    } catch (_) {
+      // A valid installer receipt is the constrained fallback when the CLI cannot start.
+    }
+    if (!version && parseVersion(this.settings.installedBackendVersion)) {
+      version = this.settings.installedBackendVersion;
+      source = "receipt";
+    }
+    return {
+      version,
+      source,
+      mode: invocation.mode,
+      managed: invocation.mode === "cli" && Boolean(this.settings.installerManaged),
+    };
+  }
+
+  async checkSoftwareUpdates() {
+    if (this.softwareUpdatesBusy()) {
+      new Notice("Wait for the active PaperBrain task before checking for updates.");
+      return false;
+    }
+    this.softwareUpdates.checking = true;
+    try {
+      await this.detectSetup();
+      const installedBackend = await this.detectInstalledBackendVersion();
+      const network = this.updateNetworkOptions();
+      const [consoleResult, backendResult] = await Promise.allSettled([
+        this.updateManager.checkConsole(network),
+        this.updateManager.checkBackend(BACKEND_RELEASE, network),
+      ]);
+      const currentConsole = this.softwareUpdates.pendingConsoleVersion
+        || (this.manifest && this.manifest.version)
+        || CONSOLE_VERSION;
+      const console = {
+        current: currentConsole,
+        latest: "",
+        available: false,
+        release: null,
+        error: "",
+        updating: false,
+        restartRequired: Boolean(this.softwareUpdates.pendingConsoleVersion),
+      };
+      if (consoleResult.status === "fulfilled") {
+        console.release = consoleResult.value;
+        console.latest = consoleResult.value.version;
+        const comparison = compareVersions(console.latest, console.current);
+        console.available = comparison > 0 && !console.restartRequired;
+        console.status = console.restartRequired
+          ? `Console ${console.current} is installed; restart Obsidian to load it.`
+          : comparison > 0
+            ? `Console ${console.latest} is available; installed ${console.current}.`
+            : comparison === 0
+              ? `Console ${console.current} is up to date.`
+              : `Console ${console.current} is newer than the published stable release ${console.latest}.`;
+      } else {
+        console.error = consoleResult.reason && consoleResult.reason.message
+          ? consoleResult.reason.message
+          : String(consoleResult.reason || "Console update check failed.");
+        console.status = `Console update check failed: ${console.error}`;
+      }
+
+      const backend = {
+        current: installedBackend.version,
+        currentSource: installedBackend.source,
+        mode: installedBackend.mode,
+        managed: installedBackend.managed,
+        latest: "",
+        available: false,
+        release: null,
+        error: "",
+        updating: false,
+      };
+      if (backendResult.status === "fulfilled") {
+        backend.release = backendResult.value;
+        backend.latest = backendResult.value.version;
+        if (!isCompatibleBackendVersion(backend.latest)) {
+          backend.status = `Backend ${backend.latest} requires a compatible Console update.`;
+        } else if (!backend.current) {
+          backend.status = `Backend version was not detected; latest stable is ${backend.latest}.`;
+        } else if (backend.mode === "python-script") {
+          backend.status = `Backend ${backend.current} uses source mode and is developer-managed.`;
+        } else if (!backend.managed) {
+          backend.status = `Backend ${backend.current} is not managed by the Console updater.`;
+        } else {
+          const comparison = compareVersions(backend.latest, backend.current);
+          backend.available = comparison > 0;
+          backend.status = comparison > 0
+            ? `Backend ${backend.latest} is available; installed ${backend.current}.`
+            : comparison === 0
+              ? `Backend ${backend.current} is up to date.`
+              : `Backend ${backend.current} is newer than the published stable release ${backend.latest}.`;
+        }
+      } else {
+        backend.error = backendResult.reason && backendResult.reason.message
+          ? backendResult.reason.message
+          : String(backendResult.reason || "Backend update check failed.");
+        backend.status = `Backend update check failed: ${backend.error}`;
+      }
+      this.softwareUpdates.console = console;
+      this.softwareUpdates.backend = backend;
+      this.softwareUpdates.checked = true;
+      const successes = [consoleResult, backendResult].filter((result) => result.status === "fulfilled").length;
+      new Notice(successes ? "PaperBrain update check completed." : "PaperBrain update check failed.", successes ? 5000 : 9000);
+      return successes > 0;
+    } catch (error) {
+      this.softwareUpdates.checked = true;
+      this.softwareUpdates.console = { status: `Update check failed: ${error.message}`, error: error.message };
+      this.softwareUpdates.backend = { status: `Update check failed: ${error.message}`, error: error.message };
+      new Notice(`PaperBrain update check failed: ${error.message}`, 9000);
+      return false;
+    } finally {
+      this.softwareUpdates.checking = false;
+    }
+  }
+
+  softwareUpdateDescription() {
+    if (!this.softwareUpdates || !this.softwareUpdates.checked) {
+      const currentConsole = (this.manifest && this.manifest.version) || CONSOLE_VERSION;
+      const backend = parseVersion(this.settings.installedBackendVersion)
+        ? this.settings.installedBackendVersion
+        : "not detected";
+      return `Console ${currentConsole}; backend ${backend}. Check the latest stable releases.`;
+    }
+    return [this.softwareUpdates.console, this.softwareUpdates.backend]
+      .map((item) => item && item.status)
+      .filter(Boolean)
+      .join(" ");
+  }
+
+  async updateConsole() {
+    const state = this.softwareUpdates && this.softwareUpdates.console;
+    if (this.softwareUpdatesBusy() || !state || !state.available || !state.release) return false;
+    state.updating = true;
+    try {
+      const result = await this.updateManager.installConsole(state.release, this.updateNetworkOptions());
+      this.softwareUpdates.pendingConsoleVersion = result.version;
+      Object.assign(state, {
+        current: result.version,
+        available: false,
+        updating: false,
+        restartRequired: true,
+        status: `Console ${result.version} is installed; restart Obsidian to load it.`,
+      });
+      new Notice(`PaperBrain Console ${result.version} is installed. Restart Obsidian to load it.`, 10000);
+      return true;
+    } catch (error) {
+      state.updating = false;
+      state.error = error.message;
+      state.status = `Console update failed: ${error.message}`;
+      new Notice(state.status, 10000);
+      return false;
+    }
+  }
+
+  async updateBackend() {
+    const state = this.softwareUpdates && this.softwareUpdates.backend;
+    if (this.softwareUpdatesBusy() || !state || !state.available || !state.release || !state.managed) return false;
+    state.updating = true;
+    try {
+      await this.activateView();
+      const updated = await this.installBackend({ release: state.release, skipConfirmation: true });
+      if (!updated) {
+        state.status = "Backend update failed. See the Console installation log.";
+        return false;
+      }
+      Object.assign(state, {
+        current: state.release.version,
+        latest: state.release.version,
+        available: false,
+        status: `Backend ${state.release.version} is up to date.`,
+      });
+      return true;
+    } catch (error) {
+      state.error = error.message;
+      state.status = `Backend update failed: ${error.message}`;
+      new Notice(state.status, 10000);
+      return false;
+    } finally {
+      state.updating = false;
+    }
+  }
+
+  async installBackend(options = {}) {
     if (this.processManager.snapshot().running) {
       new Notice("Stop the active PaperBrain run before installing the backend.");
       return false;
@@ -336,6 +565,7 @@ module.exports = class PaperBrainPlugin extends Plugin {
       new Notice("PaperBrain backend installation is already running.");
       return false;
     }
+    const release = options.release || BACKEND_RELEASE;
     const condaPath = await this.detectCondaExecutable();
     let dependencyIndex;
     let environment;
@@ -353,14 +583,14 @@ module.exports = class PaperBrainPlugin extends Plugin {
     }
     const configDir = path.join(os.homedir(), ".paperbrain", "config");
     const managedRuntimePath = path.join(os.homedir(), ".paperbrain", "runtime", "miniforge3");
-    const accepted = await confirmBackendInstall(this.app, {
+    const accepted = options.skipConfirmation || await confirmBackendInstall(this.app, {
       condaPath,
       configDir,
       managedRuntimePath,
       miniforgeRelease: MINIFORGE_RELEASE,
       miniforgeAsset,
       vaultPath: this.settings.vaultPath,
-      release: BACKEND_RELEASE,
+      release,
       dependencyIndex,
       environment,
       proxyMode: this.settings.proxyMode,
@@ -371,8 +601,11 @@ module.exports = class PaperBrainPlugin extends Plugin {
       condaExecutable: condaPath,
       configDir,
       vaultPath: this.settings.vaultPath,
-      release: BACKEND_RELEASE,
+      release,
       dependencyIndex,
+      environment,
+      proxyMode: this.settings.proxyMode,
+      proxyUrl: this.settings.proxyUrl,
       miniforge: {
         release: MINIFORGE_RELEASE,
         asset: miniforgeAsset,
@@ -396,7 +629,7 @@ module.exports = class PaperBrainPlugin extends Plugin {
       managedRuntimePath: result.managedRuntimePath,
     });
     await this.saveSettings();
-    new Notice("PaperBrain backend is ready. Add your provider key to .env, then validate setup.", 9000);
+    new Notice(`PaperBrain backend ${result.version} is ready.`, 9000);
     return true;
   }
 
@@ -1968,6 +2201,42 @@ class PaperBrainSettingTab extends PluginSettingTab {
           await this.plugin.validateSetup();
           this.display();
         }));
+    const updateState = this.plugin.softwareUpdates || {};
+    const updates = new Setting(containerEl)
+      .setName("Software updates")
+      .setDesc(this.plugin.softwareUpdateDescription())
+      .addButton((button) => button
+        .setCta()
+        .setButtonText(updateState.checking ? "Checking" : "Check for updates")
+        .setDisabled(this.plugin.softwareUpdatesBusy())
+        .onClick(async () => {
+          const checking = this.plugin.checkSoftwareUpdates();
+          this.display();
+          await checking;
+          this.display();
+        }));
+    if (updateState.console && updateState.console.available) {
+      updates.addButton((button) => button
+        .setButtonText(updateState.console.updating ? "Updating Console" : "Update Console")
+        .setDisabled(this.plugin.softwareUpdatesBusy())
+        .onClick(async () => {
+          const updating = this.plugin.updateConsole();
+          this.display();
+          await updating;
+          this.display();
+        }));
+    }
+    if (updateState.backend && updateState.backend.available) {
+      updates.addButton((button) => button
+        .setButtonText(updateState.backend.updating ? "Updating backend" : "Update backend")
+        .setDisabled(this.plugin.softwareUpdatesBusy())
+        .onClick(async () => {
+          const updating = this.plugin.updateBackend();
+          this.display();
+          await updating;
+          this.display();
+        }));
+    }
     new Setting(containerEl)
       .setName("Backend installation")
       .setDesc("Terminal installation is recommended when your shell supplies proxy or network settings. The existing in-app installer remains available.")
@@ -2339,6 +2608,21 @@ function execFileText(executable, args) {
       if (error) reject(error);
       else resolve(stdout || "");
     });
+  });
+}
+
+function execFileResult(executable, args, options = {}) {
+  return new Promise((resolve, reject) => {
+    try {
+      childProcess.execFile(
+        executable,
+        args,
+        { windowsHide: true, encoding: "utf8", maxBuffer: 1024 * 1024, ...options },
+        (error, stdout, stderr) => resolve({ error, stdout: stdout || "", stderr: stderr || "" }),
+      );
+    } catch (error) {
+      reject(error);
+    }
   });
 }
 

@@ -7,8 +7,9 @@ PaperBrain Console is the Obsidian desktop interface for the
 installs the backend, starts or stops runs, shows progress, and opens the
 digests, research notes, PDFs, figures, and audio written to the active vault.
 
-The plugin is desktop-only because it starts local processes. Plugin `0.5.0`
-installs the fixed PaperBrain backend release `0.3.6`.
+The plugin is desktop-only because it starts local processes. Plugin `0.5.1`
+initially installs PaperBrain backend `0.3.6`; its settings can then check and
+update both stable components.
 
 ## Quick Start
 
@@ -115,6 +116,11 @@ Important settings:
   an explicit port, or select Direct to clear proxies. **Test connection**
   checks the plugin downloader and, when available, the backend's Hugging Face
   and arXiv connections without calling a model.
+- **Software updates** checks the Console and managed wheel together. A Console
+  update replaces only verified `main.js`, `manifest.json`, and `styles.css`
+  files and takes effect after restarting Obsidian. A backend update uses pip in
+  the same `wd` environment and preserves configuration. Source mode is never
+  overwritten.
 - **Default provider** selects the provider used for new runs.
 - **API key file** always opens the local `.env` file; API keys are not stored
   in Obsidian plugin settings.
@@ -142,7 +148,7 @@ and terms.
 
 | Plugin | Backend | Obsidian |
 | --- | --- | --- |
-| 0.5.0 | Installer pins 0.3.6; runtime accepts 0.3.1 to <0.4.0 | 1.5.0 or later, desktop |
+| 0.5.1 | Initial installer pins 0.3.6; compatible 0.3.x wheels can be updated | 1.5.0 or later, desktop |
 
 ## Troubleshooting
 

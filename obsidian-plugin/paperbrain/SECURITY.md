@@ -4,8 +4,9 @@
 
 | Version | Supported |
 | --- | --- |
+| 0.5.x | Yes |
 | 0.4.x | Yes |
-| 0.3.x | Yes |
+| 0.3.x | No |
 | 0.2.x | No |
 | Earlier versions | No |
 
@@ -26,9 +27,11 @@ remediation guidance after a fix is available.
 Issues in the Python PaperBrain backend should be reported privately to that
 project rather than in this plugin repository.
 
-Both the in-app installer and the versioned terminal installers execute only
-fixed Miniforge and PaperBrain release assets after SHA-256 verification and
-explicit user action. The generated terminal command also verifies its
-PowerShell or Bash installer asset before execution. Reports involving checksum
-validation, installer path ownership, process execution, package sources, or
-managed-runtime cleanup are security issues for this plugin.
+The Console updater, in-app backend installer, and versioned terminal installers
+use expected GitHub Release assets after SHA-256 verification and explicit user
+action. Console updates replace only `main.js`, `manifest.json`, and
+`styles.css`; failed replacements are rolled back. The generated terminal
+command also verifies its PowerShell or Bash installer before execution.
+Reports involving update or checksum validation, installer path ownership,
+process execution, package sources, or managed-runtime cleanup are security
+issues for this plugin.

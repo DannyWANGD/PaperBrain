@@ -1,6 +1,6 @@
 {
   "name": "paperbrain-obsidian-plugin",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "private": true,
   "license": "MIT",
   "author": "DannyWANGD",
@@ -20,7 +20,7 @@
   "scripts": {
     "build": "node esbuild.config.mjs",
     "test": "npm run build && node --test tests/*.test.js",
-    "check": "node --check src/main.js && node --check src/runtime.js && node --check src/process-manager.js && node --check src/backend-installer.js && node --check src/backend-release.js && node --check src/miniforge-release.js && node --check src/manual-install.js && node --check src/proxy-download.js && npm run test && node --check main.js"
+    "check": "node --check src/main.js && node --check src/runtime.js && node --check src/process-manager.js && node --check src/backend-installer.js && node --check src/backend-release.js && node --check src/miniforge-release.js && node --check src/manual-install.js && node --check src/proxy-download.js && node --check src/update-manager.js && npm run test && node --check main.js"
   },
   "devDependencies": {
     "esbuild": "0.25.6"

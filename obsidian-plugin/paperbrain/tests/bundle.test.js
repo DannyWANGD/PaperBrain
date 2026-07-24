@@ -40,6 +40,7 @@ function loadPluginClass() {
         PluginSettingTab: ObsidianBase,
         Setting: class Setting {},
         normalizePath: (value) => value,
+        requireApiVersion: () => true,
         setIcon: () => {},
       };
     }
@@ -71,6 +72,8 @@ test("backend installation passes the resolved automatic dependency source to th
     dependencySource: "auto",
     customDependencyIndex: "",
     vaultPath: "/tmp/paperbrain-vault",
+    proxyMode: "manual",
+    proxyUrl: "http://127.0.0.1:7890",
   };
   plugin.processManager = { snapshot: () => ({ running: false }) };
   plugin.backendInstaller = {
@@ -88,6 +91,10 @@ test("backend installation passes the resolved automatic dependency source to th
   assert.ok(installPlan);
   assert.equal(installPlan.dependencyIndex.id, "auto");
   assert.equal(installPlan.dependencyIndex.candidates.length, 4);
+  assert.ok(installPlan.environment);
+  assert.equal(installPlan.proxyMode, "manual");
+  assert.equal(installPlan.proxyUrl, "http://127.0.0.1:7890");
+  assert.equal(installPlan.environment.HTTPS_PROXY, "http://127.0.0.1:7890");
 });
 
 test("terminal installation exposes verified commands for Windows, macOS, and Linux", () => {
@@ -109,9 +116,83 @@ test("terminal installation exposes verified commands for Windows, macOS, and Li
   assert.match(openedModalDetails.commands.darwin, /install-backend\.sh/);
   assert.match(openedModalDetails.commands.linux, /sha256sum -c -/);
   for (const command of Object.values(openedModalDetails.commands)) {
-    assert.match(command, /releases\/download\/0\.5\.0/);
+    assert.match(command, /releases\/download\/0\.5\.1/);
     assert.match(command, /auto/);
   }
+});
+
+test("software update checks keep Console and backend results independent", async () => {
+  const PluginClass = loadPluginClass();
+  const plugin = new PluginClass();
+  plugin.manifest = { version: "0.5.1" };
+  plugin.settings = { installedBackendVersion: "0.3.6" };
+  plugin.softwareUpdates = { checking: false, checked: false, console: null, backend: null, pendingConsoleVersion: "" };
+  plugin.processManager = { snapshot: () => ({ running: false }) };
+  plugin.backendInstaller = { snapshot: () => ({ running: false }) };
+  plugin.detectSetup = async () => {};
+  plugin.detectInstalledBackendVersion = async () => ({
+    version: "0.3.6",
+    source: "runtime",
+    mode: "python-script",
+    managed: false,
+  });
+  plugin.updateNetworkOptions = () => ({});
+  plugin.updateManager = {
+    checkConsole: async () => { throw new Error("Console network unavailable"); },
+    checkBackend: async () => ({ version: "0.3.7", tag: "backend-0.3.7" }),
+  };
+
+  assert.equal(await plugin.checkSoftwareUpdates(), true);
+  assert.match(plugin.softwareUpdates.console.status, /Console update check failed/);
+  assert.match(plugin.softwareUpdates.backend.status, /source mode and is developer-managed/);
+  assert.equal(plugin.softwareUpdates.backend.available, false);
+});
+
+test("managed backend update reuses the discovered release without another confirmation", async () => {
+  const PluginClass = loadPluginClass();
+  const plugin = new PluginClass();
+  const release = { version: "0.3.7", tag: "backend-0.3.7" };
+  let installOptions = null;
+  plugin.softwareUpdates = {
+    checking: false,
+    console: null,
+    backend: { available: true, managed: true, release, updating: false },
+  };
+  plugin.processManager = { snapshot: () => ({ running: false }) };
+  plugin.backendInstaller = { snapshot: () => ({ running: false }) };
+  plugin.activateView = async () => {};
+  plugin.installBackend = async (options) => {
+    installOptions = options;
+    return true;
+  };
+
+  assert.equal(await plugin.updateBackend(), true);
+  assert.deepEqual(installOptions, { release, skipConfirmation: true });
+  assert.equal(plugin.softwareUpdates.backend.available, false);
+  assert.match(plugin.softwareUpdates.backend.status, /0\.3\.7 is up to date/);
+});
+
+test("backend update failures restore the settings action", async () => {
+  const PluginClass = loadPluginClass();
+  const plugin = new PluginClass();
+  plugin.softwareUpdates = {
+    checking: false,
+    console: null,
+    backend: {
+      available: true,
+      managed: true,
+      release: { version: "0.3.7", tag: "backend-0.3.7" },
+      updating: false,
+    },
+  };
+  plugin.processManager = { snapshot: () => ({ running: false }) };
+  plugin.backendInstaller = { snapshot: () => ({ running: false }) };
+  plugin.activateView = async () => {};
+  plugin.installBackend = async () => { throw new Error("simulated update failure"); };
+
+  assert.equal(await plugin.updateBackend(), false);
+  assert.equal(plugin.softwareUpdates.backend.updating, false);
+  assert.match(plugin.softwareUpdates.backend.status, /simulated update failure/);
 });
 
 test("setup detection wires a manually installed wd CLI into plugin settings", async (t) => {

@@ -34,7 +34,7 @@ test("release runtime assets and canonical source files exist", () => {
   for (const name of [
     "main.js", "manifest.json", "styles.css", "src/main.js", "src/runtime.js", "src/process-manager.js",
     "src/backend-installer.js", "src/backend-release.js", "src/miniforge-release.js",
-    "src/manual-install.js", "installers/install-backend.ps1", "installers/install-backend.sh",
+    "src/manual-install.js", "src/update-manager.js", "installers/install-backend.ps1", "installers/install-backend.sh",
     "README.md", "README_EN.md",
   ]) {
     assert.equal(fs.existsSync(path.join(root, name)), true, `${name} should exist`);

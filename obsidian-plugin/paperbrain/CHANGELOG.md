@@ -5,6 +5,25 @@ follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.1] - 2026-07-24
+
+### Added
+
+- One update check in settings for the latest stable PaperBrain Console and
+  managed backend wheel, with separate update actions.
+- Verified Console self-updates that replace only the three runtime assets,
+  roll back failed replacements, preserve local settings, and require restart.
+
+### Changed
+
+- Managed backend updates reuse the existing hash-verified wheel installer and
+  leave Python source checkouts under developer control.
+
+### Fixed
+
+- In-app backend installation now passes the selected proxy environment to the
+  actual download and child-process plan, not only to its confirmation dialog.
+
 ## [0.5.0] - 2026-07-24
 
 ### Added
@@ -186,7 +205,8 @@ follow [Semantic Versioning](https://semver.org/).
 - Cancellation timers are bound to one process, and plugin shutdown terminates
   every child process owned by the plugin.
 
-[Unreleased]: https://github.com/DannyWANGD/obsidian-paperbrain/compare/0.5.0...HEAD
+[Unreleased]: https://github.com/DannyWANGD/obsidian-paperbrain/compare/0.5.1...HEAD
+[0.5.1]: https://github.com/DannyWANGD/obsidian-paperbrain/compare/0.5.0...0.5.1
 [0.5.0]: https://github.com/DannyWANGD/obsidian-paperbrain/compare/0.4.7...0.5.0
 [0.4.7]: https://github.com/DannyWANGD/obsidian-paperbrain/compare/0.4.6...0.4.7
 [0.4.6]: https://github.com/DannyWANGD/obsidian-paperbrain/compare/0.4.5...0.4.6
