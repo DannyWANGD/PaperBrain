@@ -1,4 +1,0 @@
-main
-paperbrain
-src
-tools

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "paperbrain"
-version = "0.3.4"
+version = "0.3.5"
 description = "Local Obsidian-first research paper pipeline."
 readme = "README.md"
 requires-python = ">=3.9"
@@ -19,7 +19,7 @@ dependencies = [
   "tqdm>=4.66.1",
   "beautifulsoup4>=4.12.3",
   "pypdf>=4.0.0",
-  "pymupdf>=1.23.0",
+  "pymupdf>=1.26.5,<1.26.6",
   "Pillow>=10.0.0",
   "edge-tts>=6.1.9",
   "nest_asyncio>=1.5.8",
