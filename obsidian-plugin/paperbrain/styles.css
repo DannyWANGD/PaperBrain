@@ -790,19 +790,23 @@
 .paperbrain-settings-page .paperbrain-settings-section > .setting-item,
 .paperbrain-settings-page .paperbrain-settings-advanced > .setting-item {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--size-4-3);
-  align-items: start;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 38%);
+  column-gap: var(--size-4-5);
+  row-gap: var(--size-4-2);
+  align-items: center;
 }
 
 .paperbrain-settings-section .setting-item-info {
+  grid-column: 1;
   min-width: 0;
 }
 
 .paperbrain-settings-section .setting-item-control {
+  grid-column: 2;
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-start;
+  gap: var(--size-4-2);
+  justify-content: flex-end;
   width: 100%;
   min-width: 0;
 }
@@ -1029,7 +1033,18 @@
   .paperbrain-category-modal {
     width: 100%;
   }
+}
 
+@container paperbrain-settings (max-width: 520px) {
+  .paperbrain-settings-page .paperbrain-settings-section > .setting-item,
+  .paperbrain-settings-page .paperbrain-settings-advanced > .setting-item {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .paperbrain-settings-section .setting-item-control {
+    grid-column: 1;
+    justify-content: flex-start;
+  }
 }
 
 @keyframes paperbrain-pulse {

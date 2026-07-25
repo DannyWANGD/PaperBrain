@@ -65,7 +65,7 @@ function downloadHttpsBuffer(url, options = {}) {
       agent,
       headers: {
         Accept: "application/octet-stream,application/json;q=0.9,*/*;q=0.8",
-        "User-Agent": "PaperBrain-Obsidian/0.6.1",
+        "User-Agent": "PaperBrain-Obsidian/0.6.2",
       },
       rejectUnauthorized: true,
     }, (response) => {

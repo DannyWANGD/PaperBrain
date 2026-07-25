@@ -71,6 +71,8 @@ test("built main.js exports an Obsidian plugin class", () => {
     assert.match(source, new RegExp(`createSection\\([\\s\\S]*?"${section}"`));
   }
   assert.match(styles, /\.paperbrain-settings-section\s*\{[\s\S]*?grid-template-columns:\s*minmax\(0, 1fr\)/);
+  assert.match(styles, /grid-template-columns:\s*minmax\(0, 1fr\) minmax\(240px, 38%\)/);
+  assert.match(styles, /@container paperbrain-settings \(max-width: 520px\)/);
   assert.match(styles, /@media \(min-width: 1201px\)/);
   assert.match(styles, /flex-wrap: wrap/);
   assert.match(bundle, /Save discovery preferences/);
@@ -172,7 +174,7 @@ test("terminal installation exposes verified commands for Windows, macOS, and Li
   assert.match(openedModalDetails.commands.darwin, /install-backend\.sh/);
   assert.match(openedModalDetails.commands.linux, /sha256sum -c -/);
   for (const command of Object.values(openedModalDetails.commands)) {
-    assert.match(command, /releases\/download\/0\.6\.1/);
+    assert.match(command, /releases\/download\/0\.6\.2/);
     assert.match(command, /auto/);
   }
 });
