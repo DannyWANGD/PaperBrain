@@ -58,8 +58,64 @@ function loadPluginClass() {
 test("built main.js exports an Obsidian plugin class", () => {
   assert.equal(typeof loadPluginClass(), "function");
   const bundle = fs.readFileSync(path.resolve(__dirname, "..", "main.js"), "utf8");
+  const source = fs.readFileSync(path.resolve(__dirname, "..", "src", "main.js"), "utf8");
+  const styles = fs.readFileSync(path.resolve(__dirname, "..", "styles.css"), "utf8");
   assert.match(bundle, /API key file/);
   assert.match(bundle, /Open \.env file/);
+  for (const section of [
+    "discovery",
+    "runtime",
+    "network",
+    "advanced-section",
+  ]) {
+    assert.match(source, new RegExp(`createSection\\([\\s\\S]*?"${section}"`));
+  }
+  assert.match(styles, /\.paperbrain-settings-section/);
+  assert.match(styles, /@media \(min-width: 1201px\)/);
+  assert.match(styles, /flex-wrap: wrap/);
+  assert.match(bundle, /Save discovery preferences/);
+  assert.match(bundle, /Choose categories/);
+});
+
+test("discovery saves are blocked while runs, installs, or updates are active", () => {
+  const PluginClass = loadPluginClass();
+  const plugin = new PluginClass();
+  let runActive = true;
+  let installActive = false;
+  plugin.processManager = { snapshot: () => ({ running: runActive }) };
+  plugin.backendInstaller = { snapshot: () => ({ running: installActive }) };
+  plugin.softwareUpdates = { checking: false, console: null, backend: null };
+
+  assert.match(plugin.discoverySaveBlockReason(), /active PaperBrain run/);
+  runActive = false;
+  installActive = true;
+  assert.match(plugin.discoverySaveBlockReason(), /backend installation/);
+  installActive = false;
+  plugin.softwareUpdates.checking = true;
+  assert.match(plugin.discoverySaveBlockReason(), /software update/);
+  plugin.softwareUpdates.checking = false;
+  assert.equal(plugin.discoverySaveBlockReason(), "");
+});
+
+test("discovery config resolution follows explicit, source, and managed runtime modes", () => {
+  const PluginClass = loadPluginClass();
+  const plugin = new PluginClass();
+  const custom = path.join(os.tmpdir(), "paperbrain-custom.yaml");
+  plugin.settings = {
+    configPath: custom,
+    backendPath: "",
+    vaultPath: os.tmpdir(),
+    executionMode: "cli",
+    cliPath: "paperbrain",
+  };
+  assert.equal(plugin.discoveryConfigPath(), custom);
+
+  plugin.settings.configPath = "";
+  assert.equal(plugin.discoveryConfigPath(), path.join(os.homedir(), ".paperbrain", "config", "config.yaml"));
+
+  plugin.settings.executionMode = "python-script";
+  plugin.settings.backendPath = path.join(os.tmpdir(), "paperbrain-source");
+  assert.equal(plugin.discoveryConfigPath(), path.join(plugin.settings.backendPath, "script", "config", "config.yaml"));
 });
 
 test("backend installation passes the resolved automatic dependency source to the installer", async () => {
@@ -110,13 +166,13 @@ test("terminal installation exposes verified commands for Windows, macOS, and Li
 
   assert.equal(plugin.showManualBackendInstall(), true);
   assert.ok(openedModalDetails);
-  assert.equal(openedModalDetails.backendVersion, "0.3.6");
+  assert.equal(openedModalDetails.backendVersion, "0.3.7");
   assert.deepEqual(Object.keys(openedModalDetails.commands).sort(), ["darwin", "linux", "win32"]);
   assert.match(openedModalDetails.commands.win32, /install-backend\.ps1/);
   assert.match(openedModalDetails.commands.darwin, /install-backend\.sh/);
   assert.match(openedModalDetails.commands.linux, /sha256sum -c -/);
   for (const command of Object.values(openedModalDetails.commands)) {
-    assert.match(command, /releases\/download\/0\.5\.1/);
+    assert.match(command, /releases\/download\/0\.6\.0/);
     assert.match(command, /auto/);
   }
 });
@@ -124,14 +180,14 @@ test("terminal installation exposes verified commands for Windows, macOS, and Li
 test("software update checks keep Console and backend results independent", async () => {
   const PluginClass = loadPluginClass();
   const plugin = new PluginClass();
-  plugin.manifest = { version: "0.5.1" };
-  plugin.settings = { installedBackendVersion: "0.3.6" };
+  plugin.manifest = { version: "0.6.0" };
+  plugin.settings = { installedBackendVersion: "0.3.7" };
   plugin.softwareUpdates = { checking: false, checked: false, console: null, backend: null, pendingConsoleVersion: "" };
   plugin.processManager = { snapshot: () => ({ running: false }) };
   plugin.backendInstaller = { snapshot: () => ({ running: false }) };
   plugin.detectSetup = async () => {};
   plugin.detectInstalledBackendVersion = async () => ({
-    version: "0.3.6",
+    version: "0.3.7",
     source: "runtime",
     mode: "python-script",
     managed: false,

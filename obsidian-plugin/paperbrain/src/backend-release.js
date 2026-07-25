@@ -2,16 +2,16 @@
 
 const BACKEND_RELEASE = Object.freeze({
   repository: "DannyWANGD/PaperBrain",
-  version: "0.3.6",
-  tag: "backend-0.3.6",
+  version: "0.3.7",
+  tag: "backend-0.3.7",
   dependencyProbe: Object.freeze({
     requirement: "openai==2.46.0",
     sha256: "672381db55efb3a1e2610f29304c130cccdd0b319bace4d492b2443cb64c1e7c",
   }),
   assets: Object.freeze({
     wheel: Object.freeze({
-      name: "paperbrain-0.3.6-py3-none-any.whl",
-      sha256: "d41cf6867b74fbef00cec3438fc12c13d1d74597634afc9ff93289ac5c0de986",
+      name: "paperbrain-0.3.7-py3-none-any.whl",
+      sha256: "4f9485b3a69f9217bcfa6aeacc900e02b2ac9ed2ad14d6a49fd299d082dc9ea2",
     }),
     requirements: Object.freeze({
       name: "requirements.lock",

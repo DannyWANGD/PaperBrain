@@ -6,8 +6,8 @@ PaperBrain Console 是 [PaperBrain Python 流水线](https://github.com/DannyWAN
 的 Obsidian 桌面控制台，用于安装后端、启动或停止任务、查看运行状态，以及打开写入当前
 vault 的摘要、研究笔记、PDF、图像和音频。
 
-插件需要启动本地进程，因此仅支持 Obsidian 桌面版。插件 `0.5.1` 的初始安装器固定使用
-PaperBrain 后端 `0.3.6`；安装后可在设置中检查并更新两个组件的正式版。
+插件需要启动本地进程，因此仅支持 Obsidian 桌面版。插件 `0.6.0` 的初始安装器固定使用
+PaperBrain 后端 `0.3.7`；安装后可在设置中检查并更新两个组件的正式版。
 
 ## 快速开始
 
@@ -56,7 +56,7 @@ Release 下载 `install-backend.ps1`（Windows）或 `install-backend.sh`（macO
 3. 如果没有可用 Conda，从 conda-forge 下载并校验 Miniforge 26.3.2-2，安装到
    `~/.paperbrain/runtime/miniforge3`。该安装不修改系统 PATH、不初始化 shell，
    也不需要管理员权限。
-4. 从 `backend-0.3.6` Release 下载 wheel 与哈希锁定依赖，并校验 SHA-256。
+4. 从 `backend-0.3.7` Release 下载 wheel 与哈希锁定依赖，并校验 SHA-256。
 5. 在默认 **Auto** 模式下，从官方 PyPI、阿里云、USTC 和清华 TUNA 分别下载同一个
    1.6 MB 探测 wheel。只有通过 SHA-256 的源参与测速，完整依赖只从最快的合格源安装，
    不会混用多个索引。也可在设置中手动固定一个源。
@@ -89,6 +89,9 @@ API Key 不会写入 Obsidian 的插件设置。**Validate setup** 会执行本�
 
 常用设置：
 
+- **Research discovery**：直接编辑后端唯一的 `config.yaml`。关键词在模型评分前进行本地匹配；
+  所选分类同时覆盖主分类与交叉分类，**All arXiv** 扫描目标日期的全部分类。只有点击
+  **Save discovery preferences** 后才会写入文件。
 - **Dependency download source**：默认 Auto，也可固定 PyPI、阿里云、USTC、TUNA 或一个
   不含凭据的 HTTPS simple index。
 - **Network proxy**：默认继承启动 Obsidian 时的代理环境；也可填写无凭据、带端口的
@@ -116,7 +119,7 @@ API Key 不会写入 Obsidian 的插件设置。**Validate setup** 会执行本�
 
 | 插件 | 后端 | Obsidian |
 | --- | --- | --- |
-| 0.5.1 | 初始安装器固定 0.3.6；可更新兼容的 0.3.x wheel | 1.5.0 或更高版本，桌面版 |
+| 0.6.0 | 初始安装器固定 0.3.7；可更新兼容的 0.3.x wheel | 1.5.0 或更高版本，桌面版 |
 
 ## 故障排查
 

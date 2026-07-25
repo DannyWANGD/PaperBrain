@@ -18,11 +18,11 @@ function sha(bytes) {
 function fixtureRelease(wheel, requirements, probe = Buffer.from("probe-wheel")) {
   return {
     repository: "example/PaperBrain",
-    version: "0.3.6",
-    tag: "backend-0.3.6",
+    version: "0.3.7",
+    tag: "backend-0.3.7",
     dependencyProbe: { requirement: "probe-package==1.0.0", sha256: sha(probe) },
     assets: {
-      wheel: { name: "paperbrain-0.3.6-py3-none-any.whl", sha256: sha(wheel) },
+      wheel: { name: "paperbrain-0.3.7-py3-none-any.whl", sha256: sha(wheel) },
       requirements: { name: "requirements.lock", sha256: sha(requirements) },
     },
   };

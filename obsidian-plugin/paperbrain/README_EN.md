@@ -7,8 +7,8 @@ PaperBrain Console is the Obsidian desktop interface for the
 installs the backend, starts or stops runs, shows progress, and opens the
 digests, research notes, PDFs, figures, and audio written to the active vault.
 
-The plugin is desktop-only because it starts local processes. Plugin `0.5.1`
-initially installs PaperBrain backend `0.3.6`; its settings can then check and
+The plugin is desktop-only because it starts local processes. Plugin `0.6.0`
+initially installs PaperBrain backend `0.3.7`; its settings can then check and
 update both stable components.
 
 ## Quick Start
@@ -67,7 +67,7 @@ installation methods:
    conda-forge and installs it under `~/.paperbrain/runtime/miniforge3`. This
    private installation does not modify system PATH, initialize a shell, or
    require administrator access.
-4. Downloads the wheel and hash-locked dependencies from the `backend-0.3.6`
+4. Downloads the wheel and hash-locked dependencies from the `backend-0.3.7`
    Release and verifies their SHA-256 checksums.
 5. In the default **Auto** mode, downloads the same fixed 1.6 MB probe wheel
    from official PyPI, Alibaba Cloud, USTC, and Tsinghua TUNA. Only sources
@@ -109,6 +109,10 @@ does not make a model request.
 
 Important settings:
 
+- **Research discovery** edits the backend's `config.yaml` directly. Keywords
+  are matched locally before model scoring. Selected categories cover primary
+  and cross-list entries; **All arXiv** scans the full target date. Changes are
+  written only after **Save discovery preferences** is selected.
 - **Dependency download source** defaults to Auto. You can instead select
   PyPI, Alibaba Cloud, USTC, TUNA, or one credential-free HTTPS simple index.
 - **Network proxy** inherits the environment that started Obsidian by default.
@@ -148,7 +152,7 @@ and terms.
 
 | Plugin | Backend | Obsidian |
 | --- | --- | --- |
-| 0.5.1 | Initial installer pins 0.3.6; compatible 0.3.x wheels can be updated | 1.5.0 or later, desktop |
+| 0.6.0 | Initial installer pins 0.3.7; compatible 0.3.x wheels can be updated | 1.5.0 or later, desktop |
 
 ## Troubleshooting
 

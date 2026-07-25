@@ -18,6 +18,7 @@ test("package, manifest, and compatibility versions stay aligned", () => {
   const manifest = readJson("manifest.json");
   const versions = readJson("versions.json");
   assert.equal(packageJson.version, manifest.version);
+  assert.equal(manifest.version, "0.6.0");
   assert.equal(packageLock.version, manifest.version);
   assert.equal(packageLock.packages[""].version, manifest.version);
   assert.equal(versions[manifest.version], manifest.minAppVersion);
@@ -28,6 +29,14 @@ test("package, manifest, and compatibility versions stay aligned", () => {
   assert.equal(manifest.isDesktopOnly, true);
   assert.equal(manifest.author, "DannyWANGD");
   assert.equal(manifest.authorUrl, "https://github.com/DannyWANGD");
+  const source = fs.readFileSync(path.join(root, "src", "main.js"), "utf8");
+  const proxySource = fs.readFileSync(path.join(root, "src", "proxy-download.js"), "utf8");
+  const manualSource = fs.readFileSync(path.join(root, "src", "manual-install.js"), "utf8");
+  assert.match(source, new RegExp(`const CONSOLE_VERSION = "${manifest.version.replaceAll(".", "\\.")}"`));
+  assert.match(proxySource, new RegExp(`PaperBrain-Obsidian/${manifest.version.replaceAll(".", "\\.")}`));
+  assert.match(manualSource, new RegExp(`tag: "${manifest.version.replaceAll(".", "\\.")}"`));
+  const defaults = source.slice(source.indexOf("const DEFAULT_SETTINGS"), source.indexOf("const PANELS"));
+  assert.doesNotMatch(defaults, /keywords|arxivCategories|categoryMode/);
 });
 
 test("release runtime assets and canonical source files exist", () => {
@@ -44,6 +53,7 @@ test("release runtime assets and canonical source files exist", () => {
 test("backend installer assets are versioned, checksummed, and documented", () => {
   const { BACKEND_RELEASE } = require("../src/backend-release");
   const { MINIFORGE_RELEASE } = require("../src/miniforge-release");
+  assert.equal(BACKEND_RELEASE.version, "0.3.7");
   for (const asset of [
     ...Object.values(BACKEND_RELEASE.assets),
     ...Object.values(MINIFORGE_RELEASE.assets),
@@ -58,7 +68,7 @@ test("backend installer assets are versioned, checksummed, and documented", () =
   assert.match(readme, /Miniforge 26\.3\.2-2/);
   assert.match(readme, /does not modify\s+(?:the )?system PATH/i);
   assert.match(readme, /~\/\.paperbrain\/runtime\/miniforge3/);
-  assert.match(readme, /backend-0\.3\.6/);
+  assert.match(readme, /backend-0\.3\.7/);
   assert.match(readme, /install-backend\.ps1/);
   assert.match(readme, /install-backend\.sh/);
 });
@@ -73,7 +83,7 @@ test("Chinese and English setup guides are switchable and installation-complete"
     for (const asset of ["main.js", "manifest.json", "styles.css", "install-backend.ps1", "install-backend.sh", "checksums.txt"]) {
       assert.equal(readme.includes(`\`${asset}\``), true, `${asset} should be explained in both READMEs`);
     }
-    assert.match(readme, /backend-0\.3\.6/);
+    assert.match(readme, /backend-0\.3\.7/);
     assert.match(readme, /Miniforge 26\.3\.2-2/);
     assert.match(readme, /\.paperbrain[\\/]runtime[\\/]miniforge3/);
     assert.match(readme, /\.paperbrain[\\/]config/);

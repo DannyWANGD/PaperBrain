@@ -5,6 +5,24 @@ follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-07-25
+
+### Added
+
+- Research discovery settings for editing local interest keywords and the full
+  official arXiv category catalog without duplicating preferences in plugin data.
+- Searchable grouped category selection with group toggles, defaults, clear,
+  and an All arXiv mode.
+
+### Changed
+
+- Discovery preferences are validated and written to the backend YAML config
+  through a same-directory temporary file with rollback on replacement failure.
+- Settings are organized into Research discovery, Runtime & updates, Network &
+  provider, and Advanced sections with responsive theme-native styling.
+- New installations now pin PaperBrain backend 0.3.7 and its published wheel
+  checksum.
+
 ## [0.5.1] - 2026-07-24
 
 ### Added
@@ -205,7 +223,8 @@ follow [Semantic Versioning](https://semver.org/).
 - Cancellation timers are bound to one process, and plugin shutdown terminates
   every child process owned by the plugin.
 
-[Unreleased]: https://github.com/DannyWANGD/obsidian-paperbrain/compare/0.5.1...HEAD
+[Unreleased]: https://github.com/DannyWANGD/obsidian-paperbrain/compare/0.6.0...HEAD
+[0.6.0]: https://github.com/DannyWANGD/obsidian-paperbrain/compare/0.5.1...0.6.0
 [0.5.1]: https://github.com/DannyWANGD/obsidian-paperbrain/compare/0.5.0...0.5.1
 [0.5.0]: https://github.com/DannyWANGD/obsidian-paperbrain/compare/0.4.7...0.5.0
 [0.4.7]: https://github.com/DannyWANGD/obsidian-paperbrain/compare/0.4.6...0.4.7

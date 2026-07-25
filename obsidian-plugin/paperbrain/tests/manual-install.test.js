@@ -79,7 +79,7 @@ test("unsupported command targets and incomplete settings fail before copying", 
 
 test("terminal installation receipts are accepted only when every required path exists", () => {
   const raw = {
-    backendVersion: "0.3.6",
+    backendVersion: "0.3.7",
     condaPath: "/opt/conda/bin/conda",
     envPath: "/opt/conda/envs/wd",
     pythonPath: "/opt/conda/envs/wd/bin/python",

@@ -16,6 +16,7 @@ const {
   normalizeRuntimeSettings,
   parsePayload,
   redactDiagnostics,
+  resolveRuntimePath,
   resolveDependencyIndex,
   runConfirmationRequirements,
   safeExternalHttpUrl,
@@ -30,6 +31,20 @@ const { BACKEND_RELEASE } = require("./backend-release");
 const { MINIFORGE_RELEASE, resolveMiniforgeAsset } = require("./miniforge-release");
 const { UpdateManager, compareVersions, parseVersion } = require("./update-manager");
 const {
+  ARXIV_CATEGORY_GROUPS,
+  DEFAULT_CATEGORIES,
+  filterCategoryGroups,
+  updateCategoryGroupSelection,
+} = require("./arxiv-categories");
+const {
+  defaultConfigPath,
+  normalizeKeywords,
+  parseKeywordBatch,
+  readDiscoverySettings,
+  validateDiscoverySettings,
+  writeDiscoverySettings,
+} = require("./discovery-settings");
+const {
   MANUAL_PLATFORMS,
   buildManualInstallCommand,
   manualInstallReceiptPath,
@@ -38,7 +53,7 @@ const {
 } = require("./manual-install");
 
 const VIEW_TYPE = "paperbrain-console-view";
-const CONSOLE_VERSION = "0.5.1";
+const CONSOLE_VERSION = "0.6.0";
 
 const DEFAULT_SETTINGS = {
   settingsVersion: 6,
@@ -350,6 +365,24 @@ module.exports = class PaperBrainPlugin extends Plugin {
         || (this.softwareUpdates.backend && this.softwareUpdates.backend.updating)
       ),
     ) || this.backendInstaller.snapshot().running || this.processManager.snapshot().running;
+  }
+
+  discoveryConfigPath() {
+    const invocation = buildInvocation(this.settings, [], { existsSync: fs.existsSync });
+    if (String(this.settings.configPath || "").trim()) {
+      return resolveRuntimePath(this.settings.configPath, invocation.cwd);
+    }
+    if (invocation.mode === "python-script" && this.settings.backendPath) {
+      return path.join(this.settings.backendPath, "script", "config", "config.yaml");
+    }
+    return defaultConfigPath();
+  }
+
+  discoverySaveBlockReason() {
+    if (this.processManager.snapshot().running) return "Stop the active PaperBrain run before saving discovery preferences.";
+    if (this.backendInstaller.snapshot().running) return "Wait for backend installation to finish before saving discovery preferences.";
+    if (this.softwareUpdatesBusy()) return "Wait for the active software update before saving discovery preferences.";
+    return "";
   }
 
   updateNetworkOptions() {
@@ -2172,17 +2205,336 @@ class PaperBrainConsoleView extends ItemView {
   }
 }
 
+class ArxivCategoryModal extends Modal {
+  constructor(app, initial, onApply) {
+    super(app);
+    this.mode = initial.categoryMode === "all" ? "all" : "selected";
+    this.selected = new Set(initial.categories || []);
+    this.onApply = onApply;
+    this.query = "";
+  }
+
+  onOpen() {
+    const { contentEl } = this;
+    contentEl.empty();
+    const shell = contentEl.createDiv({ cls: "paperbrain-category-modal" });
+    const header = shell.createDiv({ cls: "paperbrain-category-header" });
+    header.createEl("h2", { text: "Choose arXiv categories" });
+    this.countEl = header.createEl("span", { cls: "paperbrain-count-badge" });
+
+    const mode = shell.createDiv({ cls: "paperbrain-segmented", attr: { role: "group", "aria-label": "arXiv scope" } });
+    this.selectedModeButton = mode.createEl("button", { text: "Selected categories" });
+    this.allModeButton = mode.createEl("button", { text: "All arXiv" });
+    this.selectedModeButton.addEventListener("click", () => this.setMode("selected"));
+    this.allModeButton.addEventListener("click", () => this.setMode("all"));
+
+    const toolbar = shell.createDiv({ cls: "paperbrain-category-toolbar" });
+    const search = toolbar.createEl("input", {
+      type: "search",
+      placeholder: "Search code or category name",
+      attr: { "aria-label": "Search arXiv categories" },
+    });
+    search.addEventListener("input", () => {
+      this.query = search.value.trim().toLocaleLowerCase();
+      this.renderCategoryList();
+    });
+    const reset = toolbar.createEl("button", {
+      cls: "clickable-icon paperbrain-category-tool",
+      attr: { "aria-label": "Restore default categories", title: "Restore default categories" },
+    });
+    setIcon(reset, "rotate-ccw");
+    reset.addEventListener("click", () => {
+      this.mode = "selected";
+      this.selected = new Set(DEFAULT_CATEGORIES);
+      this.renderCategoryList();
+      this.updateModalState();
+    });
+    const clear = toolbar.createEl("button", {
+      cls: "clickable-icon paperbrain-category-tool",
+      attr: { "aria-label": "Clear category selection", title: "Clear category selection" },
+    });
+    setIcon(clear, "trash-2");
+    clear.addEventListener("click", () => {
+      this.mode = "selected";
+      this.selected.clear();
+      this.renderCategoryList();
+      this.updateModalState();
+    });
+
+    this.listEl = shell.createDiv({ cls: "paperbrain-category-list" });
+    const actions = shell.createDiv({ cls: "modal-button-container paperbrain-category-actions" });
+    actions.createEl("button", { text: "Cancel" }).addEventListener("click", () => this.close());
+    this.applyButton = actions.createEl("button", { text: "Apply", cls: "mod-cta" });
+    this.applyButton.addEventListener("click", () => {
+      if (this.mode === "selected" && !this.selected.size) {
+        new Notice("Choose at least one arXiv category.");
+        return;
+      }
+      this.onApply({ categoryMode: this.mode, categories: [...this.selected] });
+      this.close();
+    });
+    this.renderCategoryList();
+    this.updateModalState();
+  }
+
+  setMode(mode) {
+    this.mode = mode === "all" ? "all" : "selected";
+    this.renderCategoryList();
+    this.updateModalState();
+  }
+
+  updateModalState() {
+    if (!this.countEl) return;
+    this.countEl.setText(this.mode === "all" ? "All categories" : `${this.selected.size} selected`);
+    this.selectedModeButton.toggleClass("is-active", this.mode === "selected");
+    this.allModeButton.toggleClass("is-active", this.mode === "all");
+    this.applyButton.disabled = this.mode === "selected" && !this.selected.size;
+  }
+
+  renderCategoryList() {
+    if (!this.listEl) return;
+    this.listEl.empty();
+    if (this.mode === "all") {
+      this.listEl.createEl("p", {
+        cls: "paperbrain-settings-note",
+        text: "Every arXiv category submitted on the target date will be checked locally against your keywords.",
+      });
+      this.updateModalState();
+      return;
+    }
+
+    let visibleCount = 0;
+    const visibleGroups = filterCategoryGroups(this.query);
+    for (const visibleGroup of visibleGroups) {
+      const group = ARXIV_CATEGORY_GROUPS.find((item) => item.group === visibleGroup.group);
+      const visible = visibleGroup.categories;
+      visibleCount += visible.length;
+      const details = this.listEl.createEl("details", { cls: "paperbrain-category-group" });
+      details.open = Boolean(this.query) || visible.some((category) => this.selected.has(category.id));
+      const summary = details.createEl("summary");
+      const groupCheckbox = summary.createEl("input", { type: "checkbox", attr: { "aria-label": `Select ${group.group}` } });
+      const selectedCount = group.categories.filter((category) => this.selected.has(category.id)).length;
+      groupCheckbox.checked = selectedCount === group.categories.length;
+      groupCheckbox.indeterminate = selectedCount > 0 && selectedCount < group.categories.length;
+      groupCheckbox.addEventListener("click", (event) => event.stopPropagation());
+      groupCheckbox.addEventListener("change", () => {
+        this.selected = updateCategoryGroupSelection(this.selected, group.group, groupCheckbox.checked);
+        this.renderCategoryList();
+        this.updateModalState();
+      });
+      summary.createEl("span", { text: group.group });
+      summary.createEl("small", { text: `${selectedCount}/${group.categories.length}` });
+
+      const options = details.createDiv({ cls: "paperbrain-category-options" });
+      for (const category of visible) {
+        const label = options.createEl("label", { cls: "paperbrain-category-option" });
+        const checkbox = label.createEl("input", { type: "checkbox" });
+        checkbox.checked = this.selected.has(category.id);
+        checkbox.addEventListener("change", () => {
+          if (checkbox.checked) this.selected.add(category.id);
+          else this.selected.delete(category.id);
+          this.updateModalState();
+          const nextSelectedCount = group.categories.filter((item) => this.selected.has(item.id)).length;
+          groupCheckbox.checked = nextSelectedCount === group.categories.length;
+          groupCheckbox.indeterminate = nextSelectedCount > 0 && nextSelectedCount < group.categories.length;
+          summary.querySelector("small").setText(`${nextSelectedCount}/${group.categories.length}`);
+        });
+        label.createEl("code", { text: category.id });
+        label.createEl("span", { text: category.name });
+      }
+    }
+    if (!visibleCount) {
+      this.listEl.createEl("p", { cls: "paperbrain-settings-note", text: "No matching arXiv categories." });
+    }
+    this.updateModalState();
+  }
+}
+
 class PaperBrainSettingTab extends PluginSettingTab {
   constructor(app, plugin) {
     super(app, plugin);
     this.plugin = plugin;
   }
 
+  createSection(parent, id, title, description, icon) {
+    const section = parent.createEl("section", {
+      cls: `paperbrain-settings-section paperbrain-settings-${id}`,
+      attr: { "data-paperbrain-settings-section": id },
+    });
+    const heading = section.createDiv({ cls: "paperbrain-settings-section-heading" });
+    const iconEl = heading.createSpan({ cls: "paperbrain-settings-section-icon" });
+    setIcon(iconEl, icon);
+    const copy = heading.createDiv();
+    copy.createEl("h2", { text: title });
+    copy.createEl("p", { text: description });
+    return section;
+  }
+
+  loadDiscoveryDraft(force = false) {
+    const configPath = this.plugin.discoveryConfigPath();
+    const configBecameAvailable = this.discoveryReadState
+      && !this.discoveryReadState.readable
+      && fs.existsSync(configPath);
+    if (force || configBecameAvailable || !this.discoveryDraft || this.discoverySourcePath !== configPath) {
+      const state = readDiscoverySettings(configPath);
+      this.discoverySourcePath = state.configPath;
+      this.discoveryReadState = state;
+      this.discoveryDraft = {
+        keywords: [...state.keywords],
+        categoryMode: state.categoryMode,
+        categories: [...state.categories],
+      };
+    }
+    return this.discoveryReadState;
+  }
+
+  addKeywordBatch(value) {
+    const additions = parseKeywordBatch(value);
+    if (!additions.length) return false;
+    this.discoveryDraft.keywords = normalizeKeywords([...this.discoveryDraft.keywords, ...additions]);
+    return true;
+  }
+
+  renderDiscoverySection(section) {
+    const readState = this.loadDiscoveryDraft();
+    const draft = this.discoveryDraft;
+    const keywordSetting = new Setting(section)
+      .setName("Interest keywords")
+      .setDesc("Only locally matched papers enter model scoring.");
+    const editor = keywordSetting.controlEl.createDiv({ cls: "paperbrain-keyword-editor" });
+    const tags = editor.createDiv({ cls: "paperbrain-keyword-tags" });
+    for (const keyword of draft.keywords) {
+      const tag = tags.createSpan({ cls: "paperbrain-keyword-tag" });
+      tag.createSpan({ text: keyword });
+      const remove = tag.createEl("button", {
+        cls: "clickable-icon paperbrain-keyword-remove",
+        attr: { "aria-label": `Remove ${keyword}`, title: `Remove ${keyword}` },
+      });
+      setIcon(remove, "x");
+      remove.addEventListener("click", () => {
+        draft.keywords = draft.keywords.filter((value) => value !== keyword);
+        this.display();
+      });
+    }
+    const input = editor.createEl("input", {
+      type: "text",
+      cls: "paperbrain-keyword-input",
+      placeholder: "Add keywords",
+      attr: { "aria-label": "Add research keywords" },
+    });
+    const rerenderAndFocus = () => {
+      this.display();
+      requestAnimationFrame(() => {
+        const nextInput = this.containerEl.querySelector(".paperbrain-keyword-input");
+        if (nextInput) nextInput.focus();
+      });
+    };
+    const commit = () => {
+      if (!this.addKeywordBatch(input.value)) return;
+      input.value = "";
+      rerenderAndFocus();
+    };
+    input.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter") return;
+      event.preventDefault();
+      commit();
+    });
+    input.addEventListener("input", () => {
+      if (input.value.includes(",") || /[\r\n]/.test(input.value)) commit();
+    });
+    input.addEventListener("paste", (event) => {
+      const value = event.clipboardData && event.clipboardData.getData("text");
+      if (!value || !/[,\r\n]/.test(value)) return;
+      event.preventDefault();
+      if (this.addKeywordBatch(value)) rerenderAndFocus();
+    });
+
+    const categorySummary = draft.categoryMode === "all"
+      ? "All arXiv"
+      : `${draft.categories.length} selected${draft.categories.length ? `: ${draft.categories.slice(0, 4).join(", ")}${draft.categories.length > 4 ? "..." : ""}` : ""}`;
+    new Setting(section)
+      .setName("arXiv categories")
+      .setDesc(categorySummary)
+      .addButton((button) => button
+        .setButtonText("Choose categories")
+        .onClick(() => {
+          new ArxivCategoryModal(this.app, draft, (selection) => {
+            draft.categoryMode = selection.categoryMode;
+            draft.categories = [...selection.categories];
+            this.display();
+          }).open();
+        }));
+
+    const validated = validateDiscoverySettings(draft);
+    const busyReason = this.plugin.discoverySaveBlockReason();
+    const unavailableReason = readState.readable ? "" : readState.error;
+    const status = unavailableReason || busyReason || validated.errors.join(" ");
+    const save = new Setting(section)
+      .setName("Discovery preferences")
+      .setDesc(status || `Config: ${this.discoverySourcePath}`)
+      .addButton((button) => button
+        .setCta()
+        .setButtonText("Save discovery preferences")
+        .setDisabled(Boolean(status))
+        .onClick(() => {
+          const currentBlock = this.plugin.discoverySaveBlockReason();
+          if (currentBlock) {
+            new Notice(currentBlock);
+            this.display();
+            return;
+          }
+          try {
+            writeDiscoverySettings(this.discoverySourcePath, draft);
+            new Notice("Discovery preferences saved.");
+            this.loadDiscoveryDraft(true);
+            this.display();
+          } catch (error) {
+            new Notice(`Could not save discovery preferences: ${error.message}`);
+            this.loadDiscoveryDraft(true);
+            this.display();
+          }
+        }));
+    save.settingEl.toggleClass("is-error", Boolean(unavailableReason || validated.errors.length));
+    save.settingEl.toggleClass("is-busy", Boolean(busyReason));
+  }
+
   display() {
     const { containerEl } = this;
     containerEl.empty();
+    containerEl.addClass("paperbrain-settings-page");
+    const discoverySection = this.createSection(
+      containerEl,
+      "discovery",
+      "Research discovery",
+      "Control which daily papers are checked locally before model scoring.",
+      "search",
+    );
+    const runtimeSection = this.createSection(
+      containerEl,
+      "runtime",
+      "Runtime & updates",
+      "Validate the backend, install it, and keep PaperBrain current.",
+      "activity",
+    );
+    const networkSection = this.createSection(
+      containerEl,
+      "network",
+      "Network & provider",
+      "Configure downloads, connectivity, and the default model provider.",
+      "network",
+    );
+    const advancedSection = this.createSection(
+      containerEl,
+      "advanced-section",
+      "Advanced",
+      "Override detected paths and lower-level runtime behavior.",
+      "settings-2",
+    );
+    const advanced = advancedSection.createEl("details", { cls: "paperbrain-settings-advanced" });
+    advanced.createEl("summary", { text: "Show advanced settings" });
+    this.renderDiscoverySection(discoverySection);
     const validation = this.plugin.validateConfiguration(false);
-    new Setting(containerEl)
+    new Setting(runtimeSection)
       .setName("Runtime status")
       .setDesc(validation.ok
         ? `${validation.invocation.mode === "cli" ? "CLI" : "Python script"} mode is ready.${validation.warnings[0] ? ` ${validation.warnings[0]}` : ""}`
@@ -2202,7 +2554,7 @@ class PaperBrainSettingTab extends PluginSettingTab {
           this.display();
         }));
     const updateState = this.plugin.softwareUpdates || {};
-    const updates = new Setting(containerEl)
+    const updates = new Setting(runtimeSection)
       .setName("Software updates")
       .setDesc(this.plugin.softwareUpdateDescription())
       .addButton((button) => button
@@ -2237,7 +2589,7 @@ class PaperBrainSettingTab extends PluginSettingTab {
           this.display();
         }));
     }
-    new Setting(containerEl)
+    new Setting(runtimeSection)
       .setName("Backend installation")
       .setDesc("Terminal installation is recommended when your shell supplies proxy or network settings. The existing in-app installer remains available.")
       .addButton((button) => button
@@ -2253,7 +2605,7 @@ class PaperBrainSettingTab extends PluginSettingTab {
           await this.plugin.installBackend();
           this.display();
         }));
-    new Setting(containerEl)
+    new Setting(advanced)
       .setName("Backend directory")
       .setDesc("Folder containing script/paperbrain.py. Detection checks this folder and the current vault only.")
       .addText((input) => input
@@ -2262,7 +2614,7 @@ class PaperBrainSettingTab extends PluginSettingTab {
           this.plugin.settings.backendPath = value.trim();
           await this.plugin.saveSettings();
         }));
-    new Setting(containerEl)
+    new Setting(advanced)
       .setName("wd Python")
       .setDesc("Python executable from the existing wd Conda environment.")
       .addText((input) => input
@@ -2272,7 +2624,7 @@ class PaperBrainSettingTab extends PluginSettingTab {
           this.plugin.settings.pythonPath = value.trim();
           await this.plugin.saveSettings();
         }));
-    new Setting(containerEl)
+    new Setting(networkSection)
       .setName("Dependency download source")
       .setDesc("Auto downloads one fixed 1.6 MB wheel from PyPI, Alibaba Cloud, USTC, and TUNA, verifies its hash, then uses the fastest working source.")
       .addDropdown((dropdown) => dropdown
@@ -2288,7 +2640,7 @@ class PaperBrainSettingTab extends PluginSettingTab {
           await this.plugin.saveSettings();
           this.display();
         }));
-    new Setting(containerEl)
+    new Setting(networkSection)
       .setName("Network proxy")
       .setDesc("Applies to PaperBrain runs, diagnostics, and installation inside Obsidian. Terminal installation keeps the terminal's own environment.")
       .addDropdown((dropdown) => dropdown
@@ -2310,7 +2662,7 @@ class PaperBrainSettingTab extends PluginSettingTab {
           this.display();
         }));
     if (this.plugin.settings.proxyMode === "manual") {
-      new Setting(containerEl)
+      new Setting(networkSection)
         .setName("Proxy URL")
         .setDesc("HTTP or HTTPS origin with an explicit port. Credentials, paths, queries, and fragments are rejected.")
         .addText((input) => input
@@ -2321,7 +2673,7 @@ class PaperBrainSettingTab extends PluginSettingTab {
             await this.plugin.saveSettings();
           }));
     }
-    new Setting(containerEl)
+    new Setting(networkSection)
       .setName("Default provider")
       .addDropdown((dropdown) => dropdown
         .addOption("openrouter", "OpenRouter")
@@ -2331,14 +2683,12 @@ class PaperBrainSettingTab extends PluginSettingTab {
           this.plugin.settings.provider = value;
           await this.plugin.saveSettings();
         }));
-    new Setting(containerEl)
+    new Setting(networkSection)
       .setName("API key file")
       .setDesc("Open the local .env file used by OpenRouter or Doubao. API keys are never stored in Obsidian plugin settings.")
       .addButton((button) => button
         .setButtonText("Open .env file")
         .onClick(() => this.plugin.openManagedEnvFile()));
-    const advanced = containerEl.createEl("details", { cls: "paperbrain-settings-advanced" });
-    advanced.createEl("summary", { text: "Advanced" });
     if (this.plugin.settings.dependencySource === "custom") {
       new Setting(advanced)
         .setName("Custom dependency mirror")
