@@ -25,6 +25,7 @@ const {
   processOutcome,
   redactDiagnostics,
   resolveDependencyIndex,
+  resolvePluginDirectory,
   runConfirmationRequirements,
   safeExternalHttpUrl,
   toVaultRelativePath,
@@ -52,6 +53,27 @@ test("desktop vault detection uses the file-system adapter base path", () => {
   assert.equal(detectVaultPath({ vault: { adapter: { getBasePath: () => "D:\\Vault" } } }), "D:\\Vault");
   assert.equal(detectVaultPath({ vault: { adapter: { basePath: "/home/user/vault" } } }), "/home/user/vault");
   assert.equal(detectVaultPath({}), "");
+});
+
+test("plugin update paths resolve from the vault instead of Electron's module directory", () => {
+  const app = {
+    vault: {
+      configDir: ".obsidian",
+      adapter: { getBasePath: () => "/home/user/research" },
+    },
+  };
+  assert.equal(
+    resolvePluginDirectory(app, {
+      id: "paperbrain",
+      dir: ".obsidian/plugins/paperbrain",
+    }, path.posix),
+    "/home/user/research/.obsidian/plugins/paperbrain",
+  );
+  assert.equal(
+    resolvePluginDirectory(app, { id: "paperbrain" }, path.posix),
+    "/home/user/research/.obsidian/plugins/paperbrain",
+  );
+  assert.equal(resolvePluginDirectory({}, { id: "paperbrain" }, path.posix), "");
 });
 
 test("legacy repoPath migrates to backendPath without replacing the vault", () => {

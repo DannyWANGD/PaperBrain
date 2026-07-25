@@ -18,7 +18,7 @@ test("package, manifest, and compatibility versions stay aligned", () => {
   const manifest = readJson("manifest.json");
   const versions = readJson("versions.json");
   assert.equal(packageJson.version, manifest.version);
-  assert.equal(manifest.version, "0.6.2");
+  assert.equal(manifest.version, "0.6.3");
   assert.equal(packageLock.version, manifest.version);
   assert.equal(packageLock.packages[""].version, manifest.version);
   assert.equal(versions[manifest.version], manifest.minAppVersion);

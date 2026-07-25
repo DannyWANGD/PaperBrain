@@ -142,7 +142,7 @@ class UpdateManager {
     this.download = options.download;
     this.fs = options.fs || fs.promises;
     this.path = options.pathApi || path;
-    this.pluginDir = options.pluginDir || __dirname;
+    this.pluginDir = String(options.pluginDir || "").trim();
     this.supportsAppVersion = options.supportsAppVersion || (() => true);
   }
 
@@ -165,6 +165,9 @@ class UpdateManager {
     }
     if (!release.manifest || !this.supportsAppVersion(release.manifest.minAppVersion)) {
       throw new Error(`Console ${release.version} is not compatible with this Obsidian version.`);
+    }
+    if (!this.pluginDir || /\.asar(?:[\\/]|$)/i.test(this.pluginDir)) {
+      throw new Error("The PaperBrain plugin directory could not be resolved safely.");
     }
     const root = await this.fs.realpath(this.pluginDir);
     const currentManifest = parseConsoleManifest(await this.fs.readFile(this.path.join(root, "manifest.json")));

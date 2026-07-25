@@ -156,6 +156,20 @@ function detectVaultPath(app) {
   return textValue(adapter.basePath);
 }
 
+function resolvePluginDirectory(app, manifest, pathApi = path) {
+  const vaultPath = detectVaultPath(app);
+  const declaredDir = textValue(manifest && manifest.dir);
+  if (declaredDir) {
+    if (pathApi.isAbsolute(declaredDir)) return pathApi.normalize(declaredDir);
+    if (vaultPath) return pathApi.resolve(vaultPath, declaredDir);
+  }
+  const pluginId = textValue(manifest && manifest.id);
+  const configDir = textValue(app && app.vault && app.vault.configDir) || ".obsidian";
+  return vaultPath && pluginId
+    ? pathApi.resolve(vaultPath, configDir, "plugins", pluginId)
+    : "";
+}
+
 function localDateKey(date) {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -673,6 +687,7 @@ module.exports = {
   parseCondaEnvironmentList,
   pythonExecutableForEnv,
   resolveDependencyIndex,
+  resolvePluginDirectory,
   processOutcome,
   redactDiagnostics,
   runConfirmationRequirements,

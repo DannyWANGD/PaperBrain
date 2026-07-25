@@ -191,3 +191,12 @@ test("Console installation rechecks Obsidian compatibility before writing", asyn
     assert.deepEqual(await fs.promises.readFile(path.join(root, name)), bytes);
   }
 });
+
+test("Console installation rejects unresolved or packaged application directories", async () => {
+  const fixture = consoleFixture();
+  const release = await discoverConsoleRelease(fixture.download);
+  for (const pluginDir of ["", "/opt/Obsidian/resources/electron.asar"]) {
+    const manager = new UpdateManager({ download: fixture.download, pluginDir });
+    await assert.rejects(manager.installConsole(release), /plugin directory could not be resolved safely/);
+  }
+});

@@ -5,6 +5,13 @@ follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.6.3] - 2026-07-25
+
+### Fixed
+
+- Console self-updates now resolve the plugin directory from the active vault
+  on Linux instead of using Electron's packaged `electron.asar` directory.
+
 ## [0.6.2] - 2026-07-25
 
 ### Changed
@@ -237,7 +244,8 @@ follow [Semantic Versioning](https://semver.org/).
 - Cancellation timers are bound to one process, and plugin shutdown terminates
   every child process owned by the plugin.
 
-[Unreleased]: https://github.com/DannyWANGD/obsidian-paperbrain/compare/0.6.2...HEAD
+[Unreleased]: https://github.com/DannyWANGD/obsidian-paperbrain/compare/0.6.3...HEAD
+[0.6.3]: https://github.com/DannyWANGD/obsidian-paperbrain/compare/0.6.2...0.6.3
 [0.6.2]: https://github.com/DannyWANGD/obsidian-paperbrain/compare/0.6.1...0.6.2
 [0.6.1]: https://github.com/DannyWANGD/obsidian-paperbrain/compare/0.6.0...0.6.1
 [0.6.0]: https://github.com/DannyWANGD/obsidian-paperbrain/compare/0.5.1...0.6.0

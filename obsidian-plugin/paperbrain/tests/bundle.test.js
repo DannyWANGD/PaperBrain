@@ -77,6 +77,7 @@ test("built main.js exports an Obsidian plugin class", () => {
   assert.match(styles, /flex-wrap: wrap/);
   assert.match(bundle, /Save discovery preferences/);
   assert.match(bundle, /Choose categories/);
+  assert.doesNotMatch(source, /pluginDir:\s*__dirname/);
 });
 
 test("discovery saves are blocked while runs, installs, or updates are active", () => {
@@ -174,7 +175,7 @@ test("terminal installation exposes verified commands for Windows, macOS, and Li
   assert.match(openedModalDetails.commands.darwin, /install-backend\.sh/);
   assert.match(openedModalDetails.commands.linux, /sha256sum -c -/);
   for (const command of Object.values(openedModalDetails.commands)) {
-    assert.match(command, /releases\/download\/0\.6\.2/);
+    assert.match(command, /releases\/download\/0\.6\.3/);
     assert.match(command, /auto/);
   }
 });

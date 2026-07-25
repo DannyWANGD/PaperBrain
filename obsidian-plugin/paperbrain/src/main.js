@@ -18,6 +18,7 @@ const {
   redactDiagnostics,
   resolveRuntimePath,
   resolveDependencyIndex,
+  resolvePluginDirectory,
   runConfirmationRequirements,
   safeExternalHttpUrl,
   toVaultRelativePath,
@@ -53,7 +54,7 @@ const {
 } = require("./manual-install");
 
 const VIEW_TYPE = "paperbrain-console-view";
-const CONSOLE_VERSION = "0.6.2";
+const CONSOLE_VERSION = "0.6.3";
 
 const DEFAULT_SETTINGS = {
   settingsVersion: 6,
@@ -192,7 +193,7 @@ module.exports = class PaperBrainPlugin extends Plugin {
     });
     this.updateManager = new UpdateManager({
       download: downloadHttpsBuffer,
-      pluginDir: __dirname,
+      pluginDir: resolvePluginDirectory(this.app, this.manifest),
       supportsAppVersion: (version) => typeof requireApiVersion !== "function" || requireApiVersion(version),
     });
     this.softwareUpdates = {
