@@ -53,7 +53,7 @@ const {
 } = require("./manual-install");
 
 const VIEW_TYPE = "paperbrain-console-view";
-const CONSOLE_VERSION = "0.6.0";
+const CONSOLE_VERSION = "0.6.1";
 
 const DEFAULT_SETTINGS = {
   settingsVersion: 6,

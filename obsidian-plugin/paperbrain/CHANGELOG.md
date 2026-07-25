@@ -5,6 +5,13 @@ follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.6.1] - 2026-07-25
+
+### Fixed
+
+- Settings sections now place their headings above their controls so long
+  descriptions and wide controls cannot overlap in wide settings windows.
+
 ## [0.6.0] - 2026-07-25
 
 ### Added
@@ -223,7 +230,8 @@ follow [Semantic Versioning](https://semver.org/).
 - Cancellation timers are bound to one process, and plugin shutdown terminates
   every child process owned by the plugin.
 
-[Unreleased]: https://github.com/DannyWANGD/obsidian-paperbrain/compare/0.6.0...HEAD
+[Unreleased]: https://github.com/DannyWANGD/obsidian-paperbrain/compare/0.6.1...HEAD
+[0.6.1]: https://github.com/DannyWANGD/obsidian-paperbrain/compare/0.6.0...0.6.1
 [0.6.0]: https://github.com/DannyWANGD/obsidian-paperbrain/compare/0.5.1...0.6.0
 [0.5.1]: https://github.com/DannyWANGD/obsidian-paperbrain/compare/0.5.0...0.5.1
 [0.5.0]: https://github.com/DannyWANGD/obsidian-paperbrain/compare/0.4.7...0.5.0

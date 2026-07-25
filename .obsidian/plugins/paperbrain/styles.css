@@ -727,8 +727,7 @@
 
 .paperbrain-settings-section {
   display: grid;
-  grid-template-columns: minmax(120px, 170px) minmax(0, 1fr);
-  column-gap: var(--size-4-4);
+  grid-template-columns: minmax(0, 1fr);
   padding: var(--size-4-6) 0;
   border-bottom: 1px solid var(--background-modifier-border);
 }
@@ -780,7 +779,7 @@
 
 .paperbrain-settings-section > .setting-item,
 .paperbrain-settings-section > .paperbrain-settings-advanced {
-  grid-column: 2;
+  grid-column: 1;
   min-width: 0;
 }
 
@@ -788,8 +787,8 @@
   border-top: 0;
 }
 
-.paperbrain-settings-section > .setting-item,
-.paperbrain-settings-advanced > .setting-item {
+.paperbrain-settings-page .paperbrain-settings-section > .setting-item,
+.paperbrain-settings-page .paperbrain-settings-advanced > .setting-item {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--size-4-3);
@@ -1027,16 +1026,6 @@
 }
 
 @media (max-width: 700px) {
-  .paperbrain-settings-section {
-    grid-template-columns: minmax(0, 1fr);
-    column-gap: 0;
-  }
-
-  .paperbrain-settings-section > .setting-item,
-  .paperbrain-settings-section > .paperbrain-settings-advanced {
-    grid-column: 1;
-  }
-
   .paperbrain-category-modal {
     width: 100%;
   }

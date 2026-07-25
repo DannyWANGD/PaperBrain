@@ -4,7 +4,7 @@ const path = require("path");
 
 const MANUAL_INSTALL_RELEASE = Object.freeze({
   repository: "DannyWANGD/obsidian-paperbrain",
-  tag: "0.6.0",
+  tag: "0.6.1",
   assets: Object.freeze({
     windows: Object.freeze({
       name: "install-backend.ps1",

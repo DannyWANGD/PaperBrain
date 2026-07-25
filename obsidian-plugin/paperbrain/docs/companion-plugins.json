@@ -1,5 +1,5 @@
 {
-  "paperbrainVersion": "0.6.0",
+  "paperbrainVersion": "0.6.1",
   "required": [],
   "testedOptional": [
     { "id": "obsidian42-brat", "version": "2.0.2", "role": "release-installation" },

@@ -2,7 +2,7 @@
 
 PaperBrain Console has no required Obsidian plugin dependencies. The first ten
 community plugins below are enabled in the development vault and were checked
-with PaperBrain Console 0.6.0. The final two are installed locally but are not
+with PaperBrain Console 0.6.1. The final two are installed locally but are not
 currently enabled, so their integration is not claimed as tested. Install only
 the capabilities that fit your workflow.
 
