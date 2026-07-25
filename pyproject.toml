@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "paperbrain"
-version = "0.3.6"
+version = "0.3.7"
 description = "Local Obsidian-first research paper pipeline."
 readme = "README.md"
 requires-python = ">=3.9"

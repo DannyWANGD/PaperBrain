@@ -295,6 +295,30 @@ analysis:
   screening_second_stage_max_k: 20
 ```
 
+Research discovery is configured in the same file and is also editable from
+PaperBrain Console. At least one keyword is required. Selected mode scans every
+paper in the chosen official arXiv categories for the target day; all mode scans
+the complete daily arXiv metadata range. Keywords are applied locally to titles
+and abstracts before any model call.
+
+```yaml
+search:
+  keywords:
+    - "Robot Manipulation"
+    - "Vision Language Action"
+  arxiv_category_mode: "selected"  # selected or all
+  arxiv_categories:
+    - "cs.RO"
+    - "cs.AI"
+  arxiv_page_size: 200  # 1-2000; legacy max_results is treated as page size
+```
+
+The arXiv scanner follows `totalResults` with `start` pagination, caches each
+page independently, removes duplicate arXiv IDs, and records page/candidate/
+keyword-match counts under the run state's `selection.discovery` field. The
+same deterministic Unicode-normalized keyword matcher is used for Hugging Face
+Daily Papers.
+
 OpenRouter routing excludes Anthropic, Google, and OpenAI model families across every task. Fast screening uses low-latency DeepSeek/Qwen/StepFun models, while detailed screening, deep analysis, learning resources, podcast writing, and vision use task-specific GLM 5.2, Kimi K3, Grok 4.5, Qwen 3.7, MiniMax M3, and related fallbacks. Learning-resource generation can use OpenRouter web search and therefore may add a small provider-side search charge; control it with `analysis.learning_resources_web_search_enabled`.
 
 ## <a id="maintenance-commands"></a> 🛠️ Maintenance Commands

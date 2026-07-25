@@ -94,7 +94,8 @@ search:
     - "Embodied AI"
     - "Foundation Models"
     - "LLM"
-  max_results: 50
+  arxiv_category_mode: "selected"
+  arxiv_page_size: 200
   arxiv_timeout_seconds: 45
   arxiv_max_attempts: 4
   arxiv_min_interval_seconds: 3.2

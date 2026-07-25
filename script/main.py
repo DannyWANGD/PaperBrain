@@ -575,6 +575,9 @@ def _resolve_run_errors(run_state, **filters):
 
 def _record_source_report(run_state, scraper):
     report = getattr(scraper, "last_source_report", None)
+    arxiv_scan = getattr(scraper, "last_arxiv_scan", None)
+    if isinstance(arxiv_scan, dict) and arxiv_scan:
+        run_state.update_selection(discovery=dict(arxiv_scan))
     sources = report.get("sources", {}) if isinstance(report, dict) else {}
     any_source_succeeded = any(
         isinstance(status, dict) and status.get("ok")

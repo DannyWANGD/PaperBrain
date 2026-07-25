@@ -11,6 +11,7 @@ import re
 import xml.etree.ElementTree as ET
 from src.paper_identity import canonical_arxiv_id, identity_key, normalize_paper_identity
 from src.paths import PaperBrainPaths
+from src.search_matching import paper_matches_keywords
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -56,9 +57,16 @@ def _date_key(value):
 class PaperScraper:
     def __init__(self, config):
         self.config = config
-        self.keywords = config['search']['keywords']
-        self.categories = config['search']['arxiv_categories']
-        self.max_results = config['search'].get('max_results', 50)
+        search = config['search']
+        self.keywords = [str(value).strip() for value in search.get('keywords', []) if str(value).strip()]
+        self.categories = [str(value).strip() for value in search.get('arxiv_categories', []) if str(value).strip()]
+        self.arxiv_category_mode = str(search.get('arxiv_category_mode', 'selected')).strip().lower()
+        legacy_page_size = search.get('max_results', 200)
+        try:
+            configured_page_size = int(search.get('arxiv_page_size', legacy_page_size))
+        except (TypeError, ValueError):
+            configured_page_size = 200
+        self.arxiv_page_size = max(1, min(configured_page_size, 2000))
         self.arxiv_user_agent = config.get(
             'search', {}
         ).get(
@@ -107,6 +115,7 @@ class PaperScraper:
         self.last_arxiv_request_at = 0.0
         self.last_hf_request_at = 0.0
         self.last_source_report = {"sources": {}, "warnings": []}
+        self.last_arxiv_scan = {}
         os.makedirs(self.cache_dir, exist_ok=True)
         os.makedirs(self.hf_cache_dir, exist_ok=True)
 
@@ -143,14 +152,40 @@ class PaperScraper:
         return canonical_arxiv_id(url_or_id)
 
     def _build_arxiv_query(self, target_date=None):
-        cat_query = " OR ".join([f"cat:{cat}" for cat in self.categories])
+        clauses = []
+        if self.arxiv_category_mode != "all":
+            cat_query = " OR ".join([f"cat:{cat}" for cat in self.categories])
+            if cat_query:
+                clauses.append(f"({cat_query})")
         if target_date:
             start_str = target_date.strftime("%Y%m%d") + "0000"
             end_str = target_date.strftime("%Y%m%d") + "2359"
             date_query = f"submittedDate:[{start_str} TO {end_str}]"
             logger.info(f"  [INFO] Using date query: {date_query}")
-            return f"({cat_query}) AND {date_query}"
-        return cat_query
+            clauses.append(date_query)
+        return " AND ".join(clauses)
+
+    @staticmethod
+    def _arxiv_total_results(parsed_feed):
+        feed = getattr(parsed_feed, "feed", {}) or {}
+        for key in ("opensearch_totalresults", "totalresults", "total_results"):
+            value = feed.get(key) if hasattr(feed, "get") else getattr(feed, key, None)
+            try:
+                return max(0, int(value))
+            except (TypeError, ValueError):
+                continue
+        return None
+
+    @staticmethod
+    def _page_identity(entries):
+        identities = []
+        for entry in entries or []:
+            if isinstance(entry, dict):
+                value = entry.get("id", "")
+            else:
+                value = getattr(entry, "id", "")
+            identities.append(canonical_arxiv_id(value) or str(value or "").strip())
+        return tuple(identities)
 
     def _cache_key(self, params):
         encoded = json.dumps(params, sort_keys=True, ensure_ascii=False)
@@ -560,35 +595,94 @@ class PaperScraper:
         return None
 
     def fetch_arxiv_papers(self, target_date=None):
-        """Fetches papers from arXiv based on keywords and categories."""
-        logger.info(f"[INFO] Searching arXiv for categories: {self.categories}...")
+        """Fetch and locally filter every arXiv result in the selected daily scope."""
+        scope = "all arXiv categories" if self.arxiv_category_mode == "all" else self.categories
+        logger.info(f"[INFO] Searching arXiv for categories: {scope}...")
 
         query = self._build_arxiv_query(target_date)
-        params = {
-            "search_query": query,
-            "id_list": "",
-            "sortBy": "submittedDate",
-            "sortOrder": "descending",
-            "start": 0,
-            "max_results": self.max_results,
+        papers_by_identity = {}
+        seen_candidates = set()
+        seen_pages = set()
+        start = 0
+        pages_fetched = 0
+        candidates_fetched = 0
+        duplicate_candidates = 0
+        total_results = None
+        self.last_arxiv_scan = {
+            "complete": False,
+            "category_mode": self.arxiv_category_mode,
+            "categories": list(self.categories),
+            "keywords": list(self.keywords),
+            "page_size": self.arxiv_page_size,
+            "pages_fetched": 0,
+            "total_results": None,
+            "candidates_fetched": 0,
+            "unique_candidates": 0,
+            "duplicate_candidates": 0,
+            "keyword_matches": 0,
         }
-
-        papers = []
         try:
-            raw_feed = self._request_arxiv_feed(params)
-            results = feedparser.parse(raw_feed).entries or []
-            logger.info(f"  [INFO] Fetched {len(results)} candidates from arXiv. Filtering by keywords...")
+            while True:
+                params = {
+                    "search_query": query,
+                    "id_list": "",
+                    "sortBy": "submittedDate",
+                    "sortOrder": "descending",
+                    "start": start,
+                    "max_results": self.arxiv_page_size,
+                }
+                raw_feed = self._request_arxiv_feed(params)
+                parsed_feed = feedparser.parse(raw_feed)
+                results = parsed_feed.entries or []
+                page_identity = self._page_identity(results)
+                if results and page_identity in seen_pages:
+                    raise RuntimeError(f"arXiv returned a repeated result page at start={start}")
+                if results:
+                    seen_pages.add(page_identity)
 
-            for entry in results:
-                paper = self._entry_to_paper(entry, 'arXiv')
-                published = paper.get('published')
-                if target_date and published and published.date() != target_date:
-                    continue
+                pages_fetched += 1
+                if total_results is None:
+                    total_results = self._arxiv_total_results(parsed_feed)
+                candidates_fetched += len(results)
+                logger.info(
+                    "  [INFO] Fetched arXiv page %s: start=%s, count=%s, total=%s.",
+                    pages_fetched,
+                    start,
+                    len(results),
+                    total_results if total_results is not None else "unknown",
+                )
 
-                text_content = (paper['title'] + " " + paper['abstract']).lower()
-                if any(k.lower() in text_content for k in self.keywords):
-                    papers.append(paper)
+                for entry in results:
+                    paper = self._entry_to_paper(entry, 'arXiv')
+                    key = identity_key(paper)
+                    if key in seen_candidates:
+                        duplicate_candidates += 1
+                        continue
+                    seen_candidates.add(key)
+                    published = paper.get('published')
+                    if target_date and published and published.date() != target_date:
+                        continue
+                    if paper_matches_keywords(paper.get('title'), paper.get('abstract'), self.keywords):
+                        papers_by_identity[key] = paper
+
+                next_start = start + len(results)
+                if not results:
+                    break
+                if len(results) < self.arxiv_page_size:
+                    break
+                if total_results is not None and next_start >= total_results:
+                    break
+                start = next_start
         except Exception as e:
+            self.last_arxiv_scan.update({
+                "pages_fetched": pages_fetched,
+                "total_results": total_results,
+                "candidates_fetched": candidates_fetched,
+                "unique_candidates": len(seen_candidates),
+                "duplicate_candidates": duplicate_candidates,
+                "keyword_matches": len(papers_by_identity),
+                "error": str(e),
+            })
             msg = str(e)
             if "429" in msg or "Rate exceeded" in msg:
                 logger.error(
@@ -600,7 +694,22 @@ class PaperScraper:
             logger.error(f"[ERR] Error fetching arXiv: {e}")
             raise PaperSourceError(f"arXiv source unavailable: {e}") from e
 
-        logger.info(f"  [INFO] Found {len(papers)} relevant papers from arXiv.")
+        papers = list(papers_by_identity.values())
+        self.last_arxiv_scan.update({
+            "complete": True,
+            "pages_fetched": pages_fetched,
+            "total_results": total_results,
+            "candidates_fetched": candidates_fetched,
+            "unique_candidates": len(seen_candidates),
+            "duplicate_candidates": duplicate_candidates,
+            "keyword_matches": len(papers),
+        })
+        logger.info(
+            "  [INFO] Completed arXiv scan: %s unique candidates across %s page(s); %s matched locally.",
+            len(seen_candidates),
+            pages_fetched,
+            len(papers),
+        )
         return papers
 
     def fetch_hf_daily_papers(self, target_date=None):
@@ -643,9 +752,7 @@ class PaperScraper:
                     if name:
                         authors.append(name)
 
-                # Filter by keywords
-                text_content = (title + " " + summary).lower()
-                if any(k.lower() in text_content for k in self.keywords):
+                if paper_matches_keywords(title, summary, self.keywords):
                     papers.append(normalize_paper_identity({
                         'title': title,
                         'abstract': summary,
@@ -684,6 +791,7 @@ class PaperScraper:
             self.last_source_report["sources"]["arxiv"] = {
                 "ok": True,
                 "count": len(arxiv_papers),
+                "scan": dict(self.last_arxiv_scan),
             }
         try:
             hf_papers = self.fetch_hf_daily_papers(target_date)

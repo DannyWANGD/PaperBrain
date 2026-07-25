@@ -63,6 +63,162 @@ class ScraperCacheTest(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.tmp, ignore_errors=True)
 
+    @staticmethod
+    def _entry(arxiv_id, title="Robot paper", summary="Robot manipulation study"):
+        return {
+            "id": f"https://arxiv.org/abs/{arxiv_id}",
+            "title": title,
+            "summary": summary,
+            "authors": [{"name": "Ada"}],
+            "links": [],
+            "published_parsed": (2026, 6, 1, 12, 0, 0, 0, 0, 0),
+        }
+
+    def test_arxiv_fetch_pages_through_every_daily_candidate(self):
+        self.config["search"].update({"arxiv_page_size": 2, "max_results": 1})
+        scraper = PaperScraper(self.config)
+        pages = [
+            types.SimpleNamespace(
+                entries=[self._entry("2606.00001"), self._entry("2606.00002", title="Unrelated", summary="Other")],
+                feed={"opensearch_totalresults": "3"},
+            ),
+            types.SimpleNamespace(
+                entries=[self._entry("2606.00003")],
+                feed={"opensearch_totalresults": "3"},
+            ),
+        ]
+
+        with patch.object(scraper, "_request_arxiv_feed", side_effect=["page-1", "page-2"]) as request_feed, \
+             patch("src.scraper.feedparser.parse", side_effect=pages):
+            papers = scraper.fetch_arxiv_papers(date(2026, 6, 1))
+
+        self.assertEqual([paper["paper_id"] for paper in papers], ["arxiv:2606.00001", "arxiv:2606.00003"])
+        self.assertEqual([call.args[0]["start"] for call in request_feed.call_args_list], [0, 2])
+        self.assertTrue(scraper.last_arxiv_scan["complete"])
+        self.assertEqual(scraper.last_arxiv_scan["candidates_fetched"], 3)
+        self.assertEqual(scraper.last_arxiv_scan["keyword_matches"], 2)
+
+    def test_arxiv_fetches_more_than_fifty_candidates_across_pages(self):
+        self.config["search"]["arxiv_page_size"] = 20
+        scraper = PaperScraper(self.config)
+        entries = [self._entry(f"2606.{index:05d}") for index in range(1, 56)]
+        pages = [
+            types.SimpleNamespace(entries=entries[0:20], feed={"opensearch_totalresults": "55"}),
+            types.SimpleNamespace(entries=entries[20:40], feed={"opensearch_totalresults": "55"}),
+            types.SimpleNamespace(entries=entries[40:55], feed={"opensearch_totalresults": "55"}),
+        ]
+
+        with patch.object(scraper, "_request_arxiv_feed", side_effect=["page-1", "page-2", "page-3"]) as request_feed, \
+             patch("src.scraper.feedparser.parse", side_effect=pages):
+            papers = scraper.fetch_arxiv_papers(date(2026, 6, 1))
+
+        self.assertEqual(len(papers), 55)
+        self.assertEqual([call.args[0]["start"] for call in request_feed.call_args_list], [0, 20, 40])
+        self.assertNotIn("robot", request_feed.call_args_list[0].args[0]["search_query"].lower())
+
+    def test_known_total_still_stops_on_short_final_page(self):
+        self.config["search"]["arxiv_page_size"] = 2
+        scraper = PaperScraper(self.config)
+        parsed = types.SimpleNamespace(
+            entries=[self._entry("2606.00001")],
+            feed={"opensearch_totalresults": "99"},
+        )
+        with patch.object(scraper, "_request_arxiv_feed", return_value="page") as request_feed, \
+             patch("src.scraper.feedparser.parse", return_value=parsed):
+            papers = scraper.fetch_arxiv_papers(date(2026, 6, 1))
+
+        self.assertEqual(len(papers), 1)
+        request_feed.assert_called_once()
+
+    def test_cross_category_duplicate_arxiv_ids_are_deduplicated(self):
+        self.config["search"].update({"arxiv_page_size": 2, "arxiv_categories": ["cs.RO", "cs.AI"]})
+        scraper = PaperScraper(self.config)
+        pages = [
+            types.SimpleNamespace(
+                entries=[self._entry("2606.00001"), self._entry("2606.00002")],
+                feed={"opensearch_totalresults": "3"},
+            ),
+            types.SimpleNamespace(
+                entries=[self._entry("2606.00001")],
+                feed={"opensearch_totalresults": "3"},
+            ),
+        ]
+        with patch.object(scraper, "_request_arxiv_feed", side_effect=["page-1", "page-2"]) as request_feed, \
+             patch("src.scraper.feedparser.parse", side_effect=pages):
+            papers = scraper.fetch_arxiv_papers(date(2026, 6, 1))
+
+        self.assertEqual([paper["paper_id"] for paper in papers], ["arxiv:2606.00001", "arxiv:2606.00002"])
+        query = request_feed.call_args_list[0].args[0]["search_query"]
+        self.assertIn("cat:cs.RO", query)
+        self.assertIn("cat:cs.AI", query)
+        self.assertEqual(scraper.last_arxiv_scan["duplicate_candidates"], 1)
+        self.assertEqual(scraper.last_arxiv_scan["unique_candidates"], 2)
+
+    def test_interrupted_scan_keeps_cached_pages_for_complete_retry(self):
+        self.config["search"].update({"arxiv_page_size": 2, "arxiv_max_attempts": 1})
+        page_one = types.SimpleNamespace(
+            entries=[self._entry("2606.00001"), self._entry("2606.00002")],
+            feed={"opensearch_totalresults": "3"},
+        )
+        page_two = types.SimpleNamespace(
+            entries=[self._entry("2606.00003")],
+            feed={"opensearch_totalresults": "3"},
+        )
+        first = PaperScraper(self.config)
+
+        with patch("src.scraper.requests.get", side_effect=[
+            FakeResponse(text="<feed></feed>"),
+            FakeResponse(status_code=503, text="unavailable"),
+        ]), patch("src.scraper.feedparser.parse", return_value=page_one):
+            with self.assertRaises(PaperSourceError):
+                first.fetch_arxiv_papers(date(2026, 6, 1))
+
+        self.assertFalse(first.last_arxiv_scan["complete"])
+        self.assertEqual(first.last_arxiv_scan["pages_fetched"], 1)
+        cached_pages = list(Path(self.tmp).joinpath("Cache", "arxiv").glob("*.xml"))
+        self.assertEqual(len(cached_pages), 1)
+
+        retry = PaperScraper(self.config)
+        with patch("src.scraper.requests.get", return_value=FakeResponse(text="<feed></feed>")) as request, \
+             patch("src.scraper.feedparser.parse", side_effect=[page_one, page_two]):
+            papers = retry.fetch_arxiv_papers(date(2026, 6, 1))
+
+        self.assertEqual(len(papers), 3)
+        self.assertTrue(retry.last_arxiv_scan["complete"])
+        request.assert_called_once()
+
+    def test_arxiv_fetch_without_total_results_stops_after_short_page(self):
+        self.config["search"]["arxiv_page_size"] = 2
+        scraper = PaperScraper(self.config)
+        parsed = types.SimpleNamespace(entries=[self._entry("2606.00001")], feed={})
+        with patch.object(scraper, "_request_arxiv_feed", return_value="page") as request_feed, \
+             patch("src.scraper.feedparser.parse", return_value=parsed):
+            papers = scraper.fetch_arxiv_papers(date(2026, 6, 1))
+
+        self.assertEqual(len(papers), 1)
+        request_feed.assert_called_once()
+
+    def test_repeated_arxiv_page_is_a_source_failure(self):
+        self.config["search"]["arxiv_page_size"] = 1
+        scraper = PaperScraper(self.config)
+        parsed = types.SimpleNamespace(
+            entries=[self._entry("2606.00001")],
+            feed={"opensearch_totalresults": "2"},
+        )
+        with patch.object(scraper, "_request_arxiv_feed", side_effect=["page-1", "page-2"]), \
+             patch("src.scraper.feedparser.parse", side_effect=[parsed, parsed]):
+            with self.assertRaises(PaperSourceError):
+                scraper.fetch_arxiv_papers(date(2026, 6, 1))
+
+        self.assertFalse(scraper.last_arxiv_scan["complete"])
+        self.assertIn("repeated", scraper.last_arxiv_scan["error"])
+
+    def test_all_category_mode_omits_category_clause(self):
+        self.config["search"]["arxiv_category_mode"] = "all"
+        scraper = PaperScraper(self.config)
+        query = scraper._build_arxiv_query(date(2026, 6, 1))
+        self.assertEqual(query, "submittedDate:[202606010000 TO 202606012359]")
+
     def test_request_uses_cache_for_identical_arxiv_params(self):
         scraper = PaperScraper(self.config)
         params = {"search_query": "cat:cs.RO", "start": 0, "max_results": 1}

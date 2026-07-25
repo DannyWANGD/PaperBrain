@@ -21,6 +21,7 @@ from enum import IntEnum
 from pathlib import Path
 from urllib.parse import urlparse
 
+from src.arxiv_categories import ARXIV_CATEGORIES
 from src.config_loader import load_config, load_prompts
 from src.paths import PaperBrainPaths
 
@@ -43,7 +44,7 @@ REQUIRED_DEPENDENCIES = {
     "dotenv": "python-dotenv",
 }
 
-BACKEND_VERSION_FALLBACK = "0.3.6"
+BACKEND_VERSION_FALLBACK = "0.3.7"
 
 
 def backend_version() -> str:
@@ -658,24 +659,65 @@ def _doctor_config(config: dict, prompts: dict, paths: PaperBrainPaths) -> dict:
         )
 
     search = config.get("search", {})
+    keywords = search.get("keywords")
     checks.append(
         _check(
             "search_keywords",
-            bool(search.get("keywords")),
+            isinstance(keywords, list) and any(str(value).strip() for value in keywords),
             "error",
             "search.keywords contains at least one keyword",
             "Add focused research keywords to config.yaml.",
             "config",
         )
     )
+    category_mode = str(search.get("arxiv_category_mode", "selected") or "selected").strip().lower()
+    categories = search.get("arxiv_categories")
+    normalized_categories = (
+        [str(value).strip() for value in categories if str(value).strip()]
+        if isinstance(categories, list)
+        else []
+    )
+    invalid_categories = [value for value in normalized_categories if value not in ARXIV_CATEGORIES]
+    valid_categories = isinstance(categories, list) and not invalid_categories
+    checks.append(
+        _check(
+            "search_category_mode",
+            category_mode in ("selected", "all"),
+            "error",
+            "search.arxiv_category_mode is selected or all",
+            "Set search.arxiv_category_mode to selected or all.",
+            "config",
+        )
+    )
     checks.append(
         _check(
             "search_categories",
-            bool(search.get("arxiv_categories")),
+            valid_categories and (category_mode == "all" or bool(normalized_categories)),
             "error",
-            "search.arxiv_categories contains at least one category",
-            "Add arXiv categories such as cs.RO or cs.AI.",
+            "search.arxiv_categories is valid for the selected category mode",
+            "Choose official arXiv category IDs and keep at least one in selected mode, or use all mode.",
             "config",
+            {"invalid_categories": invalid_categories},
+        )
+    )
+    raw_page_size = search.get("arxiv_page_size", search.get("max_results", 200))
+    if isinstance(raw_page_size, bool):
+        page_size = 0
+    elif isinstance(raw_page_size, int):
+        page_size = raw_page_size
+    elif isinstance(raw_page_size, str) and raw_page_size.strip().isdigit():
+        page_size = int(raw_page_size.strip())
+    else:
+        page_size = 0
+    checks.append(
+        _check(
+            "search_arxiv_page_size",
+            1 <= page_size <= 2000,
+            "error",
+            "search.arxiv_page_size is between 1 and 2000",
+            "Set search.arxiv_page_size to a value such as 200.",
+            "config",
+            {"page_size": page_size},
         )
     )
 

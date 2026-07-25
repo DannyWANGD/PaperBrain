@@ -1,4 +1,5 @@
 import contextlib
+import copy
 import io
 import json
 import os
@@ -14,6 +15,13 @@ from src import cli  # noqa: E402
 
 
 class CliDoctorTest(unittest.TestCase):
+    def _config_checks(self, updates):
+        config = copy.deepcopy(cli.load_config())
+        config["search"].update(updates)
+        paths = cli.PaperBrainPaths.from_config_dict(config)
+        section = cli._doctor_config(config, cli.load_prompts(), paths)
+        return {check["name"]: check for check in section["checks"]}
+
     def test_doctor_config_outputs_structured_json(self):
         stdout = io.StringIO()
 
@@ -78,6 +86,31 @@ class CliDoctorTest(unittest.TestCase):
         self.assertTrue(section["ok"])
         hf.assert_called_once_with()
         arxiv.assert_called_once_with({})
+
+    def test_discovery_config_requires_nonempty_keywords(self):
+        checks = self._config_checks({"keywords": []})
+
+        self.assertFalse(checks["search_keywords"]["ok"])
+
+    def test_selected_category_mode_requires_official_category(self):
+        empty = self._config_checks({"arxiv_category_mode": "selected", "arxiv_categories": []})
+        invalid = self._config_checks({"arxiv_category_mode": "selected", "arxiv_categories": ["cs.NOT-REAL"]})
+
+        self.assertFalse(empty["search_categories"]["ok"])
+        self.assertFalse(invalid["search_categories"]["ok"])
+        self.assertEqual(invalid["search_categories"]["data"]["invalid_categories"], ["cs.NOT-REAL"])
+
+    def test_all_category_mode_allows_empty_category_list(self):
+        checks = self._config_checks({"arxiv_category_mode": "all", "arxiv_categories": []})
+
+        self.assertTrue(checks["search_categories"]["ok"])
+
+    def test_page_size_must_be_an_integer_in_supported_range(self):
+        too_large = self._config_checks({"arxiv_page_size": 2001})
+        fractional = self._config_checks({"arxiv_page_size": 20.5})
+
+        self.assertFalse(too_large["search_arxiv_page_size"]["ok"])
+        self.assertFalse(fractional["search_arxiv_page_size"]["ok"])
 
 
 if __name__ == "__main__":
